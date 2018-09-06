@@ -17,6 +17,13 @@ app.get('/', (req, res) => {
 
 app.get('/event', (req, res) => {
     console.log(req.body)
+
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({
+        "token": "Jhj5dZrVaK7ZwHHjRyZWjbDl",
+        "challenge": "3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P",
+        "type": "url_verification"
+    }))
 })
 
 app.listen(port, () => console.info(`Listening on port ${port}`))
