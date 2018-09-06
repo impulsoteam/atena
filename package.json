@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
+    "@slack/events-api": "^2.1.0",
     "babel-preset-es2015": "^6.24.1",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
