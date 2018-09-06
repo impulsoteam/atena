@@ -15,6 +15,10 @@ slackEvents.on('message', e => {
     // console.log(`Received a message event: user ${e.user} in channel ${e.channel} says ${e.text}`)
 })
 
+slackEvents.on('reaction_added', e => {
+    console.log(e)
+})
+
 slackEvents.on('error', console.error)
 
 app.listen(port, () => console.info(`Listening on port ${port}`))
