@@ -1,6 +1,6 @@
 const express = require('express')
 const { createEventAdapter } = require('@slack/events-api')
-const slackEvents = createEventAdapter(process.env.SLACK_SIGNING_SECRET)
+const slackEvents = createEventAdapter(process.env.SLACK_SIGNING_SECRET || 'cf2bf83a1901bdfd661167c3005506dc')
 const app = express()
 const port = process.env.PORT || 3000
 
