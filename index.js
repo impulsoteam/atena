@@ -1,27 +1,13 @@
 const express = require('express')
 const { createEventAdapter } = require('@slack/events-api')
-const ua = require('universal-analytics')
+const request = require('request')
+const qs = require('querystring')
 const slackEvents = createEventAdapter('786d090b715da01bffc79e1e7ceaa52e')
 const port = process.env.PORT || 3000
+const ga = process.env.GA || 'UA-101595764-3'
 const app = express()
-const visitor = ua('UA-101595764-3')
 
-// app.get('/', (req, res) => res.send("i'm alive!"))
-app.get('/', ((req, res) => {
-    const params = {
-        uid: 'teste',
-        cd: 'nome do evento (reação ou mensagem)',
-        dp: 'nome do canal',
-        ea: 'nome do evento (reacao ou mensagem)',
-        ec: 'mensagem no canal ou numa thread',
-        el: 'conteudo',
-        ev: 'texto ou reação'
-    }
-
-    visitor.event(params).send()
-
-    res.send('dsdsds')
-}))
+app.get('/', (req, res) => res.send("i'm alive!"))
 app.use('/slack/events', slackEvents.expressMiddleware())
 
 slackEvents.on('message', e => {
@@ -32,7 +18,9 @@ slackEvents.on('message', e => {
         el: `message`,
         ev: `${e.text}`
     }
-    visitor.event(params).send(r => console.info(r))
+    request.post(`https://www.google-analytics.com/collect?${qs.stringify(params)}`, (error, response, body) => {
+        console.info(error)
+    })    
     return e
 })
 
@@ -44,7 +32,9 @@ slackEvents.on('reaction_added', e => {
         el: `reaction`,
         ev: `${e.reaction} on ${e.item.ts}`
     }
-    visitor.event(params).send(r => console.info(r))
+    request.post(`https://www.google-analytics.com/collect?${qs.stringify(params)}`, (error, response, body) => {
+        console.info(error)
+    })
     return e
 })
 
