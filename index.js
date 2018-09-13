@@ -4,7 +4,7 @@ const request = require('request')
 const qs = require('querystring')
 const { createEventAdapter } = require('@slack/events-api')
 const app = express()
-const signingSecret = process.env.SLACK_SIGNING_SECRET || 'cf2bf83a1901bdfd661167c3005506dc'
+const signingSecret = 'cf2bf83a1901bdfd661167c3005506dc'
 const port = process.env.PORT || 3000
 const gaKey = process.env.GA_KEY || 'UA-101595764-2'
 
