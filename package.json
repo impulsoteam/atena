@@ -6,12 +6,14 @@
   "author": "Lazaro Alvarenga <lazaroalvarenga@email.com>",
   "license": "ISC",
   "scripts": {
-    "start": "node index.js"
+    "start:dev": "nodemon --exec babel-node index.js",
+    "start": "babel-node index.js"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
     "@slack/events-api": "^2.1.0",
-    "babel-preset-es2015": "^6.24.1",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "fs": "^0.0.1-security",
@@ -21,5 +23,8 @@
     "readline": "^1.3.0",
     "request": "^2.88.0",
     "universal-analytics": "^0.4.17"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
   }
 }
