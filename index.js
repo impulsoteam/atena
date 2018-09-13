@@ -4,7 +4,6 @@ const request = require('request')
 const qs = require('querystring')
 const slackEvents = createEventAdapter('0e3a482607938ee3971006e0f9768554')
 const port = process.env.PORT || 3000
-const ga = process.env.GA || 'UA-101595764-3'
 const app = express()
 
 app.get('/', (req, res) => res.send("i'm alive!"))
@@ -14,7 +13,7 @@ const handleEvent = e => {
     console.log(e)
     let params = {
         v: 1,
-		tid: process.env.GA || 'UA-101595764-3',
+		tid: process.env.GA || 'UA-101595764-2',
         cid: e.user,
         cd1: e.user,
 		cd2: e.channel,
