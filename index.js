@@ -22,6 +22,7 @@ slackEvents.on('reaction_added', e => {
         el: `reaction`,
         ev: `${e.reaction} on ${e.item.ts}`
     }
+    visitor.event(params).send()
     return e
 })
 
