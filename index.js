@@ -21,7 +21,7 @@ const handleEvent = e => {
         cd4: e.type,
         ds: "slack",
         cs: "slack",
-        dh: "https://temdelivery.slack.com",
+        dh: "https://impulsonetwork.slack.com",
         dp:	`/${e.type==="message" ? e.channel : e.item.channel}`,
 		dt:	`Slack Channel: ${e.type==="message" ? e.channel : e.item.channel}`,
 		t: 	"event",
@@ -32,7 +32,7 @@ const handleEvent = e => {
     }
     request.post(`https://www.google-analytics.com/collect?${qs.stringify(params)}`, (error, response, body) => {
         console.info(error)
-    })    
+    })
 }
 
 slackEvents.on('message', e => handleEvent(e))
