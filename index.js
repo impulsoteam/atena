@@ -6,7 +6,22 @@ const port = process.env.PORT || 3000
 const app = express()
 const visitor = ua('UA-101595764-3')
 
-app.get('/', (req, res) => res.send("i'm alive!"))
+// app.get('/', (req, res) => res.send("i'm alive!"))
+app.get('/', ((req, res) => {
+    const params = {
+        uid: 'teste',
+        cd: 'nome do evento (reação ou mensagem)',
+        dp: 'nome do canal',
+        ea: 'nome do evento (reacao ou mensagem)',
+        ec: 'mensagem no canal ou numa thread',
+        el: 'conteudo',
+        ev: 'texto ou reação'
+    }
+
+    visitor.event(params).send()
+
+    res.send('dsdsds')
+}))
 app.use('/slack/events', slackEvents.expressMiddleware())
 
 slackEvents.on('message', e => {
