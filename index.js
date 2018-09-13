@@ -26,8 +26,8 @@ slackEvents.on('message', e => {
         dp:	`/${e.channel}`,
 		dt:	`Slack Channel: ${e.channel}`,
 		t: 	"event",
-        ec: `message in ${e.channel} ${e.thread_ts ? '| is a thread reply' : null}`,
-        ea: `by ${e.user} in ${e.channel} | ${e.thread_ts ? 'is a thread reply' : ''}`,
+        ec: `message in ${e.channel} >> ${e.item.ts}`,
+        ea: `by ${e.user} in ${e.item.channel} | ${e.thread_ts ? 'is a thread reply' : ''}`,
         el: e.text,
         ev: 1
     }
