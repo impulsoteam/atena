@@ -10,7 +10,10 @@ const gaKey = process.env.GA_KEY || 'UA-101595764-2'
 
 const slackEvents = createEventAdapter(signingSecret)
 
-import { handleMessageEvent, handleReaction } from 'events'
+const handleResponse = r => {
+    console.info(r)
+    return r
+}
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
@@ -20,9 +23,9 @@ app.get('/', (req, res) => res.send("i'm alive!"))
 
 app.use('/slack/events', slackEvents.expressMiddleware())
 
-slackEvents.on('message', handleMessageEvent(e))
+slackEvents.on('message', e => handleResponse(e))
 
-slackEvents.on('reaction_added', handleReaction(e))
+slackEvents.on('reaction_added', e => handleResponse(e))
 
 slackEvents.on('error', console.error)
 
