@@ -13,10 +13,23 @@ app.use('/slack/events', slackEvents.expressMiddleware())
 slackEvents.on('message', e => {
     console.log(e)
     let params = {
-        ec: 'message',
+        v: 1,
+		tid: ga,
+        cid: e.user,
+        cd1: e.user,
+		cd2: e.channel,
+        cd3: '',
+        cd4: e.reaction,
+        ds: "slack",
+        cs: "slack",
+        dh: "https://temdelivery.slack.com",
+        dp:	`/${e.channel}`,
+		dt:	`Slack Channel: ${e.channel}`,
+		t: 	"event",
+        ec: `message in ${e.channel} ${e.thread_ts ? '| is a thread reply' : null}`,
         ea: `by ${e.user} in ${e.channel} | ${e.thread_ts ? 'is a thread reply' : ''}`,
-        el: `message`,
-        ev: `${e.text}`
+        el: e.text,
+        ev: 1
     }
     request.post(`https://www.google-analytics.com/collect?${qs.stringify(params)}`, (error, response, body) => {
         console.info(error)
@@ -27,10 +40,23 @@ slackEvents.on('message', e => {
 slackEvents.on('reaction_added', e => {
     console.log(e)
     let params = {
+        v: 1,
+		tid: ga,
+        cid: e.user,
+        cd1: e.user,
+		cd2: e.channel,
+        cd3: '',
+        cd4: e.reaction,
+        ds: "slack",
+        cs: "slack",
+        dh: "https://temdelivery.slack.com",
+        dp:	`/${e.channel}`,
+		dt:	`Slack Channel: ${e.channel}`,
+		t: 	"event",
         ec: 'reaction',
         ea: `by ${e.user} in ${e.channel}`,
-        el: `reaction`,
-        ev: `${e.reaction} on ${e.item.ts}`
+        el: e.reaction,
+        ev: 1
     }
     request.post(`https://www.google-analytics.com/collect?${qs.stringify(params)}`, (error, response, body) => {
         console.info(error)
