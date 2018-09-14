@@ -26,7 +26,7 @@ const handleEvent = e => {
     cd4: e.type,
     ds: "slack",
     cs: "slack",
-    dh: "https://temdelivery.slack.com",
+    dh: "https://impulsonetwork.slack.com",
     dp: `/${e.type === "message" ? e.channel : e.item.channel}`,
     dt: `Slack Channel: ${e.type === "message" ? e.channel : e.item.channel}`,
     t: "event",
