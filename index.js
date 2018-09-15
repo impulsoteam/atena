@@ -1,10 +1,16 @@
+import dotenv from "dotenv";
 import express from "express";
 import { createEventAdapter } from "@slack/events-api";
 import request from "request";
 import querystring from "querystring";
-const slackEvents = createEventAdapter("0e3a482607938ee3971006e0f9768554");
-const port = process.env.PORT || 3000;
-const slackToken = process.env.SLACK_TOKEN || "xoxp-271961991890-312238950902-435403620258-b07b50519e06e198d47d6feb92d1d5dd";
+
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config()
+}
+
+const slackEvents = createEventAdapter(process.env.SLACK_SIGNIN_EVENTS);
+const port = process.env.PORT;
+const slackToken = process.env.SLACK_TOKEN;
 const app = express();
 
 app.use((req, res, next) => {
@@ -18,7 +24,7 @@ const handleEvent = e => {
   console.log(e);
   let params = {
     v: 1,
-    tid: process.env.GA || "UA-101595764-2",
+    tid: process.env.GA,
     cid: e.user,
     cd1: e.user,
     cd2: e.channel,
@@ -78,6 +84,5 @@ app.get("/slack/channel/:id", (req, res) => {
   getChannelInfo(req.params.id);
   res.send('done');
 });
-
 
 app.listen(port, () => console.info(`Listening on port ${port}`));
