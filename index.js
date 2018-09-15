@@ -97,13 +97,17 @@ app.get("/slack/channel/:id", async (req, res) => {
 });
 
 app.get("/ranking", (req, res) => {
+  const impulsers = [];
+
   if (req.query.format === "json") {
     res.send({
-      impulsers: []
+      data: impulsers
     });
   } else {
-
-    res.send("Hello World");
+    res.render("ranking", {
+      title: "Veja o Ranking do nosso game | Impulso Network",
+      data: impulsers
+    });
   }
 });
 
