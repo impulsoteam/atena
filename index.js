@@ -3,6 +3,7 @@ import express from "express";
 import { createEventAdapter } from "@slack/events-api";
 import request from "request";
 import querystring from "querystring";
+<<<<<<< HEAD
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config()
@@ -11,6 +12,12 @@ if (process.env.NODE_ENV !== "production") {
 const slackEvents = createEventAdapter(process.env.SLACK_SIGNIN_EVENTS);
 const port = process.env.PORT;
 const slackToken = process.env.SLACK_TOKEN;
+=======
+import config from "config-yml";
+const slackEvents = createEventAdapter("0e3a482607938ee3971006e0f9768554");
+const port = process.env.PORT || 3000;
+const slackToken = process.env.SLACK_TOKEN || "xoxp-271961991890-312238950902-435403620258-b07b50519e06e198d47d6feb92d1d5dd";
+>>>>>>> 1ffdc2beb669afa636497488cea329987d32a1bd
 const app = express();
 
 app.use((req, res, next) => {
@@ -84,5 +91,7 @@ app.get("/slack/channel/:id", (req, res) => {
   getChannelInfo(req.params.id);
   res.send('done');
 });
+
+app.get("/game/rules", (req, res) => res.send(config.xprules));
 
 app.listen(port, () => console.info(`Listening on port ${port}`));

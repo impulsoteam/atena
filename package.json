@@ -16,6 +16,7 @@
     "babel-preset-env": "^1.7.0",
     "body-parser": "^1.18.3",
     "dotenv": "^6.0.0",
+    "config-yml": "^0.10.2",
     "express": "^4.16.3",
     "fs": "^0.0.1-security",
     "googleapis": "27",
