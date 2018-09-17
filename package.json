@@ -21,6 +21,7 @@
     "express": "^4.16.3",
     "fs": "^0.0.1-security",
     "googleapis": "27",
+    "mongoose": "^5.2.14",
     "if-env": "^1.0.4",
     "morgan": "^1.9.0",
     "pug": "^2.0.3",
