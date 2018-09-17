@@ -2,6 +2,29 @@ extends includes/layout
 
 block yield
   include includes/header
-  main
+  main.container
     h1.title-super Ranking do Game
+    section.ranking
+      ol.ranking__list
+        li.ranking__list-item.gamer
+          a.row(href="javascript:;")
+            .col
+              p.gamer__name Lázaro Alvarenga
+              span.gamer__level Nível 2
+            .col.col__small: span.gamer__xp 3.984 xp
+        li.ranking__list-item.gamer
+          a.row(href="javascript:;")
+            .col
+              p.gamer__name Márcio Sena
+              span.gamer__level Nível 2
+            .col.col__small: span.gamer__xp 2.090 xp
+        li.ranking__list-item.gamer
+          a.row(href="javascript:;")
+            .col
+              p.gamer__name Evandro Ribeiro
+              span.gamer__level Nível 1
+            .col.col__small: span.gamer__xp 701 xp
+      p.ranking__list-footer Não achou sua pontuação?
+        a(href="javascript:;")  Pergunte pro *bot*
+
   include includes/footer

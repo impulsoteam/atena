@@ -1,9 +1,11 @@
+import path from "path";
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import querystring from "querystring";
 import request from "async-request";
 import { createEventAdapter } from "@slack/events-api";
+import sassMiddleware from "node-sass-middleware";
 
 import apiRoutes from "./routes";
 import controller from "./controllers/interaction";
@@ -21,6 +23,12 @@ const port = process.env.PORT;
 const app = express();
 
 app.set("view engine", "pug");
+app.use(sassMiddleware({
+  src: path.join(__dirname, "stylesheets"),
+  dest: path.join(__dirname, "public"),
+  debug: true,
+  outputStyle: "compressed"
+}));
 app.use(express.static("public"));
 app.use("/", apiRoutes);
 
