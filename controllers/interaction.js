@@ -3,36 +3,38 @@ import mongoose from "mongoose";
 const normalize = data => {
   if (data.type === "reaction_added") {
     return {
-      type: data.type,
       channel: data.item.channel,
+      date: new Date(),
       description: data.reaction,
-      user: data.item_user,
-      thread: false,
       messageIdentifier: data.event_ts,
       parentMessage: data.item.ts,
-      date: new Date()
+      parentUser: data.item_user,
+      thread: false,
+      type: data.type,
+      user: data.item_user
     };
   } else if (data.thread_ts) {
     return {
-      type: "thread",
       channel: data.channel,
+      date: new Date(),
       description: data.text,
-      user: data.user,
-      thread: true,
       messageIdentifier: data.ts,
       parentMessage: data.event_ts,
-      date: new Date()
+      parentUser: data.parent_user_id,
+      thread: true,
+      type: "thread",
+      user: data.user
     };
   } else {
     return {
-      type: "message",
       channel: data.channel,
+      date: new Date(),
       description: data.text,
-      user: data.user,
-      thread: false,
       messageIdentifier: data.ts,
       parentMessage: null,
-      date: new Date()
+      thread: false,
+      type: "message",
+      user: data.user
     };
   }
 };
@@ -51,7 +53,7 @@ const save = async data => {
 const findByUser = async user => {
   const InteractionModel = mongoose.model("Interaction");
   const result = await InteractionModel.find({
-    user
+    $or: [{ user: user }, { parentUser: user }]
   }).exec();
   if (!result) {
     throw new Error("Error finding interactions");

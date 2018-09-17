@@ -29,6 +29,10 @@ const interactionSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  parentUser: {
+    type: String,
+    required: false
+  },
   date: {
     type: Date,
     required: true,

@@ -37,11 +37,35 @@ router.get("/ranking", (req, res) => {
 });
 
 router.get("/ranking/user/:id", async (req, res) => {
-  const response = await controller.findByUser(req.params.id);
+  const interactions = await controller.findByUser(req.params.id);
+
+  let score = 0;
+
+  interactions.forEach(interaction => {
+    if (interactions.user === req.params.id) {
+      if (
+        interaction.type === "message" ||
+        interaction.type === "reaction_added"
+      ) {
+        score++;
+      } else {
+        score = score + 2;
+      }
+    } else if (interaction.type === "thread") {
+      score++;
+    } else {
+      if (interaction.description === "disappointed") {
+        score--;
+      } else {
+        score = score + 2;
+      }
+    }
+  });
+
   res.send({
     status: 200,
     message: {
-      xp: 200
+      score
     }
   });
 });
