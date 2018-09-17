@@ -57,7 +57,7 @@ const handleEvent = async e => {
   )}`;
 
   try {
-    response = await request(url, { method: "POST" });
+    const response = await request(url, { method: "POST" });
     console.log(response.body);
   } catch (e) {
     console.log(e);
