@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-const InteractionModel = mongoose.model("Interaction");
 
 const normalize = data => {
   if (data.type === "reaction_added") {
@@ -39,6 +38,7 @@ const normalize = data => {
 };
 
 const save = async data => {
+  const InteractionModel = mongoose.model("Interaction");
   const interaction = normalize(data);
   const instance = new InteractionModel(interaction);
   const response = instance.save();
@@ -49,6 +49,7 @@ const save = async data => {
 };
 
 const findByUser = async user => {
+  const InteractionModel = mongoose.model("Interaction");
   const result = await InteractionModel.find({
     user
   }).exec();
