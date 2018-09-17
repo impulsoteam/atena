@@ -1,0 +1,10 @@
+messages:
+  send: 1
+threads:
+  send: 2
+  receive: 1
+reactions:
+  send: 1
+  receive:
+    positive: 2
+    negative: -1
