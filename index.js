@@ -33,6 +33,7 @@ app.use((req, res, next) => {
 
 const handleEvent = async e => {
   controller.save(e);
+  console.log("event", e);
   const params = {
     v: 1,
     tid: process.env.GA,
