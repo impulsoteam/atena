@@ -43,28 +43,30 @@ router.get("/ranking/user/:id", async (req, res) => {
   let score = 0;
 
   interactions.forEach(interaction => {
-    if (interactions.user === id) {
-      if (
-        interaction.type === "message" ||
-        (interaction.type === "reaction_added" &&
-          interactions.parentUser !== id)
+    if (interaction.user === id) {
+      if (interaction.type === "message") {
+        score = score + config.xprules.messages.send;
+      } else if (
+        interaction.type === "reaction_added" &&
+        interaction.parentUser !== id
       ) {
-        score++;
-      } else if (interactions.parentUser !== id) {
-        score = score + 2;
+        score = score + config.xprules.reactions.send;
+      } else if (interaction.parentUser !== id) {
+        score = score + config.xprules.threads.send;
       }
     } else if (interaction.type === "thread") {
-      score++;
+      score = score + config.xprules.threads.receive;
     } else {
       if (
         interaction.description === "disappointed" ||
         interaction.description === "-1"
       ) {
-        score--;
+        score = score + config.xprules.reactions.receive.negative;
       } else {
-        score = score + 2;
+        score = score + config.xprules.reactions.receive.positive;
       }
     }
+    console.log("score", score);
   });
 
   res.send({
