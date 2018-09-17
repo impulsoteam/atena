@@ -56,17 +56,14 @@ router.get("/ranking/user/:id", async (req, res) => {
       }
     } else if (interaction.type === "thread") {
       score = score + config.xprules.threads.receive;
+    } else if (
+      interaction.description === "disappointed" ||
+      interaction.description === "-1"
+    ) {
+      score = score + config.xprules.reactions.receive.negative;
     } else {
-      if (
-        interaction.description === "disappointed" ||
-        interaction.description === "-1"
-      ) {
-        score = score + config.xprules.reactions.receive.negative;
-      } else {
-        score = score + config.xprules.reactions.receive.positive;
-      }
+      score = score + config.xprules.reactions.receive.positive;
     }
-    console.log("score", score);
   });
 
   res.send({
