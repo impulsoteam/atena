@@ -8,7 +8,7 @@ import controller from "./controller/interaction";
 import config from "config-yml";
 
 if (process.env.NODE_ENV !== "production") {
-  dotenv.config()
+  dotenv.config();
 }
 
 const slackEvents = createEventAdapter(process.env.SLACK_SIGNIN_EVENTS);
@@ -16,8 +16,8 @@ const port = process.env.PORT;
 const slackToken = process.env.SLACK_TOKEN;
 const app = express();
 
-app.set('view engine', 'pug');
-app.use(express.static('public'));
+app.set("view engine", "pug");
+app.use(express.static("public"));
 
 app.use((req, res, next) => {
   if (req.query.format === "json") {
@@ -37,7 +37,7 @@ app.use("/slack/events", slackEvents.expressMiddleware());
 let response;
 
 const handleEvent = async e => {
-  controller.save(e)
+  controller.save(e);
   const params = {
     v: 1,
     tid: process.env.GA,
@@ -57,14 +57,16 @@ const handleEvent = async e => {
     el: e.type === "message" ? `message: ${e.text}` : `reaction: ${e.reaction}`,
     ev: 1
   };
-  const url = `https://www.google-analytics.com/collect?${querystring.stringify(params)}`;
+  const url = `https://www.google-analytics.com/collect?${querystring.stringify(
+    params
+  )}`;
 
   try {
     response = await request(url, { method: "POST" });
     console.log(response.body);
   } catch (e) {
     consol.log(e);
-  };
+  }
 };
 
 const getUserInfo = async id => {
@@ -74,7 +76,7 @@ const getUserInfo = async id => {
     response = await request(url);
   } catch (e) {
     consol.log(e);
-  };
+  }
   return response;
 };
 
@@ -85,7 +87,7 @@ const getChannelInfo = async id => {
     response = await request(url);
   } catch (e) {
     consol.log(e);
-  };
+  }
   return response.body;
 };
 
