@@ -2,6 +2,7 @@ import express from "express";
 import { createEventAdapter } from "@slack/events-api";
 import request from "request";
 import querystring from "querystring";
+import config from "config-yml";
 const slackEvents = createEventAdapter("0e3a482607938ee3971006e0f9768554");
 const port = process.env.PORT || 3000;
 const slackToken = process.env.SLACK_TOKEN || "xoxp-271961991890-312238950902-435403620258-b07b50519e06e198d47d6feb92d1d5dd";
@@ -79,5 +80,6 @@ app.get("/slack/channel/:id", (req, res) => {
   res.send('done');
 });
 
+app.get("/game/rules", (req, res) => res.send(config.xprules));
 
 app.listen(port, () => console.info(`Listening on port ${port}`));
