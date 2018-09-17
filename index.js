@@ -1,15 +1,20 @@
+import config from "config-yml";
 import dotenv from "dotenv";
 import express from "express";
-import { createEventAdapter } from "@slack/events-api";
-import request from "async-request";
+import mongoose from "mongoose";
 import querystring from "querystring";
-import connection from "./connection";
-import controller from "./controller/interaction";
-import config from "config-yml";
+import request from "async-request";
+import { createEventAdapter } from "@slack/events-api";
+require("./models/interaction");
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
+
+mongoose.connect(process.env.MONGODB_URI);
+mongoose.set("useCreateIndexes", true);
+
+import controller from "./controllers/interaction";
 
 const slackEvents = createEventAdapter(process.env.SLACK_SIGNIN_EVENTS);
 const port = process.env.PORT;

@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-mongoose.set("useCreateIndex", true);
-
 const interactionSchema = new mongoose.Schema({
   type: {
     type: String,
