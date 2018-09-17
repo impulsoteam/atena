@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "ISC",
   "scripts": {
-    "start": "if-env NODE_ENV=production ?? npm run start:prod || npm run start:dev",
+    "start": "babel-node index.js",
     "start:prod": "babel-node index.js",
     "start:dev": "set NODE_ENV=development && nodemon --exec babel-node index.js"
   },
