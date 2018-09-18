@@ -1,0 +1,48 @@
+.gamer {
+  a {
+    text-decoration: none;
+    padding: 2em;
+
+    @include mobile {
+      padding: 1em 0;
+    }
+
+    &:hover {
+      background-color: $color-light-grey;
+    }
+  }
+
+  &__name {
+    color: $color-dark-blue-grey;
+    font-weight: bold;
+    font-size: 1.75em;
+    margin: 0 0 .25em;
+
+    @include mobile {
+      font-size: 1.2em;
+    }
+  }
+
+  &__level {
+    color: $color-cool-grey;
+    font-size: 1.2em;
+    font-weight: bold;
+
+    @include mobile {
+      font-weight: normal;
+      font-size: 1em;
+    }
+  }
+
+  &__xp {
+    font-size: 2.5em;
+    text-align: right;
+    color: $color-tomato;
+    text-transform: uppercase;
+    font-weight: bold;
+
+    @include mobile {
+      font-size: 1.5em;
+    }
+  }
+}

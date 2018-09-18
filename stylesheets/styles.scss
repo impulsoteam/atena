@@ -1,0 +1,41 @@
+@import url("https://use.typekit.net/ilk7sdy.css");
+@import url("/normalize.css");
+@import "helpers/variables";
+@import "helpers/mixins";
+@import "helpers/typography";
+@import "helpers/grid";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 14px;
+	-ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  font-family: "proxima-nova", -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
+}
+
+ul, ol {
+  padding: 0;
+  margin: 0;
+}
+
+@import "components/splash-screen";
+@import "components/footer";
+@import "components/header";
+@import "components/gamer";
+@import "components/ranking";

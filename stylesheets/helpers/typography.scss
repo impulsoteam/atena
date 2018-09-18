@@ -1,0 +1,27 @@
+h1 {
+  color: $color-tomato;
+  text-transform: uppercase;
+  margin: 1em 0 2em;
+
+  @include mobile {
+    margin: 0 0 1.5em;
+  }
+
+  &.title-super {
+    font-size: 2.5em;
+    text-align: center;
+  }
+}
+
+a {
+  transition: .3s all ease-in-out;
+  color: inherit;
+
+  &:hover {
+    color: $color-tomato
+  }
+}
+
+p {
+  margin: 0 0 .25em;
+}

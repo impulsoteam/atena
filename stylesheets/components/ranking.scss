@@ -1,0 +1,38 @@
+.ranking {
+
+  &__list {
+    list-style: none;
+    counter-reset: ranking-counter;
+
+    &-item {
+
+      @include mobile {
+        display: flex;
+
+        &:nth-child(odd) {
+          background-color: $color-light-grey;
+        }
+      }
+
+      &::before {
+        content: counter(ranking-counter) "º";
+        counter-increment: ranking-counter;
+        padding: 1em .5em;
+        float: left;
+        color: $color-silver;
+        font-size: 34px;
+        font-weight: bold;
+
+        @include mobile {
+          padding: .75em;
+        }
+      }
+    }
+
+    &-footer {
+      color: $color-slate-gray;
+      text-align: center;
+      margin-top: 50px;
+    }
+  }
+}
