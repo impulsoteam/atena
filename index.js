@@ -9,6 +9,7 @@ import sassMiddleware from "node-sass-middleware";
 
 import apiRoutes from "./routes";
 import controllers from "./controllers";
+import { isValidChannel } from "./utils";
 require("./models/interaction");
 require("./models/user");
 
@@ -43,9 +44,15 @@ app.use((req, res, next) => {
 });
 
 const handleEvent = async e => {
-  interaction.save(e);
-  // user.save(e)
-  console.log("event", e);
+  const channel = e.type === "message" ? e.channel : e.item.channel;
+
+  if (isValidChannel(channel)) {
+    controllers.interaction.save(e);
+    console.log("event", e);
+  } else {
+    console.log("-- event into an invalid channel");
+  }
+
   const params = {
     v: 1,
     tid: process.env.GA,
@@ -57,10 +64,10 @@ const handleEvent = async e => {
     ds: "slack",
     cs: "slack",
     dh: "https://impulsonetwork.slack.com",
-    dp: `/${e.type === "message" ? e.channel : e.item.channel}`,
-    dt: `Slack Channel: ${e.type === "message" ? e.channel : e.item.channel}`,
+    dp: `/${channel}`,
+    dt: `Slack Channel: ${channel}`,
     t: "event",
-    ec: e.type === "message" ? e.channel : e.item.channel,
+    ec: channel,
     ea: `${e.user}`,
     el: e.type === "message" ? `message: ${e.text}` : `reaction: ${e.reaction}`,
     ev: 1

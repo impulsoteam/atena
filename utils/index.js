@@ -22,6 +22,7 @@ export const getUserInfo = async id => {
 export const getChannelInfo = async id => {
   const url = `https://slack.com/api/channels.info?token=${slackToken}&channel=${id}`;
   let response;
+
   try {
     response = await request(url);
   } catch (e) {
@@ -55,4 +56,11 @@ export const calculateScore = (interaction, userId) => {
     score = config.xprules.reactions.receive.positive;
   }
   return score;
+};
+
+export const isValidChannel = channel => {
+  const validChannels = config.channels.valid_channels;
+  const isValid = validChannels.find(item => item === channel);
+
+  return isValid ? true : false;
 };

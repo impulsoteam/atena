@@ -1,6 +1,11 @@
 import config from "config-yml";
 import express from "express";
-import { getUserInfo, getChannelInfo, calculateScore } from "../utils";
+import {
+  getUserInfo,
+  getChannelInfo,
+  calculateScore,
+  isValidChannel
+} from "../utils";
 
 import controller from "../controllers/interaction";
 const router = express.Router();
@@ -19,10 +24,18 @@ router.get("/slack/user/:id", async (req, res) => {
 });
 
 router.get("/slack/channel/:id", async (req, res) => {
-  let channel = await getChannelInfo(req.params.id);
-  res.send({
-    channel: channel && channel.channel
-  });
+  let channel = req.params.id;
+  if (isValidChannel(channel)) {
+    channel = await getChannelInfo(channel);
+    res.send({
+      channel: channel && channel.channel
+    });
+  } else {
+    res.send({
+      ok: false,
+      message: "Não estamos computando esse canal."
+    });
+  }
 });
 
 router.get("/ranking", (req, res) => {
@@ -76,6 +89,8 @@ router.get("/interactions/user/:id", async (req, res) => {
   });
 });
 
-router.get("/game/rules", (req, res) => res.send(config.xprules));
+router.get("/game/rules", (req, res) =>
+  res.send([config.xprules, config.channels])
+);
 
 export default router;
