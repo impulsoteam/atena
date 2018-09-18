@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { isValidChannel } from "../utils";
 
 const normalize = data => {
   if (data.type === "reaction_added") {
@@ -42,10 +43,13 @@ const normalize = data => {
 const save = async data => {
   const InteractionModel = mongoose.model("Interaction");
   const interaction = normalize(data);
-  const instance = new InteractionModel(interaction);
-  const response = instance.save();
-  if (!response) {
-    throw new Error("Error adding new interaction");
+
+  if (isValidChannel(data.channel)) {
+    const instance = new InteractionModel(interaction);
+    const response = instance.save();
+    if (!response) {
+      throw new Error("Error adding new interaction");
+    }
   }
   return true;
 };

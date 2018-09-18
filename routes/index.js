@@ -1,6 +1,6 @@
 import config from "config-yml";
 import express from "express";
-import { getUserInfo, getChannelInfo } from "../utils";
+import { getUserInfo, getChannelInfo, isValidChannel } from "../utils";
 
 import controller from "../controllers/interaction";
 const router = express.Router();
@@ -17,8 +17,16 @@ router.get("/slack/user/:id", async (req, res) => {
 });
 
 router.get("/slack/channel/:id", async (req, res) => {
-  let channel = await getChannelInfo(req.params.id);
-  res.send(channel);
+  let channel = req.params.id;
+  if (isValidChannel(channel)) {
+    channel = await getChannelInfo(channel);
+    res.send(channel);
+  } else {
+    res.send({
+      ok: false,
+      message: "Não estamos computando esse canal."
+    });
+  }
 });
 
 router.get("/ranking", (req, res) => {
