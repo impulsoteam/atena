@@ -90,6 +90,6 @@ router.get("/interactions/user/:id", async (req, res) => {
   });
 });
 
-router.get("/game/rules", (req, res) => res.send(config.xprules));
+router.get("/game/rules", (req, res) => res.send([config.xprules, config.channels]));
 
 export default router;
