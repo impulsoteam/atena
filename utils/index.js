@@ -1,3 +1,4 @@
+import config from "config-yml";
 import dotenv from "dotenv";
 import request from "async-request";
 
@@ -28,4 +29,30 @@ export const getChannelInfo = async id => {
   }
 
   return response && JSON.parse(response.body);
+};
+
+export const calculateScore = (interaction, userId) => {
+  let score = 0;
+  if (interaction.user === userId) {
+    if (interaction.type === "message") {
+      score = config.xprules.messages.send;
+    } else if (
+      interaction.type === "reaction_added" &&
+      interaction.parentUser !== userId
+    ) {
+      score = config.xprules.reactions.send;
+    } else if (interaction.parentUser !== userId) {
+      score = config.xprules.threads.send;
+    }
+  } else if (interaction.type === "thread") {
+    score = config.xprules.threads.receive;
+  } else if (
+    interaction.description === "disappointed" ||
+    interaction.description === "-1"
+  ) {
+    score = config.xprules.reactions.receive.negative;
+  } else {
+    score = config.xprules.reactions.receive.positive;
+  }
+  return score;
 };

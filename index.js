@@ -8,8 +8,9 @@ import { createEventAdapter } from "@slack/events-api";
 import sassMiddleware from "node-sass-middleware";
 
 import apiRoutes from "./routes";
-import controller from "./controllers/interaction";
+import controllers from "./controllers";
 require("./models/interaction");
+require("./models/user");
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
@@ -23,12 +24,14 @@ const port = process.env.PORT;
 const app = express();
 
 app.set("view engine", "pug");
-app.use(sassMiddleware({
-  src: path.join(__dirname, "stylesheets"),
-  dest: path.join(__dirname, "public"),
-  debug: true,
-  outputStyle: "compressed"
-}));
+app.use(
+  sassMiddleware({
+    src: path.join(__dirname, "stylesheets"),
+    dest: path.join(__dirname, "public"),
+    debug: true,
+    outputStyle: "compressed"
+  })
+);
 app.use(express.static("public"));
 app.use("/", apiRoutes);
 
@@ -40,7 +43,8 @@ app.use((req, res, next) => {
 });
 
 const handleEvent = async e => {
-  controller.save(e);
+  interaction.save(e);
+  // user.save(e)
   console.log("event", e);
   const params = {
     v: 1,

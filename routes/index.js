@@ -1,6 +1,6 @@
 import config from "config-yml";
 import express from "express";
-import { getUserInfo, getChannelInfo } from "../utils";
+import { getUserInfo, getChannelInfo, calculateScore } from "../utils";
 
 import controller from "../controllers/interaction";
 const router = express.Router();
@@ -13,12 +13,16 @@ router.get("/", (req, res) => {
 
 router.get("/slack/user/:id", async (req, res) => {
   let user = await getUserInfo(req.params.id);
-  res.send(user);
+  res.send({
+    user: user && user.profile
+  });
 });
 
 router.get("/slack/channel/:id", async (req, res) => {
   let channel = await getChannelInfo(req.params.id);
-  res.send(channel);
+  res.send({
+    channel: channel && channel.channel
+  });
 });
 
 router.get("/ranking", (req, res) => {
@@ -44,27 +48,7 @@ router.get("/ranking/user/:id", async (req, res) => {
   let score = 0;
 
   interactions.forEach(interaction => {
-    if (interaction.user === id) {
-      if (interaction.type === "message") {
-        score = score + config.xprules.messages.send;
-      } else if (
-        interaction.type === "reaction_added" &&
-        interaction.parentUser !== id
-      ) {
-        score = score + config.xprules.reactions.send;
-      } else if (interaction.parentUser !== id) {
-        score = score + config.xprules.threads.send;
-      }
-    } else if (interaction.type === "thread") {
-      score = score + config.xprules.threads.receive;
-    } else if (
-      interaction.description === "disappointed" ||
-      interaction.description === "-1"
-    ) {
-      score = score + config.xprules.reactions.receive.negative;
-    } else {
-      score = score + config.xprules.reactions.receive.positive;
-    }
+    score = score + calculateScore(interaction);
   });
 
   if (req.query.format === "json") {
