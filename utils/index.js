@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import config from "config-yml";
 import request from "async-request";
 
 if (process.env.NODE_ENV !== "production") {
@@ -21,6 +22,7 @@ export const getUserInfo = async id => {
 export const getChannelInfo = async id => {
   const url = `https://slack.com/api/channels.info?token=${slackToken}&channel=${id}`;
   let response;
+
   try {
     response = await request(url);
   } catch (e) {
@@ -29,3 +31,10 @@ export const getChannelInfo = async id => {
 
   return response && JSON.parse(response.body);
 };
+
+export const isValidChannel = channel => {
+  const validChannels = config.channels.valid_channels;
+  const isValid = validChannels.find(item => item === channel);
+
+  return isValid ? true : false;
+}
