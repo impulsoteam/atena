@@ -7,7 +7,8 @@ import {
   isValidChannel
 } from "../utils";
 
-import controller from "../controllers/interaction";
+import interactionController from "../controllers/interaction";
+import userController from "../controllers/user";
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -55,33 +56,25 @@ router.get("/ranking", (req, res) => {
 
 router.get("/ranking/user/:id", async (req, res) => {
   const { id } = req.params;
-  const interactions = await controller.findByUser(id);
-  const user = await getUserInfo(id);
-
-  let score = 0;
-
-  interactions.forEach(interaction => {
-    score = score + calculateScore(interaction);
-  });
+  const user = await userController.find(id);
 
   if (req.query.format === "json") {
     res.send({
-      user: user && user.profile,
-      score
+      user
     });
   } else {
     res.render("profile", {
       title:
         "Perfil da pessoa jogadora, pra saber tudo de legal que fez pra ter 9.990 XP",
       data: {
-        score
+        score: user.score
       }
     });
   }
 });
 
 router.get("/interactions/user/:id", async (req, res) => {
-  const interactions = await controller.findByUser(req.params.id);
+  const interactions = await interactionController.findByUser(req.params.id);
   const user = await getUserInfo(req.params.id);
   res.send({
     user: user && user.profile,

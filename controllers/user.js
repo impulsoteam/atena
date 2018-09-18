@@ -15,8 +15,10 @@ const update = async interaction => {
       doc.level = calculateLevel(doc.score + score);
       doc.score = doc.score + score;
       doc.save();
+      console.log("interaction", interaction);
+      console.log("doc", doc);
       doc.messages =
-        interaction.type === "messages" ? doc.messages + 1 : doc.messages;
+        interaction.type === "message" ? doc.messages + 1 : doc.messages;
       doc.replies =
         interaction.type === "thread" ? doc.replies + 1 : doc.replies;
       doc.reactions =
@@ -42,6 +44,16 @@ const update = async interaction => {
   }
 };
 
+const find = async user => {
+  const UserModel = mongoose.model("User");
+  const result = await UserModel.findOne({ slackId: user }).exec();
+  if (!result) {
+    throw new Error("Error finding users");
+  }
+  return result;
+};
+
 export default {
-  update
+  update,
+  find
 };
