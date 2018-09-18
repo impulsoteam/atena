@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import userController from "./user";
 
 const normalize = data => {
   if (data.type === "reaction_added") {
@@ -44,6 +45,7 @@ const save = async data => {
   const interaction = normalize(data);
   const instance = new InteractionModel(interaction);
   const response = instance.save();
+  userController.update(interaction);
   if (!response) {
     throw new Error("Error adding new interaction");
   }

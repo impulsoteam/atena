@@ -58,9 +58,14 @@ export const calculateScore = (interaction, userId) => {
   return score;
 };
 
+export const calculateLevel = score => {
+  const level = config.levelrules.levels_range.findIndex(l => score < l) + 1;
+  return level;
+};
+
 export const isValidChannel = channel => {
   const validChannels = config.channels.valid_channels;
   const isValid = validChannels.find(item => item === channel);
 
-  return isValid ? true : false;
+  return !!isValid;
 };

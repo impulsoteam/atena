@@ -43,6 +43,17 @@ app.use((req, res, next) => {
   next();
 });
 
+controllers.interaction.save({
+  type: "message",
+  user: "U7ZD2FCBB",
+  text: "Alguém acompanhando a série B?",
+  client_msg_id: "c1b5b38d-72ff-473a-af7a-7b7978d72bca",
+  ts: "1536960733.000100",
+  channel: "C8WEGN82G",
+  event_ts: "1536960733.000100",
+  channel_type: "channel"
+});
+
 const handleEvent = async e => {
   const channel = e.type === "message" ? e.channel : e.item.channel;
 

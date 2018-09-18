@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   slackId: {
-    type: Boolean,
+    type: String,
     required: true
   },
   messages: {
