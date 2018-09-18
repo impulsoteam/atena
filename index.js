@@ -8,9 +8,10 @@ import { createEventAdapter } from "@slack/events-api";
 import sassMiddleware from "node-sass-middleware";
 
 import apiRoutes from "./routes";
-import controller from "./controllers/interaction";
+import controllers from "./controllers";
 import { isValidChannel } from "./utils";
 require("./models/interaction");
+require("./models/user");
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
@@ -24,12 +25,14 @@ const port = process.env.PORT;
 const app = express();
 
 app.set("view engine", "pug");
-app.use(sassMiddleware({
-  src: path.join(__dirname, "stylesheets"),
-  dest: path.join(__dirname, "public"),
-  debug: true,
-  outputStyle: "compressed"
-}));
+app.use(
+  sassMiddleware({
+    src: path.join(__dirname, "stylesheets"),
+    dest: path.join(__dirname, "public"),
+    debug: true,
+    outputStyle: "compressed"
+  })
+);
 app.use(express.static("public"));
 app.use("/", apiRoutes);
 
@@ -41,10 +44,10 @@ app.use((req, res, next) => {
 });
 
 const handleEvent = async e => {
-  const channel = (e.type === "message") ? e.channel : e.item.channel;
+  const channel = e.type === "message" ? e.channel : e.item.channel;
 
   if (isValidChannel(channel)) {
-    controller.save(e);
+    controllers.interaction.save(e);
     console.log("event", e);
   } else {
     console.log("-- event into an invalid channel");
