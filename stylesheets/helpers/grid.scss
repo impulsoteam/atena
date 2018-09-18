@@ -6,6 +6,10 @@
   min-height: calc(100vh - 16em);
   flex-direction: column;
   flex-wrap: nowrap;
+
+  &.fit {
+    justify-content: center;
+  }
 }
 
 .row {
@@ -24,6 +28,8 @@
 .col {
   flex: 1;
   padding: 0 .75em;
+  display: flex;
+  flex-direction: column;
 
   &__small {
     flex: initial;

@@ -66,12 +66,23 @@ router.get("/ranking/user/:id", async (req, res) => {
     }
   });
 
-  res.send({
-    status: 200,
-    message: {
-      score
-    }
-  });
+
+  if (req.query.format === "json") {
+    res.send({
+      status: 200,
+      message: {
+        score
+      }
+    });
+  } else {
+    res.render("profile", {
+      title: "Perfil da pessoa jogadora, pra saber tudo de legal que fez pra ter 9.990 XP",
+      data: {
+        score
+      }
+    });
+  }
+
 });
 
 router.get("/interactions/user/:id", async (req, res) => {

@@ -13,6 +13,13 @@ h1 {
   }
 }
 
+h4 {
+  font-weight: normal;
+  color: $color-slate-gray;
+  font-size: 1em;
+  margin: .25em 0 .5em;
+}
+
 a {
   transition: .3s all ease-in-out;
   color: inherit;
@@ -24,4 +31,9 @@ a {
 
 p {
   margin: 0 0 .25em;
+
+  strong {
+    color: $color-dark-blue-grey;
+    font-size: 1.2em;
+  }
 }
