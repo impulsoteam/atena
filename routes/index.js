@@ -39,6 +39,7 @@ router.get("/ranking", (req, res) => {
 router.get("/ranking/user/:id", async (req, res) => {
   const { id } = req.params;
   const interactions = await controller.findByUser(id);
+  const user = await getUserInfo(id);
 
   let score = 0;
 
@@ -66,30 +67,28 @@ router.get("/ranking/user/:id", async (req, res) => {
     }
   });
 
-
   if (req.query.format === "json") {
     res.send({
-      status: 200,
-      message: {
-        score
-      }
+      user: user && user.profile,
+      score
     });
   } else {
     res.render("profile", {
-      title: "Perfil da pessoa jogadora, pra saber tudo de legal que fez pra ter 9.990 XP",
+      title:
+        "Perfil da pessoa jogadora, pra saber tudo de legal que fez pra ter 9.990 XP",
       data: {
         score
       }
     });
   }
-
 });
 
 router.get("/interactions/user/:id", async (req, res) => {
-  const response = await controller.findByUser(req.params.id);
+  const interactions = await controller.findByUser(req.params.id);
+  const user = await getUserInfo(req.params.id);
   res.send({
-    status: 200,
-    message: response
+    user: user && user.profile,
+    interactions: interactions
   });
 });
 
