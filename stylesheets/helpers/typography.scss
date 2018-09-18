@@ -1,14 +1,14 @@
 h1 {
   color: $color-tomato;
   text-transform: uppercase;
-  margin: 1em 0 2em;
+  margin: $title-size 0 ($title-size * 2);
 
   @include mobile {
-    margin: 0 0 1.5em;
+    margin: 0 0 $title-size;
   }
 
   &.title-super {
-    font-size: 2.5em;
+    font-size: $title-size;
     text-align: center;
   }
 }
@@ -16,8 +16,8 @@ h1 {
 h4 {
   font-weight: normal;
   color: $color-slate-gray;
-  font-size: 1em;
-  margin: .25em 0 .5em;
+  font-size: $font-size;
+  margin: ($font-size * .25) 0 ($font-size * .5);
 }
 
 a {
@@ -30,10 +30,10 @@ a {
 }
 
 p {
-  margin: 0 0 .25em;
+  margin: 0 0 ($font-size * .25);
 
   strong {
     color: $color-dark-blue-grey;
-    font-size: 1.2em;
+    font-size: ($font-size * 1.2);
   }
 }

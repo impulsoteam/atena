@@ -1,10 +1,10 @@
 .gamer {
   a {
     text-decoration: none;
-    padding: 2em 1em;
+    padding: ($font-size * 2) $font-size;
 
     @include mobile {
-      padding: 1em 0;
+      padding: $font-size 0;
     }
 
     &:hover {
@@ -13,22 +13,22 @@
   }
 
   &__card {
-    padding: 2em;
-    border-radius: 2px;
-    border: 1px solid $color-silver;
-    margin: 2em 0 1em;
+    padding: ($font-size * 2);
+    border-radius: $border-radius;
+    border: $border;
+    margin: ($font-size * 2) 0 $font-size;
 
     @include mobile {
-      margin: -1em 0 1em;
+      margin: -$font-size 0 $font-size;
     }
 
     &-footer {
       color: $color-cool-grey;
       text-align: center;
-      margin-top: 2em;
-      font-size: .85em;
+      margin-top: ($font-size * 2);
+      font-size: ($font-size * .85);
       font-weight: normal;
-      padding-bottom: 8em;
+      padding-bottom: ($font-size * 8);
 
       @include mobile {
         padding-bottom: 0;
@@ -46,11 +46,11 @@
   }
 
   &__details {
-    margin-top: 2em;
+    margin-top: ($font-size * 2);
     align-items: baseline;
 
     @include mobile {
-      margin-top: 1em;
+      margin-top: $font-size;
     }
 
     .row {
@@ -61,34 +61,34 @@
   &__name {
     color: $color-dark-blue-grey;
     font-weight: bold;
-    font-size: 1.75em;
-    margin: 0 0 .25em;
+    font-size: ($font-size * 1.75);
+    margin: 0 0 ($font-size * .25);
 
     @include mobile {
-      font-size: 1.2em;
+      font-size: ($font-size * 1.2);
     }
   }
 
   &__level {
     color: $color-cool-grey;
-    font-size: 1.2em;
+    font-size: ($font-size * 1.2);
     font-weight: bold;
 
     @include mobile {
       font-weight: normal;
-      font-size: 1em;
+      font-size: $font-size;
     }
   }
 
   &__xp {
-    font-size: 2.5em;
+    font-size: ($font-size * 2.5);
     text-align: right;
     color: $color-tomato;
     text-transform: uppercase;
     font-weight: bold;
 
     @include mobile {
-      font-size: 1.5em;
+      font-size: ($font-size * 1.5);
     }
   }
 
@@ -99,19 +99,19 @@
     @include mobile {
       flex: 1;
       max-width: 100%;
-      margin-bottom: 1em;
+      margin-bottom: $font-size;
     }
 
     &-list {
       list-style: none;
       display: flex;
       flex-wrap: wrap;
-      margin-left: -.5em;
+      margin-left: -($font-size * .5);
     }
 
     &-item {
-      margin-left: .5em;
-      margin-bottom: .5em;
+      margin-left: ($font-size * .5);
+      margin-bottom: ($font-size * .5);
       display: flex;
 
       img {
