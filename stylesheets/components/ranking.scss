@@ -17,14 +17,14 @@
       &::before {
         content: counter(ranking-counter) "º";
         counter-increment: ranking-counter;
-        padding: 1em .5em;
+        padding: $font-size ($font-size * .5);
         float: left;
         color: $color-silver;
-        font-size: 34px;
+        font-size: ($font-size * .25);
         font-weight: bold;
 
         @include mobile {
-          padding: .75em;
+          padding: ($font-size * .75);
         }
       }
     }
@@ -32,7 +32,7 @@
     &-footer {
       color: $color-slate-gray;
       text-align: center;
-      margin-top: 50px;
+      margin-top: ($font-size * 3.5);
     }
   }
 }
