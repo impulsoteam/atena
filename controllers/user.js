@@ -18,9 +18,11 @@ const update = async interaction => {
       doc.messages =
         interaction.type === "messages" ? doc.messages + 1 : doc.messages;
       doc.replies =
-        interaction.type === "messages" ? doc.replies + 1 : doc.replies;
+        interaction.type === "thread" ? doc.replies + 1 : doc.replies;
       doc.reactions =
-        interaction.type === "messages" ? doc.reactions + 1 : doc.reactions;
+        interaction.type === "reaction_added"
+          ? doc.reactions + 1
+          : doc.reactions;
       return doc;
     });
   } else {
