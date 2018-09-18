@@ -1,0 +1,122 @@
+.gamer {
+  a {
+    text-decoration: none;
+    padding: 2em 1em;
+
+    @include mobile {
+      padding: 1em 0;
+    }
+
+    &:hover {
+      background-color: $color-light-grey;
+    }
+  }
+
+  &__card {
+    padding: 2em;
+    border-radius: 2px;
+    border: 1px solid $color-silver;
+    margin: 2em 0 1em;
+
+    @include mobile {
+      margin: -1em 0 1em;
+    }
+
+    &-footer {
+      color: $color-cool-grey;
+      text-align: center;
+      margin-top: 2em;
+      font-size: .85em;
+      font-weight: normal;
+      padding-bottom: 8em;
+
+      @include mobile {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  &__profile {
+    &.row {
+      @include mobile {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+  }
+
+  &__details {
+    margin-top: 2em;
+    align-items: baseline;
+
+    @include mobile {
+      margin-top: 1em;
+    }
+
+    .row {
+      align-items: baseline;
+    }
+  }
+
+  &__name {
+    color: $color-dark-blue-grey;
+    font-weight: bold;
+    font-size: 1.75em;
+    margin: 0 0 .25em;
+
+    @include mobile {
+      font-size: 1.2em;
+    }
+  }
+
+  &__level {
+    color: $color-cool-grey;
+    font-size: 1.2em;
+    font-weight: bold;
+
+    @include mobile {
+      font-weight: normal;
+      font-size: 1em;
+    }
+  }
+
+  &__xp {
+    font-size: 2.5em;
+    text-align: right;
+    color: $color-tomato;
+    text-transform: uppercase;
+    font-weight: bold;
+
+    @include mobile {
+      font-size: 1.5em;
+    }
+  }
+
+  &__badges {
+    flex: 0 0 40%;
+    max-width: 40%;
+
+    @include mobile {
+      flex: 1;
+      max-width: 100%;
+      margin-bottom: 1em;
+    }
+
+    &-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      margin-left: -.5em;
+    }
+
+    &-item {
+      margin-left: .5em;
+      margin-bottom: .5em;
+      display: flex;
+
+      img {
+        border-radius: 50%;
+      }
+    }
+  }
+}

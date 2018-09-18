@@ -1,0 +1,10 @@
+.copyright {
+  color: $color-dark-blue-grey;
+  text-align: center;
+  margin: 1em 0 2em;
+  line-height: 1em;
+
+  @include mobile {
+    margin: 2em 0;
+  }
+}

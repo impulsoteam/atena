@@ -1,0 +1,34 @@
+extends includes/layout
+
+block yield
+  include includes/header
+  main.container.fit
+    section.gamer__card.gamer
+      .row.gamer__profile
+        .col.col__small.gamer__avatar: img(src="https://avatars.slack-edge.com/2018-08-01/409144328290_81d8f97e55540e84881c_72.png")
+        .col: .row
+          .col.gamer__data
+            p.gamer__name Lázaro Alvarenga
+            span.gamer__level Nível 2
+          .col.col__small: span.gamer__xp 3.984 xp
+      .row.gamer__details
+        .col.gamer__badges
+          h4 Minhas Conquistas
+          ul.gamer__badges-list
+            li.gamer__badges-item: img(src="https://via.placeholder.com/48x48/F4F4F7/F4F4F7", alt="Falador Bronze", title="Falador Bronze")
+            li.gamer__badges-item: img(src="https://via.placeholder.com/48x48/F4F4F7/F4F4F7", alt="Falador Bronze", title="Falador Bronze")
+            li.gamer__badges-item: img(src="https://via.placeholder.com/48x48/F4F4F7/F4F4F7", alt="Falador Bronze", title="Falador Bronze")
+        .col.gamer__specs
+          .row
+            .col.col__small
+              h4 Mensagens enviadas
+              p: strong 2.456.001
+              h4 Mensagens recebidas
+              p: strong 300
+            .col.col__small
+              h4 Reações  dadas
+              p: strong 18.401 👍 e 406 👎
+              h4 Reações  recebidas
+              p: strong 18.401 👍 e 406 👎
+    p.gamer__card-footer Faltam 85.666 XP para chegar no Nível 3
+  include includes/footer

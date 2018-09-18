@@ -1,0 +1,37 @@
+.container {
+  max-width: 720px;
+  width: 90vw;
+  display: flex;
+  margin: auto;
+  min-height: calc(100vh - 16em);
+  flex-direction: column;
+  flex-wrap: nowrap;
+
+  &.fit {
+    justify-content: center;
+  }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 -.75em;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.col {
+  flex: 1;
+  padding: 0 .75em;
+  display: flex;
+  flex-direction: column;
+
+  &__small {
+    flex: initial;
+  }
+}
