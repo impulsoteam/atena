@@ -52,9 +52,17 @@ const find = async user => {
   return result || _throw("Error finding a specific user");
 };
 
-const findAll = async () => {
+const findAll = async limit => {
   const UserModel = mongoose.model("User");
-  const result = await UserModel.find({}).exec();
+  const result = await UserModel
+    .find({
+      score: { $gt: 0 }
+    })
+    .sort({
+      score: 1
+    })
+    .limit(limit || 15)
+    .exec();
 
   return result || _throw("Error finding all users");
 };
