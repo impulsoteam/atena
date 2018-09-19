@@ -1,5 +1,6 @@
 import path from "path";
 import dotenv from "dotenv";
+import winston from "winston";
 import express from "express";
 import mongoose from "mongoose";
 import querystring from "querystring";
@@ -13,8 +14,25 @@ import { isValidChannel } from "./utils";
 require("./models/interaction");
 require("./models/user");
 
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({
+      filename: "error.log",
+      level: "error"
+    }),
+    new winston.transports.File({
+      filename: "combined.log"
+    })
+  ]
+});
+
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
+  logger.add(new winston.transports.Console({
+    format: winston.format.simple()
+  }));
 }
 
 mongoose.connect(process.env.MONGODB_URI);
@@ -42,6 +60,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+
 
 const handleEvent = async e => {
   const channel = e.type === "message" ? e.channel : e.item.channel;
