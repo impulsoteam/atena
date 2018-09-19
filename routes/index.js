@@ -56,7 +56,13 @@ router.get("/ranking", (req, res) => {
 
 router.get("/ranking/user/:id", async (req, res) => {
   const { id } = req.params;
-  const user = await userController.find(id);
+  let user = {};
+
+  try {
+    user = await userController.find(id);
+  } catch (e) {
+    console.log(e);
+  }
 
   if (req.query.format === "json") {
     res.send({
