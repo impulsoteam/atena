@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { calculateScore, calculateLevel, getUserInfo } from "../utils";
+import { _throw } from "../helpers";
 
 const update = async interaction => {
   const score = calculateScore(interaction);
@@ -47,10 +48,15 @@ const update = async interaction => {
 const find = async user => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({ slackId: user }).exec();
-  if (!result) {
-    throw new Error("Error finding users");
-  }
-  return result;
+
+  return result || _throw("Error finding a specific user");
+};
+
+const findAll = async () => {
+  const UserModel = mongoose.model("User");
+  const result = await UserModel.find({}).exec();
+
+  return result || _throw("Error finding all users");
 };
 
 export default {
