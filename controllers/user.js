@@ -69,5 +69,6 @@ const findAll = async limit => {
 
 export default {
   update,
-  find
+  find,
+  findAll
 };
