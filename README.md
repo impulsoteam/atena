@@ -4,6 +4,7 @@ This is a NodeJS application that calculates the Impulsers interactions score an
 
 ## Setup
 
+- create your .env file using .env.example model
 - Install the requirements: `yarn`
 - Run the server using the following command: `yarn start`
 
