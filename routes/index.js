@@ -1,10 +1,6 @@
 import config from "config-yml";
 import express from "express";
-import {
-  getUserInfo,
-  getChannelInfo,
-  isValidChannel
-} from "../utils";
+import { getUserInfo, getChannelInfo, isValidChannel } from "../utils";
 
 import interactionController from "../controllers/interaction";
 import userController from "../controllers/user";
@@ -13,6 +9,14 @@ const router = express.Router();
 router.get("/", (req, res) => {
   res.render("index", {
     title: "Seja bem vindo! =D"
+  });
+});
+
+router.get("/slack/events/", (req, res) => {
+  res.send({
+    token: "Jhj5dZrVaK7ZwHHjRyZWjbDl",
+    challenge: "3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P",
+    type: "url_verification"
   });
 });
 
