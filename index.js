@@ -7,6 +7,8 @@ import querystring from "querystring";
 import request from "async-request";
 import { createEventAdapter } from "@slack/events-api";
 import sassMiddleware from "node-sass-middleware";
+import postcssMiddleware from "postcss-middleware";
+import autoprefixer from "autoprefixer";
 
 import apiRoutes from "./routes";
 import controllers from "./controllers";
@@ -49,6 +51,17 @@ app.use(
     dest: path.join(__dirname, "public"),
     debug: true,
     outputStyle: "compressed"
+  })
+);
+app.use(
+  postcssMiddleware({
+    src: req => path.join("./", req.path),
+    plugins: [
+      autoprefixer({
+        browsers: ['> 1%', 'IE 7'],
+        cascade: false
+      })
+    ]
   })
 );
 app.use(express.static("public"));

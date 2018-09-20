@@ -13,7 +13,7 @@
   }
 
   &__card {
-    padding: ($font-size * 2);
+    padding: ($font-size * 2) ($font-size * 2.5) ($font-size * 2.5);
     border-radius: $border-radius;
     border: $border;
     margin: ($font-size * 2) 0 $font-size;
