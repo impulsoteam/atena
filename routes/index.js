@@ -3,7 +3,6 @@ import express from "express";
 import {
   getUserInfo,
   getChannelInfo,
-  calculateScore,
   isValidChannel
 } from "../utils";
 
