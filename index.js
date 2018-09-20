@@ -1,4 +1,3 @@
-import bodyParser from "body-parser";
 import path from "path";
 import dotenv from "dotenv";
 import winston from "winston";
@@ -54,7 +53,6 @@ app.use(
     outputStyle: "compressed"
   })
 );
-app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use("/", apiRoutes);
 

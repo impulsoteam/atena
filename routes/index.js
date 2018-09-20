@@ -12,12 +12,6 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post("/slack/events/", (req, res) => {
-  res.send({
-    challenge: req.body.challenge
-  });
-});
-
 router.get("/slack/user/:id", async (req, res) => {
   let user = await getUserInfo(req.params.id);
   res.send({
