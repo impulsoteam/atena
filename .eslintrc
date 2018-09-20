@@ -1,4 +1,5 @@
 {
+  "plugins": ["prettier"],
   "extends": [ "eslint:recommended" ],
   "parser": "babel-eslint",
   "env": {
@@ -9,6 +10,7 @@
   "rules": {
     "strict": 0,
     "no-console": "off",
-    "indent-size": [ true, 2 ]
+    "indent-size": [ true, 2 ],
+    "prettier/prettier": "error"
   }
 }
