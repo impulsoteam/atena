@@ -5,9 +5,10 @@
   "main": "index.js",
   "license": "ISC",
   "scripts": {
+    "format": "prettier --write \"**/*.js\"",
     "start": "babel-node index.js",
     "start:prod": "babel-node index.js",
-    "start:dev": "set NODE_ENV=development && nodemon --exec babel-node index.js"
+    "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
@@ -33,6 +34,8 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.4"
+    "eslint-plugin-prettier": "^2.6.2",
+    "nodemon": "^1.18.4",
+    "prettier": "^1.14.3"
   }
 }

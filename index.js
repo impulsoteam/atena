@@ -30,9 +30,11 @@ const logger = winston.createLogger({
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
-  logger.add(new winston.transports.Console({
-    format: winston.format.simple()
-  }));
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.simple()
+    })
+  );
 }
 
 mongoose.connect(process.env.MONGODB_URI);
@@ -60,8 +62,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-
 
 const handleEvent = async e => {
   const channel = e.type === "message" ? e.channel : e.item.channel;
