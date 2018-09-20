@@ -73,34 +73,39 @@ const handleEvent = async e => {
     console.log("-- event into an invalid channel");
   }
 
-  const params = {
-    v: 1,
-    tid: process.env.GA,
-    cid: e.user,
-    cd1: e.user,
-    cd2: e.channel,
-    cd3: e.thread_ts,
-    cd4: e.type,
-    ds: "slack",
-    cs: "slack",
-    dh: "https://impulsonetwork.slack.com",
-    dp: `/${channel}`,
-    dt: `Slack Channel: ${channel}`,
-    t: "event",
-    ec: channel,
-    ea: `${e.user}`,
-    el: e.type === "message" ? `message: ${e.text}` : `reaction: ${e.reaction}`,
-    ev: 1
-  };
-  const url = `https://www.google-analytics.com/collect?${querystring.stringify(
-    params
-  )}`;
+  if (process.env.GA) {
+    const params = {
+      v: 1,
+      tid: process.env.GA,
+      cid: e.user,
+      cd1: e.user,
+      cd2: e.channel,
+      cd3: e.thread_ts,
+      cd4: e.type,
+      ds: "slack",
+      cs: "slack",
+      dh: "https://impulsonetwork.slack.com",
+      dp: `/${channel}`,
+      dt: `Slack Channel: ${channel}`,
+      t: "event",
+      ec: channel,
+      ea: `${e.user}`,
+      el:
+        e.type === "message" ? `message: ${e.text}` : `reaction: ${e.reaction}`,
+      ev: 1
+    };
+    const url = `https://www.google-analytics.com/collect?${querystring.stringify(
+      params
+    )}`;
 
-  try {
-    const response = await request(url, { method: "POST" });
-    console.log(response.body);
-  } catch (e) {
-    console.log(e);
+    try {
+      const response = await request(url, { method: "POST" });
+      console.log(response.body);
+    } catch (e) {
+      console.log(e);
+    }
+  } else {
+    console.log("Setup an instance of google analytics for tests");
   }
 };
 
