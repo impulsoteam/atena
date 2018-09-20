@@ -12,11 +12,9 @@ router.get("/", (req, res) => {
   });
 });
 
-router.get("/slack/events/", (req, res) => {
+router.post("/slack/events/", (req, res) => {
   res.send({
-    token: "Jhj5dZrVaK7ZwHHjRyZWjbDl",
-    challenge: "3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P",
-    type: "url_verification"
+    challenge: req.body.challenge
   });
 });
 

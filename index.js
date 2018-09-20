@@ -1,3 +1,4 @@
+import bodyParser from "body-parser";
 import path from "path";
 import dotenv from "dotenv";
 import winston from "winston";
@@ -30,9 +31,11 @@ const logger = winston.createLogger({
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
-  logger.add(new winston.transports.Console({
-    format: winston.format.simple()
-  }));
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.simple()
+    })
+  );
 }
 
 mongoose.connect(process.env.MONGODB_URI);
@@ -51,6 +54,7 @@ app.use(
     outputStyle: "compressed"
   })
 );
+app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use("/", apiRoutes);
 
@@ -60,8 +64,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-
 
 const handleEvent = async e => {
   const channel = e.type === "message" ? e.channel : e.item.channel;
