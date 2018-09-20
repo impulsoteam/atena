@@ -1,9 +1,24 @@
 {
-  "name": "jumanji-app",
+  "name": "atena",
   "version": "0.0.1",
   "description": "app to integrate slack with analytics",
   "main": "index.js",
-  "license": "ISC",
+  "license": "MIT",
+  "homepage": "https://github.com/impulsonetwork/atena#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/impulsonetwork/atena"
+  },
+  "bugs": {
+    "url": "https://github.com/impulsonetwork/atena/issues"
+  },
+  "keywords": [
+    "Atena",
+    "Impulso",
+    "Gamification",
+    "Slack",
+    "Analytics"
+  ],
   "scripts": {
     "format": "prettier --write \"**/*.js\"",
     "start": "babel-node index.js",
