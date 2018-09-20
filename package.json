@@ -5,9 +5,12 @@
   "main": "index.js",
   "license": "ISC",
   "scripts": {
+    "format": "prettier --write \"**/*.js\"",
     "start": "babel-node index.js",
     "start:prod": "babel-node index.js",
-    "start:dev": "set NODE_ENV=development && nodemon --exec babel-node index.js"
+    "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js",
+    "lint": "eslint \"**/*.js\" --ignore-pattern node_modules/",
+    "test": "npm run lint"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
@@ -17,7 +20,6 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "body-parser": "^1.18.3",
     "config-yml": "^0.10.2",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
@@ -32,7 +34,11 @@
     "querystring": "^0.2.0",
     "readline": "^1.3.0",
     "universal-analytics": "^0.4.17",
-    "winston": "^3.1.0"
+    "winston": "^3.1.0",
+    "prettier": "^1.14.3",
+    "babel-eslint": "^9.0.0",
+    "eslint-plugin-prettier": "^2.6.2",
+    "eslint": "^5.6.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"

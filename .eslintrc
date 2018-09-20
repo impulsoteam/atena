@@ -1,0 +1,16 @@
+{
+  "plugins": ["prettier"],
+  "extends": [ "eslint:recommended" ],
+  "parser": "babel-eslint",
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "rules": {
+    "strict": 0,
+    "no-console": "off",
+    "indent-size": [ true, 2 ],
+    "prettier/prettier": "error"
+  }
+}
