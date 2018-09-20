@@ -8,7 +8,9 @@
     "format": "prettier --write \"**/*.js\"",
     "start": "babel-node index.js",
     "start:prod": "babel-node index.js",
-    "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js"
+    "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js",
+    "lint": "eslint \"**/*.js\" --ignore-pattern node_modules/",
+    "test": "npm run lint"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
@@ -35,7 +37,9 @@
   },
   "devDependencies": {
     "eslint-plugin-prettier": "^2.6.2",
-    "nodemon": "^1.18.4",
-    "prettier": "^1.14.3"
+    "prettier": "^1.14.3",
+    "babel-eslint": "^9.0.0",
+    "eslint": "^5.6.0",
+    "nodemon": "^1.18.4"
   }
 }
