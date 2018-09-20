@@ -39,17 +39,24 @@ router.get("/slack/channel/:id", async (req, res) => {
   }
 });
 
-router.get("/ranking", (req, res) => {
-  const impulsers = [];
+router.get("/ranking", async (req, res) => {
+  const { limit } = req.params;
+  let users = [];
+
+  try {
+    users = await userController.findAll(limit);
+  } catch (e) {
+    console.log(e);
+  }
 
   if (req.query.format === "json") {
     res.send({
-      data: impulsers
+      users
     });
   } else {
     res.render("ranking", {
       title: "Veja o Ranking do nosso game | Impulso Network",
-      data: impulsers
+      data: users
     });
   }
 });
