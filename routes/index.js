@@ -1,10 +1,6 @@
 import config from "config-yml";
 import express from "express";
-import {
-  getUserInfo,
-  getChannelInfo,
-  isValidChannel
-} from "../utils";
+import { getUserInfo, getChannelInfo, isValidChannel } from "../utils";
 
 import interactionController from "../controllers/interaction";
 import userController from "../controllers/user";

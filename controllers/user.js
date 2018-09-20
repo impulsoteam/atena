@@ -54,10 +54,9 @@ const find = async user => {
 
 const findAll = async limit => {
   const UserModel = mongoose.model("User");
-  const result = await UserModel
-    .find({
-      score: { $gt: 0 }
-    })
+  const result = await UserModel.find({
+    score: { $gt: 0 }
+  })
     .sort({
       score: 1
     })

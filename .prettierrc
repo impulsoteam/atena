@@ -1,9 +1,7 @@
 {
   "useTabs": false,
   "printWidth": 80,
-  "max-len": [2, {"code": 80, "ignorePattern": "^import\\W.*"}],
   "tabWidth": 2,
   "singleQuote": false,
-  "trailingComma": "none",
-  "rcVerbose": true
+  "trailingComma": "none"
 }
