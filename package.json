@@ -7,7 +7,9 @@
   "scripts": {
     "start": "babel-node index.js",
     "start:prod": "babel-node index.js",
-    "start:dev": "set NODE_ENV=development && nodemon --exec babel-node index.js"
+    "start:dev": "set NODE_ENV=development && nodemon --exec 'npm run test && babel-node index.js'",
+    "lint": "eslint \"**/*.js\" --ignore-pattern node_modules/",
+    "test": "npm run lint"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
@@ -33,6 +35,7 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
+    "babel-eslint": "^9.0.0",
     "eslint": "^5.6.0",
     "nodemon": "^1.18.4"
   }
