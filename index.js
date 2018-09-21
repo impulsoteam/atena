@@ -12,7 +12,7 @@ import autoprefixer from "autoprefixer";
 
 import apiRoutes from "./routes";
 import controllers from "./controllers";
-import { isValidChannel } from "./utils";
+import { isValidChannel, getStyleLog } from "./utils";
 require("./models/interaction");
 require("./models/user");
 
@@ -78,12 +78,11 @@ app.use((req, res, next) => {
 
 const handleEvent = async e => {
   const channel = e.type === "message" ? e.channel : e.item.channel;
-
   if (isValidChannel(channel)) {
     controllers.interaction.save(e);
-    console.log("event", e);
+    console.log(getStyleLog("blue"), "\nevent:", e);
   } else {
-    console.log("-- event into an invalid channel");
+    console.log(getStyleLog("yellow"), "\n-- event into an invalid channel");
   }
 
   if (process.env.GA) {
@@ -118,7 +117,10 @@ const handleEvent = async e => {
       console.log(e);
     }
   } else {
-    console.log("Setup an instance of google analytics for tests");
+    console.log(
+      getStyleLog("yellow"),
+      "\nSetup an instance of google analytics for tests\n"
+    );
   }
 };
 

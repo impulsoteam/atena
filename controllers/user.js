@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 import { calculateScore, calculateLevel, getUserInfo } from "../utils";
 import { _throw } from "../helpers";
+import { getStyleLog } from "../utils";
 
 const update = async interaction => {
   const score = calculateScore(interaction);
   const userInfo = await getUserInfo(interaction.user);
+
   const UserModel = mongoose.model("User");
   const user = await UserModel.findOne({ slackId: interaction.user }).exec();
 
@@ -16,8 +18,6 @@ const update = async interaction => {
       doc.level = calculateLevel(doc.score + score);
       doc.score = doc.score + score;
       doc.save();
-      console.log("interaction", interaction);
-      console.log("doc", doc);
       doc.messages =
         interaction.type === "message" ? doc.messages + 1 : doc.messages;
       doc.replies =

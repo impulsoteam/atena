@@ -14,8 +14,14 @@ export const getUserInfo = async id => {
   try {
     response = await request(url);
   } catch (e) {
+    console.log(
+      getStyleLog("red"),
+      "Error: https://api.slack.com/apps/{your-app}/oauth?",
+      e
+    );
     console.log(e);
   }
+
   return response && JSON.parse(response.body);
 };
 
@@ -26,7 +32,11 @@ export const getChannelInfo = async id => {
   try {
     response = await request(url);
   } catch (e) {
-    console.log(e);
+    console.log(
+      getStyleLog("red"),
+      "Error: https://api.slack.com/apps/{your-app}/oauth?",
+      e
+    );
   }
 
   return response && JSON.parse(response.body);
@@ -68,4 +78,22 @@ export const isValidChannel = channel => {
   const isValid = validChannels.find(item => item === channel);
 
   return !!isValid;
+};
+
+export const getStyleLog = style => {
+  const styles = {
+    black: "\x1b[30m",
+    blue: "\x1b[34m",
+    cyan: "\x1b[36m",
+    green: "\x1b[32m",
+    magenta: "\x1b[35m",
+    red: "\x1b[31m",
+    white: "\x1b[37m",
+    yellow: "\x1b[33m",
+    reset: "\x1b[0m",
+    reverse: "\x1b[7m",
+    underscore: "\x1b[4m"
+  };
+
+  return `${styles[style]}%s${styles.reset}`;
 };
