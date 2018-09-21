@@ -3,3 +3,6 @@ node_modules
 
 *.log
 &.error
+
+
+config/*.yml
