@@ -24,7 +24,7 @@
     "start": "babel-node index.js",
     "start:prod": "babel-node index.js",
     "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js",
-    "lint": "eslint \"**/*.js\" --ignore-pattern node_modules/",
+    "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/",
     "test": "npm run lint"
   },
   "dependencies": {
@@ -57,11 +57,13 @@
   },
   "devDependencies": {
     "ghooks": "^2.0.4",
-    "nodemon": "^1.18.4"
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.4",
+    "supertest": "^3.3.0"
   },
   "config": {
     "ghooks": {
-      "pre-commit": "npm run format && npm run test"
+      "pre-commit": "npm run test"
     }
   }
 }

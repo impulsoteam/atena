@@ -1,5 +1,9 @@
 .gamer {
+  display: flex;
+  align-items: center;
+
   a {
+    flex: 1;
     text-decoration: none;
     padding: ($font-size * 2) $font-size;
 
@@ -13,6 +17,7 @@
   }
 
   &__card {
+    flex-direction: column;
     padding: ($font-size * 2) ($font-size * 2.5) ($font-size * 2.5);
     border-radius: $border-radius;
     border: $border;
@@ -66,6 +71,7 @@
 
     @include mobile {
       font-size: ($font-size * 1.2);
+      margin: ($font-size * .25) 0;
     }
   }
 
@@ -90,6 +96,11 @@
     @include mobile {
       font-size: ($font-size * 1.5);
     }
+  }
+
+  &__avatar {
+    border-radius: $border-radius;
+    overflow: hidden;
   }
 
   &__badges {

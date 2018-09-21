@@ -6,24 +6,15 @@ block yield
     h1.title-super Ranking do Game
     section.ranking
       ol.ranking__list
-        li.ranking__list-item.gamer
-          a.row(href="/ranking/user/U9670TYSJ")
-            .col
-              p.gamer__name Lázaro Alvarenga
-              span.gamer__level Nível 2
-            .col.col__small: span.gamer__xp 3.984 xp
-        li.ranking__list-item.gamer
-          a.row(href="javascript:;")
-            .col
-              p.gamer__name Márcio Sena
-              span.gamer__level Nível 2
-            .col.col__small: span.gamer__xp 2.090 xp
-        li.ranking__list-item.gamer
-          a.row(href="javascript:;")
-            .col
-              p.gamer__name Evandro Ribeiro
-              span.gamer__level Nível 1
-            .col.col__small: span.gamer__xp 701 xp
+        each user in users
+          li.ranking__list-item.gamer: a.row(href=`/ranking/user/${user.slackId}`)
+            if users.indexOf(user) < 3
+              .col.col__small.gamer__avatar: img(src=user.avatar)
+            .col: .row
+              .col.gamer__data
+                p.gamer__name= user.name
+                span.gamer__level= `Nível ${user.level}`
+              .col.col__small: span.gamer__xp= `${user.score} xp`
       p.ranking__list-footer Não achou sua pontuação?
         a(href="javascript:;")  Pergunte pro *bot*
 
