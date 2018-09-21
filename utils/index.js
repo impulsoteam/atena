@@ -102,3 +102,7 @@ export const getStyleLog = style => {
 
   return `${styles[style]}%s${styles.reset}`;
 };
+
+export const analyticsSendCollect = e => {
+  require("./analytics").sendCollect(e);
+};
