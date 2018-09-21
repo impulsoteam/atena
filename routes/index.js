@@ -7,7 +7,6 @@ import userController from "../controllers/user";
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  console.info("dsdsdsdsds");
   res.render("index", {
     title: "Seja bem vindo! =D"
   });
