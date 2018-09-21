@@ -1,18 +1,18 @@
-import path from "path";
+import autoprefixer from "autoprefixer";
 import dotenv from "dotenv";
-import winston from "winston";
 import express from "express";
 import mongoose from "mongoose";
+import path from "path";
+import postcssMiddleware from "postcss-middleware";
 import querystring from "querystring";
 import request from "async-request";
-import { createEventAdapter } from "@slack/events-api";
 import sassMiddleware from "node-sass-middleware";
-import postcssMiddleware from "postcss-middleware";
-import autoprefixer from "autoprefixer";
+import winston from "winston";
+import { createEventAdapter } from "@slack/events-api";
 
 import apiRoutes from "./routes";
-import controllers from "./controllers";
-import { isValidChannel } from "./utils";
+import interactionController from "./controllers/interaction";
+import { isValidChannel, getStyleLog } from "./utils";
 require("./models/interaction");
 require("./models/user");
 
@@ -78,12 +78,11 @@ app.use((req, res, next) => {
 
 const handleEvent = async e => {
   const channel = e.type === "message" ? e.channel : e.item.channel;
-
   if (isValidChannel(channel)) {
-    controllers.interaction.save(e);
-    console.log("event", e);
+    interactionController.save(e);
+    console.log(getStyleLog("blue"), "\nevent:", e);
   } else {
-    console.log("-- event into an invalid channel");
+    console.log(getStyleLog("yellow"), "\n-- event into an invalid channel");
   }
 
   if (process.env.GA) {
@@ -118,7 +117,10 @@ const handleEvent = async e => {
       console.log(e);
     }
   } else {
-    console.log("Setup an instance of google analytics for tests");
+    console.log(
+      getStyleLog("yellow"),
+      "\nSetup an instance of google analytics for tests\n"
+    );
   }
 };
 

@@ -82,7 +82,8 @@ router.get("/ranking/user/:id", async (req, res) => {
 });
 
 router.get("/interactions/user/:id", async (req, res) => {
-  const interactions = await interactionController.findByUser(req.params.id);
+  console.log(interactionController);
+  const interactions = await interactionController.find(req.params.id);
   const user = await getUserInfo(req.params.id);
   res.send({
     user: user && user.profile,
