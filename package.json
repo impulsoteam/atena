@@ -57,5 +57,10 @@
   },
   "devDependencies": {
     "nodemon": "^1.18.4"
+  },
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm run format && npm run test"
+    }
   }
 }
