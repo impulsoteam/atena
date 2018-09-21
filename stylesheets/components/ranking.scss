@@ -24,7 +24,7 @@
         font-weight: bold;
 
         @include mobile {
-          padding: ($font-size * .75);
+          padding: ($font-size * .75) $font-size;
         }
       }
     }

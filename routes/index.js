@@ -46,12 +46,13 @@ router.get("/ranking", async (req, res) => {
 
   if (req.query.format === "json") {
     res.send({
+      title: "Veja o Ranking do nosso game | Impulso Network",
       users
     });
   } else {
     res.render("ranking", {
       title: "Veja o Ranking do nosso game | Impulso Network",
-      data: users
+      users
     });
   }
 });
@@ -74,9 +75,7 @@ router.get("/ranking/user/:id", async (req, res) => {
     res.render("profile", {
       title:
         "Perfil da pessoa jogadora, pra saber tudo de legal que fez pra ter 9.990 XP",
-      data: {
-        score: user.score
-      }
+      user
     });
   }
 });

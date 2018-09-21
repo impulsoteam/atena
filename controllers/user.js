@@ -57,7 +57,7 @@ export const findAll = async limit => {
     score: { $gt: 0 }
   })
     .sort({
-      score: 1
+      score: -1
     })
     .limit(limit || 15)
     .exec();
