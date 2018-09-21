@@ -4,14 +4,10 @@ import express from "express";
 import mongoose from "mongoose";
 import path from "path";
 import postcssMiddleware from "postcss-middleware";
-// import querystring from "querystring";
-// import request from "async-request";
 import sassMiddleware from "node-sass-middleware";
 import winston from "winston";
 
 import appRoutes from "./routes";
-// import interactionController from "./controllers/interaction";
-// import { isValidChannel, getStyleLog } from "./utils";
 require("./models/interaction");
 require("./models/user");
 
