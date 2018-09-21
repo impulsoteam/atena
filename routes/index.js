@@ -3,7 +3,7 @@ import express from "express";
 import { getUserInfo, getChannelInfo, isValidChannel } from "../utils";
 
 import interactionController from "../controllers/interaction";
-import controllers from "../controllers";
+import userController from "../controllers/user";
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -39,7 +39,7 @@ router.get("/ranking", async (req, res) => {
   let users = [];
 
   try {
-    users = await controllers.findAllUser(limit);
+    users = await userController.findAll(limit);
   } catch (e) {
     console.log(e);
   }
@@ -61,7 +61,7 @@ router.get("/ranking/user/:id", async (req, res) => {
   let user = {};
 
   try {
-    user = await controllers.findUser(id);
+    user = await userController.find(id);
   } catch (e) {
     console.log(e);
   }
@@ -82,7 +82,8 @@ router.get("/ranking/user/:id", async (req, res) => {
 });
 
 router.get("/interactions/user/:id", async (req, res) => {
-  const interactions = await interactionController.findByUser(req.params.id);
+  console.log(interactionController);
+  const interactions = await interactionController.find(req.params.id);
   const user = await getUserInfo(req.params.id);
   res.send({
     user: user && user.profile,

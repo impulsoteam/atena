@@ -62,3 +62,8 @@ export const find = async user => {
   }
   return result;
 };
+
+export default {
+  find,
+  save
+};

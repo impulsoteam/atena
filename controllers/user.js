@@ -64,3 +64,9 @@ export const findAll = async limit => {
 
   return result || _throw("Error finding all users");
 };
+
+export default {
+  update,
+  find,
+  findAll
+};

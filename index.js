@@ -11,7 +11,7 @@ import winston from "winston";
 import { createEventAdapter } from "@slack/events-api";
 
 import apiRoutes from "./routes";
-import controllers from "./controllers";
+import interactionController from "./controllers/interaction";
 import { isValidChannel, getStyleLog } from "./utils";
 require("./models/interaction");
 require("./models/user");
@@ -79,7 +79,7 @@ app.use((req, res, next) => {
 const handleEvent = async e => {
   const channel = e.type === "message" ? e.channel : e.item.channel;
   if (isValidChannel(channel)) {
-    controllers.saveInteraction(e);
+    interactionController.save(e);
     console.log(getStyleLog("blue"), "\nevent:", e);
   } else {
     console.log(getStyleLog("yellow"), "\n-- event into an invalid channel");
