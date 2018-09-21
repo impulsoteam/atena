@@ -74,7 +74,12 @@ export const calculateLevel = score => {
 };
 
 export const isValidChannel = channel => {
-  const validChannels = config.channels.valid_channels;
+  let validChannels = [];
+  if (process.env.NODE_ENV !== "production") {
+    validChannels = process.env.CHANNELS.split(" ");
+  } else {
+    validChannels = config.channels.valid_channels;
+  }
   const isValid = validChannels.find(item => item === channel);
 
   return !!isValid;

@@ -82,7 +82,10 @@ const handleEvent = async e => {
     interactionController.save(e);
     console.log(getStyleLog("blue"), "\nevent:", e);
   } else {
-    console.log(getStyleLog("yellow"), "\n-- event into an invalid channel");
+    console.log(
+      getStyleLog("yellow"),
+      `\n-- event into an invalid channel ${channel}`
+    );
   }
 
   if (process.env.GA) {
