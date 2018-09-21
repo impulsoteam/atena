@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
 import { calculateScore, calculateLevel, getUserInfo } from "../utils";
 import { _throw } from "../helpers";
-import { getStyleLog } from "../utils";
 
-const update = async interaction => {
+export const update = async interaction => {
   const score = calculateScore(interaction);
   const userInfo = await getUserInfo(interaction.user);
 
@@ -45,14 +44,14 @@ const update = async interaction => {
   }
 };
 
-const find = async user => {
+export const find = async user => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({ slackId: user }).exec();
 
   return result || _throw("Error finding a specific user");
 };
 
-const findAll = async limit => {
+export const findAll = async limit => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.find({
     score: { $gt: 0 }
@@ -64,10 +63,4 @@ const findAll = async limit => {
     .exec();
 
   return result || _throw("Error finding all users");
-};
-
-export default {
-  update,
-  find,
-  findAll
 };

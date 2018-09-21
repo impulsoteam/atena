@@ -40,7 +40,7 @@ const normalize = data => {
   }
 };
 
-const save = async data => {
+export const save = async data => {
   const InteractionModel = mongoose.model("Interaction");
   const interaction = normalize(data);
   const instance = new InteractionModel(interaction);
@@ -52,7 +52,7 @@ const save = async data => {
   return true;
 };
 
-const findByUser = async user => {
+export const find = async user => {
   const InteractionModel = mongoose.model("Interaction");
   const result = await InteractionModel.find({
     $or: [{ user: user }, { parentUser: user }]
@@ -61,9 +61,4 @@ const findByUser = async user => {
     throw new Error("Error finding interactions");
   }
   return result;
-};
-
-export default {
-  save,
-  findByUser
 };

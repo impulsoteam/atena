@@ -1,14 +1,14 @@
-import path from "path";
+import autoprefixer from "autoprefixer";
 import dotenv from "dotenv";
-import winston from "winston";
 import express from "express";
 import mongoose from "mongoose";
+import path from "path";
+import postcssMiddleware from "postcss-middleware";
 import querystring from "querystring";
 import request from "async-request";
-import { createEventAdapter } from "@slack/events-api";
 import sassMiddleware from "node-sass-middleware";
-import postcssMiddleware from "postcss-middleware";
-import autoprefixer from "autoprefixer";
+import winston from "winston";
+import { createEventAdapter } from "@slack/events-api";
 
 import apiRoutes from "./routes";
 import controllers from "./controllers";
@@ -79,7 +79,7 @@ app.use((req, res, next) => {
 const handleEvent = async e => {
   const channel = e.type === "message" ? e.channel : e.item.channel;
   if (isValidChannel(channel)) {
-    controllers.interaction.save(e);
+    controllers.saveInteraction(e);
     console.log(getStyleLog("blue"), "\nevent:", e);
   } else {
     console.log(getStyleLog("yellow"), "\n-- event into an invalid channel");
