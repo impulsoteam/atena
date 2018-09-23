@@ -13,11 +13,63 @@ Atena is an initiative of the impulse in collaboration with several Impulsers, w
 
 ## Setup
 
-- Install [Mongodb](https://www.mongodb.com/)
-- Create your .env file using .env.example model
+A step-by-step  of the minimal setup you need to get a Atena running.
+
+### Initial configuration
+
+- Install [Mongodb](https://docs.mongodb.com/manual/installation/)
 - Create your slack app - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
-- Install the requirements: `yarn`
-- Run the server using the following command: `yarn start:dev`
+
+### Developing
+
+- Make `fork` for your user account, then `clone`
+```sh
+> git clone https://github.com/[your account]/atena
+```
+
+- Navigate to the destination folder
+```sh
+> cd atena/
+```
+
+- Install `yarn` from npm (global is optional)
+```sh
+> npm i yarn -g
+```
+
+- Install repositories using `yarn`
+```sh
+> yarn -i
+```
+
+- Add remote reference
+```sh
+> git remote add upstream https://github.com/impulsonetwork/atena
+```
+- Create your .env file using .env.example model
+```
+PORT=4390
+SLACK_SIGNIN_EVENTS=
+SLACK_TOKEN=
+GA=
+MONGODB_URI=mongodb://localhost/atena
+CHANNELS=CCWSMJZ6U CCXCXJWBW
+```
+
+### Running
+- Run the server using the following command:
+```sh
+> yarn start:dev
+```
+
+## Contributing
+
+When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
+
+### Pull Request Process
+
+1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
+1. You may merge the Pull Request in once you have the sign-off of two other developers, or if you do not have permission to do that, you may request the second reviewer to merge it for you.
 
 ## Community
 
@@ -41,4 +93,4 @@ This project exists thanks to all the people who contribute:
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
