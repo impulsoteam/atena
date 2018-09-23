@@ -12,7 +12,9 @@ router.post("/meuspontos", async (req, res) => {
   try {
     user = await userController.find(req.body.user_id);
     response = {
-      text: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${user.score} XP`
+      text: `Olá ${user.name}, atualmente você está no nível ${
+        user.level
+      } com ${user.score} XP`
     };
   } catch (e) {
     console.log(e);
@@ -23,13 +25,16 @@ router.post("/meuspontos", async (req, res) => {
 
 router.post("/ranking", async (req, res) => {
   let users = [];
-  let rankingResponse = [];
+  const response = {
+    text: "Veja as primeiras pessoas do raking:",
+    attachments: []
+  };
 
   try {
     users = await userController.findAll(5);
     if (users.length > 0) {
       users.map((user, index) => {
-        rankingResponse.push({
+        response.attachments.push({
           text: `${index + 1}º lugar está ${user.name} com ${
             user.score
           } XP, no nível ${user.level}`
@@ -39,11 +44,6 @@ router.post("/ranking", async (req, res) => {
   } catch (e) {
     console.log(e);
   }
-
-  const response = {
-    text: "Veja as primeiras pessoas do raking:",
-    attachments: rankingResponse
-  };
 
   res.json(response);
 });
