@@ -6,7 +6,7 @@ import { calculateScore } from "../utils";
 import { _throw, _today } from "../helpers";
 
 const normalize = data => {
-  if (data.type === "reaction_added") {
+  if (data.type === "reaction_added" || data.type === "reaction_removed") {
     return {
       channel: data.item.channel,
       date: new Date(),
@@ -55,6 +55,9 @@ export const save = async data => {
 
   if (todayLimitStatus > 0) {
     userController.update(interaction);
+    interaction.type !== "message" &&
+      interaction.parentUser !== interaction.user &&
+      userController.updateParentUser(interaction);
   }
 
   return response || _throw("Error adding new interaction");
@@ -90,24 +93,28 @@ export const todayScore = async user => {
   return +score;
 };
 
-export const remove = async interaction => {
+export const remove = async data => {
   const InteractionModel = mongoose.model("Interaction");
+  const interaction = normalize(data);
   const reactionAdded = await InteractionModel.findOne({
-    description: interaction.reaction,
-    parentMessage: interaction.item.ts
+    description: interaction.description,
+    parentMessage: interaction.parentMessage
   }).exec();
-  const result = await InteractionModel.deleteOne({
-    description: interaction.reaction,
-    parentMessage: interaction.item.ts
-  });
-  userController.update(
-    {
-      ...reactionAdded._doc,
-      type: "reaction_removed"
-    },
-    reactionAdded.user
-  );
-  return result || _throw("Error removing interactions");
+
+  if (reactionAdded) {
+    const result = await InteractionModel.deleteOne({
+      description: interaction.description,
+      parentMessage: interaction.parentMessage
+    });
+    userController.update(interaction);
+
+    interaction.parentUser !== interaction.user &&
+      userController.updateParentUser(interaction);
+
+    return result || _throw("Error removing interactions");
+  }
+
+  return _throw("Error removing interactions");
 };
 
 export default {
