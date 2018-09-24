@@ -50,16 +50,14 @@ export const save = async data => {
   const todayLimitScore = config.xprules.limits.daily;
   const score = await todayScore(interaction.user);
   const todayLimitStatus = todayLimitScore - score;
+  const instance = new InteractionModel(interaction);
+  const response = instance.save();
 
   if (todayLimitStatus > 0) {
-    const instance = new InteractionModel(interaction);
-    const response = instance.save();
     userController.update(interaction);
-
-    return response || _throw("Error adding new interaction");
-  } else {
-    return _throw("This user has arrived in the daily limit");
   }
+
+  return response || _throw("Error adding new interaction");
 };
 
 export const find = async user => {
