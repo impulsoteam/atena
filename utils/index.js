@@ -42,28 +42,25 @@ export const getChannelInfo = async id => {
   return response && JSON.parse(response.body);
 };
 
-export const calculateScore = (interaction, userId) => {
+export const calculateScore = interaction => {
   let score = 0;
-  if (interaction.user === userId) {
-    if (interaction.type === "message") {
-      score = config.xprules.messages.send;
-    } else if (
-      interaction.type === "reaction_added" &&
-      interaction.parentUser !== userId
-    ) {
-      score = config.xprules.reactions.send;
-    } else if (interaction.parentUser !== userId) {
-      score = config.xprules.threads.send;
-    }
-  } else if (interaction.type === "thread") {
-    score = config.xprules.threads.receive;
+  if (interaction.type === "message") {
+    score = config.xprules.messages.send;
   } else if (
-    interaction.description === "disappointed" ||
-    interaction.description === "-1"
+    interaction.type === "reaction_added" &&
+    interaction.parentUser !== interaction.user
   ) {
-    score = config.xprules.reactions.receive.negative;
-  } else {
-    score = config.xprules.reactions.receive.positive;
+    score = config.xprules.reactions.send;
+  } else if (
+    interaction.type === "reaction_removed" &&
+    interaction.parentUser !== interaction.user
+  ) {
+    score = config.xprules.reactions.send * -1;
+  } else if (
+    interaction.type === "thread" &&
+    interaction.parentUser !== interaction.user
+  ) {
+    score = config.xprules.threads.send;
   }
   return score;
 };

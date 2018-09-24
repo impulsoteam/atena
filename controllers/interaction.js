@@ -63,7 +63,31 @@ export const find = async user => {
   return result;
 };
 
+export const remove = async interaction => {
+  const InteractionModel = mongoose.model("Interaction");
+  const reactionAdded = await InteractionModel.findOne({
+    description: interaction.reaction,
+    parentMessage: interaction.item.ts
+  }).exec();
+  const result = await InteractionModel.deleteOne({
+    description: interaction.reaction,
+    parentMessage: interaction.item.ts
+  });
+  userController.update(
+    {
+      ...reactionAdded._doc,
+      type: "reaction_removed"
+    },
+    reactionAdded.user
+  );
+  if (!result) {
+    throw new Error("Error removing interactions");
+  }
+  return result;
+};
+
 export default {
   find,
-  save
+  save,
+  remove
 };
