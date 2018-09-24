@@ -24,8 +24,9 @@ export const updateParentUser = async interaction => {
           if (err) {
             throw new Error("Error updating parentUser");
           }
-          doc.level = calculateLevel(doc.score + score);
-          doc.score = doc.score + score;
+          const newScore = doc.score + score;
+          doc.level = calculateLevel(newScore);
+          doc.score = newScore < 0 ? 0 : newScore;
           doc.save();
           return doc;
         }
@@ -51,8 +52,9 @@ export const update = async interaction => {
         if (err) {
           throw new Error("Error updating user");
         }
-        doc.level = calculateLevel(doc.score + score);
-        doc.score = doc.score + score;
+        const newScore = doc.score + score;
+        doc.level = calculateLevel(newScore);
+        doc.score = newScore < 0 ? 0 : newScore;
         doc.messages =
           interaction.type === "message" ? doc.messages + 1 : doc.messages;
         doc.replies =
