@@ -1,6 +1,42 @@
 import mongoose from "mongoose";
-import { calculateScore, calculateLevel, getUserInfo } from "../utils";
+import {
+  calculateScore,
+  calculateReceivedScore,
+  calculateLevel,
+  getUserInfo
+} from "../utils";
 import { _throw } from "../helpers";
+
+export const updateParentUser = async interaction => {
+  const score = calculateReceivedScore(interaction);
+  const userInfo = await getUserInfo(interaction.parentUser);
+
+  if (userInfo.ok) {
+    const UserModel = mongoose.model("User");
+    const user = await UserModel.findOne({
+      slackId: interaction.parentUser
+    }).exec();
+
+    if (user) {
+      return UserModel.findOne(
+        { slackId: interaction.parentUser },
+        (err, doc) => {
+          if (err) {
+            throw new Error("Error updating parentUser");
+          }
+          doc.level = calculateLevel(doc.score + score);
+          doc.score = doc.score + score;
+          doc.save();
+          return doc;
+        }
+      );
+    } else {
+      throw new Error(`Error: parentUser does not exist `);
+    }
+  } else {
+    throw new Error(`Error: ${userInfo.error}`);
+  }
+};
 
 export const update = async interaction => {
   const score = calculateScore(interaction);
@@ -17,7 +53,6 @@ export const update = async interaction => {
         }
         doc.level = calculateLevel(doc.score + score);
         doc.score = doc.score + score;
-        doc.save();
         doc.messages =
           interaction.type === "message" ? doc.messages + 1 : doc.messages;
         doc.replies =
@@ -30,6 +65,7 @@ export const update = async interaction => {
           interaction.type === "reaction_removed"
             ? doc.reactions - 1
             : doc.reactions;
+        doc.save();
         return doc;
       });
     } else {
@@ -74,7 +110,8 @@ export const findAll = async limit => {
 };
 
 export default {
-  update,
   find,
-  findAll
+  findAll,
+  update,
+  updateParentUser
 };

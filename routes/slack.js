@@ -36,6 +36,8 @@ slackEvents.on("message", e => handleEvent(e));
 
 slackEvents.on("reaction_added", e => handleEvent(e));
 
+slackEvents.on("reaction_removed", e => handleEvent(e));
+
 slackEvents.on("error", console.error);
 
 router.get("/user/:id", async (req, res) => {
