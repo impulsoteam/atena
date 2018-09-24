@@ -1,9 +1,12 @@
 import express from "express";
+import bodyParser from "body-parser";
 
 import userController from "../controllers/user";
 const router = express.Router();
 
-router.post("/score", async (req, res) => {
+const jsonParser = bodyParser.json();
+
+router.post("/score", jsonParser, async (req, res) => {
   let user = {};
   let response = {
     text: "você não tem pontos registrados ainda =/"

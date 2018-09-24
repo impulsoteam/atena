@@ -90,8 +90,29 @@ export const todayScore = async user => {
   return +score;
 };
 
+export const remove = async interaction => {
+  const InteractionModel = mongoose.model("Interaction");
+  const reactionAdded = await InteractionModel.findOne({
+    description: interaction.reaction,
+    parentMessage: interaction.item.ts
+  }).exec();
+  const result = await InteractionModel.deleteOne({
+    description: interaction.reaction,
+    parentMessage: interaction.item.ts
+  });
+  userController.update(
+    {
+      ...reactionAdded._doc,
+      type: "reaction_removed"
+    },
+    reactionAdded.user
+  );
+  return result || _throw("Error removing interactions");
+};
+
 export default {
   find,
+  remove,
   save,
   todayScore
 };
