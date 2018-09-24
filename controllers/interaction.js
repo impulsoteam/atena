@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import userController from "./user";
 
+import { _throw, _today } from "../helpers";
+
 const normalize = data => {
   if (data.type === "reaction_added") {
     return {
@@ -46,10 +48,8 @@ export const save = async data => {
   const instance = new InteractionModel(interaction);
   const response = instance.save();
   userController.update(interaction);
-  if (!response) {
-    throw new Error("Error adding new interaction");
-  }
-  return true;
+
+  return response || _throw("Error adding new interaction");
 };
 
 export const find = async user => {
@@ -57,13 +57,24 @@ export const find = async user => {
   const result = await InteractionModel.find({
     $or: [{ user: user }, { parentUser: user }]
   }).exec();
-  if (!result) {
-    throw new Error("Error finding interactions");
-  }
-  return result;
+
+  return result || _throw("Error finding interactions");
+};
+
+export const today = async user => {
+  const InteractionModel = mongoose.model("Interaction");
+  const result = await InteractionModel.find({
+    $or: [{ user: user }, { parentUser: user }],
+    date: {
+      $gte: _today.start
+    }
+  }).exec();
+
+  return result || _throw("Error finding interactions today");
 };
 
 export default {
   find,
-  save
+  save,
+  today
 };
