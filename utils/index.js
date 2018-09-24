@@ -42,28 +42,45 @@ export const getChannelInfo = async id => {
   return response && JSON.parse(response.body);
 };
 
-export const calculateScore = (interaction, userId) => {
+export const calculateScore = interaction => {
   let score = 0;
-  if (interaction.user === userId) {
-    if (interaction.type === "message") {
-      score = config.xprules.messages.send;
-    } else if (
-      interaction.type === "reaction_added" &&
-      interaction.parentUser !== userId
-    ) {
-      score = config.xprules.reactions.send;
-    } else if (interaction.parentUser !== userId) {
-      score = config.xprules.threads.send;
+  if (interaction.type === "message") {
+    score = config.xprules.messages.send;
+  } else if (
+    interaction.type === "reaction_added" &&
+    interaction.parentUser !== interaction.user
+  ) {
+    score = config.xprules.reactions.send;
+  } else if (
+    interaction.type === "reaction_removed" &&
+    interaction.parentUser !== interaction.user
+  ) {
+    score = config.xprules.reactions.send * -1;
+  } else if (
+    interaction.type === "thread" &&
+    interaction.parentUser !== interaction.user
+  ) {
+    score = config.xprules.threads.send;
+  }
+  return score;
+};
+
+export const calculateReceivedScore = interaction => {
+  let score = 0;
+  if (interaction.type === "reaction_added") {
+    if (interaction.description === "+1") {
+      score = config.xprules.reactions.receive.positive;
+    } else if (interaction.description === "-1") {
+      score = config.xprules.reactions.receive.negative;
+    }
+  } else if (interaction.type === "reaction_removed") {
+    if (interaction.description === "+1") {
+      score = config.xprules.reactions.receive.positive * -1;
+    } else if (interaction.description === "-1") {
+      score = config.xprules.reactions.receive.negative * -1;
     }
   } else if (interaction.type === "thread") {
     score = config.xprules.threads.receive;
-  } else if (
-    interaction.description === "disappointed" ||
-    interaction.description === "-1"
-  ) {
-    score = config.xprules.reactions.receive.negative;
-  } else {
-    score = config.xprules.reactions.receive.positive;
   }
   return score;
 };

@@ -1,4 +1,5 @@
 import express from "express";
+import config from "config-yml";
 
 import userController from "../controllers/user";
 const router = express.Router();
@@ -32,6 +33,8 @@ router.get("/user/:id", async (req, res) => {
 
   try {
     user = await userController.find(id);
+
+    user.next_level = config.levelrules.levels_range[user.level - 1];
   } catch (e) {
     console.log(e);
   }

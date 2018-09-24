@@ -22,7 +22,7 @@ const thread = {
   channel_type: "channel"
 };
 
-const reaction = {
+const reactionAdded = {
   type: "reaction_added",
   user: "UCX1DSFEV",
   item: {
@@ -35,8 +35,21 @@ const reaction = {
   event_ts: "1537480644.000100"
 };
 
+const reactioRemoved = {
+  type: "reaction_removed",
+  user: "UCX1DSFEV",
+  item: {
+    type: "message",
+    channel: "CCXCXJWBW",
+    ts: "1537453293.000200"
+  },
+  reaction: "persevere",
+  event_ts: "1537559720.000100"
+};
+
 export default {
   message,
-  reaction,
+  reactionAdded,
+  reactioRemoved,
   thread
 };

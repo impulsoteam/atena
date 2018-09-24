@@ -18,7 +18,9 @@ const handleEvent = async e => {
   const channel = e.type === "message" ? e.channel : e.item.channel;
 
   if (isValidChannel(channel)) {
-    interactionController.save(e);
+    e.type === "reaction_removed"
+      ? interactionController.remove(e)
+      : interactionController.save(e);
     console.log(getStyleLog("blue"), "\nevent:", e);
   } else {
     console.log(
@@ -33,6 +35,8 @@ const handleEvent = async e => {
 slackEvents.on("message", e => handleEvent(e));
 
 slackEvents.on("reaction_added", e => handleEvent(e));
+
+slackEvents.on("reaction_removed", e => handleEvent(e));
 
 slackEvents.on("error", console.error);
 

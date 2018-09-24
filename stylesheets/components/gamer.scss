@@ -99,8 +99,10 @@
   }
 
   &__avatar {
-    border-radius: $border-radius;
-    overflow: hidden;
+    img {
+      border-radius: $border-radius;
+      overflow: hidden;
+    }
   }
 
   &__badges {
