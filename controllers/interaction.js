@@ -77,7 +77,7 @@ export const todayScore = async user => {
   let score = 0;
   const InteractionModel = mongoose.model("Interaction");
   const result = await InteractionModel.find({
-    $or: [{ user: user }, { parentUser: user }],
+    user: user,
     date: {
       $gte: _today.start
     }
