@@ -33,9 +33,9 @@ router.post("/ranking", async (req, res) => {
   try {
     users = await userController.findAll(5);
     response.attachments = users.map((user, index) => ({
-      text: `${index + 1}º lugar está ${user.name} com ${
-        user.score
-      } XP, no nível ${user.level}`
+      text: `${index + 1}º lugar está ${
+        user.slackId === req.body.user_id ? "você" : user.name
+      } com ${user.score} XP, no nível ${user.level}`
     }));
   } catch (e) {
     console.log(e);
