@@ -64,12 +64,19 @@ CHANNELS=CCWSMJZ6U CCXCXJWBW
 
 ## Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
+The main purpose of this repository is to continue to evolve Atena, making it faster and easier to use.
 
-### Pull Request Process
+Development of Atena happens in the open on GitHub, and we are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving Atena and of Impulso Network.
 
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
-1. You may merge the Pull Request in once you have the sign-off of two other developers, or if you do not have permission to do that, you may request the second reviewer to merge it for you.
+
+### [Code of Conduct](CONTRIBUTING.md)
+
+Impulso Network has adopted a Code of Conduct that we expect project participants to adhere to. Please read [Code of Coodult](CONTRIBUTING.md) so that you can understand what actions will and will not be tolerated.
+
+### [Contributing Guide](CONTRIBUTING.md)
+
+Read our [contributing guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Atena.
+
 
 ## Community
 
