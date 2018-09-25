@@ -29,7 +29,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
 router.post("/ranking", async (req, res) => {
   let users = [];
   let response = {
-    text: "Veja as primeiras pessoas do raking:",
+    text: "Veja as primeiras pessoas do ranking:",
     attachments: []
   };
 
