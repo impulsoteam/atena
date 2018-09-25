@@ -90,9 +90,9 @@ export const update = async interaction => {
   }
 };
 
-export const find = async user => {
+export const find = async userId => {
   const UserModel = mongoose.model("User");
-  const result = await UserModel.findOne({ slackId: user }).exec();
+  const result = await UserModel.findOne({ slackId: userId }).exec();
 
   return result || _throw("Error finding a specific user");
 };
@@ -109,6 +109,13 @@ export const findAll = async limit => {
     .exec();
 
   return result || _throw("Error finding all users");
+};
+
+export const rankingPosition = async userId => {
+  const allUsers = await findAll();
+  const position = allUsers.map(e => e.slackId).indexOf(userId) + 1;
+
+  return position;
 };
 
 export default {
