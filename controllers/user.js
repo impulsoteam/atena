@@ -122,5 +122,6 @@ export default {
   find,
   findAll,
   update,
-  updateParentUser
+  updateParentUser,
+  rankingPosition
 };
