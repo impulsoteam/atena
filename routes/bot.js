@@ -33,11 +33,11 @@ router.post("/score", urlencodedParser, async (req, res) => {
   res.json(response);
 });
 
-router.post("/ranking", async (req, res) => {
+router.post("/ranking", urlencodedParser, async (req, res) => {
   let users = [];
   let myPosition = 0;
   let response = {
-    text: "Veja as primeiras pessoas do raking:",
+    text: "Veja as primeiras pessoas do ranking:",
     attachments: []
   };
 
