@@ -6,5 +6,3 @@ node_modules
 ._*
 
 ngrok
-
-config/*.yml
