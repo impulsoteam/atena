@@ -1,7 +1,10 @@
+import config from "config-yml";
 import express from "express";
+import request from "async-request";
 import bodyParser from "body-parser";
 
 import userController from "../controllers/user";
+import { getStyleLog } from "../utils";
 const router = express.Router();
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
@@ -59,6 +62,29 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
   }
 
   res.json(response);
+});
+
+router.post("/feedback", urlencodedParser, async (req, res) => {
+  let user = {};
+  try {
+    user = await userController.find(req.body.user_id);
+
+    const url = `https://slack.com/api/chat.postEphemeral?token=${
+      process.env.SLACK_TOKEN
+    }&channel=${config.channels.valid_channels[0]}&text=${encodeURIComponent(
+      `Tio, ${user.name} mandou um super feedback, saca só: _${req.body.text}_`
+    )}&user=UCJA2A8Q5&pretty=1`;
+
+    const response = await request(url, { method: "POST" });
+    console.log(response);
+  } catch (e) {
+    console.log(getStyleLog("red"), e);
+  }
+
+  res.json({
+    text:
+      "Super Obrigado pelo feedback, vou compartilhar isso com Seiya e os outros cavaleiros já! =D"
+  });
 });
 
 export default router;
