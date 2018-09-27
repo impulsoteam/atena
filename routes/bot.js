@@ -73,7 +73,7 @@ router.post("/feedback", urlencodedParser, async (req, res) => {
       process.env.SLACK_TOKEN
     }&channel=${config.channels.valid_channels[0]}&text=${encodeURIComponent(
       `Tio, ${user.name} mandou um super feedback, saca só: _${req.body.text}_`
-    )}&user=UCJA2A8Q5&pretty=1`;
+    )}&user=${process.env.SLACK_USER_FEEDBACK}&pretty=1`;
 
     const response = await request(url, { method: "POST" });
     console.log(response);
