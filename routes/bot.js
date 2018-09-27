@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import { analyticsSendBotCollect } from "../utils";
 
 import userController from "../controllers/user";
 const router = express.Router();
@@ -26,6 +27,8 @@ router.post("/score", urlencodedParser, async (req, res) => {
         }
       ]
     };
+
+    analyticsSendBotCollect(req.body);
   } catch (e) {
     console.log(e);
   }
@@ -54,6 +57,8 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
     response.attachments.push({
       text: `Ah, e você está na posição ${myPosition} do raking`
     });
+
+    analyticsSendBotCollect(req.body);
   } catch (e) {
     console.log(e);
   }

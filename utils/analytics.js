@@ -44,3 +44,42 @@ export const sendCollect = async e => {
     );
   }
 };
+
+export const sendBotCollect = async e => {
+  if (process.env.GA) {
+    const params = {
+      v: 1,
+      tid: process.env.GA,
+      cid: e.user_id,
+      cd1: e.user_id,
+      cd2: e.channel_id,
+      cd3: "",
+      cd4: "command",
+      ds: "slack",
+      cs: "slack",
+      dh: "https://impulsonetwork.slack.com",
+      dp: `/${e.channel_id}`,
+      dt: `Slack Channel: ${e.channel_id}`,
+      t: "event",
+      ec: e.channel_id,
+      ea: `${e.user_id}`,
+      el: `slash command: ${e.command}`,
+      ev: 1
+    };
+    const url = `https://www.google-analytics.com/collect?${querystring.stringify(
+      params
+    )}`;
+
+    try {
+      const response = await request(url, { method: "POST" });
+      return response;
+    } catch (e) {
+      console.log(getStyleLog("red"), e);
+    }
+  } else {
+    console.log(
+      getStyleLog("yellow"),
+      "\nSetup an instance of google analytics for tests\n"
+    );
+  }
+};

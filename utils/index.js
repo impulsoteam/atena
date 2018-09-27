@@ -123,3 +123,7 @@ export const getStyleLog = style => {
 export const analyticsSendCollect = e => {
   require("./analytics").sendCollect(e);
 };
+
+export const analyticsSendBotCollect = e => {
+  require("./analytics").sendBotCollect(e);
+};
