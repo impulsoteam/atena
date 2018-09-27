@@ -127,5 +127,5 @@ export const analyticsSendCollect = e => {
 export const isCoreTeam = userId => {
   const allCoreTeam = config.coreteam.members;
 
-  return allCoreTeam.find(member => member === userId) ? true : false;
+  return !!allCoreTeam.find(member => member === userId);
 };
