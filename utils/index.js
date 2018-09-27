@@ -2,6 +2,7 @@ import config from "config-yml";
 import dotenv from "dotenv";
 import request from "async-request";
 
+import { sendCollect, sendBotCollect } from "./analytics";
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
@@ -121,9 +122,9 @@ export const getStyleLog = style => {
 };
 
 export const analyticsSendCollect = e => {
-  require("./analytics").sendCollect(e);
+  sendCollect(e);
 };
 
 export const analyticsSendBotCollect = e => {
-  require("./analytics").sendBotCollect(e);
+  sendBotCollect(e);
 };
