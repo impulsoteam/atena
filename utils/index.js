@@ -123,3 +123,9 @@ export const getStyleLog = style => {
 export const analyticsSendCollect = e => {
   require("./analytics").sendCollect(e);
 };
+
+export const isCoreTeam = userId => {
+  const allCoreTeam = config.coreteam.members;
+
+  return !!allCoreTeam.find(member => member === userId);
+};
