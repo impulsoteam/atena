@@ -152,9 +152,21 @@ export const checkCoreTeam = async () => {
   return UsersBulk;
 };
 
-export const findCoreTeam = async limit => {
+export const findCoreTeam = async userId => {
+  const UserModel = mongoose.model("User");
+  const result = await UserModel.findOne({
+    slackId: userId,
+    isCoreTeam: true
+  }).exec();
+  result.score = parseInt(result.score);
+
+  return result || _throw("Error finding a specific user");
+};
+
+export const findAllCoreTeam = async limit => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findAll({
+    score: { $gt: 0 },
     isCoreTeam: true
   })
     .sort({
@@ -173,5 +185,6 @@ export default {
   updateParentUser,
   rankingPosition,
   checkCoreTeam,
-  findCoreTeam
+  findCoreTeam,
+  findAllCoreTeam
 };
