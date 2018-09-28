@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import { analyticsSendBotCollect } from "../utils";
 
 import userController from "../controllers/user";
-import { getStyleLog } from "../utils";
+import { getStyleLog, isCoreTeam } from "../utils";
 const router = express.Router();
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
@@ -64,6 +64,41 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
     analyticsSendBotCollect(req.body);
   } catch (e) {
     console.log(e);
+  }
+
+  res.json(response);
+});
+
+router.post("/coreteamranking", urlencodedParser, async (req, res) => {
+  let users = [];
+  let myPosition = 0;
+  let response = {
+    text: "Veja as primeiras pessoas do ranking do Core Team:",
+    attachments: []
+  };
+
+  if (isCoreTeam(req.body.user_id)) {
+    try {
+      users = await userController.findAllCoreTeam(5);
+      myPosition = await userController.rankingPosition(req.body.user_id);
+      response.text =
+        users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
+      response.attachments = users.map((user, index) => ({
+        text: `${index + 1}º lugar está ${
+          user.slackId === req.body.user_id ? "você" : user.name
+        } com ${user.score} XP, no nível ${user.level}`
+      }));
+      response.attachments.push({
+        text: `Ah, e você está na posição ${myPosition} do raking`
+      });
+
+      analyticsSendBotCollect(req.body);
+    } catch (e) {
+      console.log(e);
+    }
+  } else {
+    response.text =
+      "Você não faz parte do Core Team nem um cavaleiro de ouro, tente ver o seu ranking com o comando */ranking*";
   }
 
   res.json(response);
