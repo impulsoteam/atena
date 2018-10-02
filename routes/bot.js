@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import { analyticsSendBotCollect } from "../utils";
 
 import userController from "../controllers/user";
+import rankingController from "../controllers/ranking";
 import { getStyleLog, isCoreTeam } from "../utils";
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
 
   try {
     user = await userController.find(req.body.user_id);
-    myPosition = await userController.rankingPosition(req.body.user_id);
+    myPosition = await rankingController.rankingPosition(req.body.user_id);
     response = {
       text: `Olá ${user.name}, atualmente você está no nível ${
         user.level
@@ -48,8 +49,8 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
   };
 
   try {
-    users = await userController.findAll(5);
-    myPosition = await userController.rankingPosition(req.body.user_id);
+    users = await rankingController.findAll(5);
+    myPosition = await rankingController.rankingPosition(req.body.user_id);
     response.text =
       users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
     response.attachments = users.map((user, index) => ({
@@ -79,8 +80,8 @@ router.post("/coreteamranking", urlencodedParser, async (req, res) => {
 
   if (isCoreTeam(req.body.user_id)) {
     try {
-      users = await userController.findAllCoreTeam(5);
-      myPosition = await userController.rankingPosition(req.body.user_id);
+      users = await rankingController.findAllCoreTeam(5);
+      myPosition = await rankingController.rankingPosition(req.body.user_id);
       response.text =
         users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
       response.attachments = users.map((user, index) => ({

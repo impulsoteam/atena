@@ -37,7 +37,7 @@ export const updateParentUser = async interaction => {
       throw new Error(`Error: parentUser does not exist `);
     }
   } else {
-    throw new Error(`Error: ${userInfo.error}`);
+    throw new Error(`${userInfo.error}`);
   }
 };
 
@@ -123,13 +123,6 @@ export const findAll = async limit => {
   return result || _throw("Error finding all users");
 };
 
-export const rankingPosition = async userId => {
-  const allUsers = await findAll();
-  const position = allUsers.map(e => e.slackId).indexOf(userId) + 1;
-
-  return position;
-};
-
 export const checkCoreTeam = async () => {
   const UserModel = mongoose.model("User");
   const UsersBulk = UserModel.bulkWrite([
@@ -163,28 +156,11 @@ export const findCoreTeam = async userId => {
   return result || _throw("Error finding a specific user");
 };
 
-export const findAllCoreTeam = async limit => {
-  const UserModel = mongoose.model("User");
-  const result = await UserModel.findAll({
-    score: { $gt: 0 },
-    isCoreTeam: true
-  })
-    .sort({
-      score: -1
-    })
-    .limit(limit || 15)
-    .exec();
-
-  return result || _throw("Error finding a specific user");
-};
-
 export default {
   find,
   findAll,
   update,
   updateParentUser,
-  rankingPosition,
   checkCoreTeam,
-  findCoreTeam,
-  findAllCoreTeam
+  findCoreTeam
 };
