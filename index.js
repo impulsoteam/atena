@@ -6,10 +6,12 @@ import path from "path";
 import postcssMiddleware from "postcss-middleware";
 import sassMiddleware from "node-sass-middleware";
 import winston from "winston";
+import rankingController from "./controllers/ranking";
 
 import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
+require("./models/ranking");
 
 const logger = winston.createLogger({
   level: "info",
@@ -44,19 +46,18 @@ mongoose.set("useCreateIndexes", true);
 const port = process.env.PORT;
 const app = express();
 
-app.set("view engine", "pug");
+const CronJob = require("cron").CronJob;
+new CronJob(
+  "* * 12 * * *",
+  () => {
+    rankingController.generateRanking();
+  },
+  null,
+  true,
+  "America/Sao_Paulo"
+);
 
-// app.use(
-//   bodyParser.json({
-//     verify: function(req, res, buf) {
-//       var url = req.originalUrl;
-//       console.log("url", url, url.startsWith("/slack/events"));
-//       if (url.startsWith("/slack/events")) {
-//         req.rawBody = buf.toString();
-//       }
-//     }
-//   })
-// );
+app.set("view engine", "pug");
 
 app.use(
   sassMiddleware({
