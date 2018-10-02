@@ -48,8 +48,7 @@ const app = express();
 
 const CronJob = require("cron").CronJob;
 new CronJob(
-  // "* * 12 * * *",
-  "10 * * * * *",
+  "* * 12 * * *",
   () => {
     rankingController.generateRanking();
   },
