@@ -12,7 +12,7 @@ A Atena é uma iniciativa da Impulso Network em colaboração com vários Impuls
 
 ## Configuração
 
-Um passo-a-passo da configuração mínima que você precisa para obter o The Arena em execução.
+Um passo-a-passo da configuração mínima que você precisa para obter o Atena em execução.
 
 ### Configuração inicial
 
@@ -26,7 +26,7 @@ Um passo-a-passo da configuração mínima que você precisa para obter o The Ar
 > git clone https://github.com/[your account]/atena
 ```
 
-- Navegue até a pasta de desttino onde fez o clone do projeto
+- Navegue até a pasta de destino onde fez o clone do projeto
 ```sh
 > cd atena/
 ```
@@ -65,7 +65,7 @@ CHANNELS=CCWSMJZ6U CCXCXJWBW
 
 O principal objetivo deste repositório é continuar a evoluir o Atena, tornando-o mais rápido e fácil de usar.
 
-O desenvolvimento do Atena acontece a céu aberto no GitHub, e somos gratos à comunidade por contribuir com correções de bugs e melhorias. Leia abaixo para saber como você pode participar da melhoria da Atena e da Impulso network.
+O desenvolvimento da Atena acontece a céu aberto no GitHub, e somos gratos à comunidade por contribuir com correções de bugs e melhorias. Leia abaixo para saber como você pode participar da melhoria da Atena e da Impulso network.
 
 ### [Código de Conduta](CONTRIBUTING.md)
 
@@ -77,7 +77,7 @@ Leia nosso [guia de contribuição](CONTRIBUTING.md) para conhecer nosso process
 
 ## Comunidade
 
-Todos os comentários e sugestões são bem-vindos!
+Todos os comentários e sugestões são bem-vindas e podem ser feitas via Issues no Github ou lá no Slack!
 
 💬 Junte-se a comunidade em [Impulso Network](https://impulso.network)
 

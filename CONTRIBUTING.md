@@ -15,7 +15,7 @@ Por favor, note que temos um código de conduta, por favor, siga-o em todas as s
 
 ### Nosso compromisso
 
-No interesse de promover um ambiente aberto e acolhedor, nós, como colaboradores e mantenedores, comprometemo-nos a tornar a participação em nosso projeto e em nossa comunidade uma experiência livre de assédio para todos, independentemente da idade, tamanho do corpo, deficiência, etnia, identidade e expressão de gênero. nível de experiência, nacionalidade, aparência pessoal, raça, religião ou identidade e orientação sexual.
+No interesse de promover um ambiente aberto e acolhedor, nós, como colaboradores e mantenedores, comprometemo-nos a tornar a participação em nosso projeto e em nossa comunidade uma experiência livre de preconceito, independentemente da idade, tamanho, deficiência, etnia, identidade e expressão de gênero. nível de experiência, nacionalidade, aparência pessoal, raça, religião ou identidade e orientação sexual.
 
 ### Nossos Padrões
 
@@ -39,9 +39,9 @@ Exemplos de comportamento inaceitável pelos participantes:
 
 ### Nossas Responsabilidades
 
-Os mantenedores do projeto são responsáveis ​​por esclarecer os padrões de comportamento aceitável e devem tomar medidas corretivas apropriadas e justas em resposta a quaisquer casos de comportamento inaceitável.
+Os mantenedores do projeto são responsáveis ​​por esclarecer os padrões de comportamento aceitáveis e devem tomar medidas corretivas apropriadas e justas em respostas a quaisquer casos de comportamentos inaceitáveis.
 
-Os mantenedores do projeto têm o direito e a responsabilidade de remover, editar ou rejeitar comentários, commits, códigos, edições do wiki, questões e outras contribuições que não estejam alinhadas a este Código de Conduta, ou banir temporariamente ou permanentemente qualquer colaborador por outros comportamentos que julgam inapropriado, ameaçador, ofensivo ou prejudicial.
+Os mantenedores do projeto têm o direito e a responsabilidade de remover, editar ou rejeitar comentários, commits, códigos, edições do wiki, questões e outras contribuições que não estejam alinhadas a este Código de Conduta e banir temporariamente ou permanentemente qualquer colaborador por outros comportamentos que julgam inapropriado, ameaçador, ofensivo ou prejudicial.
 
 ### Escopo
 

@@ -11,7 +11,7 @@
 - No terminal execute o seguinte comando `./ngrok http 4390`
 - Copie o endereço
 
-_Obs.: o ngrok muda contantemente a url_
+_Obs.: o ngrok muda constantemente a url_
 
 ### Criando um Slack App
 
