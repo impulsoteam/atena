@@ -1,52 +1,51 @@
-<p align="center">
-  <a href="https://impulso.network/" target="_blank" alt="Impulso Network">
-    <img src="https://impulso.network/assets/images/impulsonetwork-logo.svg" alt="Impulso" width="350px" />
-  </a>
-</p>
+<img src="https://impulso.network/assets/images/impulsonetwork-logo.svg" style="width: 350px">
 
+[![Build Status](https://dev.azure.com/impulsonetwork/Atena/_apis/build/status/impulsonetwork.atena)](https://dev.azure.com/impulsonetwork/Atena/_build/latest?definitionId=3)
 [![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=about)](http://impulso.network)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/impulsonetwork.svg?style=social&label=Follow)](https://twitter.com/impulsonetwork)
+
 
 ## Atena v.0.1
 
-Atena is an initiative of the impulse in collaboration with several Impulsers, with the objective to promote the engagement and to reward the activities and efforts of each person in the Impulse. In it you will be able to acquire Experience Points (XP) through the execution of several activities and based on these two factors the Impulsers will receive levels and achievements recognizing the effort expended in the activities.
+A Atena é uma iniciativa da Impulso Network em colaboração com vários Impulsers, com o objetivo de promover o engajamento e recompensar as atividades e esforços de cada pessoa na Impulso. Nele você poderá adquirir Pontos de Experiência (XP) através da execução de diversas atividades e com base nesses dois fatores os Impulsers receberão níveis e conquistas, reconhecendo o esforço despendido nas atividades.
 
-## Setup
+## Configuração
 
-A step-by-step  of the minimal setup you need to get a Atena running.
+Um passo-a-passo da configuração mínima que você precisa para obter o The Arena em execução.
 
-### Initial configuration
+### Configuração inicial
 
-- Install [Mongodb](https://docs.mongodb.com/manual/installation/)
-- Create your slack app - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
+- Instalar o mongodb [Mongodb](https://docs.mongodb.com/manual/installation/)
+- Criar um aplicativo Slack utilizando ngrok - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
 
-### Developing
+### Desenvolvimento
 
-- Make `fork` for your user account, then `clone`
+- Faça um  `fork` do projeto para a tua conta, e então faça o `clone`
 ```sh
 > git clone https://github.com/[your account]/atena
 ```
 
-- Navigate to the destination folder
+- Navegue até a pasta de desttino onde fez o clone do projeto
 ```sh
 > cd atena/
 ```
 
-- Install `yarn` from npm (global is optional)
+- Instale o `yarn` a partir do `npm` (ser global é opcional)
 ```sh
 > npm i yarn -g
 ```
 
-- Install repositories using `yarn`
+- instalar os repositorios utilizando o `yarn`
 ```sh
 > yarn -i
 ```
 
-- Add remote reference
+- Adicionar referências remotas
 ```sh
 > git remote add upstream https://github.com/impulsonetwork/atena
 ```
-- Create your .env file using .env.example model
+- Criar o arquivo `.env` com as suas configurações utilizando o `.env.example` presente no projeto
 ```
 PORT=4390
 SLACK_SIGNIN_EVENTS=
@@ -56,37 +55,35 @@ MONGODB_URI=mongodb://localhost/atena
 CHANNELS=CCWSMJZ6U CCXCXJWBW
 ```
 
-### Running
-- Run the server using the following command:
+### Executando
+- Inicie o servidor utilizando o seguinte comando:
 ```sh
 > yarn start:dev
 ```
 
-## Contributing
+## Contribuindo
 
-The main purpose of this repository is to continue to evolve Atena, making it faster and easier to use.
+O principal objetivo deste repositório é continuar a evoluir o Atena, tornando-o mais rápido e fácil de usar.
 
-Development of Atena happens in the open on GitHub, and we are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving Atena and of Impulso Network.
+O desenvolvimento do Atena acontece a céu aberto no GitHub, e somos gratos à comunidade por contribuir com correções de bugs e melhorias. Leia abaixo para saber como você pode participar da melhoria da Atena e da Impulso network.
 
+### [Código de Conduta](CONTRIBUTING.md)
 
-### [Code of Conduct](CONTRIBUTING.md)
+A Impulso Network adotou um Código de Conduta que esperamos que os participantes do projeto sigam. Por favor, leia [Código de Conduta](CONTRIBUTING.md) para que você possa entender quais ações serão e não serão toleradas.
 
-Impulso Network has adopted a Code of Conduct that we expect project participants to adhere to. Please read [Code of Coodult](CONTRIBUTING.md) so that you can understand what actions will and will not be tolerated.
+### [Guia de Contribuição](CONTRIBUTING.md)
 
-### [Contributing Guide](CONTRIBUTING.md)
+Leia nosso [guia de contribuição](CONTRIBUTING.md) para conhecer nosso processo de desenvolvimento, como propor correções de erros e melhorias, e como construir e testar suas alterações no Atena.
 
-Read our [contributing guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Atena.
+## Comunidade
 
+Todos os comentários e sugestões são bem-vindos!
 
-## Community
+💬 Junte-se a comunidade em [Impulso Network](https://impulso.network)
 
-All feedback and suggestions are welcome!
+## Contribuidores
 
-💬 Join the community on [Impulso Network](https://impulso.network)
-
-## Contributors
-
-This project exists thanks to all the people who contribute:
+Este projeto existe graças a todas as pessoas que contribuiem ativamente, sendo elas:
 
 <p>
 <img src="https://ca.slack-edge.com/T7ZU9V5S6-UCJA2A8Q5-1641bfb963de-48" width="60px">
@@ -100,4 +97,4 @@ This project exists thanks to all the people who contribute:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+Este projeto está licenciado sob a licença MIT - consulte o arquivo [LICENSE.md](LICENSE.md) para obter detalhes.
