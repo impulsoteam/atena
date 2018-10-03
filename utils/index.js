@@ -2,6 +2,7 @@ import config from "config-yml";
 import dotenv from "dotenv";
 import request from "async-request";
 
+import { sendCollect, sendBotCollect } from "./analytics";
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
@@ -72,12 +73,16 @@ export const calculateReceivedScore = interaction => {
       score = config.xprules.reactions.receive.positive;
     } else if (interaction.description === "-1") {
       score = config.xprules.reactions.receive.negative;
+    } else if (interaction.description === "atena") {
+      score = config.xprules.reactions.atena;
     }
   } else if (interaction.type === "reaction_removed") {
     if (interaction.description === "+1") {
       score = config.xprules.reactions.receive.positive * -1;
     } else if (interaction.description === "-1") {
       score = config.xprules.reactions.receive.negative * -1;
+    } else if (interaction.description === "atena") {
+      score = config.xprules.reactions.atena * -1;
     }
   } else if (interaction.type === "thread") {
     score = config.xprules.threads.receive;
@@ -121,5 +126,15 @@ export const getStyleLog = style => {
 };
 
 export const analyticsSendCollect = e => {
-  require("./analytics").sendCollect(e);
+  sendCollect(e);
+};
+
+export const analyticsSendBotCollect = e => {
+  sendBotCollect(e);
+};
+
+export const isCoreTeam = userId => {
+  const allCoreTeam = config.coreteam.members;
+
+  return !!allCoreTeam.find(member => member === userId);
 };

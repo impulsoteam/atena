@@ -6,6 +6,7 @@ threads:
   send: 2
   receive: 1
 reactions:
+  atena: 0.1
   send: 1
   receive:
     positive: 2
