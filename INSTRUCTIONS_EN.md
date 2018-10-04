@@ -2,22 +2,22 @@
 
 ### Sandbox
 
-- Join sandbox (Slack)[https://join.slack.com/t/impulso-sandbox/shared_invite/enQtNDQwODY3MzcxNDEzLTc1NTlkODA4NmY0YjJkZWYyMWRiOTE2MTA5YzczMzVhNzQzZDY0ZDVkYjI3ZDFlMTQ2ZmFmOTRmODNmMWRhOGY]
+- Join sandbox [Slack](https://join.slack.com/t/impulso-sandbox/shared_invite/enQtNDQwODY3MzcxNDEzLTc1NTlkODA4NmY0YjJkZWYyMWRiOTE2MTA5YzczMzVhNzQzZDY0ZDVkYjI3ZDFlMTQ2ZmFmOTRmODNmMWRhOGY)
 
-### Use ngrock
+### Use ngrok
 
-- Install (ngrock)[https://ngrok.com/]
+- Install [ngrok](https://ngrok.com/)
 - Unzip download folder
 - Run on terminal `./ngrok http 4390`
 - Copy forwarding address
 
 <span style="font-style: italic">
-Note: ngrock constantly changes this URL
+Note: ngrok constantly changes this URL
 </span>
 
 ### Create Slack app
 
-- (Building Slack app)[https://api.slack.com/slack-apps]
+-[Building Slack app](https://api.slack.com/slack-apps)
 - Create a Slack app
 
   - App Name: `atena-sandbox-{yourname}`
@@ -25,7 +25,7 @@ Note: ngrock constantly changes this URL
 
 - Setup:
   - Menu > Features > Event Subscriptions: activate
-    - Request URL: Put ngrock address - `http://{your-number}.ngrok.io/slack/events`
+    - Request URL: Put ngrok address - `http://{your-number}.ngrok.io/slack/events`
     - Add Workspace Event:
       - `message.channels`, `reaction_added` and `reaction_removed`
     - Save Changes
