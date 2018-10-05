@@ -105,16 +105,16 @@ export const find = async userId => {
   return result || _throw("Error finding a specific user");
 };
 
-export const findAll = async limit => {
+export const findAll = async (isCoreTeam, limit) => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.find({
     score: { $gt: 0 },
-    isCoreTeam: false
+    isCoreTeam: isCoreTeam || false
   })
     .sort({
       score: -1
     })
-    .limit(limit || 15)
+    .limit(limit || 20)
     .exec();
   result.map(user => {
     user.score = parseInt(user.score);
@@ -163,20 +163,20 @@ export const findCoreTeam = async userId => {
   return result || _throw("Error finding a specific user");
 };
 
-export const findAllCoreTeam = async limit => {
-  const UserModel = mongoose.model("User");
-  const result = await UserModel.findAll({
-    score: { $gt: 0 },
-    isCoreTeam: true
-  })
-    .sort({
-      score: -1
-    })
-    .limit(limit || 15)
-    .exec();
+// export const findAllCoreTeam = async limit => {
+//   const UserModel = mongoose.model("User");
+//   const result = await UserModel.findAll({
+//     score: { $gt: 0 },
+//     isCoreTeam: true
+//   })
+//     .sort({
+//       score: -1
+//     })
+//     .limit(limit || 15)
+//     .exec();
 
-  return result || _throw("Error finding a specific user");
-};
+//   return result || _throw("Error finding a specific user");
+// };
 
 export default {
   find,
@@ -185,6 +185,5 @@ export default {
   updateParentUser,
   rankingPosition,
   checkCoreTeam,
-  findCoreTeam,
-  findAllCoreTeam
+  findCoreTeam
 };

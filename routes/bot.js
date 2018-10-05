@@ -48,7 +48,7 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
   };
 
   try {
-    users = await userController.findAll(5);
+    users = await userController.findAll(false, 5);
     myPosition = await userController.rankingPosition(req.body.user_id);
     response.text =
       users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
@@ -79,7 +79,7 @@ router.post("/coreteamranking", urlencodedParser, async (req, res) => {
 
   if (isCoreTeam(req.body.user_id)) {
     try {
-      users = await userController.findAllCoreTeam(5);
+      users = await userController.findAll(true, 5);
       myPosition = await userController.rankingPosition(req.body.user_id);
       response.text =
         users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
@@ -89,7 +89,7 @@ router.post("/coreteamranking", urlencodedParser, async (req, res) => {
         } com ${user.score} XP, no nível ${user.level}`
       }));
       response.attachments.push({
-        text: `Ah, e você está na posição ${myPosition} do raking`
+        text: `Ah, e você está na posição ${myPosition} do ranking`
       });
 
       analyticsSendBotCollect(req.body);
