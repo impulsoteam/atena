@@ -2,7 +2,8 @@ import config from "config-yml";
 import mongoose from "mongoose";
 import userController from "./user";
 
-import { calculateScore } from "../utils";
+import { calculateScore, timeDifference } from "../utils";
+import { lastMessageTime } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 
 const normalize = data => {
@@ -52,6 +53,13 @@ export const save = async data => {
   const todayLimitStatus = todayLimitScore - score;
   const instance = new InteractionModel(interaction);
   const response = instance.save();
+
+  if (
+    interaction.type === "message" &&
+    timeDifference(interaction.date, lastMessageTime(interaction.user) < 5)
+  ) {
+    return _throw("User makes flood");
+  }
 
   if (todayLimitStatus > 0) {
     userController.update(interaction);
@@ -117,9 +125,25 @@ export const remove = async data => {
   return _throw("Error removing interactions");
 };
 
+export const lastMessage = async user => {
+  const InteractionModel = mongoose.model("Interaction");
+  const result = await InteractionModel.find({
+    user: user,
+    type: "message"
+  })
+    .sort({
+      date: -1
+    })
+    .limit(1)
+    .exec();
+
+  return result || _throw("Error finding last interaction by user");
+};
+
 export default {
   find,
   remove,
   save,
-  todayScore
+  todayScore,
+  lastMessage
 };
