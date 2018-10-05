@@ -163,21 +163,6 @@ export const findCoreTeam = async userId => {
   return result || _throw("Error finding a specific user");
 };
 
-// export const findAllCoreTeam = async limit => {
-//   const UserModel = mongoose.model("User");
-//   const result = await UserModel.findAll({
-//     score: { $gt: 0 },
-//     isCoreTeam: true
-//   })
-//     .sort({
-//       score: -1
-//     })
-//     .limit(limit || 15)
-//     .exec();
-
-//   return result || _throw("Error finding a specific user");
-// };
-
 export default {
   find,
   findAll,
