@@ -116,7 +116,8 @@ router.post("/feedback", urlencodedParser, async (req, res) => {
     )}&user=${process.env.SLACK_USER_FEEDBACK}&pretty=1`;
 
     const response = await request(url, { method: "POST" });
-    console.log(response);
+
+    return response;
   } catch (e) {
     console.log(getStyleLog("red"), e);
   }
