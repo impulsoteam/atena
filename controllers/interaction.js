@@ -1,8 +1,9 @@
 import config from "config-yml";
 import mongoose from "mongoose";
+import moment from "moment";
 import userController from "./user";
 
-import { calculateScore, timeDifference } from "../utils";
+import { calculateScore } from "../utils";
 import { lastMessageTime } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 
@@ -56,7 +57,10 @@ export const save = async data => {
 
   if (
     interaction.type === "message" &&
-    timeDifference(interaction.date, lastMessageTime(interaction.user) < 5)
+    moment(interaction.date).diff(
+      lastMessageTime(interaction.user),
+      "seconds"
+    ) < 5
   ) {
     return _throw("User makes flood");
   }

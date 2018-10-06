@@ -138,26 +138,3 @@ export const isCoreTeam = userId => {
 
   return !!allCoreTeam.find(member => member === userId);
 };
-
-export const timeDifference = (first, last) => {
-  const firstDate = new Date(first);
-  const lastDate = new Date(last);
-  const firstDateUTC = Date.UTC(
-    firstDate.getFullYear(),
-    firstDate.getMonth(),
-    firstDate.getDate(),
-    firstDate.getMinutes(),
-    firstDate.getSeconds()
-  );
-  const lastDateUTC = Date.UTC(
-    lastDate.getFullYear(),
-    lastDate.getMonth(),
-    lastDate.getDate(),
-    lastDate.getMinutes(),
-    lastDate.getSeconds()
-  );
-
-  const result = Math.floor(firstDateUTC - lastDateUTC) / 1000;
-
-  return result;
-};
