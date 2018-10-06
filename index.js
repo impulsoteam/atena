@@ -6,10 +6,13 @@ import path from "path";
 import postcssMiddleware from "postcss-middleware";
 import sassMiddleware from "node-sass-middleware";
 import winston from "winston";
+import { checkUsersInactivity } from "./cron";
 
 import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
+
+checkUsersInactivity();
 
 const logger = winston.createLogger({
   level: "info",
