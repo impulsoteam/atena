@@ -96,27 +96,27 @@ export const update = async interaction => {
   }
 };
 
-export const find = async userId => {
+export const find = async (userId, isCoreTeam) => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({
     slackId: userId,
-    isCoreTeam: false
+    isCoreTeam: isCoreTeam || false
   }).exec();
   result.score = parseInt(result.score);
 
   return result || _throw("Error finding a specific user");
 };
 
-export const findAll = async limit => {
+export const findAll = async (isCoreTeam, limit) => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.find({
     score: { $gt: 0 },
-    isCoreTeam: false
+    isCoreTeam: isCoreTeam || false
   })
     .sort({
       score: -1
     })
-    .limit(limit || 15)
+    .limit(limit || 20)
     .exec();
   result.map(user => {
     user.score = parseInt(user.score);
@@ -126,7 +126,7 @@ export const findAll = async limit => {
 };
 
 export const rankingPosition = async userId => {
-  const allUsers = await findAll();
+  const allUsers = await findAll(true);
   const position = allUsers.map(e => e.slackId).indexOf(userId) + 1;
 
   return position;
@@ -154,39 +154,11 @@ export const checkCoreTeam = async () => {
   return UsersBulk;
 };
 
-export const findCoreTeam = async userId => {
-  const UserModel = mongoose.model("User");
-  const result = await UserModel.findOne({
-    slackId: userId,
-    isCoreTeam: true
-  }).exec();
-  result.score = parseInt(result.score);
-
-  return result || _throw("Error finding a specific user");
-};
-
-export const findAllCoreTeam = async limit => {
-  const UserModel = mongoose.model("User");
-  const result = await UserModel.findAll({
-    score: { $gt: 0 },
-    isCoreTeam: true
-  })
-    .sort({
-      score: -1
-    })
-    .limit(limit || 15)
-    .exec();
-
-  return result || _throw("Error finding a specific user");
-};
-
 export default {
   find,
   findAll,
   update,
   updateParentUser,
   rankingPosition,
-  checkCoreTeam,
-  findCoreTeam,
-  findAllCoreTeam
+  checkCoreTeam
 };
