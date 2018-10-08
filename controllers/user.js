@@ -7,6 +7,7 @@ import {
   getUserInfo,
   isCoreTeam
 } from "../utils";
+import { sendHelloOnSlack } from "../utils/bot";
 import { _throw } from "../helpers";
 
 export const updateParentUser = async interaction => {
@@ -87,6 +88,7 @@ export const update = async interaction => {
         isCoreTeam: isCoreTeam(interaction.user)
       };
       const instance = new UserModel(obj);
+      sendHelloOnSlack(obj.slackId);
       return instance.save();
     }
   } else {
