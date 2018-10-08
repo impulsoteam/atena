@@ -33,6 +33,11 @@ const interactionSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  lastUpdate: {
+    type: Date,
+    required: true,
+    default: Date.now
+  },
   date: {
     type: Date,
     required: true,

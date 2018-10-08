@@ -48,7 +48,7 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
   };
 
   try {
-    users = await userController.findAll(5);
+    users = await userController.findAll(false, 5);
     myPosition = await userController.rankingPosition(req.body.user_id);
     response.text =
       users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
@@ -71,7 +71,6 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
 
 router.post("/coreteamranking", urlencodedParser, async (req, res) => {
   let users = [];
-  let myPosition = 0;
   let response = {
     text: "Veja as primeiras pessoas do ranking do Core Team:",
     attachments: []
@@ -79,8 +78,7 @@ router.post("/coreteamranking", urlencodedParser, async (req, res) => {
 
   if (isCoreTeam(req.body.user_id)) {
     try {
-      users = await userController.findAllCoreTeam(5);
-      myPosition = await userController.rankingPosition(req.body.user_id);
+      users = await userController.findAll(true, 5);
       response.text =
         users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
       response.attachments = users.map((user, index) => ({
@@ -88,9 +86,6 @@ router.post("/coreteamranking", urlencodedParser, async (req, res) => {
           user.slackId === req.body.user_id ? "você" : user.name
         } com ${user.score} XP, no nível ${user.level}`
       }));
-      response.attachments.push({
-        text: `Ah, e você está na posição ${myPosition} do raking`
-      });
 
       analyticsSendBotCollect(req.body);
     } catch (e) {
@@ -116,7 +111,8 @@ router.post("/feedback", urlencodedParser, async (req, res) => {
     )}&user=${process.env.SLACK_USER_FEEDBACK}&pretty=1`;
 
     const response = await request(url, { method: "POST" });
-    console.log(response);
+
+    return response;
   } catch (e) {
     console.log(getStyleLog("red"), e);
   }
