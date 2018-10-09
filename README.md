@@ -81,20 +81,6 @@ Todos os comentários e sugestões são bem-vindas e podem ser feitas via Issues
 
 💬 Junte-se a comunidade em [Impulso Network](https://impulso.network)
 
-## Contribuidores
-
-Este projeto existe graças a todas as pessoas que contribuiem ativamente, sendo elas:
-
-<p>
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-UCJA2A8Q5-1641bfb963de-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-UB348CP6Z-0c38a12a4dc6-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-U9670TYSJ-81d8f97e5554-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-U7ZD2FCBB-38b85b8fe171-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-UAR3DR2AV-g611e782a6b7-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-UCDNR1N59-5ae8f8e81f9f-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-UCJPCNB70-28c3b996d546-48" width="60px">
-</p>
-
 ## License
 
 Este projeto está licenciado sob a licença MIT - consulte o arquivo [LICENSE.md](LICENSE.md) para obter detalhes.
