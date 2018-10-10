@@ -30,7 +30,6 @@
   "dependencies": {
     "@slack/client": "^4.6.0",
     "@slack/events-api": "^2.1.0",
-    "async-request": "^1.2.0",
     "autoprefixer": "^9.1.5",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^9.0.0",
@@ -45,6 +44,7 @@
     "fs": "^0.0.1-security",
     "googleapis": "27",
     "if-env": "^1.0.4",
+    "make-requests": "^0.1.2",
     "moment": "^2.22.2",
     "mongoose": "^5.2.14",
     "morgan": "^1.9.0",

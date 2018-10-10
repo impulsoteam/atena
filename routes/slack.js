@@ -41,7 +41,14 @@ slackEvents.on("reaction_removed", e => handleEvent(e));
 slackEvents.on("error", console.error);
 
 router.get("/user/:id", async (req, res) => {
-  let user = await getUserInfo(req.params.id);
+  let user = {};
+
+  try {
+    user = await await getUserInfo(req.params.id);
+  } catch (e) {
+    console.log(getStyleLog("red"), `\n-- ${e}`);
+  }
+
   res.send({
     user: user && user.profile
   });
