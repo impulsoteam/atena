@@ -125,8 +125,8 @@ export const findAll = async (isCoreTeam, limit) => {
   return result || _throw("Error finding all users");
 };
 
-export const rankingPosition = async userId => {
-  const allUsers = await findAll(true);
+export const rankingPosition = async (isCoreTeam, userId) => {
+  const allUsers = await findAll(isCoreTeam);
   const position = allUsers.map(e => e.slackId).indexOf(userId) + 1;
 
   return position;
