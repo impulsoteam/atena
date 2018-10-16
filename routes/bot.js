@@ -23,7 +23,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
     response = {
       text: `Olá ${user.name}, atualmente você está no nível ${
         user.level
-      } com ${user.score} XP`,
+        } com ${user.score} XP`,
       attachments: [
         {
           text: `Ah, e você está na posição ${myPosition} do raking`
@@ -40,27 +40,10 @@ router.post("/score", urlencodedParser, async (req, res) => {
 });
 
 router.post("/ranking", urlencodedParser, async (req, res) => {
-  let users = [];
-  let myPosition = 0;
-  let response = {
-    text: "Veja as primeiras pessoas do ranking:",
-    attachments: []
-  };
+  let response = {};
 
   try {
-    users = await userController.findAll(false, 5);
-    myPosition = await userController.rankingPosition(req.body.user_id);
-    response.text =
-      users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
-    response.attachments = users.map((user, index) => ({
-      text: `${index + 1}º lugar está ${
-        user.slackId === req.body.user_id ? "você" : user.name
-      } com ${user.score} XP, no nível ${user.level}`
-    }));
-    response.attachments.push({
-      text: `Ah, e você está na posição ${myPosition} do raking`
-    });
-
+    response = getRanking(req, isCoreTeam(req.body.user_id));
     analyticsSendBotCollect(req.body);
   } catch (e) {
     console.log(e);
@@ -70,23 +53,11 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
 });
 
 router.post("/coreteamranking", urlencodedParser, async (req, res) => {
-  let users = [];
-  let response = {
-    text: "Veja as primeiras pessoas do ranking do Core Team:",
-    attachments: []
-  };
+  let response = {};
 
   if (isCoreTeam(req.body.user_id)) {
     try {
-      users = await userController.findAll(true, 5);
-      response.text =
-        users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
-      response.attachments = users.map((user, index) => ({
-        text: `${index + 1}º lugar está ${
-          user.slackId === req.body.user_id ? "você" : user.name
-        } com ${user.score} XP, no nível ${user.level}`
-      }));
-
+      response = getRanking(req, true);
       analyticsSendBotCollect(req.body);
     } catch (e) {
       console.log(e);
@@ -107,9 +78,9 @@ router.post("/feedback", urlencodedParser, async (req, res) => {
 
     const url = `https://slack.com/api/chat.postEphemeral?token=${
       process.env.SLACK_TOKEN
-    }&channel=${config.channels.valid_channels[0]}&text=${encodeURIComponent(
-      `Tio, ${user.name} mandou um super feedback, saca só: _${req.body.text}_`
-    )}&user=${process.env.SLACK_USER_FEEDBACK}&pretty=1`;
+      }&channel=${config.channels.valid_channels[0]}&text=${encodeURIComponent(
+        `Tio, ${user.name} mandou um super feedback, saca só: _${req.body.text}_`
+      )}&user=${process.env.SLACK_USER_FEEDBACK}&pretty=1`;
 
     response = await request(url, "POST");
   } catch (e) {
@@ -123,5 +94,35 @@ router.post("/feedback", urlencodedParser, async (req, res) => {
 
   return response;
 });
+
+const getRanking = async (req, isCoreTeamMember) => {
+  let users = [];
+  let myPosition = 0;
+  let response = {
+    text: "Veja as primeiras pessoas do ranking:",
+    attachments: []
+  };
+
+  try {
+    users = await userController.findAll(isCoreTeamMember, 5);
+    myPosition = await userController.rankingPosition(isCoreTeamMember, req.body.user_id);
+    response.text = users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
+    response.attachments = users.map((user, index) => ({
+      text: `${index + 1}º lugar está ${
+        user.slackId === req.body.user_id ? "você" : user.name
+        } com ${user.score} XP, no nível ${user.level}`
+    }));
+
+    response.attachments.push({
+      text: `Ah, e você está na posição ${myPosition} do raking`
+    });
+
+    analyticsSendBotCollect(req.body);
+  } catch (e) {
+    console.log(e);
+  }
+
+  return response;
+};
 
 export default router;
