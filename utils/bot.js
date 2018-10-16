@@ -1,10 +1,10 @@
 import config from "config-yml";
-import request from "async-request";
-import { getStyleLog } from "./index";
+import request from "make-requests";
 
 export const sendHelloOnSlack = async userId => {
   const message =
     "Olá meu cavaleiro, você acabou de ganhar sua armadura de bronze para conseguir participar do nosso jogo!";
+  let response = {};
 
   try {
     const url = `https://slack.com/api/chat.postEphemeral?token=${
@@ -13,11 +13,10 @@ export const sendHelloOnSlack = async userId => {
       message
     )}&user=${userId}&pretty=1`;
 
-    const response = await request(url, { method: "POST" });
-    console.log(response);
+    response = await request(url, "POST");
   } catch (e) {
-    console.log(getStyleLog("red"), e);
+    response.error = e;
   }
 
-  return true;
+  return response;
 };

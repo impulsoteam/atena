@@ -1,4 +1,4 @@
-import request from "async-request";
+import request from "make-requests";
 import querystring from "querystring";
 
 import { getStyleLog } from "./index";
@@ -30,13 +30,13 @@ export const sendCollect = async e => {
     const url = `https://www.google-analytics.com/collect?${querystring.stringify(
       params
     )}`;
-
+    let response = {};
     try {
-      const response = await request(url, { method: "POST" });
-      return response;
+      response = await request(url, "POST");
     } catch (e) {
       console.log(getStyleLog("red"), e);
     }
+    return response;
   } else {
     console.log(
       getStyleLog("yellow"),
@@ -69,13 +69,13 @@ export const sendBotCollect = async e => {
     const url = `https://www.google-analytics.com/collect?${querystring.stringify(
       params
     )}`;
-
+    let response = {};
     try {
-      const response = await request(url, { method: "POST" });
-      return response;
+      response = await request(url, "POST");
     } catch (e) {
       console.log(getStyleLog("red"), e);
     }
+    return response;
   } else {
     console.log(
       getStyleLog("yellow"),

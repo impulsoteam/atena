@@ -1,11 +1,11 @@
 import config from "config-yml";
 import express from "express";
-import request from "async-request";
+import request from "make-requests";
 import bodyParser from "body-parser";
 import { analyticsSendBotCollect } from "../utils";
 
 import userController from "../controllers/user";
-import { getStyleLog, isCoreTeam } from "../utils";
+import { isCoreTeam } from "../utils";
 const router = express.Router();
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
@@ -101,6 +101,7 @@ router.post("/coreteamranking", urlencodedParser, async (req, res) => {
 
 router.post("/feedback", urlencodedParser, async (req, res) => {
   let user = {};
+  let response = {};
   try {
     user = await userController.find(req.body.user_id);
 
@@ -110,17 +111,17 @@ router.post("/feedback", urlencodedParser, async (req, res) => {
       `Tio, ${user.name} mandou um super feedback, saca só: _${req.body.text}_`
     )}&user=${process.env.SLACK_USER_FEEDBACK}&pretty=1`;
 
-    const response = await request(url, { method: "POST" });
-
-    return response;
+    response = await request(url, "POST");
   } catch (e) {
-    console.log(getStyleLog("red"), e);
+    response.error = e;
   }
 
   res.json({
     text:
       "Super Obrigado pelo feedback, vou compartilhar isso com Seiya e os outros cavaleiros já! =D"
   });
+
+  return response;
 });
 
 export default router;
