@@ -47,9 +47,16 @@ const reactioRemoved = {
   event_ts: "1537559720.000100"
 };
 
+const inactive = {
+  type: "inactive",
+  text: "O usuário está sem interagir por mais de 14 dias",
+  user: "UCX1DSFEV"
+}
+
 export default {
   message,
   reactionAdded,
   reactioRemoved,
-  thread
+  thread,
+  inactive
 };
