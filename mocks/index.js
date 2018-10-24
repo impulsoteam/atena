@@ -51,7 +51,7 @@ const inactive = {
   type: "inactive",
   text: "O usuário está sem interagir por mais de 14 dias",
   user: "UCX1DSFEV"
-}
+};
 
 export default {
   message,

@@ -11,3 +11,5 @@ reactions:
   receive:
     positive: 2
     negative: -1
+inactive:
+  mindays: 14
