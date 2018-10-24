@@ -12,4 +12,4 @@ reactions:
     positive: 2
     negative: -1
 inactive:
-  mindays: 14
+  min days: 14
