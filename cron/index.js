@@ -1,7 +1,5 @@
-import cron from "node-cron";
+import cronUsersInactivity from "./inactivity";
 
-export const checkUsersInactivity = async () => {
-  cron.schedule("0 3 * * *", () => {
-    // check users activity
-  });
+export default () => {
+  cronUsersInactivity();
 };
