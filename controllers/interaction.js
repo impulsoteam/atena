@@ -117,6 +117,16 @@ export const remove = async data => {
   return _throw("Error removing interactions");
 };
 
+// export const inactivity = async user => {
+//   const invactivityDateRule = Date.now; //
+//   const InteractionModel = mongoose.model("Interaction");
+//   const response = await InteractionModel.find({
+//     $or: [{ type: "inactive" }, { date: invactivityDateRule }]
+//   });
+
+//   return response || _throw("Error checking user inactivity");
+// };
+
 export default {
   find,
   remove,
