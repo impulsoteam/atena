@@ -26,7 +26,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
         } com ${user.score} XP`,
       attachments: [
         {
-          text: `Ah, e você está na posição ${myPosition} do raking`
+          text: `Ah, e você está na posição ${myPosition} do ranking`
         }
       ]
     };
@@ -114,7 +114,7 @@ const getRanking = async (req, isCoreTeamMember) => {
     }));
 
     response.attachments.push({
-      text: `Ah, e você está na posição ${myPosition} do raking`
+      text: `Ah, e você está na posição ${myPosition} do ranking`
     });
 
     analyticsSendBotCollect(req.body);
