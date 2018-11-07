@@ -2,7 +2,7 @@ import config from "config-yml";
 import dotenv from "dotenv";
 import request from "make-requests";
 
-import userController from '../controllers/user';
+import userController from "../controllers/user";
 import { sendCollect, sendBotCollect } from "./analytics";
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();

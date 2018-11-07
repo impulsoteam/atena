@@ -97,7 +97,6 @@ router.post("/feedback", urlencodedParser, async (req, res) => {
 });
 
 router.post("/sendpoints", urlencodedParser, async (req, res) => {
-  console.log("====================", req.body);
   let response = {
     text: "você tá tentando dar pontos prum coleguinha, né?!"
   };
