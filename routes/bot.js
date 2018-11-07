@@ -105,7 +105,10 @@ const getRanking = async (req, isCoreTeamMember) => {
 
   try {
     users = await userController.findAll(isCoreTeamMember, 5);
-    myPosition = await userController.rankingPosition(req.body.user_id, isCoreTeamMember);
+    myPosition = await userController.rankingPosition(
+      req.body.user_id,
+      isCoreTeamMember
+    );
     response.text =
       users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
     response.attachments = users.map((user, index) => ({
