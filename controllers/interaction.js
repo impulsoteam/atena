@@ -58,7 +58,7 @@ export const save = async data => {
   if (
     interaction.type === "message" &&
     moment(interaction.date).diff(
-      lastMessageTime(interaction.user),
+      await lastMessageTime(interaction.user),
       "seconds"
     ) < 5
   ) {
