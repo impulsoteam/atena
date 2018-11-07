@@ -2,9 +2,10 @@ import config from "config-yml";
 import express from "express";
 import request from "make-requests";
 import bodyParser from "body-parser";
-import { analyticsSendBotCollect } from "../utils";
+import { analyticsSendBotCollect, getRanking } from "../utils";
 
 import userController from "../controllers/user";
+import interactionController from "../controllers/interaction";
 import { isCoreTeam } from "../utils";
 const router = express.Router();
 
@@ -95,38 +96,39 @@ router.post("/feedback", urlencodedParser, async (req, res) => {
   return response;
 });
 
-const getRanking = async (req, isCoreTeamMember) => {
-  let users = [];
-  let myPosition = 0;
+router.post("/sendpoints", urlencodedParser, async (req, res) => {
+  console.log("====================", req.body);
   let response = {
-    text: "Veja as primeiras pessoas do ranking:",
-    attachments: []
+    text: "você tá tentando dar pontos prum coleguinha, né?!"
   };
+  const value = +req.body.text.split("> ")[1];
+  const userId = req.body.text
+    .split("|")[0]
+    .substring(2, req.body.text.split("|")[0].length);
 
-  try {
-    users = await userController.findAll(isCoreTeamMember, 5);
-    myPosition = await userController.rankingPosition(
-      req.body.user_id,
-      isCoreTeamMember
-    );
+  if (config.coreteam.admins.some(user => user === req.body.user_id)) {
+    try {
+      await interactionController.manualInteractions({
+        type: "manual",
+        user: userId,
+        text: `você recebeu esses ${value || 0} pontos de ${req.body
+          .user_name || "ninguém"}`,
+        value: value
+      });
+
+      response.text = `você tá dando ${value || 0} pontos para ${userId ||
+        "ninguém"}`;
+    } catch (e) {
+      response.text =
+        "Ocorreu um erro nessa sua tentativa legal de dar pontos para outro coleguinha";
+      console.log(e);
+    }
+  } else {
     response.text =
-      users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
-    response.attachments = users.map((user, index) => ({
-      text: `${index + 1}º lugar está ${
-        user.slackId === req.body.user_id ? "você" : user.name
-      } com ${user.score} XP, no nível ${user.level}`
-    }));
-
-    response.attachments.push({
-      text: `Ah, e você está na posição ${myPosition} do ranking`
-    });
-
-    analyticsSendBotCollect(req.body);
-  } catch (e) {
-    console.log(e);
+      "Nobre cavaleiro(a) da casa de bronze, infelizmente sua armadura não dá permissão para tal façanha =/";
   }
 
-  return response;
-};
+  res.json(response);
+});
 
 export default router;
