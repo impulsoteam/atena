@@ -5,7 +5,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/impulsonetwork.svg?style=social&label=Follow)](https://twitter.com/impulsonetwork)
 
-
 ## Atena v.0.1
 
 A Atena é uma iniciativa da Impulso Network em colaboração com vários Impulsers, com o objetivo de promover o engajamento e recompensar as atividades e esforços de cada pessoa na Impulso. Nele você poderá adquirir Pontos de Experiência (XP) através da execução de diversas atividades e com base nesses dois fatores os Impulsers receberão níveis e conquistas, reconhecendo o esforço despendido nas atividades.
@@ -21,42 +20,46 @@ Um passo-a-passo da configuração mínima que você precisa para obter o Atena 
 
 ### Desenvolvimento
 
-- Faça um  `fork` do projeto para a tua conta, e então faça o `clone`
+- Faça um `fork` do projeto para a tua conta, e então faça o `clone`
+
 ```sh
 > git clone https://github.com/[your account]/atena
 ```
 
 - Navegue até a pasta de destino onde fez o clone do projeto
+
 ```sh
 > cd atena/
 ```
 
 - Instale o `yarn` a partir do `npm` (ser global é opcional)
+
 ```sh
 > npm i yarn -g
 ```
 
-- instalar os repositorios utilizando o `yarn`
+- Instalar os repositorios utilizando o `yarn`
+
 ```sh
 > yarn -i
 ```
 
 - Adicionar referências remotas
+
 ```sh
 > git remote add upstream https://github.com/impulsonetwork/atena
 ```
-- Criar o arquivo `.env` com as suas configurações utilizando o `.env.example` presente no projeto
-```
-PORT=4390
-SLACK_SIGNIN_EVENTS=
-SLACK_TOKEN=
-GA=
-MONGODB_URI=mongodb://localhost/atena
-CHANNELS=CCWSMJZ6U CCXCXJWBW
+
+- Executar o arquivo bash que criará o `.env` com as mesmas configurações do `.env.example` presente no projeto
+
+```sh
+> ./bin/setup-env.sh
 ```
 
 ### Executando
+
 - Inicie o servidor utilizando o seguinte comando:
+
 ```sh
 > yarn start:dev
 ```
