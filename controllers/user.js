@@ -102,6 +102,7 @@ export const find = async (userId, isCoreTeam = false) => {
     slackId: userId,
     isCoreTeam: isCoreTeam
   }).exec();
+  result.score = parseInt(result.score);
 
   return result || _throw("Error finding a specific user");
 };
