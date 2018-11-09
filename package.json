@@ -23,10 +23,10 @@
     "format": "prettier --write \"**/*.js\"",
     "start": "babel-node index.js",
     "start:prod": "babel-node index.js",
-    "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js",
+    "start:dev": "node_modules/.bin/concurrently \"npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js\" \"npm run expose\"",
     "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/",
     "test": "npm run lint",
-    "expose": "node_modules/.bin/lt -s atena-$USER -p 4390"
+    "expose": "node_modules/.bin/lt -s atena-staging-$USER -p 4390"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
@@ -61,6 +61,7 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
+    "concurrently": "^4.0.1",
     "ghooks": "^2.0.4",
     "jest": "^23.6.0",
     "localtunnel": "^1.9.1",

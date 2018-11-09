@@ -4,29 +4,6 @@
 
 - Join sandbox (Slack)[https://join.slack.com/t/impulso-sandbox/shared_invite/enQtNDQwODY3MzcxNDEzLTc1NTlkODA4NmY0YjJkZWYyMWRiOTE2MTA5YzczMzVhNzQzZDY0ZDVkYjI3ZDFlMTQ2ZmFmOTRmODNmMWRhOGY]
 
-### Usando o ngrok
-
-- Instale a partir desta url [ngrok](https://ngrok.com/)
-- Descompacte a pasta
-- No terminal execute o seguinte comando `./ngrok http 4390`
-- Copie o endereço
-
-_Obs.: o ngrok muda constantemente a url_
-
-### Usando o localtunnel
-
-- Instale a partir desta url [localtunnel](https://localtunnel.github.io/www/)
-- Instalando o localtunnel
-```sh
-  $ npm install -g localtunnel
-```
-- Usando o localtunnel
-```sh
-  $ lt -s atena-{yourname} -p 4390
-```
-- Exemplo `lt -s atena-fulanodetal -p 4390` que gera a url `https://atena-fulanodetal.localtunnel.me`
-- Copie o endereço
-
 
 ### Criando um Slack App
 
@@ -38,9 +15,7 @@ _Obs.: o ngrok muda constantemente a url_
 
 - Configuração:
   - Menu > Features > Event Subscriptions: activate
-    - Request URL: insira seu endereço gerado no ngrok ou no localtunnel
-      - insira seu endereço gerado no ngrok - `http://{your-number}.ngrok.io/slack/events`
-      - insira seu endereço gerado no localtunnel - `https://atena-{yourname}.localtunnel.me/slack/events`
+    - Request URL: `https://atena-staging-{username}.localtunnel.me/slack/events`
     - Adicione quais eventos do workspace:
       - `message.channels`, `reaction_added` and `reaction_removed`
     - Salvando as alterações
