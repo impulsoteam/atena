@@ -1,8 +1,10 @@
 import config from "config-yml";
 import mongoose from "mongoose";
+import moment from "moment";
 import userController from "./user";
 
 import { calculateScore } from "../utils";
+import { lastMessageTime } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 
 const normalize = data => {
@@ -30,6 +32,15 @@ const normalize = data => {
       type: "thread",
       user: data.user
     };
+  } else if (data.type === "manual") {
+    return {
+      type: data.type,
+      user: data.user,
+      value: data.value,
+      thread: false,
+      description: data.text,
+      channel: "mundão"
+    };
   } else {
     return {
       channel: data.channel,
@@ -52,6 +63,16 @@ export const save = async data => {
   const todayLimitStatus = todayLimitScore - score;
   const instance = new InteractionModel(interaction);
   const response = instance.save();
+
+  if (
+    interaction.type === "message" &&
+    moment(interaction.date).diff(
+      await lastMessageTime(interaction.user),
+      "seconds"
+    ) < 5
+  ) {
+    return _throw("User makes flood");
+  }
 
   if (todayLimitStatus > 0) {
     userController.update(interaction);
@@ -117,19 +138,41 @@ export const remove = async data => {
   return _throw("Error removing interactions");
 };
 
-// export const inactivity = async user => {
-//   const invactivityDateRule = Date.now; //
-//   const InteractionModel = mongoose.model("Interaction");
-//   const response = await InteractionModel.find({
-//     $or: [{ type: "inactive" }, { date: invactivityDateRule }]
-//   });
+export const lastMessage = async user => {
+  const InteractionModel = mongoose.model("Interaction");
+  const result = await InteractionModel.find({
+    user: user,
+    type: "message"
+  })
+    .sort({
+      date: -1
+    })
+    .limit(1)
+    .exec();
 
-//   return response || _throw("Error checking user inactivity");
-// };
+  return result || _throw("Error finding last interaction by user");
+};
+
+const manualInteractions = async data => {
+  const InteractionModel = mongoose.model("Interaction");
+  const interaction = normalize(data);
+  const instance = new InteractionModel(interaction);
+  const score = await todayScore(interaction.user);
+  const todayLimitStatus = config.xprules.limits.daily - score;
+
+  if (todayLimitStatus > 0) {
+    const response = await instance.save();
+    userController.update(interaction);
+
+    return response || _throw("Error adding new manual interaction");
+  }
+};
 
 export default {
   find,
   remove,
   save,
-  todayScore
+  todayScore,
+  lastMessage,
+  manualInteractions
 };

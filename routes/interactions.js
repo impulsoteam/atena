@@ -5,7 +5,6 @@ import interactionController from "../controllers/interaction";
 const router = express.Router();
 
 router.get("/user/:id", async (req, res) => {
-  console.log(interactionController);
   const interactions = await interactionController.find(req.params.id);
   const user = await getUserInfo(req.params.id);
   res.send({

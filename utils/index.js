@@ -1,7 +1,8 @@
 import config from "config-yml";
 import dotenv from "dotenv";
-import request from "async-request";
+import request from "make-requests";
 
+import userController from "../controllers/user";
 import { sendCollect, sendBotCollect } from "./analytics";
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
@@ -11,7 +12,7 @@ const slackToken = process.env.SLACK_TOKEN;
 
 export const getUserInfo = async id => {
   const url = `https://slack.com/api/users.profile.get?token=${slackToken}&user=${id}`;
-  let response;
+  let response = {};
   try {
     response = await request(url);
   } catch (e) {
@@ -20,15 +21,14 @@ export const getUserInfo = async id => {
       "Error: https://api.slack.com/apps/{your-app}/oauth?",
       e
     );
-    console.log(e);
   }
 
-  return response && JSON.parse(response.body);
+  return response;
 };
 
 export const getChannelInfo = async id => {
   const url = `https://slack.com/api/channels.info?token=${slackToken}&channel=${id}`;
-  let response;
+  let response = {};
 
   try {
     response = await request(url);
@@ -40,7 +40,7 @@ export const getChannelInfo = async id => {
     );
   }
 
-  return response && JSON.parse(response.body);
+  return response;
 };
 
 export const calculateScore = interaction => {
@@ -62,6 +62,8 @@ export const calculateScore = interaction => {
     interaction.parentUser !== interaction.user
   ) {
     score = config.xprules.threads.send;
+  } else if (interaction.type === "manual") {
+    score = interaction.value;
   }
   return score;
 };
@@ -137,4 +139,38 @@ export const isCoreTeam = userId => {
   const allCoreTeam = config.coreteam.members;
 
   return !!allCoreTeam.find(member => member === userId);
+};
+
+export const getRanking = async (req, isCoreTeamMember) => {
+  let users = [];
+  let myPosition = 0;
+  let response = {
+    text: "Veja as primeiras pessoas do ranking:",
+    attachments: []
+  };
+
+  try {
+    users = await userController.findAll(isCoreTeamMember, 5);
+    myPosition = await userController.rankingPosition(
+      req.body.user_id,
+      isCoreTeamMember
+    );
+    response.text =
+      users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
+    response.attachments = users.map((user, index) => ({
+      text: `${index + 1}º lugar está ${
+        user.slackId === req.body.user_id ? "você" : user.name
+      } com ${user.score} XP, no nível ${user.level}`
+    }));
+
+    response.attachments.push({
+      text: `Ah, e você está na posição ${myPosition} do ranking`
+    });
+
+    analyticsSendBotCollect(req.body);
+  } catch (e) {
+    console.log(e);
+  }
+
+  return response;
 };

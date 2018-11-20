@@ -7,6 +7,7 @@ import {
   getUserInfo,
   isCoreTeam
 } from "../utils";
+import { sendHelloOnSlack } from "../utils/bot";
 import { _throw } from "../helpers";
 
 export const updateParentUser = async interaction => {
@@ -87,6 +88,7 @@ export const update = async interaction => {
         isCoreTeam: isCoreTeam(interaction.user)
       };
       const instance = new UserModel(obj);
+      sendHelloOnSlack(obj.slackId);
       return instance.save();
     }
   } else {
@@ -94,37 +96,37 @@ export const update = async interaction => {
   }
 };
 
-export const find = async userId => {
+export const find = async (userId, isCoreTeam = false) => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({
     slackId: userId,
-    isCoreTeam: false
+    isCoreTeam: isCoreTeam
   }).exec();
-  result.score = parseInt(result.score);
+  result.score = result.score.toFixed(1);
 
   return result || _throw("Error finding a specific user");
 };
 
-export const findAll = async limit => {
+export const findAll = async (isCoreTeam = false, limit = 20) => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.find({
     score: { $gt: 0 },
-    isCoreTeam: false
+    isCoreTeam: isCoreTeam
   })
     .sort({
       score: -1
     })
-    .limit(limit || 15)
+    .limit(limit)
     .exec();
   result.map(user => {
-    user.score = parseInt(user.score);
+    user.score = user.score.toFixed(1);
   });
 
   return result || _throw("Error finding all users");
 };
 
-export const rankingPosition = async userId => {
-  const allUsers = await findAll();
+export const rankingPosition = async (userId, isCoreTeam = false) => {
+  const allUsers = await findAll(isCoreTeam);
   const position = allUsers.map(e => e.slackId).indexOf(userId) + 1;
 
   return position;
@@ -152,39 +154,11 @@ export const checkCoreTeam = async () => {
   return UsersBulk;
 };
 
-export const findCoreTeam = async userId => {
-  const UserModel = mongoose.model("User");
-  const result = await UserModel.findOne({
-    slackId: userId,
-    isCoreTeam: true
-  }).exec();
-  result.score = parseInt(result.score);
-
-  return result || _throw("Error finding a specific user");
-};
-
-export const findAllCoreTeam = async limit => {
-  const UserModel = mongoose.model("User");
-  const result = await UserModel.findAll({
-    score: { $gt: 0 },
-    isCoreTeam: true
-  })
-    .sort({
-      score: -1
-    })
-    .limit(limit || 15)
-    .exec();
-
-  return result || _throw("Error finding a specific user");
-};
-
 export default {
   find,
   findAll,
   update,
   updateParentUser,
   rankingPosition,
-  checkCoreTeam,
-  findCoreTeam,
-  findAllCoreTeam
+  checkCoreTeam
 };

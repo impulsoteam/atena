@@ -1,44 +1,42 @@
-## INSTRUCTIONS
+## INSTRUÇÕES
 
 ### Sandbox
 
-- Join sandbox [Slack](https://join.slack.com/t/impulso-sandbox/shared_invite/enQtNDQwODY3MzcxNDEzLTc1NTlkODA4NmY0YjJkZWYyMWRiOTE2MTA5YzczMzVhNzQzZDY0ZDVkYjI3ZDFlMTQ2ZmFmOTRmODNmMWRhOGY)
+- Join sandbox (Slack)[https://join.slack.com/t/impulso-sandbox/shared_invite/enQtNDQwODY3MzcxNDEzLTc1NTlkODA4NmY0YjJkZWYyMWRiOTE2MTA5YzczMzVhNzQzZDY0ZDVkYjI3ZDFlMTQ2ZmFmOTRmODNmMWRhOGY]
 
-### Use ngrok
+### Usando o ngrok
 
-- Install [ngrok](https://ngrok.com/)
-- Unzip download folder
-- Run on terminal `./ngrok http 4390`
-- Copy forwarding address
+- Instale a partir desta url [ngrok](https://ngrok.com/)
+- Descompacte a pasta
+- No terminal execute o seguinte comando `./ngrok http 4390`
+- Copie o endereço
 
-<span style="font-style: italic">
-Note: ngrok constantly changes this URL
-</span>
+_Obs.: o ngrok muda constantemente a url_
 
-### Create Slack app
+### Criando um Slack App
 
 - [Building Slack app](https://api.slack.com/slack-apps)
-- Create a Slack app
+- Criar um Slack app
 
-  - App Name: `atena-sandbox-{yourname}`
-  - Select Workspace: `Impulso - Sandbox`
+  - Nome do App: `atena-sandbox-{yourname}`
+  - Selecione o Workspace: `Impulso - Sandbox`
 
-- Setup:
+- Configuração:
   - Menu > Features > Event Subscriptions: activate
-    - Request URL: Put ngrok address - `http://{your-number}.ngrok.io/slack/events`
-    - Add Workspace Event:
+    - Request URL: insira seu endereço gerado no ngrok - `http://{your-number}.ngrok.io/slack/events`
+    - Adicione quais eventos do workspace:
       - `message.channels`, `reaction_added` and `reaction_removed`
-    - Save Changes
+    - Salvando as alterações
   - Menu > Features > OAuth & Permissions
     - Scopes > Select Permission Scopes:
-      - Add `users.profile:read` and `channels:read`
-      - Save Changes
-    - Install App to Workspace
-    - Copy OAuth Access Token and add in SLACK_TOKEN on `.env`
+      - Adicione `users.profile:read` e `channels:read`
+      - Salve as mudanças
+    - Instale o app em seu workspace
+    - Copie OAuth Access Token e adicione no SLACK_TOKEN no teu arquivo `.env`
   - Menu > Settings > Basic Information
-    - Copy Signing Secret and add in SLACK_SIGNIN_EVENTS ON `.env`
+    - Copie o Signing Secret e adicione no SLACK_SIGNIN_EVENTS no teu arquivo `.env`
 
-### Google Analytcs account (optional)
+### Conta Google Analytcs (opcional)
 
-- Create account
-- Add Tracking code `UA-{number}` in GA on `.env`
+- Crie uma conta
+- Adicione o código de rastreio `UA-{number}` no arquivo `.env`
