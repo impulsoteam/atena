@@ -64,6 +64,8 @@ export const calculateScore = interaction => {
     score = config.xprules.threads.send;
   } else if (interaction.type === "manual") {
     score = interaction.value;
+  } else if (interaction.type === "inactivity") {
+    score = -1;
   }
   return score;
 };
