@@ -13,3 +13,4 @@ reactions:
     negative: -1
 inactive:
   mindays: 14
+  value: -1

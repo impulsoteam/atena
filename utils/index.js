@@ -65,7 +65,7 @@ export const calculateScore = interaction => {
   } else if (interaction.type === "manual") {
     score = interaction.value;
   } else if (interaction.type === "inactivity") {
-    score = -1;
+    score = config.xprules.inactive.value;
   }
   return score;
 };
