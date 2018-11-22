@@ -23,7 +23,7 @@
     "format": "prettier --write \"**/*.js\"",
     "start": "babel-node index.js",
     "start:prod": "babel-node index.js",
-    "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js",
+    "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node --inspect-brk index.js",
     "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/ --ignore-pattern coverage/",
     "test": "npm run lint",
     "test:coverage": "jest --coverage"
@@ -40,6 +40,7 @@
     "babel-preset-env": "^1.7.0",
     "body-parser": "^1.18.3",
     "config-yml": "^0.10.2",
+    "cucumber": "^5.0.2",
     "dotenv": "^6.0.0",
     "eslint": "^5.6.0",
     "eslint-plugin-prettier": "3.0.0",
