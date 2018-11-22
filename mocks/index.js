@@ -47,9 +47,16 @@ const reactioRemoved = {
   event_ts: "1537559720.000100"
 };
 
+const manualPoints = {
+  type: "manual",
+  user: "UCX1DSFEV",
+  value: 20
+};
+
 export default {
   message,
   reactionAdded,
   reactioRemoved,
-  thread
+  thread,
+  manualPoints
 };

@@ -102,6 +102,7 @@ export const find = async (userId, isCoreTeam = false) => {
     slackId: userId,
     isCoreTeam: isCoreTeam
   }).exec();
+  result.score = result.score.toFixed(1);
 
   return result || _throw("Error finding a specific user");
 };
@@ -118,7 +119,7 @@ export const findAll = async (isCoreTeam = false, limit = 20) => {
     .limit(limit)
     .exec();
   result.map(user => {
-    user.score = parseInt(user.score);
+    user.score = user.score.toFixed(1);
   });
 
   return result || _throw("Error finding all users");
