@@ -26,7 +26,14 @@ describe('Test CalculateReceivedScore', () => {
       const result = calc(interaction);
       expect(result).toEqual(-1);
     });
-
+    it('return 0.1 when description is equals atena', () => {
+      const interaction = {
+        type: 'reaction_added',
+	description: 'atena'
+      };
+      const result = calc(interaction);
+      expect(result).toEqual(0.1);
+    });
   });
 });
 
