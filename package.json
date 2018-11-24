@@ -25,7 +25,7 @@
     "start:prod": "babel-node index.js",
     "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js",
     "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/",
-    "test": "npm run lint"
+    "test": "jest"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
