@@ -23,4 +23,3 @@ export const calculateReceivedScore = interaction => {
   }
   return score;
 };
-
