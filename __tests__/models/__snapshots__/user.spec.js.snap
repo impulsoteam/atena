@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`[Models] User should be invalid if name is empty 1`] = `
-Object {
-  "_id": "5be5e5efba5f4212fe473bcd",
-  "isCoreTeam": false,
-  "lastUpdate": 2018-11-09T19:54:23.960Z,
-}
-`;
