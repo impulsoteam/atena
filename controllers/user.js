@@ -159,7 +159,9 @@ const checkCoreTeam = async () => {
 const findInactivities = async () => {
   const UserModel = mongoose.model("User");
   const today = new Date();
-  const dateRange = today.setDate(today.getDate() - config.xprules.inactive.mindays);
+  const dateRange = today.setDate(
+    today.getDate() - config.xprules.inactive.mindays
+  );
   const result = await UserModel.find({
     lastUpdate: { $lt: dateRange }
   })
