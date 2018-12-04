@@ -6,10 +6,13 @@ import path from "path";
 import postcssMiddleware from "postcss-middleware";
 import sassMiddleware from "node-sass-middleware";
 import winston from "winston";
+import runCrons from "./cron";
 
 import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
+
+runCrons();
 
 const logger = winston.createLogger({
   level: "info",
@@ -66,9 +69,10 @@ app.use(
     outputStyle: "compressed"
   })
 );
+
 app.use(
   postcssMiddleware({
-    src: req => path.join("./", req.path),
+    src: req => path.join(`${__dirname}public`, req.url),
     plugins: [
       autoprefixer({
         browsers: ["> 1%", "IE 7"],
@@ -77,6 +81,7 @@ app.use(
     ]
   })
 );
+
 app.use(express.static("public"));
 app.use("/", appRoutes);
 

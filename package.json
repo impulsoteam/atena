@@ -24,14 +24,16 @@
     "start": "babel-node index.js",
     "start:prod": "babel-node index.js",
     "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js",
-    "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/",
-    "test": "npm run lint"
+    "start:dev:debug": "npm run format && set NODE_ENV=development && nodemon --exec babel-node --inspect-brk index.js",
+    "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/ --ignore-pattern coverage/",
+    "test:coverage": "jest --coverage",
+    "test": "jest",
+    "test:watch": "jest --watch --onlyChanged"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
     "@slack/events-api": "^2.1.0",
     "ajv": "6.5.3",
-    "async-request": "^1.2.0",
     "autoprefixer": "^9.1.5",
     "babel-cli": "^6.26.0",
     "babel-eslint": "10.0.1",
@@ -50,6 +52,7 @@
     "moment": "^2.22.2",
     "mongoose": "^5.2.14",
     "morgan": "^1.9.0",
+    "node-cron": "^2.0.3",
     "node-sass-middleware": "^0.11.0",
     "postcss-middleware": "^1.1.4",
     "prettier": "^1.14.3",
@@ -62,7 +65,7 @@
   "devDependencies": {
     "ghooks": "^2.0.4",
     "jest": "^23.6.0",
-    "nodemon": "^1.18.4",
+    "nodemon": "^1.18.7",
     "supertest": "^3.3.0"
   },
   "config": {

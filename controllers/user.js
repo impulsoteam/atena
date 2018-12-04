@@ -10,7 +10,7 @@ import {
 import { sendHelloOnSlack } from "../utils/bot";
 import { _throw } from "../helpers";
 
-export const updateParentUser = async interaction => {
+const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
   const userInfo = await getUserInfo(interaction.parentUser);
 
@@ -30,6 +30,7 @@ export const updateParentUser = async interaction => {
           const newScore = doc.score + score;
           doc.level = calculateLevel(newScore);
           doc.score = newScore < 0 ? 0 : newScore;
+          doc.lastUpdate = Date.now();
           doc.save();
           return doc;
         }
@@ -42,7 +43,7 @@ export const updateParentUser = async interaction => {
   }
 };
 
-export const update = async interaction => {
+const update = async interaction => {
   const score = calculateScore(interaction);
   const userInfo = await getUserInfo(interaction.user);
 
@@ -71,6 +72,7 @@ export const update = async interaction => {
           interaction.type === "reaction_removed"
             ? doc.reactions - 1
             : doc.reactions;
+        doc.lastUpdate = Date.now();
         doc.save();
         return doc;
       });
@@ -96,7 +98,7 @@ export const update = async interaction => {
   }
 };
 
-export const find = async (userId, isCoreTeam = false) => {
+const find = async (userId, isCoreTeam = false) => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({
     slackId: userId,
@@ -107,7 +109,7 @@ export const find = async (userId, isCoreTeam = false) => {
   return result || _throw("Error finding a specific user");
 };
 
-export const findAll = async (isCoreTeam = false, limit = 20) => {
+const findAll = async (isCoreTeam = false, limit = 20) => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.find({
     score: { $gt: 0 },
@@ -119,20 +121,20 @@ export const findAll = async (isCoreTeam = false, limit = 20) => {
     .limit(limit)
     .exec();
   result.map(user => {
-    user.score = user.score.toFixed(1);
+    user.score = parseInt(user.score);
   });
 
   return result || _throw("Error finding all users");
 };
 
-export const rankingPosition = async (userId, isCoreTeam = false) => {
+const rankingPosition = async (userId, isCoreTeam = false) => {
   const allUsers = await findAll(isCoreTeam);
   const position = allUsers.map(e => e.slackId).indexOf(userId) + 1;
 
   return position;
 };
 
-export const checkCoreTeam = async () => {
+const checkCoreTeam = async () => {
   const UserModel = mongoose.model("User");
   const UsersBulk = UserModel.bulkWrite([
     {
@@ -154,11 +156,29 @@ export const checkCoreTeam = async () => {
   return UsersBulk;
 };
 
+const findInactivities = async () => {
+  const UserModel = mongoose.model("User");
+  const today = new Date();
+  const dateRange = today.setDate(
+    today.getDate() - config.xprules.inactive.mindays
+  );
+  const result = await UserModel.find({
+    lastUpdate: { $lt: dateRange }
+  })
+    .sort({
+      score: -1
+    })
+    .exec();
+
+  return result || _throw("Error finding inactivity users");
+};
+
 export default {
   find,
   findAll,
   update,
   updateParentUser,
   rankingPosition,
-  checkCoreTeam
+  checkCoreTeam,
+  findInactivities
 };
