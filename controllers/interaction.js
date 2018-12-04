@@ -41,6 +41,14 @@ const normalize = data => {
       description: data.text,
       channel: "mundão"
     };
+  } else if (data.type === "inactivity") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "ação do sistema",
+      channel: "matrix"
+    };
   } else {
     return {
       channel: data.channel,
