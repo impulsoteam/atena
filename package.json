@@ -26,9 +26,9 @@
     "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js",
     "start:dev:debug": "npm run format && set NODE_ENV=development && nodemon --exec babel-node --inspect-brk index.js",
     "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/ --ignore-pattern coverage/",
-    "test:coverage": "jest --coverage",
-    "test": "jest",
-    "test:watch": "jest --watch --onlyChanged"
+    "test:coverage": "set NODE_ENV=test && jest --coverage --forceExit --detectOpenHandles",
+    "test": "set NODE_ENV=test  && jest --forceExit --detectOpenHandles",
+    "test:watch": "set NODE_ENV=test && jest --watch --onlyChanged"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
@@ -66,6 +66,7 @@
     "ghooks": "^2.0.4",
     "jest": "^23.6.0",
     "nodemon": "^1.18.4",
+    "supertest-as-promised": "^4.0.2",
     "supertest": "^3.3.0"
   },
   "config": {

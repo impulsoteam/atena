@@ -232,7 +232,7 @@ abbrev@1:
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
-accepts@~1.3.5:
+accepts@^1.3.5, accepts@~1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/accepts/-/accepts-1.3.5.tgz#eb777df6011723a3b14e8a72c0805c8e86746bd2"
   integrity sha1-63d99gEXI6OxTopywIBcjoZ0a9I=
@@ -1259,6 +1259,11 @@ bluebird@3.5.1:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
   integrity sha512-MKiLiV+I1AA596t9w1sQJ8jkiSr5+ZKi0WKrYGUn6d1Fx+Ij4tIj+m2WMQSGczs5jZVxV339chE8iwk6F64wjA==
 
+bluebird@^3.3.1:
+  version "3.5.3"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.3.tgz#7d01c6f9616c9a51ab0f8c549a79dfe6ec33efa7"
+  integrity sha512-/qKPUQlaW1OyR51WeCPBvRnAlnZFUJkCSG5HzGnuIqhgyJtF+T94lFnn33eiazjRm2LAHVy2guNnaq48X9SJuw==
+
 body-parser@1.18.3, body-parser@^1.18.3:
   version "1.18.3"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.18.3.tgz#5b292198ffdd553b3a0f20ded0592b956955c8b4"
@@ -2068,7 +2073,7 @@ delegates@^1.0.0:
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
   integrity sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=
 
-depd@~1.1.2:
+depd@^1.1.0, depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
@@ -2843,7 +2848,7 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
-fresh@0.5.2:
+fresh@0.5.2, fresh@^0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
@@ -3351,6 +3356,11 @@ http-signature@~1.2.0:
     assert-plus "^1.0.0"
     jsprim "^1.2.2"
     sshpk "^1.7.0"
+
+http-status@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/http-status/-/http-status-1.3.1.tgz#340a500e778a3091d18fda026df80f104a02dde7"
+  integrity sha512-PcI9NUm6EUOhHlaxYABCqDQQWS7IgoBZ/PmPkhuzj+oR01ffjv3EJfKnnWJZcUhILtUh6/NdJi1Zs/mIr6v8DA==
 
 https-proxy-agent@^2.2.1:
   version "2.2.1"
@@ -4704,7 +4714,7 @@ meow@^3.7.0:
     redent "^1.0.0"
     trim-newlines "^1.0.0"
 
-merge-descriptors@1.0.1:
+merge-descriptors@1.0.1, merge-descriptors@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/merge-descriptors/-/merge-descriptors-1.0.1.tgz#b00aaa556dd8b44568150ec9d1b953f3f90cbb61"
   integrity sha1-sAqqVW3YtEVoFQ7J0blT8/kMu2E=
@@ -4781,7 +4791,7 @@ mime@1.4.1:
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.4.1.tgz#121f9ebc49e3766f311a76e1fa1c8003c4b03aa6"
   integrity sha512-KI1+qOZu5DcW6wayYHSzR/tXKCDC5Om4s1z2QJjDULzLcmf3DvzS7oluY4HCTrc+9FiKmWUgeNLg7W3uIQvxtQ==
 
-mime@^1.4.1:
+mime@^1.3.4, mime@^1.4.1:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.6.0.tgz#32cd9e5c64553bd58d19a568af452acff04981b1"
   integrity sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==
@@ -4979,6 +4989,11 @@ negotiator@0.6.1:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   integrity sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
 
+net@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/net/-/net-1.0.2.tgz#d1757ec9a7fb2371d83cf4755ce3e27e10829388"
+  integrity sha1-0XV+yaf7I3HYPPR1XOPifhCCk4g=
+
 next-tick@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
@@ -5024,6 +5039,22 @@ node-int64@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/node-int64/-/node-int64-0.4.0.tgz#87a9065cdb355d3182d8f94ce11188b825c68a3b"
   integrity sha1-h6kGXNs1XTGC2PlM4RGIuCXGijs=
+
+node-mocks-http@^1.7.3:
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/node-mocks-http/-/node-mocks-http-1.7.3.tgz#1c744189f012c1977f4d97443495931a7cd5b4d3"
+  integrity sha512-wayzLNhEroH3lJj113pFKQ1cd1GKG1mXoZR1HcKp/o9a9lTGGgVY/hYeLajiIFr/z4tXFKOdfJickqqihBtn9g==
+  dependencies:
+    accepts "^1.3.5"
+    depd "^1.1.0"
+    fresh "^0.5.2"
+    merge-descriptors "^1.0.1"
+    methods "^1.1.2"
+    mime "^1.3.4"
+    net "^1.0.2"
+    parseurl "^1.3.1"
+    range-parser "^1.2.0"
+    type-is "^1.6.16"
 
 node-notifier@^5.2.1:
   version "5.3.0"
@@ -5466,7 +5497,7 @@ parse5@4.0.0:
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-4.0.0.tgz#6d78656e3da8d78b4ec0b906f7c08ef1dfe3f608"
   integrity sha512-VrZ7eOd3T1Fk4XWNXMgiGBK/z0MG48BWG2uQNU4I72fkQuKUTZpl+u9k+CxEG0twMVzSmXEEz12z5Fnw1jIQFA==
 
-parseurl@~1.3.2:
+parseurl@^1.3.1, parseurl@~1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.2.tgz#fc289d4ed8993119460c156253262cdc8de65bf3"
   integrity sha1-/CidTtiZMRlGDBViUyYs3I3mW/M=
@@ -5885,7 +5916,7 @@ randomatic@^3.0.0:
     kind-of "^6.0.0"
     math-random "^1.0.1"
 
-range-parser@~1.2.0:
+range-parser@^1.2.0, range-parser@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
   integrity sha1-9JvmtIeJTdxA3MlKMi9hEJLgDV4=
@@ -6797,6 +6828,14 @@ superagent@^3.8.3:
     qs "^6.5.1"
     readable-stream "^2.3.5"
 
+supertest-as-promised@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/supertest-as-promised/-/supertest-as-promised-4.0.2.tgz#0464f2bd256568d4a59bce84269c0548f6879f1a"
+  integrity sha1-BGTyvSVlaNSlm86EJpwFSPaHnxo=
+  dependencies:
+    bluebird "^3.3.1"
+    methods "^1.1.1"
+
 supertest@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/supertest/-/supertest-3.3.0.tgz#79b27bd7d34392974ab33a31fa51a3e23385987e"
@@ -7090,7 +7129,7 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-type-is@~1.6.16:
+type-is@^1.6.16, type-is@~1.6.16:
   version "1.6.16"
   resolved "https://registry.yarnpkg.com/type-is/-/type-is-1.6.16.tgz#f89ce341541c672b25ee7ae3c73dee3b2be50194"
   integrity sha512-HRkVv/5qY2G6I8iab9cI7v1bOIdhm94dVjQCPFElW9W+3GeDOSHmy2EBYe4VTApuzolPcmgFTN3ftVJRKR2J9Q==

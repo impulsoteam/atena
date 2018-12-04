@@ -21,4 +21,8 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/hello", (req, res) => {
+  res.send("hellow world");
+});
+
 export default router;
