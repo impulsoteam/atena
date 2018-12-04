@@ -24,8 +24,11 @@
     "start": "babel-node index.js",
     "start:prod": "babel-node index.js",
     "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js",
-    "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/",
-    "test": "jest"
+    "start:dev:debug": "npm run format && set NODE_ENV=development && nodemon --exec babel-node --inspect-brk index.js",
+    "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/ --ignore-pattern coverage/",
+    "test:coverage": "jest --coverage",
+    "test": "jest",
+    "test:watch": "jest --watch --onlyChanged"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
