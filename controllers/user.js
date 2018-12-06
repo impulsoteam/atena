@@ -153,7 +153,7 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
   const instance = new UserModel(obj);
   sendHelloOnSlack(obj.slackId);
   return instance.save();
-}
+};
 
 const updateUserData = (UserModel, interaction, score) => {
   return UserModel.findOne({ slackId: interaction.user }, (err, doc) => {
@@ -166,12 +166,9 @@ const updateUserData = (UserModel, interaction, score) => {
     doc.isCoreTeam = isCoreTeam(interaction.user);
     doc.messages =
       interaction.type === "message" ? doc.messages + 1 : doc.messages;
-    doc.replies =
-      interaction.type === "thread" ? doc.replies + 1 : doc.replies;
+    doc.replies = interaction.type === "thread" ? doc.replies + 1 : doc.replies;
     doc.reactions =
-      interaction.type === "reaction_added"
-        ? doc.reactions + 1
-        : doc.reactions;
+      interaction.type === "reaction_added" ? doc.reactions + 1 : doc.reactions;
     doc.reactions =
       interaction.type === "reaction_removed"
         ? doc.reactions - 1
