@@ -2,7 +2,10 @@ import crypto from "crypto";
 import qs from "qs";
 
 const slackSecret = process.env.SLACK_SIGNIN_EVENTS;
-const validSlackSecret = (timeStamp, slackSignature, req, res) => {
+const validSlackSecret = (req, res) => {
+  const timeStamp = req.headers["x-slack-request-timestamp"];
+  const slackSignature = req.headers["x-slack-signature"];
+
   if (!slackSecret) {
     return res.status(400).send("Slack signing secret is empty.");
   }
