@@ -7,7 +7,7 @@ import postcssMiddleware from "postcss-middleware";
 import sassMiddleware from "node-sass-middleware";
 import winston from "winston";
 import runCrons from "./cron";
-
+import config from "./config/config";
 import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
@@ -41,7 +41,11 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
-mongoose.connect(process.env.MONGODB_URI);
+if (process.env.NODE_ENV === "test") {
+  mongoose.connect(config.test_db);
+} else {
+  mongoose.connect(process.env.MONGODB_URI);
+}
 mongoose.set("useCreateIndexes", true);
 
 const port = process.env.PORT;
