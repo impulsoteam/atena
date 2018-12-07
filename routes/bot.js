@@ -17,12 +17,8 @@ router.post("/score", urlencodedParser, async (req, res) => {
   let response = {
     text: "Ops! Você ainda não tem pontos registrados."
   };
-  /*validSlackSecret(
-    req.headers["x-slack-request-timestamp"],
-    req.headers["x-slack-signature"],
-    req,
-    res
-  );*/
+  validSlackSecret(req, res);
+  console.log("BODY", req.body, req.body.user_id);
   try {
     user = await userController.find(req.body.user_id);
     myPosition = await userController.rankingPosition(req.body.user_id);
@@ -45,6 +41,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
 });
 
 router.post("/ranking", urlencodedParser, async (req, res) => {
+  validSlackSecret(req, res);
   let response = {};
 
   try {
@@ -58,6 +55,7 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
 });
 
 router.post("/coreteamranking", urlencodedParser, async (req, res) => {
+  validSlackSecret(req, res);
   let response = {};
 
   if (isCoreTeam(req.body.user_id)) {
