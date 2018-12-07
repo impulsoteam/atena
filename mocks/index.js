@@ -53,10 +53,16 @@ const manualPoints = {
   value: 20
 };
 
+const inactivity = {
+  type: "inactivity",
+  user: "UCX1DSFEV"
+};
+
 export default {
   message,
   reactionAdded,
   reactioRemoved,
   thread,
-  manualPoints
+  manualPoints,
+  inactivity
 };
