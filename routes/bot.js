@@ -18,7 +18,6 @@ router.post("/score", urlencodedParser, async (req, res) => {
     text: "Ops! Você ainda não tem pontos registrados."
   };
   validSlackSecret(req, res);
-  console.log("BODY", req.body, req.body.user_id);
   try {
     user = await userController.find(req.body.user_id);
     myPosition = await userController.rankingPosition(req.body.user_id);
@@ -34,7 +33,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
     };
     analyticsSendBotCollect(req.body);
   } catch (e) {
-    console.log(e);
+    console.log("Bot -> Score:", e);
   }
 
   res.json(response);

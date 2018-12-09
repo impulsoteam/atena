@@ -25,7 +25,8 @@ describe("[Controllers] User", () => {
       trigger_id: "495742047108.439439624196.324159fbe295cb6754006b3afb523a1c"
     };
 
-    let MOCK_MSG = {
+    /*
+     * let MOCK_MSG = {
       client_msg_id: "a7cb01dd-913b-48cd-abcf-a71d603918e4",
       type: "message",
       text: "o/",
@@ -34,7 +35,7 @@ describe("[Controllers] User", () => {
       channel: "CCWSMJZ6U",
       event_ts: "1544299021.000600",
       channel_type: "channel"
-    };
+    };*/
 
     let time;
     let slackSignature;
@@ -52,7 +53,16 @@ describe("[Controllers] User", () => {
     });
 
     describe("### Bot", () => {
-        describe("#### POST Score", () => {
+      var user = {
+        name: "Seya",
+        level: 1,
+        score: 1,
+        slackId: "UCZCQH7CG",
+        avatar: ""
+      };
+      factory.define("User", User, user);
+
+      describe("#### POST Score", () => {
         it("should return the message user has not scored points yet", done => {
           request(app)
             .post("/bot/commands/score")
@@ -70,17 +80,7 @@ describe("[Controllers] User", () => {
         });
 
         it("should return the message with user position and total points", done => {
-          var user = {
-            name: "Seya",
-            level: 1,
-            score: 1,
-            slackId: "UCZCQH7CG",
-            avatar: ""
-          };
-          factory.define("User", User, user);
-
           const UserModel = mongoose.model("User");
-
           factory.build("User", user).then(userDocument => {
             user = userDocument;
             var userMock = sinon.mock(user);
@@ -106,12 +106,13 @@ describe("[Controllers] User", () => {
                 expect(res.statusCode).toBe(200);
                 done();
               });
+            userMock.restore();
           });
         });
       });
 
       describe("#### POST Ranking", () => {
-        it("should return the ranking successfully", done => {
+        it("should return the ranking successfully empty", done => {
           request(app)
             .post("/bot/commands/ranking")
             .set("x-slack-request-timestamp", time)
@@ -119,9 +120,37 @@ describe("[Controllers] User", () => {
             .set("Content-Type", "application/x-www-form-urlencoded")
             .send(MOCK_BODY)
             .then(res => {
+              expect(res.body.text).toEqual("Ops! Ainda ninguém pontuou. =/");
               expect(res.statusCode).toBe(200);
               done();
             });
+        });
+
+        it("should return the ranking sucessfully", done => {
+          const UserModel = mongoose.model("User");
+          factory.build("User", user).then(userDocument => {
+            user = userDocument;
+            sinon
+              .mock(UserModel)
+              .expects("find")
+              .chain("exec")
+              .twice()
+              .resolves([user]);
+
+            request(app)
+              .post("/bot/commands/ranking")
+              .set("x-slack-request-timestamp", time)
+              .set("x-slack-signature", slackSignature)
+              .set("Content-Type", "application/x-www-form-urlencoded")
+              .send(MOCK_BODY)
+              .then(res => {
+                expect(res.body.text).toEqual(
+                  "Veja as primeiras pessoas do ranking:"
+                );
+                expect(res.statusCode).toBe(200);
+                done();
+              });
+          });
         });
 
         describe("### POST CoreTeamRanking", () => {

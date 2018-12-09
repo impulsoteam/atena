@@ -150,7 +150,7 @@ export const getRanking = async (req, isCoreTeamMember) => {
 
     analyticsSendBotCollect(req.body);
   } catch (e) {
-    console.log(e);
+    console.log("getRanking Error: ", e);
   }
 
   return response;
