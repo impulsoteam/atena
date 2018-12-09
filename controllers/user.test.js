@@ -6,6 +6,7 @@ import crypto from "crypto";
 import qs from "qs";
 import app from "../index";
 import User from "../models/user";
+import config from "config-yml";
 require("sinon-mongoose");
 
 describe("[Controllers] User", () => {
@@ -24,18 +25,6 @@ describe("[Controllers] User", () => {
         "https://hooks.slack.com/commands/TCXCXJC5S/495910309186/CqLIVC5j2Q8f6zVYwkbjRQ14",
       trigger_id: "495742047108.439439624196.324159fbe295cb6754006b3afb523a1c"
     };
-
-    /*
-     * let MOCK_MSG = {
-      client_msg_id: "a7cb01dd-913b-48cd-abcf-a71d603918e4",
-      type: "message",
-      text: "o/",
-      user: "UCZCQH7CG",
-      ts: "1544299021.000600",
-      channel: "CCWSMJZ6U",
-      event_ts: "1544299021.000600",
-      channel_type: "channel"
-    };*/
 
     let time;
     let slackSignature;
@@ -83,8 +72,8 @@ describe("[Controllers] User", () => {
           const UserModel = mongoose.model("User");
           factory.build("User", user).then(userDocument => {
             user = userDocument;
-            var userMock = sinon.mock(user);
-            userMock.expects("save").resolves(user);
+            // var userMock = sinon.mock(user);
+            // userMock.expects("save").resolves(user);
             sinon
               .mock(UserModel)
               .expects("findOne")
@@ -106,7 +95,7 @@ describe("[Controllers] User", () => {
                 expect(res.statusCode).toBe(200);
                 done();
               });
-            userMock.restore();
+            // userMock.restore();
           });
         });
       });
@@ -154,7 +143,17 @@ describe("[Controllers] User", () => {
         });
 
         describe("### POST CoreTeamRanking", () => {
-          it("alguma coisa", done => {
+          var userCoreTeam = {
+            name: "Pegasus",
+            level: 1,
+            score: 1,
+            slackId: "UCZCQH7CG",
+            avatar: "",
+            isCoreTeam: true
+          };
+          factory.define("UserCoreTeam", User, userCoreTeam);
+
+          it("should return is not core team message", done => {
             request(app)
               .post("/bot/commands/coreteamranking")
               .set("x-slack-request-timestamp", time)
@@ -162,6 +161,35 @@ describe("[Controllers] User", () => {
               .set("Content-Type", "application/x-www-form-urlencoded")
               .send(MOCK_BODY)
               .then(res => {
+                console.log(res.body.text);
+                expect(res.body.text).toEqual(
+                  "Você não faz parte do Core Team nem um cavaleiro de ouro, tente ver o seu ranking com o comando */ranking*"
+                );
+                expect(res.statusCode).toBe(200);
+                done();
+              });
+          });
+
+          it("should return the ranking sucessfully", done => {
+            config.coreteam.members = ["UCZCQH7CG"];
+            const UserModel = mongoose.model("User");
+            UserModel.find.restore();
+            sinon
+              .mock(UserModel)
+              .expects("find")
+              .chain("exec")
+              .resolves(userCoreTeam);
+
+            request(app)
+              .post("/bot/commands/coreteamranking")
+              .set("x-slack-request-timestamp", time)
+              .set("x-slack-signature", slackSignature)
+              .set("Content-Type", "application/x-www-form-urlencoded")
+              .send(MOCK_BODY)
+              .then(res => {
+                expect(res.body.text).toEqual(
+                  "Veja as primeiras pessoas do ranking:"
+                );
                 expect(res.statusCode).toBe(200);
                 done();
               });
