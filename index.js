@@ -7,7 +7,7 @@ import postcssMiddleware from "postcss-middleware";
 import sassMiddleware from "node-sass-middleware";
 import winston from "winston";
 import runCrons from "./cron";
-import config from "./config/config";
+import config from "./config";
 import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
