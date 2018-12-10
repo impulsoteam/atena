@@ -24,5 +24,5 @@ block yield
               h4 Reações dadas
               p: strong= `Positivas: ${user.reactions.positives}`
               p: strong= `Negativas: ${user.reactions.negatives}`
-    p.gamer__card-footer= `Faltam ${user.next_level - user.score} XP para chegar no Nível ${user.level + 1}`
+    p.gamer__card-footer= `Faltam ${parseInt(user.next_level - user.score)} XP para chegar no Nível ${user.level + 1}`
   include includes/footer

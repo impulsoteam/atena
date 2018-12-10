@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  email: {
+    type: String,
+    required: false
+  },
   messages: {
     type: Number,
     required: false
