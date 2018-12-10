@@ -138,6 +138,7 @@ describe("[Controllers] User", () => {
                 );
                 expect(res.statusCode).toBe(200);
                 done();
+                UserModel.find.restore();
               });
           });
         });
@@ -161,7 +162,6 @@ describe("[Controllers] User", () => {
               .set("Content-Type", "application/x-www-form-urlencoded")
               .send(MOCK_BODY)
               .then(res => {
-                console.log(res.body.text);
                 expect(res.body.text).toEqual(
                   "Você não faz parte do Core Team nem um cavaleiro de ouro, tente ver o seu ranking com o comando */ranking*"
                 );
@@ -173,7 +173,6 @@ describe("[Controllers] User", () => {
           it("should return the ranking sucessfully", done => {
             config.coreteam.members = ["UCZCQH7CG"];
             const UserModel = mongoose.model("User");
-            UserModel.find.restore();
             sinon
               .mock(UserModel)
               .expects("find")
