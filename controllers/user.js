@@ -68,7 +68,7 @@ const find = async (userId, isCoreTeam = false) => {
     slackId: userId,
     isCoreTeam: isCoreTeam
   }).exec();
-  result.score = result.score.toFixed(1);
+  if (result) result.score = result.score.toFixed(0);
 
   return result || _throw("Error finding a specific user");
 };
