@@ -7,15 +7,16 @@ export const isNegativeReaction = interaction => {
 };
 
 export const calculateReactions = (interaction, reactions = {}) => {
+  // FIXME: Remove after all users are updated
   reactions = convertToPositiveAndNegative(reactions);
 
   if (isPositiveReaction(interaction)) {
-    reactions.positives = calculateReactionBasedOnType(
+    reactions.positives = calculateNewReactionsValues(
       interaction.type,
       reactions.positives
     );
   } else if (isNegativeReaction(interaction)) {
-    reactions.negatives = calculateReactionBasedOnType(
+    reactions.negatives = calculateNewReactionsValues(
       interaction.type,
       reactions.negatives
     );
@@ -39,7 +40,7 @@ const convertToPositiveAndNegative = reactions => {
   return reactions;
 };
 
-const calculateReactionBasedOnType = (interactionType, reactions) => {
+const calculateNewReactionsValues = (interactionType, reactions) => {
   if (interactionType === "reaction_added") {
     reactions += 1;
   } else if (interactionType === "reaction_removed") {
