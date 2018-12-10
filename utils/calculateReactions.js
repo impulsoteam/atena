@@ -31,7 +31,7 @@ const convertToPositiveAndNegative = reactions => {
     typeof reactions.negatives === "undefined"
   ) {
     let newReactions = {};
-    newReactions.positives = parseInt(reactions) || 0;
+    newReactions.positives = parseInt(reactions, 10) || 0;
     newReactions.negatives = 0;
 
     return newReactions;
