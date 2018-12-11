@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import request from "make-requests";
 
 import { calculateReceivedScore as calc } from "./calculateReceivedScore";
+import { calculateReactions as calcReactions } from "./calculateReactions";
 import userController from "../controllers/user";
 import { sendCollect, sendBotCollect } from "./analytics";
 if (process.env.NODE_ENV !== "production") {
@@ -150,8 +151,10 @@ export const getRanking = async (req, isCoreTeamMember) => {
 
     analyticsSendBotCollect(req.body);
   } catch (e) {
-    console.log(e);
+    console.log("getRanking Error: ", e);
   }
 
   return response;
 };
+
+export const calculateReactions = calcReactions;

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import {
   calculateScore,
   calculateReceivedScore,
+  calculateReactions,
   calculateLevel,
   getUserInfo,
   isCoreTeam
@@ -67,7 +68,7 @@ const find = async (userId, isCoreTeam = false) => {
     slackId: userId,
     isCoreTeam: isCoreTeam
   }).exec();
-  result.score = result.score.toFixed(1);
+  if (result) result.score = result.score.toFixed(0);
 
   return result || _throw("Error finding a specific user");
 };
@@ -146,7 +147,7 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
     slackId: interaction.user,
     messages: interaction.type === "message" ? 1 : 0,
     replies: interaction.type === "thread" ? 1 : 0,
-    reactions: interaction.type === "reaction_added" ? 1 : 0,
+    reactions: calculateReactions(interaction, 0),
     lastUpdate: new Date(),
     isCoreTeam: isCoreTeam(interaction.user)
   };
@@ -167,12 +168,7 @@ const updateUserData = (UserModel, interaction, score) => {
     doc.messages =
       interaction.type === "message" ? doc.messages + 1 : doc.messages;
     doc.replies = interaction.type === "thread" ? doc.replies + 1 : doc.replies;
-    doc.reactions =
-      interaction.type === "reaction_added" ? doc.reactions + 1 : doc.reactions;
-    doc.reactions =
-      interaction.type === "reaction_removed"
-        ? doc.reactions - 1
-        : doc.reactions;
+    doc.reactions = calculateReactions(interaction, doc.reactions);
     doc.lastUpdate = Date.now();
     doc.save();
     return doc;

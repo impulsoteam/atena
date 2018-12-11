@@ -3,7 +3,13 @@ import User from "./user";
 describe("[Models] User", () => {
   let user;
   beforeEach(() => {
-    user = new User({ name: "Joe Doe", level: 1, score: 0, slackId: "123456" });
+    user = new User({
+      name: "Joe Doe",
+      level: 1,
+      score: 0,
+      slackId: "123456",
+      avatar: ""
+    });
   });
 
   describe("validations", () => {
@@ -28,6 +34,12 @@ describe("[Models] User", () => {
       user.slackId = null;
       user.validate(err => {
         expect(err.errors.slackId).toBeTruthy();
+      });
+    });
+    it("should be invalid if avatar is empty", () => {
+      user.avatar = null;
+      user.validate(err => {
+        expect(err.errors.avatar).toBeTruthy();
       });
     });
   });

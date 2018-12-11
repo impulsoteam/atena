@@ -3,10 +3,10 @@ import express from "express";
 import request from "make-requests";
 import bodyParser from "body-parser";
 import { analyticsSendBotCollect, getRanking } from "../utils";
-
 import userController from "../controllers/user";
 import interactionController from "../controllers/interaction";
 import { isCoreTeam } from "../utils";
+import validSlackSecret from "../utils/validSecret";
 const router = express.Router();
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
@@ -17,7 +17,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
   let response = {
     text: "Ops! Você ainda não tem pontos registrados."
   };
-
+  validSlackSecret(req, res);
   try {
     user = await userController.find(req.body.user_id);
     myPosition = await userController.rankingPosition(req.body.user_id);
@@ -31,16 +31,16 @@ router.post("/score", urlencodedParser, async (req, res) => {
         }
       ]
     };
-
     analyticsSendBotCollect(req.body);
   } catch (e) {
-    console.log(e);
+    console.log("Bot -> Score:", e);
   }
 
   res.json(response);
 });
 
 router.post("/ranking", urlencodedParser, async (req, res) => {
+  validSlackSecret(req, res);
   let response = {};
 
   try {
@@ -54,6 +54,7 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
 });
 
 router.post("/coreteamranking", urlencodedParser, async (req, res) => {
+  validSlackSecret(req, res);
   let response = {};
 
   if (isCoreTeam(req.body.user_id)) {

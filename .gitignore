@@ -5,6 +5,6 @@ node_modules
 &.error
 ._*
 
-ngrok
+ngrok*
 coverage/
 *.swp
