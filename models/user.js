@@ -34,8 +34,16 @@ const userSchema = new mongoose.Schema({
     required: false
   },
   reactions: {
-    type: Number,
-    required: false
+    positives: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    negatives: {
+      type: Number,
+      required: false,
+      default: 0
+    }
   },
   lastUpdate: {
     type: Date,
