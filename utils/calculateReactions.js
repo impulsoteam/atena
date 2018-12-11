@@ -6,6 +6,10 @@ export const isNegativeReaction = interaction => {
   return interaction.description === "-1";
 };
 
+export const isAtenaReaction = interaction => {
+  return interaction.description === "atena";
+};
+
 export const calculateReactions = (interaction, reactions = {}) => {
   // FIXME: Remove after all users are updated
   reactions = convertToPositiveAndNegative(reactions);
@@ -20,6 +24,11 @@ export const calculateReactions = (interaction, reactions = {}) => {
       interaction.type,
       reactions.negatives
     );
+  } else if (isAtenaReaction(interaction)) {
+    reactions.others = calculateNewReactionsValues(
+      interaction.type,
+      reactions.others
+    );
   }
 
   return reactions;
@@ -31,8 +40,9 @@ const convertToPositiveAndNegative = reactions => {
     typeof reactions.negatives === "undefined"
   ) {
     let newReactions = {};
-    newReactions.positives = parseInt(reactions, 10) || 0;
+    newReactions.positives = 0;
     newReactions.negatives = 0;
+    newReactions.others = parseInt(reactions, 10) || 0;
 
     return newReactions;
   }
