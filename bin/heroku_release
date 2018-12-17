@@ -1,0 +1,4 @@
+printf "\n⏳  [Release Phase]: Export database as a Backup\n"
+mongodump -h ds155862.mlab.com:55862 -d heroku_q49fgkz4 -u impulso -p 0oej23wil32ds0987 -o ./
+
+printf "\n🎉   [Release Phase]: Backup Finished!\n"
