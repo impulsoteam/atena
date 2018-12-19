@@ -131,4 +131,37 @@ router.post("/sendpoints", urlencodedParser, async (req, res) => {
   res.json(response);
 });
 
+router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
+  let user = {};
+  let response = {
+    text: "Ops! Você ainda não tem conquistas registradas."
+  };
+  validSlackSecret(req, res);
+  //TODO: pegar ultimo sem earnedDate;
+
+  if (user.achievements) {
+    const achievement = user.achievements.filter(achievement => {
+      let isCurrent = false;
+      achievement.ratings.map(rating => {
+        if (rating.earnedData === null) isCurrent = true;
+      });
+      return isCurrent;
+    });
+
+    try {
+      user = await userController.find(req.body.user_id);
+      response = {
+        text: `Olá ${user.name}, atualmente você está como ${
+          achievement.ratings
+        } com ${achievement.total}/${achievement.ratings.range} XP`
+      };
+      //analyticsSendBotCollect(req.body);
+    } catch (e) {
+      console.log("Bot -> Score:", e);
+    }
+  }
+
+  res.json(achievement);
+});
+
 export default router;

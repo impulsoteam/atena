@@ -18,7 +18,9 @@ const normalize = data => {
       parentUser: data.item_user,
       thread: false,
       type: data.type,
-      user: data.user
+      user: data.user,
+      category: config.categories.network,
+      action: config.actions.reaction
     };
   } else if (data.thread_ts) {
     return {

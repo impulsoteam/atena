@@ -50,6 +50,27 @@ const userSchema = new mongoose.Schema({
       default: 0
     }
   },
+  achievements: {
+    type: [
+      {
+        _id: mongoose.SchemaTypes.ObjectId,
+        name: String,
+        category: String,
+        actions: [String],
+        total: {
+          type: Number,
+          default: 0
+        },
+        ratings: [
+          {
+            name: String,
+            range: Number
+          }
+        ],
+        xp: Number
+      }
+    ]
+  },
   lastUpdate: {
     type: Date,
     required: true,

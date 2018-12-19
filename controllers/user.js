@@ -4,6 +4,7 @@ import {
   calculateScore,
   calculateReceivedScore,
   calculateReactions,
+  calculateAchievements,
   calculateLevel,
   getUserInfo,
   isCoreTeam
@@ -138,6 +139,7 @@ const findInactivities = async () => {
 };
 
 const createUserData = (userInfo, score, interaction, UserModel) => {
+  console.log("Entrou em createUserData");
   const obj = {
     avatar: userInfo.profile.image_72,
     name: userInfo.profile.real_name,
@@ -148,6 +150,7 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
     messages: interaction.type === "message" ? 1 : 0,
     replies: interaction.type === "thread" ? 1 : 0,
     reactions: calculateReactions(interaction, 0),
+    achievements: calculateAchievements({}, interaction),
     lastUpdate: new Date(),
     isCoreTeam: isCoreTeam(interaction.user)
   };
