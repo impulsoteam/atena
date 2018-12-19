@@ -24,7 +24,7 @@ router.post("/events", async (req, res) => {
   if (data.pull_request && data.action === "closed")
     data.type = "merged_pull_request";
   const githubId =
-    data.pull_request && data.action
+    data.pull_request && data.pull_request.merged
       ? data.pull_request.user.id
       : data.sender.id;
   try {
