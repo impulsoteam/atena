@@ -1,24 +1,32 @@
 import AchievementController from "../controllers/achievement";
 
 export const calculateAchievements = (user, interaction) => {
-
   let achievements = [];
-  const userAchievements = user.achievements || [];
 
-  if (hasAchievements(user) && hasAchievementsForCategoryAndAction(user, interaction)) {
-    updateForCategoryAndAction();
+  if (
+    hasAchievements(user) &&
+    hasAchievementsForCategoryAndAction(user, interaction)
+  ) {
+    achievements = updateForCategoryAndAction(user, interaction);
+    console.log(achievements);
+
     //TODO: buscar o atual
     //TODO: atualiza total
     //TODO: checar sem tem que atualizar o earnedDate
     //      Se ganhar conquista nova, adicionar XP
     //TODO: retorna achievement
-    
-      
-  } else if (hasAchievements(user) && hasAchievementsForCategory(user, interaction)) {
+  } else if (
+    hasAchievements(user) &&
+    hasAchievementsForCategory(user, interaction)
+  ) {
     // TODO: Update quando existe categoria
   } else {
+    const userAchievements = user.achievements || [];
     const newAchievement = createAchievements(interaction);
-    achievements = userAchievements.concat(newAchievement);
+    achievements = {
+      score: newAchievement.score,
+      items: userAchievements.concat(newAchievement.achievements)
+    };
   }
 
   return achievements;
@@ -28,78 +36,55 @@ const hasAchievements = user => {
   return user.achievements && user.achievements.length > 0;
 };
 
-const hasAchievementsForCategory = () => {
-  return user.achievements.find(achievement => achievement.name === interaction.category);
-}
+const hasAchievementsForCategory = (user, interaction) => {
+  return user.achievements.find(
+    achievement => achievement.category === interaction.category
+  );
+};
 
-const updateAchievements = (user, interaction) => {
+const hasAchievementsForCategoryAndAction = (user, interaction) => {
+  return user.achievements.some(achievement => {
+    return (
+      achievement.category === interaction.category &&
+      achievement.actions.some(action => action.name === interaction.action)
+    );
+  });
+};
 
-  // let achievements = user.achievements.find(achievement => {
-  //   return (
-  //     achievement.category === interaction.category &&
-  //     achievement.action === interaction.action
-  //   );
-  // });
+const updateForCategoryAndAction = (user, interaction) => {
+  let xpToIncrease = 0;
 
   let achievements = user.achievements.map(achievement => {
-    // [bronze, prata]
-    if (
-      achievement.category === interaction.category &&
-      achievement.action === interaction.action
-    ) {
+    if (achievement.category === interaction.category) {
+      achievement.actions = achievement.actions.map(action => {
+        if (action.name === interaction.action) {
+          action.total += 1;
+          action.ratings.map(rating => {
+            rating.ranges.map((range, index) => {
+              if (range.earnedDate === null && range.value === action.total) {
+                range.earnedDate = Date.now();
+                if (rating.ranges.length == index + 1) xpToIncrease = rating.xp;
+              }
 
-      achievements.total += 1;
+              return range;
+            });
+            return rating;
+          });
+        }
+        return action;
+      });
     }
 
     return achievement;
   });
 
-  console.log('achievements find', achievements);
-
-  // achou bronze
-  if(achievements) {
-    console.log('achievements pre update', achievements);
-
-    achievements.total += 1; // TODO: separar
-    achievements.ratings = achievements.ratings.map(rating => {
-      if(
-        rating.earnedDate === null &&
-        parseInt(rating.range, 10) === parseInt(achievements.total, 10)
-      ){
-        rating.earnedDate = Date.now();
-      }
-
-      return rating;
-    });
-
-    console.log('achievements pos update', achievements);
-    
-    // TODO: achar rating adequado
-    // TODO: add total
-    // TODO: substituir achievements
-  } else {
-    // TODO: se não achar
-    console.log('Não achou achievement');
-  }
-
-  return user.achievements;
+  return {
+    score: xpToIncrease,
+    items: achievements
+  };
 };
 
-const hasAchievementsForCategoryAndAction = (user, interaction) => {
-  return user.achievements.find(achievement => {
-    return (
-      achievement.name === interaction.category &&
-      achievement.actions.find(action => action.name === interaction.action)
-    );
-  });
-};
-
-const updateForCategoryAndAction = () => {
-
-};
-
-const createAchievements = (interaction) => {
-
+const createAchievements = interaction => {
   const achievements = AchievementController.findMainByCategoryAndAction(
     interaction.category,
     interaction.action
@@ -109,9 +94,7 @@ const createAchievements = (interaction) => {
   let currentRating = 0;
 
   for (let item in achievements) {
-    category.actions[0].ratings.push(
-      generateNewRating(achievements, item)
-    );
+    category.actions[0].ratings.push(generateNewRating(achievements, item));
 
     for (let range in achievements[item].ranges) {
       category.actions[0].ratings[currentRating].ranges.push(
@@ -121,11 +104,14 @@ const createAchievements = (interaction) => {
 
     currentRating++;
   }
-  
+
   category = addFirstNewEarnedDate(category);
   category = addFirstTotal(category);
- 
-  return [category];
+
+  return {
+    score: 0,
+    achievements: category
+  };
 };
 
 const generateNewRange = (achievements, item, range) => {
@@ -133,30 +119,32 @@ const generateNewRange = (achievements, item, range) => {
     name: range,
     value: achievements[item].ranges[range],
     earnedDate: null
-  }
+  };
 };
 
 const generateNewRating = (achievements, item) => {
   return {
     name: achievements[item].name,
     xp: achievements[item].xp,
-    ranges: [] 
+    ranges: []
   };
 };
 
 const genareteNewCategory = interaction => {
   return {
-    name: interaction.category,
-    actions: [{
-      name: interaction.action,
-      total: 0,
-      ratings: []
-    }]
+    category: interaction.category,
+    actions: [
+      {
+        name: interaction.action,
+        total: 0,
+        ratings: []
+      }
+    ]
   };
 };
 
 const addFirstNewEarnedDate = category => {
-  if(category.actions[0].ratings[0].ranges[0].value === 1) {
+  if (category.actions[0].ratings[0].ranges[0].value === 1) {
     category.actions[0].ratings[0].ranges[0].earnedDate = Date.now();
   }
 

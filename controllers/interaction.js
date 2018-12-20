@@ -2,6 +2,7 @@ import config from "config-yml";
 import mongoose from "mongoose";
 import moment from "moment";
 import userController from "./user";
+import achievementController from "./achievement";
 
 import { calculateScore } from "../utils";
 import { lastMessageTime } from "../utils/interactions";
@@ -19,8 +20,8 @@ const normalize = data => {
       thread: false,
       type: data.type,
       user: data.user,
-      category: config.categories.network,
-      action: config.actions.reaction
+      category: config.categories.network.type,
+      action: config.actions.reaction.type
     };
   } else if (data.thread_ts) {
     return {
@@ -32,7 +33,9 @@ const normalize = data => {
       parentUser: data.parent_user_id,
       thread: true,
       type: "thread",
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: config.actions.reply.type
     };
   } else if (data.type === "manual") {
     return {
@@ -41,7 +44,9 @@ const normalize = data => {
       value: data.value,
       thread: false,
       description: data.text,
-      channel: "mundão"
+      channel: "mundão",
+      category: config.categories.network.type,
+      action: "manual"
     };
   } else if (data.type === "inactivity") {
     return {
@@ -49,7 +54,9 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "ação do sistema",
-      channel: "matrix"
+      channel: "matrix",
+      category: config.categories.network.type,
+      action: "inactivity"
     };
   } else {
     return {
@@ -60,7 +67,9 @@ const normalize = data => {
       parentMessage: null,
       thread: false,
       type: "message",
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: config.actions.message.type
     };
   }
 };
@@ -85,7 +94,11 @@ export const save = async data => {
   }
 
   if (todayLimitStatus > 0) {
+    console.log("interaction", interaction);
+
     userController.update(interaction);
+    achievementController.save(interaction);
+
     interaction.type !== "message" &&
       interaction.parentUser !== interaction.user &&
       userController.updateParentUser(interaction);

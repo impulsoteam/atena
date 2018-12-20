@@ -1,3 +1,15 @@
-reaction: 'reaction'
-reply: 'reply'
-message: 'message'
+reaction:
+  name: 'Reactions'
+  type: 'reaction'
+  sended: 'Enviadas'
+  received: 'Recebidas'
+reply:
+  name: 'Replies'
+  type: 'reply'
+  sended: 'Enviados'
+  received: 'Recebidos'
+message:
+  name: 'Mensagens'
+  type: 'message'
+  sended: 'Enviadas'
+  received: 'Recebidas'

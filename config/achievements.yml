@@ -1,9 +1,28 @@
 network:
   reaction:
-    bronze:
-      name: 'Bronze'
-      ranges:
-        I: 1
-        II: 2
-        III: 3
-      xp: 5
+    received:
+      bronze:
+        name: 'Bronze'
+        ranges:
+          I: 1
+          II: 2
+        xp: 5
+      prata:
+        name: 'Prata'
+        ranges:
+          I: 3
+          II: 4
+        xp: 10
+    sended:
+      bronze:
+        name: 'Bronze'
+        ranges:
+          I: 1
+          II: 2
+        xp: 5
+      prata:
+        name: 'Prata'
+        ranges:
+          I: 3
+          II: 4
+        xp: 10

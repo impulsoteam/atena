@@ -50,22 +50,6 @@ const userSchema = new mongoose.Schema({
       default: 0
     }
   },
-  achievements: [{
-    name: String,
-    actions: [{
-      name: String,
-      total: Number,
-      ratings: [{
-        name: String,
-        xp: Number,
-        ranges: [{
-          name: String,
-          value: Number,
-          earnedDate: Date
-        }]
-      }]
-    }]
-  }],
   lastUpdate: {
     type: Date,
     required: true,

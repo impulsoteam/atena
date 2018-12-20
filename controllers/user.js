@@ -4,7 +4,6 @@ import {
   calculateScore,
   calculateReceivedScore,
   calculateReactions,
-  calculateAchievements,
   calculateLevel,
   getUserInfo,
   isCoreTeam
@@ -139,7 +138,6 @@ const findInactivities = async () => {
 };
 
 const createUserData = (userInfo, score, interaction, UserModel) => {
-  console.log("Entrou em createUserData");
   const obj = {
     avatar: userInfo.profile.image_72,
     name: userInfo.profile.real_name,
@@ -150,7 +148,6 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
     messages: interaction.type === "message" ? 1 : 0,
     replies: interaction.type === "thread" ? 1 : 0,
     reactions: calculateReactions(interaction, 0),
-    achievements: calculateAchievements({}, interaction),
     lastUpdate: new Date(),
     isCoreTeam: isCoreTeam(interaction.user)
   };
@@ -164,6 +161,7 @@ const updateUserData = (UserModel, interaction, score) => {
     if (err) {
       throw new Error("Error updating user");
     }
+
     const newScore = doc.score + score;
     doc.level = calculateLevel(newScore);
     doc.score = newScore < 0 ? 0 : newScore;
@@ -172,7 +170,6 @@ const updateUserData = (UserModel, interaction, score) => {
       interaction.type === "message" ? doc.messages + 1 : doc.messages;
     doc.replies = interaction.type === "thread" ? doc.replies + 1 : doc.replies;
     doc.reactions = calculateReactions(interaction, doc.reactions);
-    doc.achievements = calculateAchievements(doc, interaction);
     doc.lastUpdate = Date.now();
     doc.save();
     return doc;
