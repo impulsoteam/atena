@@ -3,3 +3,8 @@ node_modules
 
 *.log
 &.error
+._*
+
+ngrok*
+coverage/
+*.swp

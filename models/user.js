@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  email: {
+    type: String,
+    required: false
+  },
   messages: {
     type: Number,
     required: false
@@ -30,13 +34,31 @@ const userSchema = new mongoose.Schema({
     required: false
   },
   reactions: {
-    type: Number,
-    required: false
+    positives: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    negatives: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    others: {
+      type: Number,
+      required: false,
+      default: 0
+    }
   },
   lastUpdate: {
     type: Date,
     required: true,
     default: Date.now
+  },
+  isCoreTeam: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 });
 

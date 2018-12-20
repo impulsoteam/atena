@@ -1,44 +1,87 @@
-<p align="center">
-  <a href="https://impulso.network/" target="_blank">
-    <img alt="Parcel" src="https://impulso.network/assets/images/impulsonetwork-logo.svg" width="350">
-  </a>
-</p>
+<img src="https://impulso.network/assets/images/impulsonetwork-logo.svg" style="width: 350px">
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6b19092045904984b19c4775927d10b1)](https://app.codacy.com/app/impulsonetwork/atena?utm_source=github.com&utm_medium=referral&utm_content=impulsonetwork/atena&utm_campaign=Badge_Grade_Settings)
+[![Build Status](https://dev.azure.com/impulsonetwork/Atena/_apis/build/status/impulsonetwork.atena)](https://dev.azure.com/impulsonetwork/Atena/_build/latest?definitionId=3)
 [![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=about)](http://impulso.network)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/impulsonetwork.svg?style=social&label=Follow)](https://twitter.com/impulsonetwork)
+
 
 ## Atena v.0.1
 
-Atena is an initiative of the impulse in collaboration with several Impulsers, with the objective to promote the engagement and to reward the activities and efforts of each person in the Impulse. In it you will be able to acquire Experience Points (XP) through the execution of several activities and based on these two factors the Impulsers will receive levels and achievements recognizing the effort expended in the activities.
+A Atena é uma iniciativa da Impulso Network em colaboração com vários Impulsers, com o objetivo de promover o engajamento e recompensar as atividades e esforços de cada pessoa na Impulso. Nele você poderá adquirir Pontos de Experiência (XP) através da execução de diversas atividades e com base nesses dois fatores os Impulsers receberão níveis e conquistas, reconhecendo o esforço despendido nas atividades.
 
-## Setup
+## Configuração
 
-- Install [Mongodb](https://www.mongodb.com/)
-- Create your .env file using .env.example model
-- Create your slack app - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
-- Install the requirements: `yarn`
-- Run the server using the following command: `yarn start:dev`
+Um passo-a-passo da configuração mínima que você precisa para obter o Atena em execução.
 
-## Community
+### Configuração inicial
 
-All feedback and suggestions are welcome!
+- Instalar o mongodb [Mongodb](https://docs.mongodb.com/manual/installation/)
+- Criar um aplicativo Slack utilizando ngrok - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
 
-💬 Join the community on [Impulso Network](https://impulso.network)
+### Desenvolvimento
 
-## Contributors
+- Faça um  `fork` do projeto para a tua conta, e então faça o `clone`
+```sh
+> git clone https://github.com/[your account]/atena
+```
 
-This project exists thanks to all the people who contribute:
+- Navegue até a pasta de destino onde fez o clone do projeto
+```sh
+> cd atena/
+```
 
-<p>
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-UCJA2A8Q5-1641bfb963de-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-UB348CP6Z-0c38a12a4dc6-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-U9670TYSJ-81d8f97e5554-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-U7ZD2FCBB-38b85b8fe171-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-UAR3DR2AV-g611e782a6b7-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-UCDNR1N59-5ae8f8e81f9f-48" width="60px">
-<img src="https://ca.slack-edge.com/T7ZU9V5S6-UCJPCNB70-28c3b996d546-48" width="60px">
-</p>
+- Instale o `yarn` a partir do `npm` (ser global é opcional)
+```sh
+> npm i yarn -g
+```
+
+- instalar os repositorios utilizando o `yarn`
+```sh
+> yarn -i
+```
+
+- Adicionar referências remotas
+```sh
+> git remote add upstream https://github.com/impulsonetwork/atena
+```
+- Criar o arquivo `.env` com as suas configurações utilizando o `.env.example` presente no projeto
+```
+PORT=4390
+SLACK_SIGNIN_EVENTS=
+SLACK_TOKEN=
+GA=
+MONGODB_URI=mongodb://localhost/atena
+CHANNELS=CCWSMJZ6U CCXCXJWBW
+```
+
+### Executando
+- Inicie o servidor utilizando o seguinte comando:
+```sh
+> yarn start:dev
+```
+
+## Contribuindo
+
+O principal objetivo deste repositório é continuar a evoluir o Atena, tornando-o mais rápido e fácil de usar.
+
+O desenvolvimento da Atena acontece a céu aberto no GitHub, e somos gratos à comunidade por contribuir com correções de bugs e melhorias. Leia abaixo para saber como você pode participar da melhoria da Atena e da Impulso network.
+
+### [Código de Conduta](CONTRIBUTING.md)
+
+A Impulso Network adotou um Código de Conduta que esperamos que os participantes do projeto sigam. Por favor, leia [Código de Conduta](CONTRIBUTING.md) para que você possa entender quais ações serão e não serão toleradas.
+
+### [Guia de Contribuição](CONTRIBUTING.md)
+
+Leia nosso [guia de contribuição](CONTRIBUTING.md) para conhecer nosso processo de desenvolvimento, como propor correções de erros e melhorias, e como construir e testar suas alterações no Atena.
+
+## Comunidade
+
+Todos os comentários e sugestões são bem-vindas e podem ser feitas via Issues no Github ou lá no Slack!
+
+💬 Junte-se a comunidade em [Impulso Network](https://impulso.network)
 
 ## License
 
-MIT
+Este projeto está licenciado sob a licença MIT - consulte o arquivo [LICENSE.md](LICENSE.md) para obter detalhes.

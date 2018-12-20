@@ -1,25 +1,27 @@
-import path from "path";
+import autoprefixer from "autoprefixer";
 import dotenv from "dotenv";
-import winston from "winston";
 import express from "express";
 import mongoose from "mongoose";
-import querystring from "querystring";
-import request from "async-request";
-import { createEventAdapter } from "@slack/events-api";
-import sassMiddleware from "node-sass-middleware";
+import path from "path";
 import postcssMiddleware from "postcss-middleware";
-import autoprefixer from "autoprefixer";
-
-import apiRoutes from "./routes";
-import controllers from "./controllers";
-import { isValidChannel } from "./utils";
+import sassMiddleware from "node-sass-middleware";
+import winston from "winston";
+import runCrons from "./cron";
+import config from "./config";
+import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
+
+runCrons();
 
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.json(),
   transports: [
+    new winston.transports.Console({
+      colorize: true,
+      timestamp: `${new Date().toLocaleDateString()} [${new Date().toLocaleTimeString()}]`
+    }),
     new winston.transports.File({
       filename: "error.log",
       level: "error"
@@ -39,14 +41,30 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
-mongoose.connect(process.env.MONGODB_URI);
+if (process.env.NODE_ENV === "test") {
+  mongoose.connect(config.test_db);
+} else {
+  mongoose.connect(process.env.MONGODB_URI);
+}
 mongoose.set("useCreateIndexes", true);
 
-const slackEvents = createEventAdapter(process.env.SLACK_SIGNIN_EVENTS);
 const port = process.env.PORT;
 const app = express();
 
 app.set("view engine", "pug");
+
+// app.use(
+//   bodyParser.json({
+//     verify: function(req, res, buf) {
+//       var url = req.originalUrl;
+//       console.log("url", url, url.startsWith("/slack/events"));
+//       if (url.startsWith("/slack/events")) {
+//         req.rawBody = buf.toString();
+//       }
+//     }
+//   })
+// );
+
 app.use(
   sassMiddleware({
     src: path.join(__dirname, "stylesheets"),
@@ -55,9 +73,10 @@ app.use(
     outputStyle: "compressed"
   })
 );
+
 app.use(
   postcssMiddleware({
-    src: req => path.join("./", req.path),
+    src: req => path.join(`${__dirname}public`, req.url),
     plugins: [
       autoprefixer({
         browsers: ["> 1%", "IE 7"],
@@ -66,68 +85,12 @@ app.use(
     ]
   })
 );
+
 app.use(express.static("public"));
-app.use("/", apiRoutes);
+app.use("/", appRoutes);
 
-app.use((req, res, next) => {
-  if (req.query.format === "json") {
-    res.header("Content-Type", "application/json");
-  }
-  next();
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, () => console.info(`Listening on port ${port}`));
+}
 
-const handleEvent = async e => {
-  const channel = e.type === "message" ? e.channel : e.item.channel;
-
-  if (isValidChannel(channel)) {
-    controllers.interaction.save(e);
-    console.log("event", e);
-  } else {
-    console.log("-- event into an invalid channel");
-  }
-
-  if (process.env.GA) {
-    const params = {
-      v: 1,
-      tid: process.env.GA,
-      cid: e.user,
-      cd1: e.user,
-      cd2: e.channel,
-      cd3: e.thread_ts,
-      cd4: e.type,
-      ds: "slack",
-      cs: "slack",
-      dh: "https://impulsonetwork.slack.com",
-      dp: `/${channel}`,
-      dt: `Slack Channel: ${channel}`,
-      t: "event",
-      ec: channel,
-      ea: `${e.user}`,
-      el:
-        e.type === "message" ? `message: ${e.text}` : `reaction: ${e.reaction}`,
-      ev: 1
-    };
-    const url = `https://www.google-analytics.com/collect?${querystring.stringify(
-      params
-    )}`;
-
-    try {
-      const response = await request(url, { method: "POST" });
-      console.log(response.body);
-    } catch (e) {
-      console.log(e);
-    }
-  } else {
-    console.log("Setup an instance of google analytics for tests");
-  }
-};
-
-app.use("/slack/events", slackEvents.expressMiddleware());
-
-slackEvents.on("message", e => handleEvent(e));
-
-slackEvents.on("reaction_added", e => handleEvent(e));
-
-slackEvents.on("error", console.error);
-
-app.listen(port, () => console.info(`Listening on port ${port}`));
+module.exports = app;

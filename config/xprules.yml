@@ -1,10 +1,16 @@
+limits:
+  daily: 40
 messages:
   send: 1
 threads:
   send: 2
   receive: 1
 reactions:
+  atena: 0.1
   send: 1
   receive:
     positive: 2
     negative: -1
+inactive:
+  mindays: 14
+  value: -1
