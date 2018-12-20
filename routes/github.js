@@ -64,15 +64,14 @@ router.post("/events", async (req, res) => {
 router.get("/callback", async (req, res) => {
   let response;
   let user = {};
+  let errors = [];
   const code = req.query.code;
-  console.log("query", req.query);
   const slackId = req.query.state;
   try {
     user = await userController.find(slackId);
   } catch (e) {
-    console.log("Bot -> Score:", e);
+    errors.push(e);
   }
-  console.log("USER", user);
 
   const url = "https://github.com/login/oauth/access_token";
   let data;
@@ -83,45 +82,43 @@ router.get("/callback", async (req, res) => {
       code: code,
       accept: "json"
     })
-    .then(response => {
-      data = queryString.parse(response.data);
+    .then(res => {
+      data = queryString.parse(res.data);
     })
     .catch(error => {
-      console.log("Error: ", error);
+      errors.push(error);
       res.send(error);
     });
-  console.log(data);
+
   if (data.access_token) {
-    const scopes = data.scope.split(",");
-    if (scopes.includes("user:email")) {
-      response = `Olá novamente, nobre Impulser! Sua dedicação foi posta a prova e você passou com honrarias!<br><br>
-        A partir de agora você pode desempenhar trabalhos junto aos *nossos* projetos open-source!<br><br>
-        Ainda está em dúvida de como funcionam?! Não tem problema, dá uma olhadinha aqui neste papiro: <a href="https://github.com/impulsonetwork/atena">https://github.com/impulsonetwork/atena</a>`;
-      await axios
-        .get("https://api.github.com/user", {
-          params: {
-            access_token: data.access_token
-          }
-        })
-        .then(response => {
-          const githubId = response.data.id;
-          if (!user.githubId) {
-            user = githubController.updateUserData(slackId, githubId);
-          }
-        })
-        .catch(error => {
-          console.log("Error: ", error);
-        });
-    } else {
-      response =
-        "Não conseguimos localizar seu e-mail público ou privado na API do GITHUB, Seu esse recurso sua armadura de cavaleiro não está pronta para ganhar bonificações na contribuição do projeto Atena!";
-    }
+    response = `Olá novamente, nobre Impulser! Sua dedicação foi posta a prova e você passou com honrarias!<br><br>
+          A partir de agora você pode desempenhar trabalhos junto aos *nossos* projetos open-source!<br><br>
+          Ainda está em dúvida de como funcionam?! Não tem problema, dá uma olhadinha aqui neste papiro: <a href="https://github.com/impulsonetwork/atena">https://github.com/impulsonetwork/atena</a>`;
+    await axios
+      .get("https://api.github.com/user", {
+        params: {
+          access_token: data.access_token
+        }
+      })
+      .then(res_token => {
+        const githubId = res_token.data.id;
+        if (!user.githubId) {
+          user = githubController.updateUserData(slackId, githubId);
+        }
+      })
+      .catch(e => {
+        errors.push(e);
+      });
+  } else if (data.error) {
+    response = `Ops! parece que você entrou na caverna errada. Que falta faz um GPS, não é? Siga esse caminho e não vai errar: <a href="${link_auth}&state=${
+      user.slackId
+    }">${link_auth}&state=${user.slackId}</a> para tentar novamente.`;
   } else {
-    if (data.error)
-      response = `Ops! parece que você entrou na caverna errada. Que falta faz um GPS, não é? Siga esse caminho e não vai errar: <a href="${link_auth}&state=${
-        user.slackId
-      }">${link_auth}&state=${user.slackId}</a> para tentar novamente.`;
+    response =
+      "Não conseguimos localizar seu e-mail público ou privado na API do GITHUB, Seu esse recurso sua armadura de cavaleiro não está pronta para ganhar bonificações na contribuição do projeto Atena!";
   }
+
+  if (errors.length > 0) console.log(errors);
 
   res.render("github", {
     title: "Batalha do Open Source | Impulso Network",
@@ -138,7 +135,7 @@ router.use("/", async (req, res) => {
     console.log("Error: ", e);
   }
   if (!user.name) {
-    let data = {
+    const data = {
       channel: req.body.channel_id,
       text: "first on github messsage +1",
       ts: null,
@@ -155,7 +152,7 @@ router.use("/", async (req, res) => {
   if (user.githubId) {
     string = `Olá! Leal, ${
       user.name
-    }, você já pode participar dos meus trabalhos open-source! Go coding!"`;
+    }, você já pode participar dos meus trabalhos open-source! Go coding!`;
   }
 
   if (user.name && !user.githubId) {
@@ -164,7 +161,7 @@ Portanto, tens o que é preciso para estar entre nós, ${
       user.name
     }! Mas para participar dos trabalhos com open-source, preciso que vá até o seguinte local: ${link_auth}&state=${
       user.slackId
-    }. Uma vez que conclua essa missão voltaremos a conversar!"`;
+    }. Uma vez que conclua essa missão voltaremos a conversar!`;
   }
   res.send(string);
 });
