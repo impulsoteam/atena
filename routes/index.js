@@ -6,7 +6,6 @@ import interactionsRoutes from "./interactions";
 import gameRoutes from "./game";
 import botRoutes from "./bot";
 import resourcesRoutes from "./resources";
-import achievementsRoutes from "./achievements";
 const router = express.Router();
 
 router.use("/slack", slackRoutes);
@@ -15,7 +14,6 @@ router.use("/interactions", interactionsRoutes);
 router.use("/game", gameRoutes);
 router.use("/bot/commands", botRoutes);
 router.use("/resources", resourcesRoutes);
-router.use("/achievements", achievementsRoutes);
 
 router.get("/", (req, res) => {
   res.render("index", {

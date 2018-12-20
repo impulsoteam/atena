@@ -172,6 +172,7 @@ const updateUserData = (UserModel, interaction, score) => {
       interaction.type === "message" ? doc.messages + 1 : doc.messages;
     doc.replies = interaction.type === "thread" ? doc.replies + 1 : doc.replies;
     doc.reactions = calculateReactions(interaction, doc.reactions);
+    doc.achievements = calculateAchievements(doc, interaction);
     doc.lastUpdate = Date.now();
     doc.save();
     return doc;

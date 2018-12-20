@@ -1,0 +1,9 @@
+network:
+  reaction:
+    bronze:
+      name: 'Bronze'
+      ranges:
+        I: 1
+        II: 2
+        III: 3
+      xp: 5

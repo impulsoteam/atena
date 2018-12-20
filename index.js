@@ -6,7 +6,6 @@ import path from "path";
 import postcssMiddleware from "postcss-middleware";
 import sassMiddleware from "node-sass-middleware";
 import winston from "winston";
-import bodyParser from "body-parser";
 import runCrons from "./cron";
 import config from "./config";
 import appRoutes from "./routes";
@@ -54,17 +53,17 @@ const app = express();
 
 app.set("view engine", "pug");
 
-app.use(
-  bodyParser.json({
-    verify: function(req, res, buf) {
-      var url = req.originalUrl;
-      console.log("url", url, url.startsWith("/slack/events"));
-      if (url.startsWith("/slack/events")) {
-        req.rawBody = buf.toString();
-      }
-    }
-  })
-);
+// app.use(
+//   bodyParser.json({
+//     verify: function(req, res, buf) {
+//       var url = req.originalUrl;
+//       console.log("url", url, url.startsWith("/slack/events"));
+//       if (url.startsWith("/slack/events")) {
+//         req.rawBody = buf.toString();
+//       }
+//     }
+//   })
+// );
 
 app.use(
   sassMiddleware({
