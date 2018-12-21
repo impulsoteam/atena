@@ -4,7 +4,6 @@ import request from "make-requests";
 
 import { calculateReceivedScore as calc } from "./calculateReceivedScore";
 import { calculateReactions as calcReactions } from "./calculateReactions";
-import { calculateAchievements as calcAchievements } from "./calculateAchievements";
 import userController from "../controllers/user";
 import { sendCollect, sendBotCollect } from "./analytics";
 if (process.env.NODE_ENV !== "production") {
@@ -159,5 +158,3 @@ export const getRanking = async (req, isCoreTeamMember) => {
 };
 
 export const calculateReactions = calcReactions;
-
-export const calculateAchievements = calcAchievements;

@@ -1,12 +1,44 @@
 import mongoose from "mongoose";
 
+const rangeSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  value: {
+    type: Number,
+    required: true
+  },
+  earnedDate: {
+    type: Date,
+    required: false
+  }
+});
+
+const ratingSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  xp: {
+    type: Number,
+    required: true
+  },
+  ranges: [
+    {
+      type: rangeSchema,
+      require: true
+    }
+  ]
+});
+
 const achievementSchema = new mongoose.Schema({
   name: {
-    type: String, // Network | Resposta Recebidas
+    type: String,
     required: true
   },
   kind: {
-    type: String, // network.reply.received
+    type: String,
     required: true
   },
   user: {
@@ -15,19 +47,12 @@ const achievementSchema = new mongoose.Schema({
   },
   total: {
     type: Number,
-    default: 0
+    require: true
   },
   ratings: [
     {
-      name: String,
-      xp: Number,
-      ranges: [
-        {
-          name: String,
-          value: Number,
-          earnedDate: Date
-        }
-      ]
+      type: ratingSchema,
+      require: true
     }
   ]
 });

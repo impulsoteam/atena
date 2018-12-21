@@ -35,7 +35,7 @@ const normalize = data => {
       type: "thread",
       user: data.user,
       category: config.categories.network.type,
-      action: config.actions.reply.type
+      action: config.actions.thread.type
     };
   } else if (data.type === "manual") {
     return {
@@ -94,8 +94,6 @@ export const save = async data => {
   }
 
   if (todayLimitStatus > 0) {
-    console.log("interaction", interaction);
-
     userController.update(interaction);
     achievementController.save(interaction);
 

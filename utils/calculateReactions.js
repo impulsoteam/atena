@@ -1,14 +1,8 @@
-export const isPositiveReaction = interaction => {
-  return interaction.description === "+1";
-};
-
-export const isNegativeReaction = interaction => {
-  return interaction.description === "-1";
-};
-
-export const isAtenaReaction = interaction => {
-  return interaction.description === "atena";
-};
+import {
+  isPositiveReaction,
+  isNegativeReaction,
+  isAtenaReaction
+} from "./reactions";
 
 export const calculateReactions = (interaction, reactions = {}) => {
   // FIXME: Remove after all users are updated

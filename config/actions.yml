@@ -1,11 +1,11 @@
 reaction:
-  name: 'Reactions'
+  name: 'Reações'
   type: 'reaction'
   sended: 'Enviadas'
   received: 'Recebidas'
-reply:
-  name: 'Replies'
-  type: 'reply'
+thread:
+  name: 'Respostas'
+  type: 'thread'
   sended: 'Enviados'
   received: 'Recebidos'
 message:
