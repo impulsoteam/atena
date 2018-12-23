@@ -5,6 +5,12 @@ import { calculateLevel } from "../utils";
 import { isPositiveReaction, isAtenaReaction } from "../utils/reactions";
 import { _throw } from "../helpers";
 
+export const findAllByUser = async userId => {
+  const result = await AchievementModel.find({ user: userId }).exec();
+
+  return result || _throw("Error finding a specific achievement");
+};
+
 export const save = async interaction => {
   try {
     if (isValidAction(interaction)) {
@@ -19,6 +25,7 @@ export const save = async interaction => {
       }
     }
   } catch (error) {
+    console.log(error);
     _throw("Error saving achievement");
   }
 };
@@ -31,8 +38,8 @@ const isValidAction = interaction => {
 
 const isValidReaction = interaction => {
   if (
-    interaction.type === config.actions.reaction.type &&
-    (!isPositiveReaction(interaction) || !isAtenaReaction(interaction))
+    interaction.action === config.actions.reaction.type &&
+    (!isPositiveReaction(interaction) && !isAtenaReaction(interaction))
   ) {
     return false;
   }
@@ -42,13 +49,12 @@ const isValidReaction = interaction => {
 
 const findMain = (category, action, type) => {
   let achievements = null;
-
   if (
-    config.achievements.hasOwnProperty(category) &&
-    config.achievements[category].hasOwnProperty(action) &&
-    config.achievements[category][action].hasOwnProperty(type)
+    config.hasOwnProperty(`achievements-${category}`) &&
+    config[`achievements-${category}`].hasOwnProperty(action) &&
+    config[`achievements-${category}`][action].hasOwnProperty(type)
   ) {
-    achievements = config.achievements[category][action][type];
+    achievements = config[`achievements-${category}`][action][type];
   }
 
   return achievements;
@@ -194,5 +200,6 @@ const addFirstNewEarnedDate = category => {
 };
 
 export default {
+  findAllByUser,
   save
 };

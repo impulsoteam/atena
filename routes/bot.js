@@ -5,7 +5,8 @@ import bodyParser from "body-parser";
 import { analyticsSendBotCollect, getRanking } from "../utils";
 import userController from "../controllers/user";
 import interactionController from "../controllers/interaction";
-import { isCoreTeam } from "../utils";
+import achievementController from "../controllers/achievement";
+import { isCoreTeam, calculateAchievementsPosition } from "../utils";
 import validSlackSecret from "../utils/validSecret";
 const router = express.Router();
 
@@ -132,36 +133,43 @@ router.post("/sendpoints", urlencodedParser, async (req, res) => {
 });
 
 router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
+  let allAchievements = {};
   let user = {};
   let response = {
-    text: "Ops! Você ainda não tem conquistas registradas."
+    text: "Ops! Você ainda não tem conquistas registradas. :("
   };
-  validSlackSecret(req, res);
-  //TODO: pegar ultimo sem earnedDate;
 
-  if (user.achievements) {
-    const achievement = user.achievements.filter(achievement => {
-      let isCurrent = false;
-      achievement.ratings.map(rating => {
-        if (rating.earnedData === null) isCurrent = true;
-      });
-      return isCurrent;
-    });
+  // validSlackSecret(req, res);
 
-    try {
-      user = await userController.find(req.body.user_id);
-      response = {
-        text: `Olá ${user.name}, atualmente você está como ${
-          achievement.ratings
-        } com ${achievement.total}/${achievement.ratings.range} XP`
-      };
-      //analyticsSendBotCollect(req.body);
-    } catch (e) {
-      console.log("Bot -> Score:", e);
+  try {
+    user = await userController.find(req.body.user_id);
+    allAchievements = await achievementController.findAllByUser(
+      req.body.user_id
+    );
+
+    if (user && allAchievements.length > 0) {
+      const achievements = calculateAchievementsPosition(allAchievements);
+      console.table(achievements);
+      if (achievements) {
+        let textsAchievements = achievements.map(achievement => {
+          return {
+            text: `${achievement.name}: Você é ${achievement.rating.name} com ${
+              achievement.total
+            }/${achievement.rating.value}.`
+          };
+        });
+
+        response = {
+          text: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
+          attachments: textsAchievements
+        };
+      }
     }
+  } catch (e) {
+    console.log("Bot -> Minhas Conquistas:", e);
   }
 
-  res.json(achievement);
+  res.json(response);
 });
 
 export default router;

@@ -6,8 +6,8 @@ reaction:
 thread:
   name: 'Respostas'
   type: 'thread'
-  sended: 'Enviados'
-  received: 'Recebidos'
+  sended: 'Enviadas'
+  received: 'Recebidas'
 message:
   name: 'Mensagens'
   type: 'message'
