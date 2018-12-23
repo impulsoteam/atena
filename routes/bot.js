@@ -139,7 +139,7 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
     text: "Ops! Você ainda não tem conquistas registradas. :("
   };
 
-  // validSlackSecret(req, res);
+  validSlackSecret(req, res);
 
   try {
     user = await userController.find(req.body.user_id);
