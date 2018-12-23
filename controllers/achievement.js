@@ -25,7 +25,6 @@ export const save = async interaction => {
       }
     }
   } catch (error) {
-    console.log(error);
     _throw("Error saving achievement");
   }
 };

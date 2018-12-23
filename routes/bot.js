@@ -149,7 +149,6 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
 
     if (user && allAchievements.length > 0) {
       const achievements = calculateAchievementsPosition(allAchievements);
-      console.table(achievements);
       if (achievements) {
         let textsAchievements = achievements.map(achievement => {
           return {
