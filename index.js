@@ -75,6 +75,7 @@ app.use(
 );
 
 app.use(
+  "/css",
   postcssMiddleware({
     src: req => path.join(`${__dirname}public`, req.url),
     plugins: [

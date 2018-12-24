@@ -49,6 +49,38 @@ const normalize = data => {
       description: "ação do sistema",
       channel: "matrix"
     };
+  } else if (data.type === "issue") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "new github issue",
+      channel: data.repository.id
+    };
+  } else if (data.type === "review") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "review",
+      channel: data.review.id
+    };
+  } else if (data.type === "pull_request") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "review",
+      channel: data.pull_request.id
+    };
+  } else if (data.type === "merged_pull_request") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "merged pull request",
+      channel: data.pull_request.id
+    };
   } else {
     return {
       channel: data.channel,
@@ -83,12 +115,15 @@ export const save = async data => {
   }
 
   if (todayLimitStatus > 0) {
-    userController.update(interaction);
+    await userController.update(interaction);
     interaction.type !== "message" &&
+      interaction.type !== "issue" &&
+      interaction.type !== "review" &&
+      interaction.type !== "pull_request" &&
+      interaction.type !== "merged_pull_request" &&
       interaction.parentUser !== interaction.user &&
       userController.updateParentUser(interaction);
   }
-
   return response || _throw("Error adding new interaction");
 };
 
