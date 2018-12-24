@@ -8,6 +8,8 @@
 
 ## Atena v.0.1
 
+### [version pt-br](https://github.com/impulsonetwork/atena/blob/master/README.md)
+
 Atena is an initiative of the impulse in collaboration with several Impulsers, with the objective to promote the engagement and to reward the activities and efforts of each person in the Impulse. In it you will be able to acquire Experience Points (XP) through the execution of several activities and based on these two factors the Impulsers will receive levels and achievements recognizing the effort expended in the activities.
 
 ## Setup
