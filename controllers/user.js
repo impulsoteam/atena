@@ -167,6 +167,7 @@ const updateUserData = (UserModel, interaction, score) => {
     if (err) {
       throw new Error("Error updating user");
     }
+
     const newScore = doc.score + score;
     doc.level = calculateLevel(newScore);
     doc.score = newScore < 0 ? 0 : newScore;

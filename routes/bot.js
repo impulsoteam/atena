@@ -5,7 +5,8 @@ import bodyParser from "body-parser";
 import { analyticsSendBotCollect, getRanking } from "../utils";
 import userController from "../controllers/user";
 import interactionController from "../controllers/interaction";
-import { isCoreTeam } from "../utils";
+import achievementController from "../controllers/achievement";
+import { isCoreTeam, calculateAchievementsPosition } from "../utils";
 import validSlackSecret from "../utils/validSecret";
 const router = express.Router();
 
@@ -126,6 +127,45 @@ router.post("/sendpoints", urlencodedParser, async (req, res) => {
   } else {
     response.text =
       "Nobre cavaleiro(a) da casa de bronze, infelizmente sua armadura não dá permissão para tal façanha =/";
+  }
+
+  res.json(response);
+});
+
+router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
+  let allAchievements = {};
+  let user = {};
+  let response = {
+    text: "Ops! Você ainda não tem conquistas registradas. :("
+  };
+
+  validSlackSecret(req, res);
+
+  try {
+    user = await userController.find(req.body.user_id);
+    allAchievements = await achievementController.findAllByUser(
+      req.body.user_id
+    );
+
+    if (user && allAchievements.length > 0) {
+      const achievements = calculateAchievementsPosition(allAchievements);
+      if (achievements) {
+        let textsAchievements = achievements.map(achievement => {
+          return {
+            text: `${achievement.name}: Você é ${achievement.rating.name} com ${
+              achievement.total
+            }/${achievement.rating.value}.`
+          };
+        });
+
+        response = {
+          text: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
+          attachments: textsAchievements
+        };
+      }
+    }
+  } catch (e) {
+    console.log("Bot -> Minhas Conquistas:", e);
   }
 
   res.json(response);
