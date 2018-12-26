@@ -1,4 +1,5 @@
 import autoprefixer from "autoprefixer";
+import config from "config-yml";
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
@@ -7,7 +8,6 @@ import postcssMiddleware from "postcss-middleware";
 import sassMiddleware from "node-sass-middleware";
 import winston from "winston";
 import runCrons from "./cron";
-import config from "./config";
 import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
@@ -42,7 +42,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 if (process.env.NODE_ENV === "test") {
-  mongoose.connect(config.test_db);
+  mongoose.connect(process.env.MONGODB_TEST_URI);
 } else {
   mongoose.connect(process.env.MONGODB_URI);
 }
