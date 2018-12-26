@@ -116,7 +116,12 @@ export const save = async data => {
 
   if (todayLimitStatus > 0 || !todayLimitStatus) {
     await userController.update(interaction);
-    if (!["message", "issue", "review", "pull_request"].includes(interaction.type) && interaction.parentUser !== interaction.user) {
+    if (
+      !["message", "issue", "review", "pull_request"].includes(
+        interaction.type
+      ) &&
+      interaction.parentUser !== interaction.user
+    ) {
       userController.updateParentUser(interaction);
     }
   }
