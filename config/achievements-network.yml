@@ -1,0 +1,187 @@
+reaction:
+  sended:
+    bronze:
+      name: 'Bronze'
+      ranges:
+        I: 1
+        II: 2
+        III: 5
+        IV: 8
+        V: 13
+      xp: 3
+    prata:
+      name: 'Prata'
+      ranges:
+        I: 25
+        II: 41
+        III: 61
+        IV: 85
+        V: 113
+      xp: 5
+    ouro:
+      name: 'Ouro'
+      ranges:
+        I: 162
+        II: 221
+        III: 288
+        IV: 365
+        V: 450
+      xp: 7
+    platina:
+      name: 'Platina'
+      ranges:
+        I: 578
+        II: 722
+        III: 882
+        IV: 1058
+        V: 1250
+      xp: 9
+    diamante:
+      name: 'Diamante'
+      ranges:
+        I: 1513
+        II: 1800
+        III: 2113
+        IV: 2450
+        V: 2813
+      xp: 11
+  received:
+    bronze:
+      name: 'Bronze'
+      ranges:
+        I: 1
+        II: 4
+        III: 9
+        IV: 16
+        V: 25
+      xp: 3
+    prata:
+      name: 'Prata'
+      ranges:
+        I: 49
+        II: 81
+        III: 121
+        IV: 169
+        V: 225
+      xp: 5
+    ouro:
+      name: 'Ouro'
+      ranges:
+        I: 324
+        II: 441
+        III: 576
+        IV: 729
+        V: 900
+      xp: 7
+    platina:
+      name: 'Platina'
+      ranges:
+        I: 1156
+        II: 1444
+        III: 1764
+        IV: 2116
+        V: 2500
+      xp: 9
+    diamante:
+      name: 'Diamante'
+      ranges:
+        I: 3025
+        II: 3600
+        III: 4225
+        IV: 4900
+        V: 5625
+      xp: 11
+message:
+  sended:
+    bronze:
+      name: 'Bronze'
+      ranges:
+        I: 1
+        II: 2
+        III: 3
+        IV: 5
+        V: 8
+      xp: 3
+    prata:
+      name: 'Prata'
+      ranges:
+        I: 16
+        II: 27
+        III: 40
+        IV: 56
+        V: 75
+      xp: 5
+    ouro:
+      name: 'Ouro'
+      ranges:
+        I: 108
+        II: 147
+        III: 192
+        IV: 243
+        V: 300
+      xp: 7
+    platina:
+      name: 'Platina'
+      ranges:
+        I: 385
+        II: 481
+        III: 588
+        IV: 705
+        V: 833
+      xp: 9
+    diamante:
+      name: 'Diamante'
+      ranges:
+        I: 1008
+        II: 1200
+        III: 1408
+        IV: 1633
+        V: 1875
+      xp: 11
+thread:
+  received:
+    bronze:
+      name: 'Bronze'
+      ranges:
+        I: 1
+        II: 2
+        III: 5
+        IV: 8
+        V: 13
+      xp: 3
+    prata:
+      name: 'Prata'
+      ranges:
+        I: 25
+        II: 41
+        III: 61
+        IV: 85
+        V: 113
+      xp: 5
+    ouro:
+      name: 'Ouro'
+      ranges:
+        I: 162
+        II: 221
+        III: 288
+        IV: 365
+        V: 450
+      xp: 7
+    platina:
+      name: 'Platina'
+      ranges:
+        I: 578
+        II: 722
+        III: 882
+        IV: 1058
+        V: 1250
+      xp: 9
+    diamante:
+      name: 'Diamante'
+      ranges:
+        I: 1513
+        II: 1800
+        III: 2113
+        IV: 2450
+        V: 2813
+      xp: 11
