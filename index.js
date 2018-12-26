@@ -1,5 +1,4 @@
 import autoprefixer from "autoprefixer";
-import config from "config-yml";
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
