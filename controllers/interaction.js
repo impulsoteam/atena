@@ -135,9 +135,7 @@ export const save = async data => {
         "review",
         "pull_request",
         "merged_pull_request"
-      ].includes(
-        interaction.type
-      ) &&
+      ].includes(interaction.type) &&
       interaction.parentUser !== interaction.user
     ) {
       userController.updateParentUser(interaction);
