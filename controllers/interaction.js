@@ -129,7 +129,13 @@ export const save = async data => {
     userController.update(interaction);
     achievementController.save(interaction);
     if (
-      !["message", "issue", "review", "pull_request", "merged_pull_request"].includes(
+      ![
+        "message",
+        "issue",
+        "review",
+        "pull_request",
+        "merged_pull_request"
+      ].includes(
         interaction.type
       ) &&
       interaction.parentUser !== interaction.user
