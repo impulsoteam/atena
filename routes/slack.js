@@ -1,14 +1,7 @@
 import express from "express";
 import { createEventAdapter } from "@slack/events-api";
-
 import interactionController from "../controllers/interaction";
-import {
-  getUserInfo,
-  getChannelInfo,
-  isValidChannel,
-  getStyleLog,
-  analyticsSendCollect
-} from "../utils";
+import { isValidChannel, getStyleLog, analyticsSendCollect } from "../utils";
 const router = express.Router();
 const slackEvents = createEventAdapter(process.env.SLACK_SIGNIN_EVENTS);
 

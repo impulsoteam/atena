@@ -73,6 +73,12 @@ const find = async (userId, isCoreTeam = false) => {
   return result || _throw("Error finding a specific user");
 };
 
+const findByGithub = async args => {
+  const UserModel = mongoose.model("User");
+  const result = await UserModel.findOne(args).exec();
+  return result || _throw("Erro finding github user");
+};
+
 const findAll = async (isCoreTeam = false, limit = 20) => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.find({
@@ -161,6 +167,7 @@ const updateUserData = (UserModel, interaction, score) => {
     if (err) {
       throw new Error("Error updating user");
     }
+
     const newScore = doc.score + score;
     doc.level = calculateLevel(newScore);
     doc.score = newScore < 0 ? 0 : newScore;
@@ -182,5 +189,6 @@ export default {
   updateParentUser,
   rankingPosition,
   checkCoreTeam,
-  findInactivities
+  findInactivities,
+  findByGithub
 };
