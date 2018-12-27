@@ -125,17 +125,21 @@ export const save = async data => {
     return _throw("User makes flood");
   }
 
-  if (todayLimitStatus > 0) {
+  if (todayLimitStatus > 0 || !todayLimitStatus) {
     userController.update(interaction);
     achievementController.save(interaction);
-
-    interaction.type !== "message" &&
-      interaction.type !== "issue" &&
-      interaction.type !== "review" &&
-      interaction.type !== "pull_request" &&
-      interaction.type !== "merged_pull_request" &&
-      interaction.parentUser !== interaction.user &&
+    if (
+      ![
+        "message",
+        "issue",
+        "review",
+        "pull_request",
+        "merged_pull_request"
+      ].includes(interaction.type) &&
+      interaction.parentUser !== interaction.user
+    ) {
       userController.updateParentUser(interaction);
+    }
   }
   return response || _throw("Error adding new interaction");
 };
