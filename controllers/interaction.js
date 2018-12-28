@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import moment from "moment";
 import userController from "./user";
 import achievementController from "./achievement";
-
 import { calculateScore } from "../utils";
 import { lastMessageTime } from "../utils/interactions";
 import { _throw, _today } from "../helpers";

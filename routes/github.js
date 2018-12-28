@@ -31,7 +31,8 @@ router.post("/events", async (req, res) => {
   try {
     user = await userController.findByGithub({ githubId: githubId });
   } catch (e) {
-    console.log("Github Events:", e);
+    /* istanbul ignore next */
+    // console.log("Github Events:", e);
   }
   data.user = user.slackId;
   const repository = req.body.repository.id.toString();
@@ -74,11 +75,11 @@ router.get("/callback", async (req, res) => {
   try {
     user = await userController.find(slackId);
   } catch (e) {
+    /* istanbul ignore next */
     errors.push(e);
   }
-
   const url = "https://github.com/login/oauth/access_token";
-  let data;
+  let data = {};
   await axios
     .post(url, {
       client_id: process.env.GITHUB_CLIENT_ID,
@@ -122,7 +123,7 @@ router.get("/callback", async (req, res) => {
       "Não conseguimos localizar seu e-mail público ou privado na API do GITHUB, Seu esse recurso sua armadura de cavaleiro não está pronta para ganhar bonificações na contribuição do projeto Atena!";
   }
 
-  if (errors.length > 0) console.log(errors);
+  // if (errors.length > 0) console.log(errors);
 
   res.render("github", {
     title: "Batalha do Open Source | Impulso Network",
@@ -136,7 +137,8 @@ router.use("/", async (req, res) => {
   try {
     user = await userController.find(req.body.user_id);
   } catch (e) {
-    console.log("Error: ", e);
+    /* istanbul ignore next */
+    // console.log("Error: ", e);
   }
   if (!user.name) {
     const data = {
@@ -149,7 +151,8 @@ router.use("/", async (req, res) => {
     try {
       user = await userController.find(req.body.user_id);
     } catch (e) {
-      console.log("Error: ", e);
+      /* istanbul ignore next */
+      // console.log("Error: ", e);
     }
   }
 
