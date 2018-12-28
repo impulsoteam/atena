@@ -76,7 +76,7 @@ app.use(
 
 app.enable("trust proxy");
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   if (
     [
       "production",
