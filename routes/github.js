@@ -1,4 +1,5 @@
 import express from "express";
+import config from "config-yml";
 import bodyParser from "body-parser";
 import queryString from "querystring";
 import axios from "axios";
@@ -34,7 +35,10 @@ router.post("/events", async (req, res) => {
   }
   data.user = user.slackId;
   const repository = req.body.repository.id.toString();
-  if (isValidRepository(repository)) {
+  if (
+    isValidRepository(repository) &&
+    !config.atenateam.members.includes(user.slackId)
+  ) {
     if (data.type) {
       let valid = false;
       if (data.type === "issue" && data.action === "opened") valid = true;

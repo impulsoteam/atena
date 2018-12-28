@@ -1,0 +1,15 @@
+reaction:
+  name: 'Reações'
+  type: 'reaction'
+  sended: 'Enviadas'
+  received: 'Recebidas'
+thread:
+  name: 'Respostas'
+  type: 'thread'
+  sended: 'Enviadas'
+  received: 'Recebidas'
+message:
+  name: 'Mensagens'
+  type: 'message'
+  sended: 'Enviadas'
+  received: 'Recebidas'

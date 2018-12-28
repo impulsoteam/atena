@@ -2,6 +2,7 @@ import config from "config-yml";
 import mongoose from "mongoose";
 import moment from "moment";
 import userController from "./user";
+import achievementController from "./achievement";
 
 import { calculateScore } from "../utils";
 import { lastMessageTime } from "../utils/interactions";
@@ -18,7 +19,9 @@ const normalize = data => {
       parentUser: data.item_user,
       thread: false,
       type: data.type,
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: config.actions.reaction.type
     };
   } else if (data.thread_ts) {
     return {
@@ -30,7 +33,9 @@ const normalize = data => {
       parentUser: data.parent_user_id,
       thread: true,
       type: "thread",
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: config.actions.thread.type
     };
   } else if (data.type === "manual") {
     return {
@@ -39,7 +44,9 @@ const normalize = data => {
       value: data.value,
       thread: false,
       description: data.text,
-      channel: "mundão"
+      channel: "mundão",
+      category: config.categories.network.type,
+      action: "manual"
     };
   } else if (data.type === "inactivity") {
     return {
@@ -47,7 +54,9 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "ação do sistema",
-      channel: "matrix"
+      channel: "matrix",
+      category: config.categories.network.type,
+      action: "inactivity"
     };
   } else if (data.type === "issue") {
     return {
@@ -90,7 +99,9 @@ const normalize = data => {
       parentMessage: null,
       thread: false,
       type: "message",
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: config.actions.message.type
     };
   }
 };
@@ -114,15 +125,21 @@ export const save = async data => {
     return _throw("User makes flood");
   }
 
-  if (todayLimitStatus > 0) {
-    await userController.update(interaction);
-    interaction.type !== "message" &&
-      interaction.type !== "issue" &&
-      interaction.type !== "review" &&
-      interaction.type !== "pull_request" &&
-      interaction.type !== "merged_pull_request" &&
-      interaction.parentUser !== interaction.user &&
+  if (todayLimitStatus > 0 || !todayLimitStatus) {
+    userController.update(interaction);
+    achievementController.save(interaction);
+    if (
+      ![
+        "message",
+        "issue",
+        "review",
+        "pull_request",
+        "merged_pull_request"
+      ].includes(interaction.type) &&
+      interaction.parentUser !== interaction.user
+    ) {
       userController.updateParentUser(interaction);
+    }
   }
   return response || _throw("Error adding new interaction");
 };
