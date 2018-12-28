@@ -52,18 +52,6 @@ const app = express();
 
 app.set("view engine", "pug");
 
-// app.use(
-//   bodyParser.json({
-//     verify: function(req, res, buf) {
-//       var url = req.originalUrl;
-//       console.log("url", url, url.startsWith("/slack/events"));
-//       if (url.startsWith("/slack/events")) {
-//         req.rawBody = buf.toString();
-//       }
-//     }
-//   })
-// );
-
 app.use(
   sassMiddleware({
     src: path.join(__dirname, "stylesheets"),
