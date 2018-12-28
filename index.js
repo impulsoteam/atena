@@ -86,7 +86,23 @@ app.use(
   })
 );
 
+app.use(function(req, res, next) {
+  if (
+    process.env.NODE_ENV === "production" ||
+    process.env.NODE_ENV === "staging"
+  ) {
+    if (req.secure) {
+      next();
+    } else {
+      res.redirect(`https://${req.headers.host}${req.url}`);
+    }
+  } else {
+    next();
+  }
+});
+
 app.use(express.static("public"));
+
 app.use("/", appRoutes);
 
 if (process.env.NODE_ENV !== "test") {
