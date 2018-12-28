@@ -86,6 +86,8 @@ app.use(
   })
 );
 
+app.enable("trust proxy");
+
 app.use(function(req, res, next) {
   if (
     process.env.NODE_ENV === "production" ||
