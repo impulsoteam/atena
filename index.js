@@ -88,16 +88,9 @@ app.use(
 
 app.enable("trust proxy");
 
-app.use(function(req, res, next) {
-  if (
-    process.env.NODE_ENV === "production" ||
-    process.env.NODE_ENV === "staging"
-  ) {
-    if (req.secure) {
-      next();
-    } else {
-      res.redirect(`https://${req.headers.host}${req.url}`);
-    }
+app.use((req, res, next) => {
+  if (["production", "staging"].includes(process.env.NODE_ENV) && !req.secure) {
+    res.redirect(`https://${req.headers.host}${req.url}`);
   } else {
     next();
   }
