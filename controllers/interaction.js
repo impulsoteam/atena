@@ -49,6 +49,16 @@ const normalize = data => {
       description: "ação do sistema",
       channel: "matrix"
     };
+  } else if (data.origin === "rocket") {
+    return {
+      channel: data.rid,
+      date: new Date(),
+      description: data.msg,
+      type: "message",
+      user: data.u._id,
+      username: data.u.username,
+      origin: data.origin
+    };
   } else {
     return {
       channel: data.channel,
@@ -84,9 +94,11 @@ export const save = async data => {
 
   if (todayLimitStatus > 0) {
     userController.update(interaction);
+    if (interaction.parentUser &&
     interaction.type !== "message" &&
-      interaction.parentUser !== interaction.user &&
+    interaction.parentUser !== interaction.user) {
       userController.updateParentUser(interaction);
+    }
   }
 
   return response || _throw("Error adding new interaction");

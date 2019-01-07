@@ -1,28 +1,30 @@
 import dotenv from "dotenv";
 import { driver } from "@rocket.chat/sdk";
 
+import interactionController from "../controllers/interaction";
+
 const runBot = async () => {
   const conn = await driver.connect({
     host: process.env.ROCKET_HOST,
-    useSsl: process.env.NODE_ENV === "production" ? true : false
+    useSsl: true
   });
 
-  let myuserid = await driver.login({
+  const myuserid = await driver.login({
     username: process.env.ROCKET_BOT_USER,
     password: process.env.ROCKET_BOT_PASS
   });
 
   const subscribed = await driver.subscribeToMessages();
-  const msgloop = await driver.reactToMessages( processMessages );
-
+  const msgloop = await driver.reactToMessages(processMessages);
 };
 
-const processMessages = async(err, message, messageOptions) => {
+const processMessages = async (err, message, messageOptions) => {
   if (!err) {
-    console.log(message);
+    message.origin = "rocket";
+    interactionController.save(message);
   } else {
     console.log(err);
   }
-}
+};
 
 runBot();
