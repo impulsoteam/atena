@@ -63,6 +63,10 @@ const userSchema = new mongoose.Schema({
   githubId: {
     type: String,
     required: false
+  },
+  disqusUsername: {
+    type: String,
+    required: false
   }
 });
 

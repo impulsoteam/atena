@@ -73,10 +73,10 @@ const find = async (userId, isCoreTeam = false) => {
   return result || _throw("Error finding a specific user");
 };
 
-const findByGithub = async args => {
+const findBy = async args => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne(args).exec();
-  return result || _throw("Erro finding github user");
+  return result || _throw("Error finding user");
 };
 
 const findAll = async (isCoreTeam = false, limit = 20) => {
@@ -190,5 +190,5 @@ export default {
   rankingPosition,
   checkCoreTeam,
   findInactivities,
-  findByGithub
+  findBy
 };

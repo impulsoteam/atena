@@ -1,0 +1,12 @@
+extends includes/layout
+
+block yield
+  include includes/header
+  main.container
+    h1.title-super
+      = title 
+    
+    p!= response
+
+    
+  include includes/footer

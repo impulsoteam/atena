@@ -89,6 +89,16 @@ const normalize = data => {
       description: "merged pull request",
       channel: data.pull_request.id
     };
+  } else if (data.type == "comment") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "comment on blog",
+      channel: data.id,
+      category: "disqus",
+      action: "comment"
+    };
   } else {
     return {
       channel: data.channel,
@@ -133,7 +143,8 @@ export const save = async data => {
         "issue",
         "review",
         "pull_request",
-        "merged_pull_request"
+        "merged_pull_request",
+        "comment"
       ].includes(interaction.type) &&
       interaction.parentUser !== interaction.user
     ) {
