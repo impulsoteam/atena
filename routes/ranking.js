@@ -14,10 +14,14 @@ router.get("/", async (req, res) => {
     console.log(e);
   }
 
-  res.render("ranking", {
-    title: "Veja o Ranking do nosso game | Impulso Network",
-    users
-  });
+  if (req.query.format === "json") {
+    res.json(users);
+  } else {
+    res.render("ranking", {
+      title: "Veja o Ranking do nosso game | Impulso Network",
+      users
+    });
+  }
 });
 
 router.get("/user/:id", async (req, res) => {
@@ -31,11 +35,15 @@ router.get("/user/:id", async (req, res) => {
     console.log(e);
   }
 
-  res.render("profile", {
-    title:
-      "Perfil da pessoa jogadora, pra saber tudo de legal que fez pra ter 9.990 XP",
-    user
-  });
+  if (req.query.format === "json") {
+    res.json(user);
+  } else {
+    res.render("profile", {
+      title:
+        "Perfil da pessoa jogadora, pra saber tudo de legal que fez pra ter 9.990 XP",
+      user
+    });
+  }
 });
 
 export default router;

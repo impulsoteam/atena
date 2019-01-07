@@ -4,6 +4,7 @@ import request from "make-requests";
 
 import { calculateReceivedScore as calc } from "./calculateReceivedScore";
 import { calculateReactions as calcReactions } from "./calculateReactions";
+import { calculateAchievementsPosition as calcAchievements } from "./calculateAchievementsPosition";
 import userController from "../controllers/user";
 import { sendCollect, sendBotCollect } from "./analytics";
 if (process.env.NODE_ENV !== "production") {
@@ -68,6 +69,14 @@ export const calculateScore = interaction => {
     score = interaction.value;
   } else if (interaction.type === "inactivity") {
     score = config.xprules.inactive.value;
+  } else if (interaction.type === "issue") {
+    score = config.xprules.github.issue;
+  } else if (interaction.type === "review") {
+    score = config.xprules.github.review;
+  } else if (interaction.type === "pull_request") {
+    score = config.xprules.github.pull_request;
+  } else if (interaction.type === "merged_pull_request") {
+    score = config.xprules.github.merged_pull_request;
   }
   return score;
 };
@@ -158,3 +167,5 @@ export const getRanking = async (req, isCoreTeamMember) => {
 };
 
 export const calculateReactions = calcReactions;
+
+export const calculateAchievementsPosition = calcAchievements;

@@ -7,7 +7,6 @@ import postcssMiddleware from "postcss-middleware";
 import sassMiddleware from "node-sass-middleware";
 import winston from "winston";
 import runCrons from "./cron";
-import config from "./config";
 import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
@@ -44,7 +43,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 if (process.env.NODE_ENV === "test") {
-  mongoose.connect(config.test_db);
+  mongoose.connect(process.env.MONGODB_TEST_URI);
 } else {
   mongoose.connect(process.env.MONGODB_URI);
 }
@@ -65,6 +64,7 @@ app.use(
 );
 
 app.use(
+  "/css",
   postcssMiddleware({
     src: req => path.join(`${__dirname}public`, req.url),
     plugins: [

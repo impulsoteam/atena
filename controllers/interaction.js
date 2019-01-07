@@ -2,6 +2,7 @@ import config from "config-yml";
 import mongoose from "mongoose";
 import moment from "moment";
 import userController from "./user";
+import achievementController from "./achievement";
 
 import { calculateScore } from "../utils";
 import { lastMessageTime } from "../utils/interactions";
@@ -18,7 +19,9 @@ const normalize = data => {
       parentUser: data.item_user,
       thread: false,
       type: data.type,
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: config.actions.reaction.type
     };
   } else if (data.thread_ts) {
     return {
@@ -30,7 +33,9 @@ const normalize = data => {
       parentUser: data.parent_user_id,
       thread: true,
       type: "thread",
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: config.actions.thread.type
     };
   } else if (data.type === "manual") {
     return {
@@ -39,7 +44,9 @@ const normalize = data => {
       value: data.value,
       thread: false,
       description: data.text,
-      channel: "mundão"
+      channel: "mundão",
+      category: config.categories.network.type,
+      action: "manual"
     };
   } else if (data.type === "inactivity") {
     return {
@@ -47,7 +54,41 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "ação do sistema",
-      channel: "matrix"
+      channel: "matrix",
+      category: config.categories.network.type,
+      action: "inactivity"
+    };
+  } else if (data.type === "issue") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "new github issue",
+      channel: data.repository.id
+    };
+  } else if (data.type === "review") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "review",
+      channel: data.review.id
+    };
+  } else if (data.type === "pull_request") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "review",
+      channel: data.pull_request.id
+    };
+  } else if (data.type === "merged_pull_request") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "merged pull request",
+      channel: data.pull_request.id
     };
   } else if (data.origin === "rocket") {
     return {
@@ -68,7 +109,9 @@ const normalize = data => {
       parentMessage: null,
       thread: false,
       type: "message",
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: config.actions.message.type
     };
   }
 };
@@ -92,15 +135,22 @@ export const save = async data => {
     return _throw("User makes flood");
   }
 
-  if (todayLimitStatus > 0) {
+  if (todayLimitStatus > 0 || !todayLimitStatus) {
     userController.update(interaction);
-    if (interaction.parentUser &&
-    interaction.type !== "message" &&
-    interaction.parentUser !== interaction.user) {
+    achievementController.save(interaction);
+    if (
+      ![
+        "message",
+        "issue",
+        "review",
+        "pull_request",
+        "merged_pull_request"
+      ].includes(interaction.type) &&
+      interaction.parentUser !== interaction.user
+    ) {
       userController.updateParentUser(interaction);
     }
   }
-
   return response || _throw("Error adding new interaction");
 };
 
