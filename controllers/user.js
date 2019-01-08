@@ -184,22 +184,26 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
 
 const updateUserData = (UserModel, interaction, score) => {
   if (interaction.origin === "rocket") {
-    return UserModel.findOne({
-      rocketId: interaction.user
-    }, (err, doc) => {
-      if (err) _throw("Error updating user");
-      const newScore = doc.score + score;
-      doc.level = calculateLevel(newScore);
-      doc.score = newScore < 0 ? 0 : newScore;
-      doc.isCoreTeam = isCoreTeam(interaction.user);
-      doc.messages =
-        interaction.type === "message" ? doc.messages + 1 : doc.messages;
-      doc.replies = interaction.type === "thread" ? doc.replies + 1 : doc.replies;
-      doc.reactions = calculateReactions(interaction, doc.reactions);
-      doc.lastUpdate = Date.now();
-      doc.save();
-      return doc;
-    });
+    return UserModel.findOne(
+      {
+        rocketId: interaction.user
+      },
+      (err, doc) => {
+        if (err) _throw("Error updating user");
+        const newScore = doc.score + score;
+        doc.level = calculateLevel(newScore);
+        doc.score = newScore < 0 ? 0 : newScore;
+        doc.isCoreTeam = isCoreTeam(interaction.user);
+        doc.messages =
+          interaction.type === "message" ? doc.messages + 1 : doc.messages;
+        doc.replies =
+          interaction.type === "thread" ? doc.replies + 1 : doc.replies;
+        doc.reactions = calculateReactions(interaction, doc.reactions);
+        doc.lastUpdate = Date.now();
+        doc.save();
+        return doc;
+      }
+    );
   } else {
     return UserModel.findOne({ slackId: interaction.user }, (err, doc) => {
       if (err) {
