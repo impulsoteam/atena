@@ -14,7 +14,8 @@ export const findAllByUser = async userId => {
 export const save = async interaction => {
   try {
     if (isValidAction(interaction)) {
-      await saveUserAchievement(interaction.user, "sended", interaction);
+      const type = getInteractionType(interaction);
+      await saveUserAchievement(interaction.user, type, interaction);
 
       if (interaction.parentUser) {
         await saveUserAchievement(
@@ -27,6 +28,30 @@ export const save = async interaction => {
   } catch (error) {
     _throw("Error saving achievement");
   }
+};
+
+const getInteractionType = interaction => {
+  let type = null;
+
+  switch (interaction.type) {
+    case "issue":
+      type = "issue";
+      break;
+    case "review":
+      type = "review";
+      break;
+    case "pull_request":
+      type = "pull_request";
+      break;
+    case "merged_pull_request":
+      type = "merged_pull_request";
+      break;
+    default:
+      type = "sended";
+      break;
+  }
+
+  return type;
 };
 
 const isValidAction = interaction => {
