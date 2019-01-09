@@ -98,6 +98,7 @@ const normalize = data => {
       user: data.u._id,
       username: data.u.username,
       origin: data.origin
+    };
   } else if (data.type == "comment") {
     return {
       type: data.type,

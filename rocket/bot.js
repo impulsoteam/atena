@@ -22,7 +22,7 @@ const processMessages = async (err, message, messageOptions) => {
     message.origin = "rocket";
     interactionController.save(message);
   } else {
-    console.log(err);
+    console.log(err, messageOptions);
   }
 };
 

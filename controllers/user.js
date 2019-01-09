@@ -215,7 +215,8 @@ const updateUserData = (UserModel, interaction, score) => {
       doc.isCoreTeam = isCoreTeam(interaction.user);
       doc.messages =
         interaction.type === "message" ? doc.messages + 1 : doc.messages;
-      doc.replies = interaction.type === "thread" ? doc.replies + 1 : doc.replies;
+      doc.replies =
+        interaction.type === "thread" ? doc.replies + 1 : doc.replies;
       doc.reactions = calculateReactions(interaction, doc.reactions);
       doc.lastUpdate = Date.now();
       doc.save();
