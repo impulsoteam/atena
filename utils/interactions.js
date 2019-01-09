@@ -1,7 +1,13 @@
 import interactionController from "../controllers/interaction";
 
 export const lastMessageTime = async userId => {
-  const data = await interactionController.lastMessage(userId);
+  let data = await interactionController.lastMessage(userId);
 
-  return data[0].date;
+  try {
+    data[0].date;
+  } catch (e) {
+    data = 0;
+  }
+
+  return data;
 };
