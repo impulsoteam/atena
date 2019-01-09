@@ -11,6 +11,8 @@ import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
 
+require("./rocket/bot");
+
 runCrons();
 
 const logger = winston.createLogger({

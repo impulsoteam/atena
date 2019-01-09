@@ -97,6 +97,16 @@ const normalize = data => {
       category: config.categories.network.type,
       action: config.actions.github.type
     };
+  } else if (data.origin === "rocket") {
+    return {
+      channel: data.rid,
+      date: new Date(),
+      description: data.msg,
+      type: "message",
+      user: data.u._id,
+      username: data.u.username,
+      origin: data.origin
+    };
   } else if (data.type == "comment") {
     return {
       type: data.type,
