@@ -63,7 +63,9 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "new github issue",
-      channel: data.repository.id
+      channel: data.repository.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
     };
   } else if (data.type === "review") {
     return {
@@ -71,7 +73,9 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "review",
-      channel: data.review.id
+      channel: data.review.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
     };
   } else if (data.type === "pull_request") {
     return {
@@ -79,7 +83,9 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "review",
-      channel: data.pull_request.id
+      channel: data.pull_request.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
     };
   } else if (data.type === "merged_pull_request") {
     return {
@@ -87,7 +93,9 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "merged pull request",
-      channel: data.pull_request.id
+      channel: data.pull_request.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
     };
   } else if (data.type == "comment") {
     return {
