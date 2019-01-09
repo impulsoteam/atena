@@ -34,7 +34,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
     };
     analyticsSendBotCollect(req.body);
   } catch (e) {
-    console.log("Bot -> Score:", e);
+    // console.log("Bot -> Score:", e);
   }
 
   res.json(response);

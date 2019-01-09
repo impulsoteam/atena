@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import moment from "moment";
 import userController from "./user";
 import achievementController from "./achievement";
-
 import { calculateScore } from "../utils";
 import { lastMessageTime } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
@@ -98,6 +97,16 @@ const normalize = data => {
       category: config.categories.network.type,
       action: config.actions.github.type
     };
+  } else if (data.type == "comment") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "comment on blog",
+      channel: data.id,
+      category: "disqus",
+      action: "comment"
+    };
   } else {
     return {
       channel: data.channel,
@@ -142,7 +151,8 @@ export const save = async data => {
         "issue",
         "review",
         "pull_request",
-        "merged_pull_request"
+        "merged_pull_request",
+        "comment"
       ].includes(interaction.type) &&
       interaction.parentUser !== interaction.user
     ) {
