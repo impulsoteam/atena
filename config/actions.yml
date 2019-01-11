@@ -13,3 +13,11 @@ message:
   type: 'message'
   sended: 'Enviadas'
   received: 'Recebidas'
+github:
+  name: 'Github'
+  type: 'github'
+  issue: 'Issues'
+  review: 'Reviews'
+  pull_request: 'Pull Requests Criados'
+  merged_pull_request: 'Pull Requests Aprovados'
+

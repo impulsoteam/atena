@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import moment from "moment";
 import userController from "./user";
 import achievementController from "./achievement";
-
 import { calculateScore } from "../utils";
 import { lastMessageTime } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
@@ -64,7 +63,9 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "new github issue",
-      channel: data.repository.id
+      channel: data.repository.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
     };
   } else if (data.type === "review") {
     return {
@@ -72,7 +73,9 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "review",
-      channel: data.review.id
+      channel: data.review.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
     };
   } else if (data.type === "pull_request") {
     return {
@@ -80,7 +83,9 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "review",
-      channel: data.pull_request.id
+      channel: data.pull_request.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
     };
   } else if (data.type === "merged_pull_request") {
     return {
@@ -88,7 +93,29 @@ const normalize = data => {
       user: data.user,
       thread: false,
       description: "merged pull request",
-      channel: data.pull_request.id
+      channel: data.pull_request.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
+    };
+  } else if (data.origin === "rocket") {
+    return {
+      channel: data.rid,
+      date: new Date(),
+      description: data.msg,
+      type: "message",
+      user: data.u._id,
+      username: data.u.username,
+      origin: data.origin
+    };
+  } else if (data.type == "comment") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "comment on blog",
+      channel: data.id,
+      category: "disqus",
+      action: "comment"
     };
   } else {
     return {
@@ -134,7 +161,8 @@ export const save = async data => {
         "issue",
         "review",
         "pull_request",
-        "merged_pull_request"
+        "merged_pull_request",
+        "comment"
       ].includes(interaction.type) &&
       interaction.parentUser !== interaction.user
     ) {

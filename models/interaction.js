@@ -27,7 +27,8 @@ const interactionSchema = new mongoose.Schema({
   },
   thread: {
     type: Boolean,
-    required: true
+    required: true,
+    default: false
   },
   messageIdentifier: {
     type: String,

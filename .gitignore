@@ -9,3 +9,4 @@ ngrok*
 coverage/
 *.swp
 *.swo
+*.swn

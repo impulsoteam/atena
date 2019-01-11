@@ -77,6 +77,8 @@ export const calculateScore = interaction => {
     score = config.xprules.github.pull_request;
   } else if (interaction.type === "merged_pull_request") {
     score = config.xprules.github.merged_pull_request;
+  } else if (interaction.type === "comment") {
+    score = config.xprules.disqus.comment;
   }
   return score;
 };
@@ -160,7 +162,7 @@ export const getRanking = async (req, isCoreTeamMember) => {
 
     analyticsSendBotCollect(req.body);
   } catch (e) {
-    console.log("getRanking Error: ", e);
+    // console.log("getRanking Error: ", e);
   }
 
   return response;
