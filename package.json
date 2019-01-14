@@ -27,7 +27,7 @@
     "start:dev:debug": "npm run format && set NODE_ENV=development && nodemon --exec babel-node --inspect-brk index.js",
     "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/ --ignore-pattern coverage/",
     "test:coverage": "set NODE_ENV=test && jest --coverage --forceExit --detectOpenHandles",
-    "test": "",
+    "test": "set NODE_ENV=test  && jest --forceExit --detectOpenHandles",
     "test:watch": "set NODE_ENV=test && jest --watch --onlyChanged --forceExit --detectOpenHandles"
   },
   "dependencies": {
