@@ -5,11 +5,10 @@ import userController from "../controllers/user";
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const { limit } = req.params;
   let users = [];
 
   try {
-    users = await userController.findAll(limit);
+    users = await userController.findAll();
   } catch (e) {
     console.log(e);
   }
