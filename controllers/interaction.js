@@ -98,15 +98,30 @@ const normalize = data => {
       action: config.actions.github.type
     };
   } else if (data.origin === "rocket") {
-    return {
-      channel: data.rid,
-      date: new Date(),
-      description: data.msg,
-      type: "message",
-      user: data.u._id,
-      username: data.u.username,
-      origin: data.origin
-    };
+    if (data.reactions) {
+      return {
+        channel: data.rid,
+        date: new Date(),
+        description: Object.keys(data.reactions)[0],
+        parentUser: data.u._id,
+        user: null,
+        type: "reaction_added",
+        category: config.categories.network.type,
+        action: config.actions.reaction.type
+      };
+    } else {
+      return {
+        channel: data.rid,
+        date: new Date(),
+        description: data.msg,
+        type: "message",
+        user: data.u._id,
+        username: data.u.name,
+        origin: data.origin,
+        category: config.categories.network.type,
+        action: config.actions.message.type
+      };
+    }
   } else if (data.type == "comment") {
     return {
       type: data.type,
