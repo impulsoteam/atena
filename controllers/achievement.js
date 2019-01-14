@@ -47,10 +47,7 @@ const isChatInteraction = interaction => {
     interaction.type === "thread" ||
     interaction.type === "manual" ||
     interaction.type === "inactivity" ||
-    (
-      interaction.type === "message" &&
-      interaction.action === config.actions.message.type
-    )
+    (interaction.type === "message" && interaction.action === config.actions.message.type)
   );
 };
 
