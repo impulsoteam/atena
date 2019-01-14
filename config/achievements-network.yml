@@ -370,3 +370,97 @@ github:
         IV: 144
         V: 156
       xp: 11
+blog:
+  message:
+    bronze:
+      name: 'Bronze'
+      ranges:
+        I: 1
+        II: 2
+        III: 3
+        IV: 4
+        V: 5
+      xp: 3
+    prata:
+      name: 'Prata'
+      ranges:
+        I: 6
+        II: 7
+        III: 8
+        IV: 9
+        V: 10
+      xp: 5
+    ouro:
+      name: 'Ouro'
+      ranges:
+        I: 11
+        II: 12
+        III: 13
+        IV: 14
+        V: 15
+      xp: 7
+    platina:
+      name: 'Platina'
+      ranges:
+        I: 16
+        II: 17
+        III: 18
+        IV: 19
+        V: 20
+      xp: 9
+    diamante:
+      name: 'Diamante'
+      ranges:
+        I: 21
+        II: 22
+        III: 23
+        IV: 24
+        V: 25
+      xp: 11
+  comment:
+    bronze:
+      name: 'Bronze'
+      ranges:
+        I: 1
+        II: 2
+        III: 5
+        IV: 8
+        V: 13
+      xp: 3
+    prata:
+      name: 'Prata'
+      ranges:
+        I: 18
+        II: 25
+        III: 32
+        IV: 41
+        V: 50
+      xp: 5
+    ouro:
+      name: 'Ouro'
+      ranges:
+        I: 61
+        II: 72
+        III: 85
+        IV: 98
+        V: 113
+      xp: 7
+    platina:
+      name: 'Platina'
+      ranges:
+        I: 128
+        II: 145
+        III: 162
+        IV: 181
+        V: 200
+      xp: 9
+    diamante:
+      name: 'Diamante'
+      ranges:
+        I: 221
+        II: 242
+        III: 265
+        IV: 288
+        V: 313
+      xp: 11
+  

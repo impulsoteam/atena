@@ -31,27 +31,24 @@ export const save = async interaction => {
 };
 
 const getInteractionType = interaction => {
-  let type = null;
+  let type = interaction.type;
 
-  switch (interaction.type) {
-    case "issue":
-      type = "issue";
-      break;
-    case "review":
-      type = "review";
-      break;
-    case "pull_request":
-      type = "pull_request";
-      break;
-    case "merged_pull_request":
-      type = "merged_pull_request";
-      break;
-    default:
-      type = "sended";
-      break;
+  if (isChatInteraction(interaction)) {
+    type = "sended";
   }
 
   return type;
+};
+
+const isChatInteraction = interaction => {
+  return (
+    interaction.type === "reaction_added" ||
+    interaction.type === "reaction_removed" ||
+    interaction.type === "thread" ||
+    interaction.type === "manual" ||
+    interaction.type === "inactivity" ||
+    (interaction.type === "message" && interaction.action === config.actions.message.type)
+  );
 };
 
 const isValidAction = interaction => {

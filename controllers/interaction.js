@@ -4,7 +4,7 @@ import moment from "moment";
 import userController from "./user";
 import achievementController from "./achievement";
 import { calculateScore } from "../utils";
-import { lastMessageTime } from "../utils/interactions";
+import { lastMessageTime, getAction } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 
 const normalize = data => {
@@ -104,8 +104,8 @@ const normalize = data => {
       thread: false,
       description: "comment on blog",
       channel: data.id,
-      category: "disqus",
-      action: "comment"
+      category: config.categories.network.type,
+      action: config.actions.blog.type
     };
   } else {
     return {
@@ -118,7 +118,7 @@ const normalize = data => {
       type: "message",
       user: data.user,
       category: config.categories.network.type,
-      action: config.actions.message.type
+      action: getAction(data)
     };
   }
 };
