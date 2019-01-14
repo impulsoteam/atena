@@ -60,6 +60,7 @@ const update = async interaction => {
   }
 
   if (user) {
+    console.log("UPDATE ", user);
     return updateUserData(UserModel, interaction, score);
   } else {
     return createUserData(userInfo, score, interaction, UserModel);
@@ -83,12 +84,27 @@ const findBy = async args => {
   return result || _throw("Error finding user");
 };
 
-const findAll = async (isCoreTeam = false, limit = 20) => {
+const findAll = async (isCoreTeam = false, limit = 20, isRocket = false) => {
+  let query;
   const UserModel = mongoose.model("User");
-  const result = await UserModel.find({
+  const base_query = {
     score: { $gt: 0 },
     isCoreTeam: isCoreTeam
-  })
+  };
+  if (isRocket) {
+    query = {
+      ...base_query,
+      rocketIdId: { $ne: null }
+    };
+  } else {
+    query = {
+      ...base_query,
+      slackId: { $ne: null }
+    };
+  }
+  console.log("NETWORK : ", query);
+
+  const result = await UserModel.find(base_query)
     .sort({
       score: -1
     })

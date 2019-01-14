@@ -271,7 +271,14 @@ const manualInteractions = async data => {
   }
 };
 
+const findBy = async args => {
+  const InterActionModel = mongoose.model("Interaction");
+  const result = await InterActionModel.find(args).exec();
+  return result || null;
+};
+
 export default {
+  findBy,
   find,
   remove,
   save,

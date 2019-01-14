@@ -6,11 +6,14 @@ import { analyticsSendBotCollect, getRanking } from "../utils";
 import userController from "../controllers/user";
 import interactionController from "../controllers/interaction";
 import achievementController from "../controllers/achievement";
+import rankingController from "../controllers/ranking";
 import { isCoreTeam, calculateAchievementsPosition } from "../utils";
 import validSlackSecret from "../utils/validSecret";
 const router = express.Router();
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
 
 router.post("/score", urlencodedParser, async (req, res) => {
   let user = {};
@@ -40,7 +43,42 @@ router.post("/score", urlencodedParser, async (req, res) => {
   res.json(response);
 });
 
-router.post("/ranking", urlencodedParser, async (req, res) => {
+router.post("/ranking", rankingController.index);
+
+router.get("/ranking-save", async (req, res) => {
+  await rankingController.save();
+  res.send("save");
+});
+/*
+
+router.post("/ranking", async (req, res) => {
+  let response = {};
+  let user_id;
+  // console.log(req.headers, req.body, req.headers.origin);
+  // pegar só o user id e depois chamar abaixo
+  console.log("ranking", req.headers.origin, req.body);
+  if (req.headers.origin === "rocket") {
+    user_id = req.body.id;
+    req.body.user_id = user_id;
+    response = await rankingController.monthly(req.body);
+    //response = {
+    //  text: "Estamos no rocket"
+    //};
+  } else {
+    validSlackSecret(req, res);
+    user_id = req.body.user_id;
+  }
+  try {
+    response = await getRanking(req, isCoreTeam(user_id));
+    analyticsSendBotCollect(req.body);
+  } catch (e) {
+    console.log(e);
+  }
+  res.json(response);
+});
+*/
+
+router.post("/rankinggeral", urlencodedParser, async (req, res) => {
   validSlackSecret(req, res);
   let response = {};
 
@@ -50,6 +88,8 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
   } catch (e) {
     console.log(e);
   }
+
+  console.log("RESPONSE", response);
 
   res.json(response);
 });
