@@ -31,10 +31,12 @@
     "test:watch": "set NODE_ENV=test && jest --watch --onlyChanged --forceExit --detectOpenHandles"
   },
   "dependencies": {
+    "@rocket.chat/sdk": "^0.2.9",
     "@slack/client": "^4.6.0",
     "@slack/events-api": "^2.1.0",
     "ajv": "6.5.3",
     "autoprefixer": "^9.1.5",
+    "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
     "babel-eslint": "10.0.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",

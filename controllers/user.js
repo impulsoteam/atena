@@ -46,19 +46,22 @@ const updateParentUser = async interaction => {
 
 const update = async interaction => {
   const score = calculateScore(interaction);
-  const userInfo = await getUserInfo(interaction.user);
+  const UserModel = mongoose.model("User");
+  let user = {};
+  let userInfo;
 
-  if (userInfo.ok) {
-    const UserModel = mongoose.model("User");
-    const user = await UserModel.findOne({ slackId: interaction.user }).exec();
+  if (interaction.origin === "slack" || !interaction.origin) {
+    userInfo = await getUserInfo(interaction.user);
+    user = await UserModel.findOne({ slackId: interaction.user }).exec();
+  } else if (interaction.origin === "rocket") {
+    userInfo = false;
+    user = await UserModel.findOne({ rocketId: interaction.user }).exec();
+  }
 
-    if (user) {
-      return updateUserData(UserModel, interaction, score);
-    } else {
-      return createUserData(userInfo, score, interaction, UserModel);
-    }
+  if (user) {
+    return updateUserData(UserModel, interaction, score);
   } else {
-    throw new Error(`Error: ${userInfo.error}`);
+    return createUserData(userInfo, score, interaction, UserModel);
   }
 };
 
@@ -71,6 +74,12 @@ const find = async (userId, isCoreTeam = false) => {
   if (result) result.score = result.score.toFixed(0);
 
   return result || _throw("Error finding a specific user");
+};
+
+const findBy = async args => {
+  const UserModel = mongoose.model("User");
+  const result = await UserModel.findOne(args).exec();
+  return result || _throw("Error finding user");
 };
 
 const findAll = async (isCoreTeam = false, limit = 20) => {
@@ -138,41 +147,82 @@ const findInactivities = async () => {
 };
 
 const createUserData = (userInfo, score, interaction, UserModel) => {
-  const obj = {
-    avatar: userInfo.profile.image_72,
-    name: userInfo.profile.real_name,
-    email: userInfo.profile.email,
-    level: 1,
-    score: score,
-    slackId: interaction.user,
-    messages: interaction.type === "message" ? 1 : 0,
-    replies: interaction.type === "thread" ? 1 : 0,
-    reactions: calculateReactions(interaction, 0),
-    lastUpdate: new Date(),
-    isCoreTeam: isCoreTeam(interaction.user)
-  };
+  let obj = {};
+
+  if (userInfo) {
+    obj = {
+      avatar: userInfo.profile.image_72,
+      name: userInfo.profile.real_name,
+      email: userInfo.profile.email,
+      level: 1,
+      score: score,
+      slackId: interaction.user,
+      messages: interaction.type === "message" ? 1 : 0,
+      replies: interaction.type === "thread" ? 1 : 0,
+      reactions: calculateReactions(interaction, 0),
+      lastUpdate: new Date(),
+      isCoreTeam: isCoreTeam(interaction.user)
+    };
+  } else {
+    obj = {
+      name: interaction.username,
+      level: 1,
+      score: score,
+      rocketId: interaction.user,
+      messages: interaction.type === "message" ? 1 : 0,
+      replies: interaction.type === "thread" ? 1 : 0,
+      reactions: calculateReactions(interaction, 0),
+      lastUpdate: new Date(),
+      isCoreTeam: isCoreTeam(interaction.user)
+    };
+  }
+
   const instance = new UserModel(obj);
-  sendHelloOnSlack(obj.slackId);
+  sendHelloOnSlack(interaction.user);
   return instance.save();
 };
 
 const updateUserData = (UserModel, interaction, score) => {
-  return UserModel.findOne({ slackId: interaction.user }, (err, doc) => {
-    if (err) {
-      throw new Error("Error updating user");
-    }
-    const newScore = doc.score + score;
-    doc.level = calculateLevel(newScore);
-    doc.score = newScore < 0 ? 0 : newScore;
-    doc.isCoreTeam = isCoreTeam(interaction.user);
-    doc.messages =
-      interaction.type === "message" ? doc.messages + 1 : doc.messages;
-    doc.replies = interaction.type === "thread" ? doc.replies + 1 : doc.replies;
-    doc.reactions = calculateReactions(interaction, doc.reactions);
-    doc.lastUpdate = Date.now();
-    doc.save();
-    return doc;
-  });
+  if (interaction.origin === "rocket") {
+    return UserModel.findOne(
+      {
+        rocketId: interaction.user
+      },
+      (err, doc) => {
+        if (err) _throw("Error updating user");
+        const newScore = doc.score + score;
+        doc.level = calculateLevel(newScore);
+        doc.score = newScore < 0 ? 0 : newScore;
+        doc.isCoreTeam = isCoreTeam(interaction.user);
+        doc.messages =
+          interaction.type === "message" ? doc.messages + 1 : doc.messages;
+        doc.replies =
+          interaction.type === "thread" ? doc.replies + 1 : doc.replies;
+        doc.reactions = calculateReactions(interaction, doc.reactions);
+        doc.lastUpdate = Date.now();
+        doc.save();
+        return doc;
+      }
+    );
+  } else {
+    return UserModel.findOne({ slackId: interaction.user }, (err, doc) => {
+      if (err) {
+        throw new Error("Error updating user");
+      }
+      const newScore = doc.score + score;
+      doc.level = calculateLevel(newScore);
+      doc.score = newScore < 0 ? 0 : newScore;
+      doc.isCoreTeam = isCoreTeam(interaction.user);
+      doc.messages =
+        interaction.type === "message" ? doc.messages + 1 : doc.messages;
+      doc.replies =
+        interaction.type === "thread" ? doc.replies + 1 : doc.replies;
+      doc.reactions = calculateReactions(interaction, doc.reactions);
+      doc.lastUpdate = Date.now();
+      doc.save();
+      return doc;
+    });
+  }
 };
 
 export default {
@@ -182,5 +232,6 @@ export default {
   updateParentUser,
   rankingPosition,
   checkCoreTeam,
-  findInactivities
+  findInactivities,
+  findBy
 };

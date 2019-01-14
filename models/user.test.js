@@ -30,17 +30,5 @@ describe("[Models] User", () => {
         expect(err.errors.score).toBeTruthy();
       });
     });
-    it("should be invalid if slackId is empty", () => {
-      user.slackId = null;
-      user.validate(err => {
-        expect(err.errors.slackId).toBeTruthy();
-      });
-    });
-    it("should be invalid if avatar is empty", () => {
-      user.avatar = null;
-      user.validate(err => {
-        expect(err.errors.avatar).toBeTruthy();
-      });
-    });
   });
 });

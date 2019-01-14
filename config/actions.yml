@@ -1,0 +1,23 @@
+reaction:
+  name: 'Reações'
+  type: 'reaction'
+  sended: 'Enviadas'
+  received: 'Recebidas'
+thread:
+  name: 'Respostas'
+  type: 'thread'
+  sended: 'Enviadas'
+  received: 'Recebidas'
+message:
+  name: 'Mensagens'
+  type: 'message'
+  sended: 'Enviadas'
+  received: 'Recebidas'
+github:
+  name: 'Github'
+  type: 'github'
+  issue: 'Issues'
+  review: 'Reviews'
+  pull_request: 'Pull Requests Criados'
+  merged_pull_request: 'Pull Requests Aprovados'
+

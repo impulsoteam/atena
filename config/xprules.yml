@@ -11,6 +11,13 @@ reactions:
   receive:
     positive: 2
     negative: -1
+github:
+  issue: 1
+  review: 1
+  pull_request: 1
+  merged_pull_request: 3
+disqus:
+  comment: 2
 inactive:
   mindays: 14
   value: -1
