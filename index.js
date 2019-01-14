@@ -10,6 +10,7 @@ import runCrons from "./cron";
 import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
+require("./models/achievement");
 
 require("./rocket/bot");
 
