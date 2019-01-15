@@ -1,10 +1,11 @@
 import request from "make-requests";
 import querystring from "querystring";
+import { getChannel } from "../utils/interactions";
 
 import { getStyleLog } from "./index";
 
 export const sendCollect = async e => {
-  const channel = e.type === "message" ? e.channel : e.item.channel;
+  const channel = getChannel(e);
 
   if (process.env.GA) {
     const params = {

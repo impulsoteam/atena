@@ -20,4 +20,9 @@ github:
   review: 'Reviews'
   pull_request: 'Pull Requests Criados'
   merged_pull_request: 'Pull Requests Aprovados'
+blog:
+  name: 'Blog'
+  type: 'blog'
+  message: 'Postagens'
+  comment: 'Comentários'
 
