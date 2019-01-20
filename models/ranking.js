@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import user from "./user";
+// import user from "./user";
 
 const rankingSchema = new mongoose.Schema({
   date: {
@@ -21,7 +21,8 @@ const rankingSchema = new mongoose.Schema({
     required: true,
     default: false
   },
-  users: [user.schema]
+  users: []
 });
 
+// users: [user.schema]
 export default mongoose.model("Ranking", rankingSchema);
