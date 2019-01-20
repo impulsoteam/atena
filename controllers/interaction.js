@@ -3,9 +3,8 @@ import mongoose from "mongoose";
 import moment from "moment";
 import userController from "./user";
 import achievementController from "./achievement";
-
 import { calculateScore } from "../utils";
-import { lastMessageTime } from "../utils/interactions";
+import { lastMessageTime, getAction } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 
 const normalize = data => {
@@ -98,6 +97,41 @@ const normalize = data => {
       category: config.categories.network.type,
       action: config.actions.github.type
     };
+  } else if (data.origin === "rocket") {
+    if (data.reactions) {
+      return {
+        channel: data.rid,
+        date: new Date(),
+        description: Object.keys(data.reactions)[0],
+        parentUser: data.u._id,
+        user: null,
+        type: "reaction_added",
+        category: config.categories.network.type,
+        action: config.actions.reaction.type
+      };
+    } else {
+      return {
+        channel: data.rid,
+        date: new Date(),
+        description: data.msg,
+        type: "message",
+        user: data.u._id,
+        username: data.u.name,
+        origin: data.origin,
+        category: config.categories.network.type,
+        action: config.actions.message.type
+      };
+    }
+  } else if (data.type == "comment") {
+    return {
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "comment on blog",
+      channel: data.id,
+      category: config.categories.network.type,
+      action: config.actions.blog.type
+    };
   } else {
     return {
       channel: data.channel,
@@ -109,7 +143,7 @@ const normalize = data => {
       type: "message",
       user: data.user,
       category: config.categories.network.type,
-      action: config.actions.message.type
+      action: getAction(data)
     };
   }
 };
@@ -142,7 +176,8 @@ export const save = async data => {
         "issue",
         "review",
         "pull_request",
-        "merged_pull_request"
+        "merged_pull_request",
+        "comment"
       ].includes(interaction.type) &&
       interaction.parentUser !== interaction.user
     ) {

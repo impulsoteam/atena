@@ -31,6 +31,7 @@
     "test:watch": "set NODE_ENV=test && jest --watch --onlyChanged --forceExit --detectOpenHandles"
   },
   "dependencies": {
+    "@rocket.chat/sdk": "^0.2.9",
     "@slack/client": "^4.6.0",
     "@slack/events-api": "^2.1.0",
     "ajv": "6.5.3",
@@ -71,10 +72,5 @@
     "sinon": "^7.1.1",
     "sinon-mongoose": "^2.2.1",
     "supertest": "^3.3.0"
-  },
-  "config": {
-    "ghooks": {
-      "pre-commit": "npm run test"
-    }
   }
 }

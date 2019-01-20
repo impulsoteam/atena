@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
-    required: true
+    required: false
   },
   name: {
     type: String,
@@ -11,15 +11,21 @@ const userSchema = new mongoose.Schema({
   },
   level: {
     type: Number,
-    required: true
+    required: true,
+    default: 1
   },
   score: {
     type: Number,
-    required: true
+    required: true,
+    default: 0
   },
   slackId: {
     type: String,
-    required: true
+    required: false
+  },
+  rocketId: {
+    type: String,
+    required: false
   },
   email: {
     type: String,
@@ -27,11 +33,13 @@ const userSchema = new mongoose.Schema({
   },
   messages: {
     type: Number,
-    required: false
+    required: false,
+    default: 0
   },
   replies: {
     type: Number,
-    required: false
+    required: false,
+    default: 0
   },
   reactions: {
     positives: {
@@ -61,6 +69,10 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   githubId: {
+    type: String,
+    required: false
+  },
+  disqusUsername: {
     type: String,
     required: false
   }

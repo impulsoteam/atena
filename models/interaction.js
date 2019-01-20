@@ -15,11 +15,11 @@ const interactionSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    required: true
+    required: false
   },
   action: {
     type: String,
-    required: true
+    required: false
   },
   user: {
     type: String,
@@ -27,7 +27,8 @@ const interactionSchema = new mongoose.Schema({
   },
   thread: {
     type: Boolean,
-    required: true
+    required: true,
+    default: false
   },
   messageIdentifier: {
     type: String,
