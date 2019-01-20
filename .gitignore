@@ -12,3 +12,4 @@ coverage/
 *.swn
 .DS_Store
 emoji/
+*.swm
