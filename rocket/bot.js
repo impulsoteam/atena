@@ -1,9 +1,8 @@
-import { driver, api } from "@rocket.chat/sdk";
+import { driver } from "@rocket.chat/sdk";
 import interactionController from "../controllers/interaction";
 // import fs from "fs";
 // import path from "path";
 // import mime from "mime-types";
-
 // const emojiDir = './emoji';
 
 var myuserid;
@@ -23,18 +22,28 @@ const runBot = async () => {
 };
 
 const processMessages = async (err, message, messageOptions) => {
-  const re = /!importemoji/g;
+  // const re = /!importemoji/g;
+  const ranking = /!ranking/g;
   if (!err) {
     message.origin = "rocket";
-    console.log(message, messageOptions);
-    // const url_user = `users.info`;
-    // const user_info = await api.post(url_user, { userId: message.u._id });
-    //
+    console.log("MESSAGE: ", message, messageOptions);
     if (message.u._id === myuserid) return;
     interactionController.save(message);
-    if (re.test(message.msg)) {
-      console.log("sending ranking to user?");
-      /*
+
+    if (ranking.test(message.msg)) {
+      await driver.sendDirectToUser(
+        "Em breve enviar o ranking",
+        message.u.username
+      );
+    }
+  } else {
+    console.log(err, messageOptions);
+  }
+};
+
+runBot();
+
+/*
       const files = fs.readdirSync(emojiDir);
 
       for (const file of files) {
@@ -65,16 +74,3 @@ const processMessages = async (err, message, messageOptions) => {
         }
       }
       */
-    }
-    // const romname = await driver.getRoomName(message.rid);
-    // await driver.sendToRoom("criou emoji?", romname);
-  } else {
-    console.log(err, messageOptions);
-  }
-};
-
-export const sendToUser = async (message, user) => {
-  await driver.sendDirectToUser(message, user);
-}
-
-runBot();

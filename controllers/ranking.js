@@ -65,7 +65,7 @@ const index = async (req, res) => {
   const rankingMonthly = await monthly(month);
   if (rankingMonthly.text) {
     response = rankingMonthly;
-  } else if (!rankingMonthly.text && rankingMonthly.users.length == 0) {
+  } else if (!rankingMonthly.text && rankingMonthly.users.length === 0) {
     response = { text: "Ops! Ainda ninguém pontuou. =/" };
   } else {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking);
