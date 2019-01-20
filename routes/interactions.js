@@ -13,4 +13,6 @@ router.get("/user/:id", async (req, res) => {
   });
 });
 
+router.get("/normalize", interactionController.normalizeScore);
+
 export default router;
