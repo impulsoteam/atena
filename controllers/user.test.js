@@ -103,7 +103,7 @@ describe("[Controllers] User", () => {
       describe("#### POST Ranking", () => {
         it("should return the ranking successfully empty", done => {
           request(app)
-            .post("/bot/commands/ranking")
+            .post("/bot/commands/rankinggeral")
             .set("x-slack-request-timestamp", time)
             .set("x-slack-signature", slackSignature)
             .set("Content-Type", "application/x-www-form-urlencoded")
@@ -127,7 +127,7 @@ describe("[Controllers] User", () => {
               .resolves([user]);
 
             request(app)
-              .post("/bot/commands/ranking")
+              .post("/bot/commands/rankinggeral")
               .set("x-slack-request-timestamp", time)
               .set("x-slack-signature", slackSignature)
               .set("Content-Type", "application/x-www-form-urlencoded")
