@@ -1,9 +1,28 @@
 import mongoose from "mongoose";
+import { driver } from "@rocket.chat/sdk";
 import userController from "./user";
 import interactionController from "./interaction";
+import { calculateLevel } from "../utils";
+import axios from "axios";
 
-const myPosition = async (user, users) => {
-  return users.map(e => e.id).indexOf(user.id) + 1;
+const myPosition = async (user_id, users) => {
+  const user = await userController.getNetwork(user_id);
+  const id = user.network === "rocket" ? user.rocketId : user.slackId;
+  return users.map(e => e.user).indexOf(id) + 1;
+};
+
+const rocket_info = async user_id => {
+  const url = `https://${process.env.ROCKET_HOST}/api/v1/users.info`;
+
+  return axios.get(url, {
+    params: {
+      userId: user_id
+    },
+    headers: {
+      "X-Auth-Token": process.env.ROCKET_USER_TOKEN,
+      "X-User-Id": process.env.ROCKET_USER_ID
+    }
+  });
 };
 
 const index = async (req, res) => {
@@ -13,41 +32,55 @@ const index = async (req, res) => {
   };
   let user_id;
   let month;
-  let query_user;
+  const limit_ranking = 5;
 
   if (req.headers.origin === "rocket") {
     user_id = req.body.id;
     req.body.user_id = user_id;
-    query_user = { rocketId: user_id };
     month = req.body.month;
   } else {
     user_id = req.body.user_id;
-    query_user = { slackId: user_id };
     month = req.body.text;
   }
 
-  const user = await userController.findBy(query_user);
+  let allUsers = await userController.findAll(false, 0);
+  let usersFromApi = [];
+  for (let user of allUsers) {
+    let name;
+    let network;
+    if (user.rocketId) {
+      let response = await rocket_info(user.rocketId);
+      name = response.data.user.name;
+      network = "rocket";
+    } else {
+      name = user.name;
+      network = "slack";
+    }
+    usersFromApi.push({
+      name: name,
+      user_id: user.rocketId ? user.rocketId : user.slackId,
+      network: network
+    });
+  }
   const rankingMonthly = await monthly(month);
   if (rankingMonthly.text) {
     response = rankingMonthly;
   } else if (!rankingMonthly.text && rankingMonthly.users.length == 0) {
     response = { text: "Ops! Ainda ninguém pontuou. =/" };
   } else {
-    const limit_users = rankingMonthly.users.slice(0, 5);
-    response.attachments = limit_users.map((user, index) => ({
-      text: `${index + 1}º lugar está ${user.name} com ${
-        user.score
-      } XP, no nível ${user.level}`
+    const limit_users = rankingMonthly.users.slice(0, limit_ranking);
+    response.attachments = await limit_users.map((user, index) => ({
+      text: `${index + 1}º lugar está ${
+        usersFromApi.find(u => u.user_id === user.user).name
+      } com ${user.score} XP, no nível ${user.level}`
     }));
 
     let msg_user;
-    if (user) {
-      msg_user = `Ah, e você está na posição ${await myPosition(
-        user,
-        rankingMonthly.users
-      )} do ranking`;
+    const position = await myPosition(user_id, rankingMonthly.users);
+    if (position > 0) {
+      msg_user = `Ah, e você está na posição ${position} do ranking`;
     } else {
-      msg_user = "Você ainda não pontuou na gamification";
+      msg_user = `Opa, você não pontuou no game nesse mês`;
     }
     response.attachments.push({ text: msg_user });
   }
@@ -120,47 +153,101 @@ const findAll = async (isCoreTeam = false, month = Date.now, limit = 20) => {
   return result || [];
 };
 
-const rangeRanking = async (year, month) => {
-  // const interactions = await InterActionModel.find({ date: { $gte: new Date(2019, 0), $lt: new Date(2019, 0 + 1) }}).exec();
-  const interactions = await interactionController.findBy({
-    date: { $gte: new Date(year, month), $lt: new Date(year, month + 1) }
-  });
-  // agora preciso percorrer as interaction e contar os pontos
-  interactions.map(interaction => {
-    console.log(interaction.user);
-  });
-
-  // console.log(interactions);
+const closeRanking = async date => {
+  const RankingModel = mongoose.model("Ranking");
+  let year = date.getFullYear();
+  let month = date.getMonth();
+  if (month == 0) {
+    year -= 1;
+    month = 12;
+  }
+  const ranking = await RankingModel.findOne({
+    date: {
+      $gte: new Date(year, --month)
+    }
+  }).exec();
+  if (ranking) {
+    ranking.closed = true;
+    ranking.save();
+  }
 };
 
-const save = async (isCoreTeam = false) => {
-  let data;
+const save = async (isCoreTeam = false, today = new Date(Date.now())) => {
+  const interactions = await interactionController.byDate(
+    today.getFullYear(),
+    today.getMonth()
+  );
+
+  const ranking_users = interactions.map(interaction => ({
+    user: interaction._id.user,
+    score: interaction.totalScore,
+    level: calculateLevel(interaction.totalScore)
+  }));
+
   const RankingModel = mongoose.model("Ranking");
-  // const today = Date(Date.now());
-  // $gte: new Date(2016,09,30)
-  // console.log("QUERO O DIA DE HOJE", today.getMonth(), today.getFullYear());
-  const today = new Date(Date.now());
-  const users = await userController.findAll(isCoreTeam, 0);
   const ranking = await RankingModel.findOne({
     date: {
       $gte: new Date(today.getFullYear(), today.getMonth())
     }
   }).exec();
-
+  let data;
   if (!ranking) {
     data = {
       isCoreTeam: isCoreTeam,
-      users: users,
+      users: ranking_users,
       date: today
     };
     const instance = new RankingModel(data);
     instance.save();
+    await closeRanking(today);
   } else {
-    ranking.users = users;
+    ranking.users = ranking_users;
     ranking.save();
   }
-  // if today is first day, update de ranking and close the month before
-  await rangeRanking(today.getFullYear(), today.getMonth());
+};
+
+const sendToChannel = async () => {
+  const today = new Date(Date.now());
+  const roomname = process.env.ROCKET_DEFAULT_CHANNEL;
+  const limit_ranking = 5;
+  let response = {
+    msg: "Veja as primeiras pessoas do ranking:",
+    attachments: []
+  };
+  let allUsers = await userController.findAll(false, 0);
+  let usersFromApi = [];
+  for (let user of allUsers) {
+    let name;
+    let network;
+    if (user.rocketId) {
+      let response = await rocket_info(user.rocketId);
+      name = response.data.user.name;
+      network = "rocket";
+    } else {
+      name = user.name;
+      network = "slack";
+    }
+    usersFromApi.push({
+      name: name,
+      user_id: user.rocketId ? user.rocketId : user.slackId,
+      network: network
+    });
+  }
+  const rankingMonthly = await monthly(today.getMonth() + 1);
+  if (rankingMonthly.text) {
+    response = rankingMonthly;
+  } else if (!rankingMonthly.text && rankingMonthly.users.length == 0) {
+    response = { text: "Ops! Ainda ninguém pontuou. =/" };
+  } else {
+    const limit_users = rankingMonthly.users.slice(0, limit_ranking);
+    response.attachments = await limit_users.map((user, index) => ({
+      text: `${index + 1}º lugar está ${
+        usersFromApi.find(u => u.user_id === user.user).name
+      } com ${user.score} XP, no nível ${user.level}`
+    }));
+  }
+
+  await driver.sendToRoom(response, roomname);
 };
 
 export default {
@@ -169,5 +256,6 @@ export default {
   findBy,
   findAll,
   myPosition,
-  save
+  save,
+  sendToChannel
 };
