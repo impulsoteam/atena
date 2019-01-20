@@ -17,14 +17,21 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 router.post("/score", urlencodedParser, async (req, res) => {
   let user = {};
+  let query_user;
   let myPosition = 0;
   let response = {
     text: "Ops! Você ainda não tem pontos registrados."
   };
-  validSlackSecret(req, res);
+  if (req.headers.origin === "rocket") {
+    req.body.user_id = req.body.id;
+    query_user = { rocketId: req.body.user_id };
+  } else {
+    query_user = { slackId: req.body.user_id };
+    validSlackSecret(req, res);
+  }
   try {
-    user = await userController.find(req.body.user_id);
-    myPosition = await userController.rankingPosition(req.body.user_id);
+    user = await userController.findBy(query_user);
+    myPosition = await userController.rankingPosition(user.id);
     response = {
       text: `Olá ${user.name}, atualmente você está no nível ${
         user.level
