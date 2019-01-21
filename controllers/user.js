@@ -178,7 +178,10 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
     };
   }
 
-  sendToUser("Parabéns, agora você também está pontuando no nosso game! xD", interaction.user);
+  sendToUser(
+    "Parabéns, agora você também está pontuando no nosso game! xD",
+    interaction.user
+  );
   sendHelloOnSlack(interaction.user);
 
   const instance = new UserModel(obj);
