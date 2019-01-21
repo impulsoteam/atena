@@ -5,6 +5,13 @@ import userController from "../controllers/user";
 const router = express.Router();
 
 router.get("/", async (req, res) => {
+  console.log(req.params);
+  // search by ranking mensal
+  res.json({});
+});
+
+router.get("/geral", async (req, res) => {
+  // const { limit } = req.params;
   let users = [];
 
   try {
@@ -16,7 +23,7 @@ router.get("/", async (req, res) => {
   if (req.query.format === "json") {
     res.json(users);
   } else {
-    res.render("ranking", {
+    res.render("rankinggeral", {
       title: "Veja o Ranking do nosso game | Impulso Network",
       users
     });
