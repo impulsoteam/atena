@@ -67,9 +67,6 @@ router.post("/general-raking", urlencodedParser, async (req, res) => {
   } catch (e) {
     console.log(e);
   }
-
-  console.log("RESPONSE", response);
-
   res.json(response);
 });
 

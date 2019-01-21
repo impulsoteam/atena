@@ -155,7 +155,11 @@ export const getRanking = async (req, isCoreTeamMember) => {
       users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
     response.attachments = users.map((user, index) => ({
       text: `${index + 1}º lugar está ${
-        user.slackId === req.body.user_id ? "você" : user.name
+        user.slackId === user_id
+          ? "você"
+          : user.rocketId === user_id
+          ? "você"
+          : user.name
       } com ${user.score} XP, no nível ${user.level}`
     }));
 
