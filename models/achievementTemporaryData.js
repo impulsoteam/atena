@@ -9,6 +9,11 @@ const rangeSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  total: {
+    type: Number,
+    require: true,
+    default: 0
+  },
   earnedDate: {
     type: Date,
     required: false
@@ -32,7 +37,7 @@ const ratingSchema = new mongoose.Schema({
   ]
 });
 
-const temporaryAchievementSchema = new mongoose.Schema({
+const achievementTemporyDataSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
@@ -41,40 +46,29 @@ const temporaryAchievementSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  total: {
-    type: Number,
-    require: true
-  },
   rangeTime: {
     type: String,
     enum: ["daily", "weekly", "monthly", "yearly"],
     required: true
   },
-  record: {
-    type: String //rating
-  },
-  lastDate: {
+  initialDate: {
     type: Date,
     required: true,
     default: Date.now()
   },
-  ratings: [
-    {
-      name: "Bronze",
-      range: 10,
-      earnedDate: "hoje",
-      xp: 7
-    },
-    {
-      name: "Prata",
-      range: 20,
-      earnedDate: null,
-      xp: 7
-    }
-  ]
+  limitDate: {
+    type: Date,
+    required: true,
+    default: Date.now()
+  },
+  record: {
+    type: ratingSchema
+  },
+  ratings: [ratingSchema]
 });
 
 export default mongoose.model(
-  "TemporaryAchievement",
-  temporaryAchievementSchema
+  "AchievementTemporyData",
+  achievementTemporyDataSchema,
+  "achievementTemporyData"
 );

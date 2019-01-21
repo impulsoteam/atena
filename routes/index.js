@@ -8,6 +8,7 @@ import botRoutes from "./bot";
 import githubRoutes from "./github";
 import disqusRoutes from "./disqus";
 import resourcesRoutes from "./resources";
+import achievementsTemporyDataRoutes from "./achievementsTemporyData";
 const router = express.Router();
 
 router.use("/slack", slackRoutes);
@@ -19,6 +20,7 @@ router.use("/bot/commands", botRoutes);
 router.use("/resources", resourcesRoutes);
 router.use("/integrations/github", githubRoutes);
 router.use("/integrations/disqus", disqusRoutes);
+router.use("/achievements-tempory/data", achievementsTemporyDataRoutes);
 
 router.get("/", (req, res) => {
   res.render("index", {
