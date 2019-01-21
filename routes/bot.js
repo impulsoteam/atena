@@ -57,8 +57,8 @@ router.get("/ranking-save", async (req, res) => {
   res.send("save");
 });
 
-router.post("/rankinggeral", urlencodedParser, async (req, res) => {
-  validSlackSecret(req, res);
+router.post("/general-raking", urlencodedParser, async (req, res) => {
+  // validSlackSecret(req, res);
   let response = {};
 
   try {

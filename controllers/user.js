@@ -105,7 +105,8 @@ const findAll = async (isCoreTeam = false, limit = 20) => {
 
 const rankingPosition = async (userId, isCoreTeam = false) => {
   const allUsers = await findAll(isCoreTeam);
-  const position = (await allUsers.map(e => e.id).indexOf(userId)) + 1;
+  const user = await getNetwork(userId);
+  const position = (await allUsers.map(e => e.id).indexOf(user.id)) + 1;
 
   return position;
 };
@@ -180,7 +181,10 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
     };
   }
 
-  sendToUser("Parabéns, agora você também está pontuando no nosso game! xD", interaction.user);
+  sendToUser(
+    "Parabéns, agora você também está pontuando no nosso game! xD",
+    interaction.user
+  );
   sendHelloOnSlack(interaction.user);
 
   const instance = new UserModel(obj);
