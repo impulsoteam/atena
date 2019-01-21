@@ -1,15 +1,26 @@
 import { _throw } from "../helpers";
 import TemporaryAchievementDataModel from "../models/achievementTemporaryData";
 import { generateKind } from "../utils/achievementsTemporaryData";
+import moment from "moment-timezone";
 
 export const save = async data => {
   try {
+    let initialDate = moment(new Date(data.initialDate))
+      .utc()
+      .startOf("day")
+      .format();
+
+    let limitDate = moment(new Date(data.limitDate))
+      .utc()
+      .endOf("day")
+      .format();
+
     let obj = new TemporaryAchievementDataModel();
     obj.name = data.name;
     obj.kind = generateKind(data);
     obj.rangeTime = data.rangeTime;
-    obj.initialDate = new Date(data.initialDate);
-    obj.limitDate = new Date(data.limitDate);
+    obj.initialDate = initialDate;
+    obj.limitDate = limitDate;
     obj.ratings = data.ratings;
 
     const achivementTemporyData = await obj.save();

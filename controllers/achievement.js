@@ -4,6 +4,7 @@ import UserModel from "../models/user";
 import { calculateLevel } from "../utils";
 import { isPositiveReaction, isAtenaReaction } from "../utils/reactions";
 import { _throw } from "../helpers";
+import { getInteractionType } from "../utils/achievements";
 
 export const findAllByUser = async userId => {
   const result = await AchievementModel.find({ user: userId }).exec();
@@ -28,28 +29,6 @@ export const save = async interaction => {
   } catch (error) {
     _throw("Error saving achievement");
   }
-};
-
-const getInteractionType = interaction => {
-  let type = interaction.type;
-
-  if (isChatInteraction(interaction)) {
-    type = "sended";
-  }
-
-  return type;
-};
-
-const isChatInteraction = interaction => {
-  return (
-    interaction.type === "reaction_added" ||
-    interaction.type === "reaction_removed" ||
-    interaction.type === "thread" ||
-    interaction.type === "manual" ||
-    interaction.type === "inactivity" ||
-    (interaction.type === "message" &&
-      interaction.action === config.actions.message.type)
-  );
 };
 
 const isValidAction = interaction => {

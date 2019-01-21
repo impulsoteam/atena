@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import moment from "moment";
 import userController from "./user";
 import achievementController from "./achievement";
+import achievementTemporaryController from "./achievementTemporary";
 import { calculateScore } from "../utils";
 import { lastMessageTime, getAction } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
@@ -170,6 +171,7 @@ export const save = async data => {
   if (todayLimitStatus > 0 || !todayLimitStatus) {
     userController.update(interaction);
     achievementController.save(interaction);
+    achievementTemporaryController.save(interaction);
     if (
       ![
         "message",
