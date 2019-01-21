@@ -31,7 +31,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
   }
   try {
     user = await userController.findBy(query_user);
-    myPosition = await userController.rankingPosition(user.id);
+    myPosition = await userController.rankingPosition(req.body.user_id);
     response = {
       text: `Olá ${user.name}, atualmente você está no nível ${
         user.level
