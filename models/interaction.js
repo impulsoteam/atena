@@ -15,11 +15,11 @@ const interactionSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    required: true
+    required: false
   },
   action: {
     type: String,
-    required: true
+    required: false
   },
   user: {
     type: String,

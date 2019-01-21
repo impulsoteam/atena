@@ -72,10 +72,5 @@
     "sinon": "^7.1.1",
     "sinon-mongoose": "^2.2.1",
     "supertest": "^3.3.0"
-  },
-  "config": {
-    "ghooks": {
-      "pre-commit": "npm run test"
-    }
   }
 }

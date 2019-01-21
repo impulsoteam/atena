@@ -9,6 +9,7 @@ import {
   isCoreTeam
 } from "../utils";
 import { sendHelloOnSlack } from "../utils/bot";
+import { sendToUser } from "../rocket/bot";
 import { _throw } from "../helpers";
 
 const updateParentUser = async interaction => {
@@ -177,8 +178,10 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
     };
   }
 
-  const instance = new UserModel(obj);
+  sendToUser("Parabéns, agora você também está pontuando no nosso game! xD", interaction.user);
   sendHelloOnSlack(interaction.user);
+
+  const instance = new UserModel(obj);
   return instance.save();
 };
 
