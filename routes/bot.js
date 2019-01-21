@@ -6,22 +6,32 @@ import { analyticsSendBotCollect, getRanking } from "../utils";
 import userController from "../controllers/user";
 import interactionController from "../controllers/interaction";
 import achievementController from "../controllers/achievement";
+import rankingController from "../controllers/ranking";
 import { isCoreTeam, calculateAchievementsPosition } from "../utils";
 import validSlackSecret from "../utils/validSecret";
 const router = express.Router();
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
 
 router.post("/score", urlencodedParser, async (req, res) => {
   let user = {};
+  let query_user;
   let myPosition = 0;
   let response = {
     text: "Ops! Você ainda não tem pontos registrados."
   };
-  validSlackSecret(req, res);
+  if (req.headers.origin === "rocket") {
+    req.body.user_id = req.body.id;
+    query_user = { rocketId: req.body.user_id };
+  } else {
+    query_user = { slackId: req.body.user_id };
+    validSlackSecret(req, res);
+  }
   try {
-    user = await userController.find(req.body.user_id);
-    myPosition = await userController.rankingPosition(req.body.user_id);
+    user = await userController.findBy(query_user);
+    myPosition = await userController.rankingPosition(user.id);
     response = {
       text: `Olá ${user.name}, atualmente você está no nível ${
         user.level
@@ -40,8 +50,15 @@ router.post("/score", urlencodedParser, async (req, res) => {
   res.json(response);
 });
 
-router.post("/ranking", urlencodedParser, async (req, res) => {
-  validSlackSecret(req, res);
+router.post("/ranking", rankingController.index);
+
+router.get("/ranking-save", async (req, res) => {
+  await rankingController.save();
+  res.send("save");
+});
+
+router.post("/general-raking", urlencodedParser, async (req, res) => {
+  // validSlackSecret(req, res);
   let response = {};
 
   try {
@@ -50,6 +67,8 @@ router.post("/ranking", urlencodedParser, async (req, res) => {
   } catch (e) {
     console.log(e);
   }
+
+  console.log("RESPONSE", response);
 
   res.json(response);
 });

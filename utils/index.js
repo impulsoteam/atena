@@ -142,10 +142,13 @@ export const getRanking = async (req, isCoreTeamMember) => {
     attachments: []
   };
 
+  const user_id =
+    req.headers.origin === "rocket" ? req.body.id : req.body.user_id;
+  console.log("USER ID ", user_id);
   try {
     users = await userController.findAll(isCoreTeamMember, 5);
     myPosition = await userController.rankingPosition(
-      req.body.user_id,
+      user_id,
       isCoreTeamMember
     );
     response.text =

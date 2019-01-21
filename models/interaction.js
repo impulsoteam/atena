@@ -51,6 +51,10 @@ const interactionSchema = new mongoose.Schema({
     type: Date,
     required: true,
     default: Date.now
+  },
+  score: {
+    type: Number,
+    default: 0
   }
 });
 
