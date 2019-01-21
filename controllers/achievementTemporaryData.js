@@ -31,12 +31,34 @@ export const exclude = data => {
   try {
     // TODO: create delete
   } catch (error) {
-    _throw("Error update temporary achievement data");
+    _throw("Error delete temporary achievement data");
+  }
+};
+
+export const getById = async id => {
+  try {
+    const achivementTemporyData = await TemporaryAchievementDataModel.findById(
+      id
+    );
+    return achivementTemporyData;
+  } catch (error) {
+    _throw("Error delete temporary achievement data");
+  }
+};
+
+export const getAll = async () => {
+  try {
+    const achivementsTemporyData = await TemporaryAchievementDataModel.find();
+    return achivementsTemporyData;
+  } catch (error) {
+    _throw("Error delete temporary achievement data");
   }
 };
 
 export default {
   save,
   update,
-  exclude
+  exclude,
+  getById,
+  getAll
 };

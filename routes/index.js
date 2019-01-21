@@ -20,7 +20,7 @@ router.use("/bot/commands", botRoutes);
 router.use("/resources", resourcesRoutes);
 router.use("/integrations/github", githubRoutes);
 router.use("/integrations/disqus", disqusRoutes);
-router.use("/achievements-tempory/data", achievementsTemporyDataRoutes);
+router.use("/achievements-temporary/data", achievementsTemporyDataRoutes);
 
 router.get("/", (req, res) => {
   res.render("index", {

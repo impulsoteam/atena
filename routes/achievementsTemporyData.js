@@ -8,6 +8,18 @@ const router = express.Router();
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
+router.get("/", async (req, res) => {
+  let temporyAchievementsData = await achievementTemporyDataController.getAll();
+  res.json(temporyAchievementsData);
+});
+
+router.get("/:id", async (req, res) => {
+  let temporyAchievementsData = await achievementTemporyDataController.getById(
+    req.params.id
+  );
+  res.json(temporyAchievementsData);
+});
+
 router.post("/", async (req, res) => {
   let temporyAchievementsData = await achievementTemporyDataController.save(
     req.body
