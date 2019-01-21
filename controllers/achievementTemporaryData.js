@@ -19,6 +19,24 @@ export const save = async data => {
   }
 };
 
+export const update = data => {
+  try {
+    // TODO: create update
+  } catch (error) {
+    _throw("Error update temporary achievement data");
+  }
+};
+
+export const exclude = data => {
+  try {
+    // TODO: create delete
+  } catch (error) {
+    _throw("Error update temporary achievement data");
+  }
+};
+
 export default {
-  save
+  save,
+  update,
+  exclude
 };
