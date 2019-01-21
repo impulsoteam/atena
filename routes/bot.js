@@ -9,6 +9,7 @@ import achievementController from "../controllers/achievement";
 import rankingController from "../controllers/ranking";
 import { isCoreTeam, calculateAchievementsPosition } from "../utils";
 import validSlackSecret from "../utils/validSecret";
+import { sendMessage } from "../rocket/bot";
 const router = express.Router();
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
@@ -186,5 +187,13 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
 
   res.json(response);
 });
+
+router.post("/enviarcomoatena", urlencodedParser, (req, res) => {
+  const message = req.body.text;
+
+  if (config.coreteam.admins.some(user => user === req.body.user_id) && message.length > 1) {
+    sendMessage(message);
+  }
+})
 
 export default router;
