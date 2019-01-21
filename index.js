@@ -11,7 +11,7 @@ import appRoutes from "./routes";
 require("./models/interaction");
 require("./models/user");
 require("./models/achievement");
-
+require("./models/ranking");
 require("./rocket/bot");
 
 runCrons();

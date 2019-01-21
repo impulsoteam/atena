@@ -155,19 +155,16 @@ export const save = async data => {
   const score = await todayScore(interaction.user);
   const todayLimitStatus = todayLimitScore - score;
   const instance = new InteractionModel(interaction);
-  const response = instance.save();
 
   if (
     interaction.type === "message" &&
-    moment(interaction.date).diff(
-      await lastMessageTime(interaction.user),
-      "seconds"
-    ) < 5
+    moment(interaction.date).diff(await lastMessageTime(instance), "seconds") <
+      5
   ) {
     return _throw("User makes flood");
   }
-
   if (todayLimitStatus > 0 || !todayLimitStatus) {
+    instance.score = await calculateScore(interaction);
     userController.update(interaction);
     achievementController.save(interaction);
     if (
@@ -184,6 +181,7 @@ export const save = async data => {
       userController.updateParentUser(interaction);
     }
   }
+  const response = instance.save();
   return response || _throw("Error adding new interaction");
 };
 
@@ -241,14 +239,15 @@ export const remove = async data => {
   return _throw("Error removing interactions");
 };
 
-export const lastMessage = async user => {
+export const lastMessage = async interaction => {
   const InteractionModel = mongoose.model("Interaction");
   const result = await InteractionModel.find({
-    user: user,
-    type: "message"
+    user: interaction.user,
+    type: "message",
+    _id: { $lt: interaction.id }
   })
     .sort({
-      date: -1
+      _id: -1
     })
     .limit(1)
     .exec();
@@ -271,11 +270,102 @@ const manualInteractions = async data => {
   }
 };
 
+const findAll = async () => {
+  const InterActionModel = mongoose.model("Interaction");
+  const result = await InterActionModel.find()
+    .sort()
+    .exec();
+  return result;
+};
+
+const findBy = async args => {
+  const InterActionModel = mongoose.model("Interaction");
+  const result = await InterActionModel.find(args).exec();
+  return result || null;
+};
+
+const calculate = async interaction => {
+  const todayLimitScore = config.xprules.limits.daily;
+  const scoreDay = await dayScore(interaction);
+  const todayLimitStatus = todayLimitScore - scoreDay;
+  if (
+    interaction.type === "message" &&
+    moment(interaction.date).diff(
+      await lastMessageTime(interaction),
+      "seconds"
+    ) < 5
+  ) {
+    return _throw("User makes flood");
+  }
+  if (todayLimitStatus > 0 || !todayLimitStatus) {
+    return await calculateScore(interaction);
+  }
+};
+
+const dayScore = async interaction => {
+  const date = new Date(interaction.date);
+  let score = 0;
+  const InteractionModel = mongoose.model("Interaction");
+  const start = date.setHours(0, 0, 0, 0);
+  const end = date.setHours(23, 59, 59, 999);
+  const result = await InteractionModel.find({
+    user: interaction.user,
+    date: {
+      $gte: start,
+      $lt: end
+    }
+  }).exec();
+
+  result.map(item => {
+    score = score + calculateScore(item);
+  });
+  return +score;
+};
+
+const normalizeScore = async (req, res) => {
+  const interactions = await findAll();
+  await interactions.map(async interaction => {
+    const score = await calculate(interaction);
+    interaction.score = score;
+    interaction.save();
+  });
+  res.send("Interações normalizadas");
+};
+
+const aggregateBy = async args => {
+  const InterActionModel = mongoose.model("Interaction");
+  const result = await InterActionModel.aggregate(args).exec();
+  return result || null;
+};
+
+const byDate = async (year, month) => {
+  return await aggregateBy([
+    {
+      $match: {
+        date: { $gte: new Date(year, month), $lt: new Date(year, month + 1) },
+        score: { $gte: 0 }
+      }
+    },
+    {
+      $group: {
+        _id: { user: "$user" },
+        totalScore: { $sum: "$score" }
+      }
+    },
+    {
+      $sort: { totalScore: -1 }
+    }
+  ]);
+};
+
 export default {
+  findBy,
   find,
   remove,
   save,
   todayScore,
   lastMessage,
-  manualInteractions
+  manualInteractions,
+  normalizeScore,
+  byDate
 };

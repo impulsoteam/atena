@@ -85,10 +85,12 @@ const findBy = async args => {
 
 const findAll = async (isCoreTeam = false, limit = 20) => {
   const UserModel = mongoose.model("User");
-  const result = await UserModel.find({
+  const base_query = {
     score: { $gt: 0 },
     isCoreTeam: isCoreTeam
-  })
+  };
+
+  const result = await UserModel.find(base_query)
     .sort({
       score: -1
     })
@@ -103,7 +105,8 @@ const findAll = async (isCoreTeam = false, limit = 20) => {
 
 const rankingPosition = async (userId, isCoreTeam = false) => {
   const allUsers = await findAll(isCoreTeam);
-  const position = allUsers.map(e => e.slackId).indexOf(userId) + 1;
+  const user = await getNetwork(userId);
+  const position = (await allUsers.map(e => e.id).indexOf(user.id)) + 1;
 
   return position;
 };
@@ -178,7 +181,10 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
     };
   }
 
-  sendToUser("Parabéns, agora você também está pontuando no nosso game! xD", interaction.user);
+  sendToUser(
+    "Parabéns, agora você também está pontuando no nosso game! xD",
+    interaction.user
+  );
   sendHelloOnSlack(interaction.user);
 
   const instance = new UserModel(obj);
@@ -228,6 +234,22 @@ const updateUserData = (UserModel, interaction, score) => {
   }
 };
 
+const getNetwork = async user_id => {
+  let user = {};
+  const UserModel = mongoose.model("User");
+  const slack_user = await UserModel.findOne({ slackId: user_id });
+  const rocket_user = await UserModel.findOne({ rocketId: user_id });
+  if (slack_user) {
+    user = slack_user;
+    user.network = "slack";
+  } else if (rocket_user) {
+    user = rocket_user;
+    user.network = "rocket";
+  }
+
+  return user;
+};
+
 export default {
   find,
   findAll,
@@ -236,5 +258,6 @@ export default {
   rankingPosition,
   checkCoreTeam,
   findInactivities,
-  findBy
+  findBy,
+  getNetwork
 };
