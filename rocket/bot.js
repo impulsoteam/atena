@@ -28,6 +28,6 @@ const processMessages = async (err, message, messageOptions) => {
 
 export const sendToUser = async (message, user) => {
   await driver.sendDirectToUser(message, user);
-}
+};
 
 runBot();
