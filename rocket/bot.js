@@ -59,4 +59,3 @@ export const sendMessage = async message => {
 };
 
 runBot();
-

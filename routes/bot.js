@@ -191,9 +191,12 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
 router.post("/enviarcomoatena", urlencodedParser, (req, res) => {
   const message = req.body.text;
 
-  if (config.coreteam.admins.some(user => user === req.body.user) && message.length > 1) {
+  if (
+    config.coreteam.admins.some(user => user === req.body.user) &&
+    message.length > 1
+  ) {
     sendMessage(message);
   }
-})
+});
 
 export default router;
