@@ -61,6 +61,7 @@
     "node-cron": "^2.0.3",
     "path": "^0.12.7",
     "prettier": "^1.14.3",
+    "prop-types": "^15.6.2",
     "querystring": "^0.2.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
@@ -70,6 +71,7 @@
     "universal-analytics": "^0.4.17"
   },
   "devDependencies": {
+    "eslint-plugin-react": "^7.12.4",
     "factory-girl": "^5.0.4",
     "ghooks": "^2.0.4",
     "jest": "^23.6.0",

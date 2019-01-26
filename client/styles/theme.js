@@ -1,14 +1,18 @@
 const Theme = {
   fontSize: {
-    small: "12px",
-    large: "36px"
+    default: "14px",
+    medium: "20px",
+    large: "36px",
+    super: "100px"
   },
 
   color: {
     white: "#FFFFFF",
-    black: "#12252B",
-    primary: "#EB2A2C",
-    secondary: "#E8E4E1"
+    black: "#000000",
+    gray: "#666C71",
+    primary: "#595B98",
+    primaryLight: "#8688D9",
+    secondary: "#DC3C2C"
   }
 };
 
