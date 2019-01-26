@@ -7,7 +7,7 @@ import { calculateScore } from "../utils";
 import { lastMessageTime, getAction } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 
-const normalize = data => {
+let normalize = data => {
   if (data.type === "reaction_added" || data.type === "reaction_removed") {
     return {
       channel: data.item.channel,
@@ -102,7 +102,7 @@ const normalize = data => {
       return {
         channel: data.rid,
         date: new Date(),
-        description: Object.keys(data.reactions)[0],
+        description: Object.keys(data.reactions).pop(),
         parentUser: data.u._id,
         user: null,
         type: "reaction_added",
@@ -163,6 +163,18 @@ export const save = async data => {
   ) {
     return _throw("User makes flood");
   }
+
+  if (
+    interaction.type === "reaction_added" &&
+    interaction.origin === "rocket"
+  ) {
+    const reaction = Object.keys(data.reactions).pop();
+    const username = reaction.usernames.pop();
+    const user = userController.findBy({ name: username });
+
+    interaction.user = user || null;
+  }
+
   if (todayLimitStatus > 0 || !todayLimitStatus) {
     instance.score = await calculateScore(interaction);
     userController.update(interaction);
