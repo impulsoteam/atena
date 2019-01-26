@@ -1,7 +1,7 @@
 import React from "react";
 import { ThemeProvider } from "styled-components";
-import GlobalStyles from './styles/global';
-import Theme from './styles/theme';
+import GlobalStyles from "./styles/global";
+import Theme from "./styles/theme";
 
 const Html = props => {
   const { children, title, initialData } = props;
@@ -9,8 +9,11 @@ const Html = props => {
   return (
     <html>
       <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+        <meta charset="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
         <title>{title || "Gameficação da Impulso Network"}</title>
         <GlobalStyles />
       </head>
