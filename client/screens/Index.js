@@ -9,5 +9,12 @@ const ScreenIndex = () => {
     </Layout>
   );
 };
+ScreenIndex.propTypes = {
+  name: PropTypes.string
+};
+
+ScreenIndex.defaultProps = {
+  name: "Atena"
+};
 
 export default ScreenIndex;
