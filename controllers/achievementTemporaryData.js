@@ -1,6 +1,9 @@
 import { _throw } from "../helpers";
 import TemporaryAchievementDataModel from "../models/achievementTemporaryData";
-import { generateKind } from "../utils/achievementsTemporaryData";
+import {
+  generateKind,
+  generateRatingsRanges
+} from "../utils/achievementsTemporaryData";
 import moment from "moment-timezone";
 
 export const save = async data => {
@@ -21,10 +24,10 @@ export const save = async data => {
     obj.rangeTime = data.rangeTime;
     obj.initialDate = initialDate;
     obj.limitDate = limitDate;
-    obj.ratings = data.ratings;
+    obj.ratings = generateRatingsRanges(data.ratings);
 
-    const achivementTemporyData = await obj.save();
-    return achivementTemporyData;
+    const achievementTemporaryData = await obj.save();
+    return achievementTemporaryData;
   } catch (error) {
     _throw("Error saving temporary achievement data");
   }
