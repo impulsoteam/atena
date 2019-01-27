@@ -8,10 +8,7 @@ import botRoutes from "./bot";
 import githubRoutes from "./github";
 import disqusRoutes from "./disqus";
 import resourcesRoutes from "./resources";
-import React from "react";
-import ReactDOMServer from "react-dom/server";
-import Html from "../client/Html";
-import ScreenIndex from "../client/screens/Index";
+import { renderScreen } from "../utils/ssr";
 const router = express.Router();
 router.use("/slack", slackRoutes);
 router.use("/rocket", rocketRoutes);
@@ -25,14 +22,11 @@ router.use("/integrations/disqus", disqusRoutes);
 
 router.get("/", (req, res) => {
   const initialData = {
-    title: "Seja bem vindo! =D"
+    title: "Seja bem vindo! =D",
+    name: "Atena"
   };
 
-  ReactDOMServer.renderToNodeStream(
-    <Html initialData={JSON.stringify(initialData)}>
-      <ScreenIndex {...initialData} name="Atena" />
-    </Html>
-  ).pipe(res);
+  renderScreen(res, "Index", initialData);
 });
 
 export default router;

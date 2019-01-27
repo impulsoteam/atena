@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import runCrons from "./cron";
 import appRoutes from "./routes";
+import compression from "compression";
 require("./models/interaction");
 require("./models/user");
 require("./models/achievement");
@@ -23,6 +24,8 @@ mongoose.set("useCreateIndexes", true);
 
 const port = process.env.PORT || 9001;
 const app = express();
+
+app.use(compression());
 
 app.enable("trust proxy");
 

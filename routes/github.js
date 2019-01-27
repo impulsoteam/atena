@@ -8,6 +8,7 @@ import githubController from "../controllers/github";
 import interactionController from "../controllers/interaction";
 import { getStyleLog } from "../utils";
 import { isValidRepository } from "../utils/github";
+import { renderScreen } from "../utils/ssr";
 const router = express.Router();
 
 const link_auth = `https://github.com/login/oauth/authorize?scope=user:email&client_id=${
@@ -123,12 +124,12 @@ router.get("/callback", async (req, res) => {
       "Não conseguimos localizar seu e-mail público ou privado na API do GITHUB, Seu esse recurso sua armadura de cavaleiro não está pronta para ganhar bonificações na contribuição do projeto Atena!";
   }
 
-  // if (errors.length > 0) console.log(errors);
-
-  res.render("github", {
+  const initialData = {
     title: "Batalha do Open Source | Impulso Network",
     response
-  });
+  };
+
+  renderScreen(res, "Github", initialData);
 });
 
 router.use("/", async (req, res) => {
