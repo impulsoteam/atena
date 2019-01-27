@@ -12,6 +12,13 @@ const StyledApp = createGlobalStyle`
     padding: 0;
     font-family: "proxima-nova", sans-serif;
     font-size: ${props => props.theme.fontSize.default};
+    background-color: ${props => props.theme.color.primary};
+    color: ${props => props.theme.color.white}
+  }
+
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 320px);
   }
 
   hr {

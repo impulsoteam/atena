@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { ThemeProvider } from "styled-components";
 import Theme from "./styles/theme";
 import StyledApp from "./styles/global";
+import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 const Layout = props => {
@@ -12,7 +13,8 @@ const Layout = props => {
     <ThemeProvider theme={Theme}>
       <Fragment>
         <StyledApp />
-        {children}
+        <Header />
+        <main className="layout">{children}</main>
         <Footer />
       </Fragment>
     </ThemeProvider>

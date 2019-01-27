@@ -27,9 +27,7 @@ const Html = props => {
         />
         <title>{title}</title>
       </head>
-      <body>
-        <main id="app">{children}</main>
-      </body>
+      <body>{children}</body>
     </html>
   );
 };

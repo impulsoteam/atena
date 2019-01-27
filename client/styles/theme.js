@@ -1,4 +1,5 @@
 const Theme = {
+  gridSize: "1280px",
   fontSize: {
     default: "14px",
     medium: "20px",

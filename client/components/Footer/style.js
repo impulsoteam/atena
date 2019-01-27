@@ -19,4 +19,5 @@ export const StyledFooter = styled.footer`
 export const StyledCopyright = styled.p`
   text-align: center;
   color: ${props => props.theme.color.primaryLight};
+  margin: 0;
 `;
