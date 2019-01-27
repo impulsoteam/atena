@@ -1,9 +1,5 @@
 import { driver } from "@rocket.chat/sdk";
 import interactionController from "../controllers/interaction";
-// import fs from "fs";
-// import path from "path";
-// import mime from "mime-types";
-// const emojiDir = './emoji';
 
 var myuserid;
 const runBot = async () => {
@@ -22,7 +18,6 @@ const runBot = async () => {
 };
 
 const processMessages = async (err, message, messageOptions) => {
-  // const re = /!importemoji/g;
   const ranking = /!ranking/g;
   if (!err) {
     message.origin = "rocket";
@@ -39,42 +34,28 @@ const processMessages = async (err, message, messageOptions) => {
   } else {
     console.log(err, messageOptions);
   }
+
+  sendMessage("funciona sim!");
 };
 
 export const sendToUser = async (message, user) => {
-  await driver.sendDirectToUser(message, user);
+  try {
+    await driver.sendDirectToUser(message, user);
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
+export const sendMessage = async message => {
+  try {
+    await driver.sendToRoom(message, "comunicados");
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
 };
 
 runBot();
-
-/*
-      const files = fs.readdirSync(emojiDir);
-
-      for (const file of files) {
-        const pathToFile = path.join(emojiDir, file);
-        try {
-          const stat = fs.statSync(pathToFile);
-          if (stat.isFile()) {
-            const mimeType = mime.lookup(pathToFile);
-            var fileSplit = file.split(".");
-            const emojiData = {
-              name: fileSplit[0],
-              aliases: "",
-              newFile: true,
-              extension: fileSplit[1]
-            };
-
-            await driver.callMethod("insertOrUpdateEmoji", emojiData);
-            const fileData = fs.readFileSync(pathToFile);
-            await driver.asyncCall("uploadEmojiCustom", [
-              fileData,
-              mimeType,
-              emojiData
-            ]);
-            // delete fileData;
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      }
-      */
