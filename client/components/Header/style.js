@@ -8,6 +8,13 @@ const StyledHeader = styled.header`
   top: 0;
   left: 0;
   right: 0;
+
+  @media (max-width: 760px) {
+    img {
+      display: block;
+      margin: auto;
+    }
+  }
 `;
 
 export default StyledHeader;

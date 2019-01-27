@@ -45,6 +45,12 @@ const StyledApp = createGlobalStyle`
     text-decoration: none;
     font-weight: bold;
   }
+
+  @media (max-width: 760px) {
+    main {
+      padding: 0 12px;
+    }
+  }
 `;
 
 export default StyledApp;

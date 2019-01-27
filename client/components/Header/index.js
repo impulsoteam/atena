@@ -6,7 +6,7 @@ import Menu from "./Menu";
 const Header = () => (
   <StyledHeader>
     <Flex justifyContent="space-between" alignItems="center">
-      <Box>
+      <Box flex="1">
         <img src="/images/atena.svg" />
       </Box>
       <Box>

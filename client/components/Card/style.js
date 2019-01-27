@@ -33,6 +33,21 @@ const StyledCard = styled.div`
     width: 108px;
     height: 109px;
   }
+
+  @media (max-width: 760px) {
+    padding: 12px 12px 20px;
+
+    .cardIcon {
+      margin: -40px auto 20px;
+      padding: 5px;
+    }
+
+    .cardIcon i {
+      font-size: 60px;
+      width: 68px;
+      height: 69px;
+    }
+  }
 `;
 
 export default StyledCard;

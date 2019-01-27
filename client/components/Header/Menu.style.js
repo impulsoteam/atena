@@ -30,6 +30,27 @@ const StyledMenu = styled.ul`
   a:hover {
     color: ${props => props.theme.color.primaryLight};
   }
+
+  @media (max-width: 760px) {
+    position: fixed;
+    z-index: 900;
+    background: ${props => props.theme.color.primary};
+    top: 0;
+    bottom: 0;
+    left: 0;
+    flex-direction: column;
+    padding: 30px;
+    transform: translateX(-100%);
+
+    li + li::before {
+      display: none;
+    }
+
+    a {
+      padding: ${props => props.theme.fontSize.default};
+      display: block;
+    }
+  }
 `;
 
 export default StyledMenu;
