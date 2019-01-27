@@ -1,13 +1,19 @@
 import React from "react";
-import ReactDOMServer from "react-dom/server";
+import { renderToNodeStream } from "react-dom/server";
+import { ServerStyleSheet } from "styled-components";
 import Html from "../client/Html";
 
 export const renderScreen = (res, screen, props) => {
   const Component = require(`../client/screens/${screen}`).default;
+  const sheet = new ServerStyleSheet();
 
-  return ReactDOMServer.renderToNodeStream(
-    <Html initialData={JSON.stringify(props)}>
-      <Component {...props} />
-    </Html>
-  ).pipe(res);
+  sheet
+    .interleaveWithNodeStream(
+      renderToNodeStream(
+        <Html initialData={JSON.stringify(props)}>
+          <Component {...props} />
+        </Html>
+      )
+    )
+    .pipe(res);
 };
