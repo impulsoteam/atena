@@ -7,7 +7,7 @@ amqp.connect(
 
     conn.createChannel((err, ch) => {
       if (err) return false;
-      const q = "atena";
+      const q = process.env.CLOUDAMQP_APIKEY;
 
       ch.assertQueue(q, { durable: false });
       console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
