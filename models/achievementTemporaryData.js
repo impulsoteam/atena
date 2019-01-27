@@ -28,7 +28,7 @@ const ratingSchema = new mongoose.Schema({
   ]
 });
 
-const achievementTemporyDataSchema = new mongoose.Schema({
+const achievementTemporaryDataSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
@@ -52,11 +52,16 @@ const achievementTemporyDataSchema = new mongoose.Schema({
     required: true,
     default: Date.now()
   },
+  endDate: {
+    type: Date,
+    required: true,
+    default: Date.now()
+  },
   ratings: [ratingSchema]
 });
 
 export default mongoose.model(
-  "AchievementTemporyData",
-  achievementTemporyDataSchema,
-  "achievementTemporyData"
+  "AchievementTemporaryData",
+  achievementTemporaryDataSchema,
+  "achievementsTemporaryData"
 );

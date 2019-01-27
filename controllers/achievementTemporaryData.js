@@ -13,7 +13,14 @@ export const save = async data => {
       .startOf("day")
       .format();
 
+    data.limitDate = data.limitDate || data.endDate;
+
     let limitDate = moment(new Date(data.limitDate))
+      .utc()
+      .endOf("day")
+      .format();
+
+    let endDate = moment(new Date(data.endDate))
       .utc()
       .endOf("day")
       .format();
@@ -24,6 +31,7 @@ export const save = async data => {
     obj.rangeTime = data.rangeTime;
     obj.initialDate = initialDate;
     obj.limitDate = limitDate;
+    obj.endDate = endDate;
     obj.ratings = generateRatingsRanges(data.ratings);
 
     const achievementTemporaryData = await obj.save();

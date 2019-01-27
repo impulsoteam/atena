@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+const recordSchema = new mongoose.Schema({
+  name: String,
+  range: String,
+  total: Number,
+  earnedDate: Date
+});
+
 const rangeSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -29,16 +36,6 @@ const ratingSchema = new mongoose.Schema({
     require: true,
     default: 0
   },
-  initialDate: {
-    type: Date,
-    required: true,
-    default: Date.now()
-  },
-  limitDate: {
-    type: Date,
-    required: true,
-    default: Date.now()
-  },
   ranges: [
     {
       type: rangeSchema,
@@ -47,7 +44,7 @@ const ratingSchema = new mongoose.Schema({
   ]
 });
 
-const achievementTemporySchema = new mongoose.Schema({
+const achievementTemporarySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
@@ -55,6 +52,14 @@ const achievementTemporySchema = new mongoose.Schema({
   kind: {
     type: String,
     required: true
+  },
+  dataId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AchievementTemporaryData"
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
   },
   rangeTime: {
     type: String,
@@ -71,14 +76,23 @@ const achievementTemporySchema = new mongoose.Schema({
     required: true,
     default: Date.now()
   },
+  endDate: {
+    type: Date,
+    required: true,
+    default: Date.now()
+  },
+  lastEarnedDate: {
+    type: Date,
+    required: false
+  },
   record: {
-    type: ratingSchema
+    type: recordSchema
   },
   ratings: [ratingSchema]
 });
 
 export default mongoose.model(
-  "AchievementTempory",
-  achievementTemporySchema,
-  "achievementTempory"
+  "AchievementTemporary",
+  achievementTemporarySchema,
+  "achievementsTemporary"
 );

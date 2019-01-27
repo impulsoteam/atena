@@ -1,28 +1,168 @@
+import moment from "moment";
+import config from "config-yml";
+import { getInteractionType } from "./achievements";
 
-export const createAchievements = async interaction => {
-  const temporaryAchievementsData = await findMain(interaction);
+const today = moment(new Date())
+  .utc()
+  .format();
 
-  let temporaryAchievements = null;
-  if (temporaryAchievementsData) {
-    temporaryAchievements = convertToAchievementsTemporary(
-      temporaryAchievementsData
-    );
+export const addEarnedAchievement = temporaryAchievement => {
+  // - Se tiver passado a data, adicionar record e desativar
+  let xpToIncrease = 0;
+  if (isInDeadline(temporaryAchievement)) {
+    let wasUpdated = false;
+    temporaryAchievement.ratings = temporaryAchievement.ratings.map(rating => {
+      if (!wasUpdated) {
+        let updatedRanges = generateUpdatedRanges(rating);
+        if (updatedRanges.wasUpdated) wasUpdated = true;
+
+        rating.ranges = updatedRanges.ranges;
+        if (updatedRanges.xpToIncrease > 0) {
+          xpToIncrease = updatedRanges.xpToIncrease;
+        }
+      }
+
+      return rating;
+    });
+
+    temporaryAchievement.lastEarnedDate = today;
   }
 
-  return temporaryAchievements;
+  console.log("temporaryAchievement after update", temporaryAchievement);
+  return {
+    achievement: temporaryAchievement,
+    xpToIncrease: xpToIncrease
+  };
 };
 
-const findMain = async interaction => {
-  const query = getQueryToFindCurrent(interaction);
-  const result = await TemporaryAchievementDataModel.find(query).exec();
-  return result || _throw("Error finding a main temporary achievement");
+const isInDeadline = temporaryAchievement => {
+  if (temporaryAchievement.lastEarnedDate) {
+    const lastEarnedDate = moment(temporaryAchievement.lastEarnedDate);
+    const today = moment(new Date());
+    const deadlineDate = generateDeadlineDate(
+      temporaryAchievement.lastEarnedDate,
+      temporaryAchievement.rangeTime
+    );
+
+    return !today.isSame(lastEarnedDate, "day") && today.isBefore(deadlineDate);
+  }
+
+  return true;
 };
 
-const getQueryToFindCurrent = interaction => {
-  const kind = getKind(interaction);
-  return { kind: kind };
-  // { initialDate: { $gt: new Date() } }
-  // limitDate: { $lte: new Date().getTime() }
+const generateDeadlineDate = (date, rangeTime) => {
+  let deadlineDate = date;
+  if (rangeTime == "daily") {
+    deadlineDate = moment(date)
+      .add(1, "days")
+      .utc()
+      .endOf("day")
+      .toISOString();
+  }
+
+  return deadlineDate;
+};
+
+export const getRecord = temporaryAchievement => {
+  let newRecord = getLastRatingEarned(temporaryAchievement);
+
+  if (temporaryAchievement.record) {
+    if (!newEarnedIsBiggerThenCurrent(newRecord, temporaryAchievement.record)) {
+      newRecord = temporaryAchievement.record;
+    }
+  }
+
+  return newRecord;
+};
+
+const getLastRatingEarned = temporaryAchievement => {
+  let lastRatingEarned = {};
+  let lastRangeEarned = {};
+
+  let ratings = temporaryAchievement.ratings.filter(rating => {
+    let lastRangeFromRating = rating.ranges
+      .filter(range => range.earnedDate)
+      .pop();
+    if (lastRangeFromRating) {
+      lastRangeEarned = lastRangeFromRating;
+      return true;
+    }
+  });
+  lastRatingEarned = ratings.pop();
+  return {
+    name: lastRatingEarned.name,
+    range: lastRangeEarned.name,
+    total: lastRatingEarned.total,
+    earnedDate: today
+  };
+};
+
+const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
+  const positionRatings = getPositionRatings();
+  let newPosition = positionRatings.findIndex(
+    name => name.toLowerCase() == newEarned.name.toLowerCase()
+  );
+
+  let currentPosition = positionRatings.findIndex(
+    name => name.toLowerCase() == current.name.toLowerCase()
+  );
+
+  if (newPosition == currentPosition) {
+    return newEarned.total >= current.total;
+  } else {
+    return newPosition > currentPosition;
+  }
+};
+
+const getPositionRatings = () => {
+  return Object.keys(config.ratings).map(key => config.ratings[key]);
+};
+
+const generateUpdatedRanges = rating => {
+  let newTotal = rating.total + 1;
+  let hasXpToIncrease = true;
+  let xpToIncrease = 0;
+  let wasUpdated = false;
+
+  let ranges = rating.ranges.map(range => {
+    if (!range.earnedDate) {
+      if (range.value == newTotal) {
+        range.earnedDate = today;
+        rating.total = newTotal;
+        wasUpdated = true;
+      } else {
+        hasXpToIncrease = false;
+      }
+    }
+    return range;
+  });
+
+  if (hasXpToIncrease) xpToIncrease = rating.xp;
+
+  return {
+    ranges: ranges,
+    xpToIncrease: xpToIncrease,
+    wasUpdated: wasUpdated
+  };
+};
+
+export const getQueryToFindCurrent = interaction => {
+  return {
+    kind: getKind(interaction),
+    initialDate: { $lte: new Date().toISOString() }
+  };
+};
+
+export const isBeforeLimitDate = temporaryAchievement => {
+  const currentDate = moment(new Date());
+  const limitDate = moment(temporaryAchievement.limitDate);
+  return limitDate.isSameOrAfter(currentDate);
+};
+
+export const isBeforeEndDate = temporaryAchievement => {
+  const currentDate = moment(new Date());
+  const limitDate = moment(temporaryAchievement.endDate);
+  return limitDate.isSameOrAfter(currentDate);
 };
 
 const getKind = interaction => {

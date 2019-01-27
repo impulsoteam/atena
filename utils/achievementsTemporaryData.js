@@ -1,79 +1,97 @@
-import moment from "moment-timezone";
 import AchievementTemporary from "../models/achievementTemporary";
 
 export const generateKind = data => {
   let kind = null;
 
-  if (data.category && data.action && data.type) {
+  if (data.channel.toLowerCase() === "rocket") {
     kind = `${data.category.toLowerCase()}.${data.action.toLowerCase()}.${data.type.toLowerCase()}`;
+  } else {
+    kind = `${data.category.toLowerCase()}.${data.channel.toLowerCase()}.${data.action.toLowerCase()}`;
   }
+
   return kind;
 };
 
-export const convertToAchievementsTemporary = achievementsTemporaryData => {
-  return achievementsTemporaryData.map(achievementTemporaryData => {
-    let achievementTemporary = generateNewTemporaryAchievement(
-      achievementTemporaryData
+export const convertDataToAchievement = (achievementTemporaryData, user) => {
+  let achievementTemporary = {};
+  if (achievementTemporaryData) {
+    achievementTemporary = generateNewTemporaryAchievement(
+      achievementTemporaryData,
+      user
     );
     achievementTemporary.ratings = generateNewRatings(achievementTemporaryData);
-    return achievementTemporary;
-  });
+  }
+  return achievementTemporary;
 };
 
 const generateNewRatings = achievementTemporaryData => {
-  let lastDate = getInitialDate(achievementTemporaryData.initialDate);
   return achievementTemporaryData.ratings.map(rating => {
-    let newRating = generateNewRating(rating, lastDate);
-    lastDate = getNextDay(newRating.limitDate);
-    return newRating;
+    return {
+      name: rating.name,
+      xp: rating.xp,
+      total: 0,
+      ranges: rating.ranges
+    };
   });
 };
 
-const generateNewRating = (rating, lastDate) => {
-  return {
-    name: rating.name,
-    xp: rating.xp,
-    total: 0,
-    initialDate: lastDate,
-    limitDate: getLimitDate(lastDate),
-    ranges: rating.ranges
-  };
-};
-
-const getInitialDate = date => {
-  let initialDate = moment
-    .tz(new Date(date), "America/Sao_Paulo")
-    .startOf("day");
-  let today = moment.tz(new Date(), "America/Sao_Paulo").startOf("day");
-  let diffFromToday = moment(initialDate).diff(today, "days");
-
-  if (diffFromToday < 0) initialDate = today;
-  return initialDate.format();
-};
-
-const getLimitDate = date => {
-  let limitDate = moment(date);
-  return limitDate
-    .add(1, "days")
-    .endOf("day")
-    .toISOString();
-};
-
-const getNextDay = date => {
-  let nextDate = moment(date);
-  return nextDate
-    .startOf("day")
-    .add(1, "days")
-    .toISOString();
-};
-
-const generateNewTemporaryAchievement = achievementTemporaryData => {
+const generateNewTemporaryAchievement = (achievementTemporaryData, user) => {
   let achievementTemporary = new AchievementTemporary();
   achievementTemporaryData.schema.eachPath(path => {
     if (!["_id", "__v", "rating"].includes(path)) {
       achievementTemporary[path] = achievementTemporaryData[path];
     }
   });
+  achievementTemporary.dataId = achievementTemporaryData._id;
+  achievementTemporary.userId = user;
   achievementTemporary.ratings = [];
   return achievementTemporary;
+};
+
+export const generateRatingsRanges = ratings => {
+  return ratings.map(rating => {
+    if (rating.ranges && rating.ranges > 0) {
+      rating.ranges = generateRanges(rating.ranges);
+      return rating;
+    }
+  });
+};
+
+const generateRanges = ranges => {
+  let rangesObj = [];
+  for (let range = 1; range <= ranges; range++) {
+    rangesObj.push({
+      name: convertNumberToRoman(range),
+      value: range
+    });
+  }
+
+  return rangesObj;
+};
+
+const convertNumberToRoman = num => {
+  const roman = {
+    M: 1000,
+    CM: 900,
+    D: 500,
+    CD: 400,
+    C: 100,
+    XC: 90,
+    L: 50,
+    XL: 40,
+    X: 10,
+    IX: 9,
+    V: 5,
+    IV: 4,
+    I: 1
+  };
+
+  let str = "";
+  for (let i of Object.keys(roman)) {
+    const q = Math.floor(num / roman[i]);
+    num -= q * roman[i];
+    str += i.repeat(q);
+  }
+
+  return str;
 };
