@@ -4,27 +4,27 @@ import StyledSocialLinks from "./SocialLinks.style";
 const links = [
   {
     icon: "facebook-f",
-    link: "javascript:;"
+    link: "https://www.facebook.com/workimpulso"
   },
   {
     icon: "twitter",
-    link: "javascript:;"
+    link: "https://twitter.com/impulsonetwork"
   },
   {
     icon: "linkedin-in",
-    link: "javascript:;"
+    link: "https://www.linkedin.com/company/impulsowork/"
   },
   {
     icon: "instagram",
-    link: "javascript:;"
+    link: "https://www.instagram.com/impulso.network/"
   },
   {
     icon: "github",
-    link: "javascript:;"
+    link: "https://github.com/impulsonetwork"
   },
   {
     icon: "rocketchat",
-    link: "javascript:;"
+    link: "https://chat.impulso.network"
   }
 ];
 
