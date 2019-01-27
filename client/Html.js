@@ -13,6 +13,18 @@ const Html = props => {
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
+        <link
+          rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css"
+          integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css"
+          integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0"
+          crossOrigin="anonymous"
+        />
         <title>{title}</title>
       </head>
       <body>
