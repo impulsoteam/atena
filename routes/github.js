@@ -1,13 +1,14 @@
 import express from "express";
 import config from "config-yml";
 import bodyParser from "body-parser";
-import queryString from "querystring";
-import axios from "axios";
+// import queryString from "querystring";
+// import axios from "axios";
 import userController from "../controllers/user";
-import githubController from "../controllers/github";
+// import githubController from "../controllers/github";
 import interactionController from "../controllers/interaction";
 import { getStyleLog } from "../utils";
 import { isValidRepository } from "../utils/github";
+import { renderScreen } from "../utils/ssr";
 const router = express.Router();
 
 const link_auth = `https://github.com/login/oauth/authorize?scope=user:email&client_id=${
@@ -67,68 +68,74 @@ router.post("/events", async (req, res) => {
 });
 
 router.get("/callback", async (req, res) => {
-  let response;
-  let user = {};
-  let errors = [];
-  const code = req.query.code;
-  const slackId = req.query.state;
-  try {
-    user = await userController.find(slackId);
-  } catch (e) {
-    /* istanbul ignore next */
-    errors.push(e);
-  }
-  const url = "https://github.com/login/oauth/access_token";
-  let data = {};
-  await axios
-    .post(url, {
-      client_id: process.env.GITHUB_CLIENT_ID,
-      client_secret: process.env.GITHUB_CLIENT_SECRET,
-      code: code,
-      accept: "json"
-    })
-    .then(res => {
-      data = queryString.parse(res.data);
-    })
-    .catch(error => {
-      errors.push(error);
-      res.send(error);
-    });
+  // let response;
+  // let user = {};
+  // let errors = [];
+  // const code = req.query.code;
+  // const slackId = req.query.state;
+  // try {
+  //   user = await userController.find(slackId);
+  // } catch (e) {
+  //   /* istanbul ignore next */
+  //   errors.push(e);
+  // }
+  // const url = "https://github.com/login/oauth/access_token";
+  // let data = {};
+  // await axios
+  //   .post(url, {
+  //     client_id: process.env.GITHUB_CLIENT_ID,
+  //     client_secret: process.env.GITHUB_CLIENT_SECRET,
+  //     code: code,
+  //     accept: "json"
+  //   })
+  //   .then(res => {
+  //     data = queryString.parse(res.data);
+  //   })
+  //   .catch(error => {
+  //     errors.push(error);
+  //     res.send(error);
+  //   });
 
-  if (data.access_token) {
-    response = `Olá novamente, nobre Impulser! Sua dedicação foi posta a prova e você passou com honrarias!<br><br>
-          A partir de agora você pode desempenhar trabalhos junto aos *nossos* projetos open-source!<br><br>
-          Ainda está em dúvida de como funcionam?! Não tem problema, dá uma olhadinha aqui neste papiro: <a href="https://github.com/impulsonetwork/atena">https://github.com/impulsonetwork/atena</a>`;
-    await axios
-      .get("https://api.github.com/user", {
-        params: {
-          access_token: data.access_token
-        }
-      })
-      .then(res_token => {
-        const githubId = res_token.data.id;
-        if (!user.githubId) {
-          user = githubController.updateUserData(slackId, githubId);
-        }
-      })
-      .catch(e => {
-        errors.push(e);
-      });
-  } else if (data.error) {
-    response = `Ops! parece que você entrou na caverna errada. Que falta faz um GPS, não é? Siga esse caminho e não vai errar: <a href="${link_auth}&state=${
-      user.slackId
-    }">${link_auth}&state=${user.slackId}</a> para tentar novamente.`;
-  } else {
-    response =
-      "Não conseguimos localizar seu e-mail público ou privado na API do GITHUB, Seu esse recurso sua armadura de cavaleiro não está pronta para ganhar bonificações na contribuição do projeto Atena!";
-  }
+  // if (data.access_token) {
+  //   response = `Olá novamente, nobre Impulser! Sua dedicação foi posta a prova e você passou com honrarias!<br><br>
+  //         A partir de agora você pode desempenhar trabalhos junto aos *nossos* projetos open-source!<br><br>
+  //         Ainda está em dúvida de como funcionam?! Não tem problema, dá uma olhadinha aqui neste papiro: <a href="https://github.com/impulsonetwork/atena">https://github.com/impulsonetwork/atena</a>`;
+  //   await axios
+  //     .get("https://api.github.com/user", {
+  //       params: {
+  //         access_token: data.access_token
+  //       }
+  //     })
+  //     .then(res_token => {
+  //       const githubId = res_token.data.id;
+  //       if (!user.githubId) {
+  //         user = githubController.updateUserData(slackId, githubId);
+  //       }
+  //     })
+  //     .catch(e => {
+  //       errors.push(e);
+  //     });
+  // } else if (data.error) {
+  //   response = `Ops! parece que você entrou na caverna errada. Que falta faz um GPS, não é? Siga esse caminho e não vai errar: <a href="${link_auth}&state=${
+  //     user.slackId
+  //   }">${link_auth}&state=${user.slackId}</a> para tentar novamente.`;
+  // } else {
+  //   response =
+  //     "Não conseguimos localizar seu e-mail público ou privado na API do GITHUB, Seu esse recurso sua armadura de cavaleiro não está pronta para ganhar bonificações na contribuição do projeto Atena!";
+  // }
 
   // if (errors.length > 0) console.log(errors);
 
-  res.render("github", {
-    title: "Batalha do Open Source | Impulso Network",
-    response
-  });
+  const initialData = {
+    title: "Batalha do Open Source | Impulso Network"
+  };
+
+  renderScreen(res, "Github", initialData);
+
+  // res.render("github", {
+  //   title: "Batalha do Open Source | Impulso Network",
+  //   response
+  // });
 });
 
 router.use("/", async (req, res) => {

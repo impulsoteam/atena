@@ -4,7 +4,9 @@ import styledNormalize from "styled-normalize";
 const StyledApp = createGlobalStyle`
   ${styledNormalize}
 
-  @import url("https://use.typekit.net/ilk7sdy.css");
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
 
   html,
   body {
@@ -19,6 +21,7 @@ const StyledApp = createGlobalStyle`
   .layout {
     display: flex;
     min-height: calc(100vh - 320px);
+    padding-top: 100px;
   }
 
   hr {
@@ -28,6 +31,19 @@ const StyledApp = createGlobalStyle`
 
   a, input, button {
     transition: .2s all ease-in-out;
+  }
+
+  p.super {
+    font-size: ${props => props.theme.fontSize.medium};
+    line-height: 30px;
+    margin: 0;
+    text-align: center;
+  }
+
+  p.super a {
+    color: ${props => props.theme.color.primaryLight};
+    text-decoration: none;
+    font-weight: bold;
   }
 `;
 

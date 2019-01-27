@@ -23,7 +23,7 @@ router.use("/integrations/disqus", disqusRoutes);
 router.get("/", (req, res) => {
   const initialData = {
     title: "Seja bem vindo! =D",
-    name: "Atenazona"
+    name: "Atena"
   };
 
   renderScreen(res, "Index", initialData);

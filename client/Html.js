@@ -13,6 +13,7 @@ const Html = props => {
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
+        <link rel="stylesheet" href="https://use.typekit.net/ilk7sdy.css" />
         <link
           rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css"
