@@ -8,7 +8,6 @@ import {
   getUserInfo,
   isCoreTeam
 } from "../utils";
-import { sendHelloOnSlack } from "../utils/bot";
 import { sendToUser } from "../rocket/bot";
 import { _throw } from "../helpers";
 
@@ -203,7 +202,6 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
     Espero que aproveite ao máximo *tua jornada* por aqui!`,
     interaction.user
   );
-  // sendHelloOnSlack(interaction.user);
 
   const instance = new UserModel(obj);
   return instance.save();
