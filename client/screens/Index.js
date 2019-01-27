@@ -1,18 +1,13 @@
 import React from "react";
-import PropTypes from "prop-types";
+import Layout from "../Layout";
 import Title from "../components/Title";
 
-const ScreenIndex = props => {
-  const { name } = props;
-
-  return <Title>Hello {name}</Title>;
-};
-ScreenIndex.propTypes = {
-  name: PropTypes.string
-};
-
-ScreenIndex.defaultProps = {
-  name: "Atena"
+const ScreenIndex = () => {
+  return (
+    <Layout>
+      <Title>Index</Title>
+    </Layout>
+  );
 };
 
 export default ScreenIndex;
