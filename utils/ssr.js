@@ -10,7 +10,7 @@ export const renderScreen = (res, screen, props) => {
   sheet
     .interleaveWithNodeStream(
       renderToNodeStream(
-        <Html initialData={JSON.stringify(props)}>
+        <Html>
           <Component {...props} />
         </Html>
       )
