@@ -1,10 +1,10 @@
 import express from "express";
 import config from "config-yml";
 import bodyParser from "body-parser";
-// import queryString from "querystring";
-// import axios from "axios";
+import queryString from "querystring";
+import axios from "axios";
 import userController from "../controllers/user";
-// import githubController from "../controllers/github";
+import githubController from "../controllers/github";
 import interactionController from "../controllers/interaction";
 import { getStyleLog } from "../utils";
 import { isValidRepository } from "../utils/github";
