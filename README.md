@@ -65,7 +65,8 @@ CHANNELS=CCWSMJZ6U CCXCXJWBW
 ```
 
 ### Debug
-- Em um terminal inicie o servidor com o seguinte comando:
+
+Em um terminal inicie o servidor com o seguinte comando:
 ```
 > yarn start:dev:debug
 ```
