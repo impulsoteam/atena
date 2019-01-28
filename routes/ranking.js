@@ -1,14 +1,16 @@
 import express from "express";
 import config from "config-yml";
-
 import userController from "../controllers/user";
+import rankingController from "../controllers/ranking";
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  console.log(req.params);
-  // search by ranking mensal
-  res.json({});
-});
+router.get("/", rankingController.index);
+
+//router.get("/", async (req, res) => {
+//  console.log(req.params);
+// search by ranking mensal
+//  res.json({});
+//});
 
 router.get("/geral", async (req, res) => {
   // const { limit } = req.params;
