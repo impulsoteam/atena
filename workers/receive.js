@@ -1,23 +1,24 @@
-import amqp from "amqplib/callback_api";
+import amqp from "amqplib";
 
-amqp.connect(
-  process.env.CLOUDAMQP_URL,
-  (err, conn) => {
-    if (err) return false;
+const url = process.env.CLOUDAMQP_URL || "amqp://localhost";
+const queue = process.env.CLOUDMQP_QUEUE;
 
-    conn.createChannel((err, ch) => {
-      if (err) return false;
-      const q = process.env.CLOUDAMQP_APIKEY;
+const run = () => {
+  const open = amqp.connect(url);
 
-      ch.assertQueue(q, { durable: false });
-      console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
-      ch.consume(
-        q,
-        function(msg) {
-          console.log(" [x] Received %s", msg.content.toString());
-        },
-        { noAck: true }
-      );
-    });
-  }
-);
+  open
+    .then(conn => {
+      let ok = conn.createChannel();
+
+      ok = ok.then(ch => {
+        ch.assertQueue(queue);
+        ch.consume(queue, msg => {
+          msg && console.log(msg.toString());
+        });
+      });
+      return ok;
+    })
+    .then(null, console.warn);
+};
+
+run();
