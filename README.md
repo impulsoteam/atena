@@ -64,6 +64,20 @@ CHANNELS=CCWSMJZ6U CCXCXJWBW
 > yarn start:dev
 ```
 
+### Debug
+- Em um terminal inicie o servidor com o seguinte comando:
+```
+> yarn start:dev:debug
+```
+Rode o node inspect em outra janela de terminal
+```
+> node-inspect localhost:9229
+```
+### Configurando o Bot do Rocket
+
+É preciso gerar um token, para isso o bot precisa da role de usuário. Logar com
+usuário e senha do bot no servidor e gerar o token de acesso.
+
 ## Contribuindo
 
 O principal objetivo deste repositório é continuar a evoluir o Atena, tornando-o mais rápido e fácil de usar.

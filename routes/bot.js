@@ -50,7 +50,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
   res.json(response);
 });
 
-router.post("/ranking", rankingController.index);
+router.post("/ranking", rankingController.bot_index);
 
 router.get("/ranking-save", async (req, res) => {
   await rankingController.save();
@@ -155,7 +155,7 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
     text: "Ops! Você ainda não tem conquistas registradas. :("
   };
 
-  validSlackSecret(req, res);
+  // validSlackSecret(req, res);
 
   try {
     user = await userController.find(req.body.user_id);

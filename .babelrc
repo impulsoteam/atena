@@ -1,4 +1,17 @@
 {
-  "presets": ["env"],
-  "plugins": ["transform-object-rest-spread"]
+  "presets": ["env", "es2015", "react"],
+  "plugins": [
+    "transform-object-rest-spread",
+    [
+      "module-resolver",
+      {
+        "root": ["./client"],
+        "alias": {
+          "assets": "./client/assets",
+          "components": "./client/components",
+          "styles": "./client/styles"
+        }
+      }
+    ]
+  ]
 }

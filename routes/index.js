@@ -8,8 +8,8 @@ import botRoutes from "./bot";
 import githubRoutes from "./github";
 import disqusRoutes from "./disqus";
 import resourcesRoutes from "./resources";
+import { renderScreen } from "../utils/ssr";
 const router = express.Router();
-
 router.use("/slack", slackRoutes);
 router.use("/rocket", rocketRoutes);
 router.use("/ranking", rankingRoutes);
@@ -21,9 +21,12 @@ router.use("/integrations/github", githubRoutes);
 router.use("/integrations/disqus", disqusRoutes);
 
 router.get("/", (req, res) => {
-  res.render("index", {
-    title: "Seja bem vindo! =D"
-  });
+  const initialData = {
+    title: "Seja bem vindo! =D",
+    name: "Atena"
+  };
+
+  renderScreen(res, "Index", initialData);
 });
 
 export default router;
