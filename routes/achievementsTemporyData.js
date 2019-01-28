@@ -36,9 +36,8 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  let temporyAchievementsData = await achievementTemporyDataController.exclude(
-    req.params.id,
-    req.body
+  let temporyAchievementsData = await achievementTemporyDataController.disable(
+    req.params.id
   );
   res.json(temporyAchievementsData);
 });

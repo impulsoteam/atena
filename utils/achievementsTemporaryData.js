@@ -1,3 +1,4 @@
+import moment from "moment-timezone";
 import AchievementTemporary from "../models/achievementTemporary";
 
 export const generateKind = data => {
@@ -22,6 +23,31 @@ export const convertDataToAchievement = (achievementTemporaryData, user) => {
     achievementTemporary.ratings = generateNewRatings(achievementTemporaryData);
   }
   return achievementTemporary;
+};
+
+export const generateDates = data => {
+  const initialDate = moment(new Date(data.initialDate))
+    .utc()
+    .startOf("day")
+    .format();
+
+  data.limitDate = data.limitDate || data.endDate;
+
+  const limitDate = moment(new Date(data.limitDate))
+    .utc()
+    .endOf("day")
+    .format();
+
+  const endDate = moment(new Date(data.endDate))
+    .utc()
+    .endOf("day")
+    .format();
+
+  return {
+    initialDate,
+    limitDate,
+    endDate
+  };
 };
 
 const generateNewRatings = achievementTemporaryData => {

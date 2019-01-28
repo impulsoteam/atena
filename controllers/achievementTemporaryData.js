@@ -1,57 +1,75 @@
+import moment from "moment-timezone";
 import { _throw } from "../helpers";
 import TemporaryAchievementDataModel from "../models/achievementTemporaryData";
 import {
   generateKind,
-  generateRatingsRanges
+  generateRatingsRanges,
+  generateDates
 } from "../utils/achievementsTemporaryData";
-import moment from "moment-timezone";
 
 export const save = async data => {
   try {
-    let initialDate = moment(new Date(data.initialDate))
-      .utc()
-      .startOf("day")
-      .format();
-
-    data.limitDate = data.limitDate || data.endDate;
-
-    let limitDate = moment(new Date(data.limitDate))
-      .utc()
-      .endOf("day")
-      .format();
-
-    let endDate = moment(new Date(data.endDate))
-      .utc()
-      .endOf("day")
-      .format();
-
+    const dates = generateDates(data);
     let obj = new TemporaryAchievementDataModel();
     obj.name = data.name;
     obj.kind = generateKind(data);
     obj.rangeTime = data.rangeTime;
-    obj.initialDate = initialDate;
-    obj.limitDate = limitDate;
-    obj.endDate = endDate;
+    obj.initialDate = dates.initialDate;
+    obj.limitDate = dates.limitDate;
+    obj.endDate = dates.endDate;
     obj.ratings = generateRatingsRanges(data.ratings);
 
-    const achievementTemporaryData = await obj.save();
-    return achievementTemporaryData;
+    return await obj.save();;
   } catch (error) {
     _throw("Error saving temporary achievement data");
   }
 };
 
-export const update = data => {
+export const update = async (data, id) => {
   try {
-    // TODO: create update
+    let temporaryAchievementData = await TemporaryAchievementDataModel.findById(
+      id
+    ).exec();
+
+    if (!temporaryAchievementData) {
+      _throw(
+        "Error not found temporaryAchievementData on update temporary achievement data"
+      );
+    }
+
+    const dates = generateDates(data);
+    temporaryAchievementData.name = data.name;
+    temporaryAchievementData.initialDate = dates.initialDate;
+    temporaryAchievementData.limitDate = dates.limitDate;
+    temporaryAchievementData.endDate = dates.endDate;
+
+    temporaryAchievementData.save();
   } catch (error) {
     _throw("Error update temporary achievement data");
   }
 };
 
-export const exclude = data => {
+export const disable = async id => {
   try {
-    // TODO: create delete
+    let temporaryAchievementData = await TemporaryAchievementDataModel.findById(
+      id
+    ).exec();
+
+    if (!temporaryAchievementData) {
+      _throw(
+        "Error not found temporaryAchievementData on update temporary achievement data"
+      );
+    }
+
+    const today = moment(new Date())
+      .utc()
+      .endOf("day")
+      .format();
+
+    temporaryAchievementData.limitDate = today;
+    temporaryAchievementData.endDate = today;
+
+    temporaryAchievementData.save();
   } catch (error) {
     _throw("Error delete temporary achievement data");
   }
@@ -80,7 +98,7 @@ export const getAll = async () => {
 export default {
   save,
   update,
-  exclude,
+  disable,
   getById,
   getAll
 };
