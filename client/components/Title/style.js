@@ -2,10 +2,29 @@ import styled from "styled-components";
 
 const StyledTitle = styled.h1`
   font-size: ${props =>
-    props.extraLarge
-      ? props.theme.fontSize.extraLarge
+    props.large
+      ? props.theme.fontSize.veryLarge
+      : props.extralarge
+      ? props.theme.fontSize.super
       : props.theme.fontSize.large};
-  text-transform: uppercase;
+  color: ${props => props.theme.color[props.color || "primary"]};
+
+  ${props =>
+    (props.large || props.extralarge) &&
+    `
+    text-transform: uppercase;
+  `}
+
+  ${props =>
+    props.extralarge &&
+    `
+    margin: 0;
+    line-height: 1;
+  `}
+
+  .red {
+    color: ${props => props.theme.color.secondary};
+  }
   width: ${props => props.width};
   text-align: ${props => props.align};
 `;

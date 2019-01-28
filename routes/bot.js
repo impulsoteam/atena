@@ -8,7 +8,8 @@ import interactionController from "../controllers/interaction";
 import achievementController from "../controllers/achievement";
 import rankingController from "../controllers/ranking";
 import { isCoreTeam, calculateAchievementsPosition } from "../utils";
-import validSlackSecret from "../utils/validSecret";
+// import validSlackSecret from "../utils/validSecret";
+import { sendMessage } from "../rocket/bot";
 const router = express.Router();
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
@@ -27,7 +28,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
     query_user = { rocketId: req.body.user_id };
   } else {
     query_user = { slackId: req.body.user_id };
-    validSlackSecret(req, res);
+    // validSlackSecret(req, res);
   }
   try {
     user = await userController.findBy(query_user);
@@ -58,7 +59,6 @@ router.get("/ranking-save", async (req, res) => {
 });
 
 router.post("/general-raking", urlencodedParser, async (req, res) => {
-  // validSlackSecret(req, res);
   let response = {};
 
   try {
@@ -71,7 +71,7 @@ router.post("/general-raking", urlencodedParser, async (req, res) => {
 });
 
 router.post("/coreteamranking", urlencodedParser, async (req, res) => {
-  validSlackSecret(req, res);
+  // validSlackSecret(req, res);
   let response = {};
 
   if (isCoreTeam(req.body.user_id)) {
@@ -185,6 +185,17 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
   }
 
   res.json(response);
+});
+
+router.post("/enviarcomoatena", urlencodedParser, req => {
+  const message = req.body.text;
+
+  if (
+    config.coreteam.admins.some(user => user === req.body.user) &&
+    message.length > 1
+  ) {
+    sendMessage(message);
+  }
 });
 
 export default router;
