@@ -37,11 +37,10 @@ const generateNewRatings = achievementTemporaryData => {
 
 const generateNewTemporaryAchievement = (achievementTemporaryData, user) => {
   let achievementTemporary = new AchievementTemporary();
-  achievementTemporaryData.schema.eachPath(path => {
-    if (!["_id", "__v", "rating"].includes(path)) {
-      achievementTemporary[path] = achievementTemporaryData[path];
-    }
-  });
+  achievementTemporary.name = achievementTemporaryData.name;
+  achievementTemporary.kind = achievementTemporaryData.kind;
+  achievementTemporary.rangeTime = achievementTemporaryData.rangeTime;
+  achievementTemporary.startDate = Date.now();
   achievementTemporary.dataId = achievementTemporaryData._id;
   achievementTemporary.userId = user;
   achievementTemporary.ratings = [];

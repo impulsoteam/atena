@@ -66,17 +66,7 @@ const achievementTemporarySchema = new mongoose.Schema({
     enum: ["daily", "weekly", "monthly", "yearly"],
     required: true
   },
-  initialDate: {
-    type: Date,
-    required: true,
-    default: Date.now()
-  },
-  limitDate: {
-    type: Date,
-    required: true,
-    default: Date.now()
-  },
-  endDate: {
+  startDate: {
     type: Date,
     required: true,
     default: Date.now()
