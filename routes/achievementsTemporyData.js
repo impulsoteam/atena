@@ -1,7 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-
-import achievementTemporyDataController from "../controllers/achievementTemporaryData";
+import achievementTemporaryDataController from "../controllers/achievementTemporaryData";
 
 const router = express.Router();
 
@@ -9,37 +8,37 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
 router.get("/", async (req, res) => {
-  let temporyAchievementsData = await achievementTemporyDataController.getAll();
-  res.json(temporyAchievementsData);
+  let achievementsTemporaryData = await achievementTemporaryDataController.getAll();
+  res.json(achievementsTemporaryData);
 });
 
 router.get("/:id", async (req, res) => {
-  let temporyAchievementsData = await achievementTemporyDataController.getById(
+  let achievementTemporaryData = await achievementTemporaryDataController.getById(
     req.params.id
   );
-  res.json(temporyAchievementsData);
+  res.json(achievementTemporaryData);
 });
 
 router.post("/", async (req, res) => {
-  let temporyAchievementsData = await achievementTemporyDataController.save(
+  let achievementsTemporaryData = await achievementTemporaryDataController.save(
     req.body
   );
-  res.json(temporyAchievementsData);
+  res.json(achievementsTemporaryData);
 });
 
 router.put("/:id", async (req, res) => {
-  let temporyAchievementsData = await achievementTemporyDataController.update(
+  let achievementTemporaryData = await achievementTemporaryDataController.update(
     req.params.id,
     req.body
   );
-  res.json(temporyAchievementsData);
+  res.json(achievementTemporaryData);
 });
 
 router.delete("/:id", async (req, res) => {
-  let temporyAchievementsData = await achievementTemporyDataController.disable(
+  let achievementTemporaryData = await achievementTemporaryDataController.disable(
     req.params.id
   );
-  res.json(temporyAchievementsData);
+  res.json(achievementTemporaryData);
 });
 
 export default router;

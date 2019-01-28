@@ -19,7 +19,7 @@ export const save = async data => {
     obj.endDate = dates.endDate;
     obj.ratings = generateRatingsRanges(data.ratings);
 
-    return await obj.save();;
+    return await obj.save();
   } catch (error) {
     _throw("Error saving temporary achievement data");
   }

@@ -1,6 +1,6 @@
+import moment from "moment-timezone";
 import TemporaryAchievementModel from "../models/achievementTemporary";
 import TemporaryAchievementDataModel from "../models/achievementTemporaryData";
-import UserModel from "../models/user";
 import {
   addEarnedAchievement,
   getQueryToFindCurrent,
@@ -74,6 +74,22 @@ export const save = async interaction => {
   }
 };
 
+export const findInactivities = async () => {
+  return await getAllInactivitiesDaily();
+};
+
+const getAllInactivitiesDaily = async () => {
+  const achievements = await TemporaryAchievementModel.find({
+    lastEarnedDate: {
+      $gte: moment(new Date()).subtract(1, 'days').format('YYYY-MM-DD'),
+      $lte: moment(new Date()).format('YYYY-MM-DD')
+    }
+  }).exec();
+
+  return achievements;
+};
+
 export default {
-  save
+  save,
+  findInactivities
 };
