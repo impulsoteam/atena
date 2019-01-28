@@ -1,13 +1,16 @@
 const Theme = {
   gridSize: "1280px",
+  spacing: {
+    unit: 8
+  },
   fontSize: {
     default: "14px",
     medium: "20px",
     large: "36px",
     veryLarge: "48px",
-    super: "100px"
+    super: "100px",
+    extraLarge: "48px"
   },
-
   color: {
     white: "#FFFFFF",
     black: "#000000",
