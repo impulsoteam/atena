@@ -140,12 +140,14 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
   };
 
   validSlackSecret(req, res);
-
+  
   try {
-    user = await userController.find(req.body.user_id);
-    allAchievements = await achievementController.findAllByUser(
-      req.body.user_id
-    );
+    user = await await userController.findByOrigin({
+      origin: "rocket",
+      user: req.body.user_id
+    });
+
+    allAchievements = await achievementController.findAllByUser(user._id);
 
     if (user && allAchievements.length > 0) {
       const achievements = calculateAchievementsPosition(allAchievements);

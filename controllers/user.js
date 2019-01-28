@@ -77,6 +77,21 @@ const find = async (userId, isCoreTeam = false) => {
   return result || _throw("Error finding a specific user");
 };
 
+const findByOrigin = async interaction => {
+  let query = {};
+
+  if (interaction.origin != "sistema") {
+    query[`${interaction.origin}Id`] = interaction.user;
+  } else {
+    query = { _id: interaction.user };
+  }
+  
+  const UserModel = mongoose.model("User");
+  const user = await UserModel.findOne(query).exec();
+  user.network = interaction.origin;
+  return user;
+};
+
 const findBy = async args => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne(args).exec();
@@ -239,5 +254,6 @@ export default {
   rankingPosition,
   checkCoreTeam,
   findInactivities,
-  findBy
+  findBy,
+  findByOrigin
 };

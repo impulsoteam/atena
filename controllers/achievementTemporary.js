@@ -11,11 +11,11 @@ import {
 } from "../utils/achievementsTemporary";
 import { convertDataToAchievement } from "../utils/achievementsTemporaryData";
 import { _throw } from "../helpers";
-import { getUserByOrigin } from "../utils/user";
+import userController from "../controllers/user";
 
 export const save = async interaction => {
   try {
-    const user = await getUserByOrigin(interaction);
+    const user = await userController.findByOrigin(interaction);
 
     if (!user) {
       _throw("Error on find user to saving temporary achievement");
