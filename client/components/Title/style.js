@@ -25,6 +25,8 @@ const StyledTitle = styled.h1`
   .red {
     color: ${props => props.theme.color.secondary};
   }
+  width: ${props => props.width};
+  text-align: ${props => props.align};
 `;
 
 export default StyledTitle;

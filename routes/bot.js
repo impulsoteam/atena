@@ -51,7 +51,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
   res.json(response);
 });
 
-router.post("/ranking", rankingController.index);
+router.post("/ranking", rankingController.bot_index);
 
 router.get("/ranking-save", async (req, res) => {
   await rankingController.save();

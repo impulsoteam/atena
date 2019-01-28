@@ -4,6 +4,7 @@ import userController from "./user";
 import interactionController from "./interaction";
 import { calculateLevel } from "../utils";
 import axios from "axios";
+import { renderScreen } from "../utils/ssr";
 
 const myPosition = async (user_id, users) => {
   const user = await userController.getNetwork(user_id);
@@ -25,7 +26,7 @@ const rocket_info = async user_id => {
   });
 };
 
-const index = async (req, res) => {
+const bot_index = async (req, res) => {
   let response = {
     text: "Veja as primeiras pessoas do ranking:",
     attachments: []
@@ -250,7 +251,15 @@ const sendToChannel = async () => {
   await driver.sendToRoom(response, roomname);
 };
 
+const index = async (req, res) => {
+  const initialData = {
+    title: "Ranking"
+  };
+  renderScreen(res, "Ranking", initialData);
+};
+
 export default {
+  bot_index,
   index,
   monthly,
   findBy,
