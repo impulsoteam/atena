@@ -17,6 +17,7 @@ export const addEarnedAchievement = temporaryAchievement => {
         if (updatedRanges.wasUpdated) {
           wasUpdated = true;
           temporaryAchievement.lastEarnedDate = today;
+          temporaryAchievement.total += 1;
         }
 
         rating.ranges = updatedRanges.ranges;
@@ -79,7 +80,35 @@ export const resetEarnedAchievements = temporaryAchievement => {
     return rating;
   });
 
+  temporaryAchievement.total = 0;
   return temporaryAchievement;
+};
+
+export const getLastRatingEarned = temporaryAchievement => {
+  let lastRatingEarned = {};
+  let lastRangeEarned = {};
+
+  let ratings = temporaryAchievement.ratings.filter(rating => {
+    let lastRangeFromRating = rating.ranges
+      .filter(range => range.earnedDate)
+      .pop();
+    if (lastRangeFromRating) {
+      lastRangeEarned = lastRangeFromRating;
+      return true;
+    }
+  });
+
+  lastRatingEarned = ratings.pop();
+  if (lastRatingEarned && lastRangeEarned) {
+    return {
+      name: lastRatingEarned.name,
+      range: lastRangeEarned.name,
+      total: temporaryAchievement.total,
+      earnedDate: today
+    };
+  }
+
+  return temporaryAchievement.record;
 };
 
 const isInDeadline = temporaryAchievement => {
@@ -110,33 +139,6 @@ const generateDeadlineDate = (date, rangeTime) => {
   return deadlineDate;
 };
 
-const getLastRatingEarned = temporaryAchievement => {
-  let lastRatingEarned = {};
-  let lastRangeEarned = {};
-
-  let ratings = temporaryAchievement.ratings.filter(rating => {
-    let lastRangeFromRating = rating.ranges
-      .filter(range => range.earnedDate)
-      .pop();
-    if (lastRangeFromRating) {
-      lastRangeEarned = lastRangeFromRating;
-      return true;
-    }
-  });
-
-  lastRatingEarned = ratings.pop();
-  if (lastRatingEarned && lastRangeEarned) {
-    return {
-      name: lastRatingEarned.name,
-      range: lastRangeEarned.name,
-      total: lastRatingEarned.total,
-      earnedDate: today
-    };
-  }
-
-  return temporaryAchievement.record;
-};
-
 const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
   const positionRatings = getPositionRatings();
   let newPosition = positionRatings.findIndex(
@@ -165,7 +167,6 @@ const generateUpdatedRanges = rating => {
   let wasUpdated = false;
 
   let ranges = rating.ranges.map(range => {
-
     if (!range.earnedDate) {
       if (range.value == newTotal) {
         range.earnedDate = today;
