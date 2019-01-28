@@ -53,13 +53,15 @@ const achievementTemporarySchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  dataId: {
+  temporaryData: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "AchievementTemporaryData"
+    ref: "AchievementTemporaryData",
+    required: true
   },
-  userId: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
+    required: true
   },
   rangeTime: {
     type: String,
@@ -74,6 +76,11 @@ const achievementTemporarySchema = new mongoose.Schema({
   lastEarnedDate: {
     type: Date,
     required: false
+  },
+  total: {
+    type: Number,
+    require: true,
+    default: 0
   },
   record: {
     type: recordSchema

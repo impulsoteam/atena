@@ -67,8 +67,8 @@ const generateNewTemporaryAchievement = (achievementTemporaryData, user) => {
   achievementTemporary.kind = achievementTemporaryData.kind;
   achievementTemporary.rangeTime = achievementTemporaryData.rangeTime;
   achievementTemporary.startDate = Date.now();
-  achievementTemporary.dataId = achievementTemporaryData._id;
-  achievementTemporary.userId = user;
+  achievementTemporary.temporaryData = achievementTemporaryData._id;
+  achievementTemporary.user = user;
   achievementTemporary.ratings = [];
   return achievementTemporary;
 };

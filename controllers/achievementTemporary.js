@@ -29,8 +29,8 @@ export const save = async interaction => {
     for (let temporaryAchievementData of temporaryAchievementsData) {
       let temporaryAchievementExistent = await TemporaryAchievementModel.findOne(
         {
-          dataId: temporaryAchievementData._id,
-          userId: user._id
+          temporaryData: temporaryAchievementData._id,
+          user: user._id
         }
       ).exec();
 
@@ -69,9 +69,19 @@ export const save = async interaction => {
       }
     }
   } catch (error) {
-    console.log(error);
     _throw("Error saving temporary achievement");
   }
+};
+
+export const findAllByUser = async userId => {
+  return await TemporaryAchievementModel.find({
+    user: userId
+  })
+    .populate({
+      path: "temporaryData",
+      match: { endDate: { $gte: moment(new Date()).format("YYYY-MM-DD") } }
+    })
+    .exec();
 };
 
 export const findInactivities = async () => {
@@ -81,8 +91,10 @@ export const findInactivities = async () => {
 const getAllInactivitiesDaily = async () => {
   const achievements = await TemporaryAchievementModel.find({
     lastEarnedDate: {
-      $gte: moment(new Date()).subtract(1, 'days').format('YYYY-MM-DD'),
-      $lte: moment(new Date()).format('YYYY-MM-DD')
+      $gte: moment(new Date())
+        .subtract(1, "days")
+        .format("YYYY-MM-DD"),
+      $lte: moment(new Date()).format("YYYY-MM-DD")
     }
   }).exec();
 
@@ -91,5 +103,6 @@ const getAllInactivitiesDaily = async () => {
 
 export default {
   save,
-  findInactivities
+  findInactivities,
+  findAllByUser
 };
