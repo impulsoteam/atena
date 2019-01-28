@@ -13,7 +13,11 @@ export const addEarnedAchievement = temporaryAchievement => {
     temporaryAchievement.ratings = temporaryAchievement.ratings.map(rating => {
       if (!wasUpdated) {
         let updatedRanges = generateUpdatedRanges(rating);
-        if (updatedRanges.wasUpdated) wasUpdated = true;
+
+        if (updatedRanges.wasUpdated) {
+          wasUpdated = true;
+          temporaryAchievement.lastEarnedDate = today;
+        }
 
         rating.ranges = updatedRanges.ranges;
         if (updatedRanges.xpToIncrease > 0) {
@@ -23,8 +27,6 @@ export const addEarnedAchievement = temporaryAchievement => {
 
       return rating;
     });
-
-    temporaryAchievement.lastEarnedDate = today;
   }
 
   return {
@@ -73,6 +75,7 @@ export const resetEarnedAchievements = temporaryAchievement => {
       };
     });
 
+    rating.total = 0;
     return rating;
   });
 
@@ -120,13 +123,18 @@ const getLastRatingEarned = temporaryAchievement => {
       return true;
     }
   });
+
   lastRatingEarned = ratings.pop();
-  return {
-    name: lastRatingEarned.name,
-    range: lastRangeEarned.name,
-    total: lastRatingEarned.total,
-    earnedDate: today
-  };
+  if (lastRatingEarned && lastRangeEarned) {
+    return {
+      name: lastRatingEarned.name,
+      range: lastRangeEarned.name,
+      total: lastRatingEarned.total,
+      earnedDate: today
+    };
+  }
+
+  return temporaryAchievement.record;
 };
 
 const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
@@ -157,6 +165,7 @@ const generateUpdatedRanges = rating => {
   let wasUpdated = false;
 
   let ranges = rating.ranges.map(range => {
+
     if (!range.earnedDate) {
       if (range.value == newTotal) {
         range.earnedDate = today;
