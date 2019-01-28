@@ -6,17 +6,20 @@ import {
   getQueryToFindCurrent,
   getRecord,
   isBeforeLimitDate,
-  isBeforeEndDate
+  isBeforeEndDate,
+  resetEarnedAchievements
 } from "../utils/achievementsTemporary";
 import { convertDataToAchievement } from "../utils/achievementsTemporaryData";
 import { _throw } from "../helpers";
+import { getUserByOrigin } from "../utils/user";
 
 export const save = async interaction => {
   try {
-    // TODO: find by channel
-    const user = await UserModel.findOne({
-      slackId: interaction.user
-    }).exec();
+    const user = await getUserByOrigin(interaction);
+
+    if (!user) {
+      _throw("Error on find user to saving temporary achievement");
+    }
 
     const query = getQueryToFindCurrent(interaction);
     let temporaryAchievementsData = await TemporaryAchievementDataModel.find(
@@ -43,25 +46,30 @@ export const save = async interaction => {
         temporaryAchievementExistent = await temporaryAchievement.save();
       }
 
-      if (
-        temporaryAchievementExistent &&
-        isBeforeEndDate(temporaryAchievementExistent)
-      ) {
-        let achievementToUpdate = addEarnedAchievement(
-          temporaryAchievementExistent
-        );
+      if (temporaryAchievementExistent) {
+        if (isBeforeEndDate(temporaryAchievementData)) {
+          let achievementToUpdate = addEarnedAchievement(
+            temporaryAchievementExistent
+          );
 
-        let temporaryAchievement = achievementToUpdate.achievement;
-        temporaryAchievement.record = getRecord(temporaryAchievement);
-        await temporaryAchievement.save();
+          let temporaryAchievement = achievementToUpdate.achievement;
+          temporaryAchievement.record = getRecord(temporaryAchievement);
+          await temporaryAchievement.save();
 
-        if (achievementToUpdate.xpToIncrease) {
-          user.score += achievementToUpdate.xpToIncrease;
-          await user.save();
+          if (achievementToUpdate.xpToIncrease) {
+            user.score += achievementToUpdate.xpToIncrease;
+            await user.save();
+          }
+        } else {
+          let temporaryAchievement = resetEarnedAchievements(
+            temporaryAchievementExistent
+          );
+          await temporaryAchievement.save();
         }
       }
     }
   } catch (error) {
+    console.log(error);
     _throw("Error saving temporary achievement");
   }
 };

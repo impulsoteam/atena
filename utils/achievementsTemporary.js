@@ -7,7 +7,6 @@ const today = moment(new Date())
   .format();
 
 export const addEarnedAchievement = temporaryAchievement => {
-  // - Se tiver passado a data, adicionar record e desativar
   let xpToIncrease = 0;
   if (isInDeadline(temporaryAchievement)) {
     let wasUpdated = false;
@@ -28,11 +27,56 @@ export const addEarnedAchievement = temporaryAchievement => {
     temporaryAchievement.lastEarnedDate = today;
   }
 
-  console.log("temporaryAchievement after update", temporaryAchievement);
   return {
     achievement: temporaryAchievement,
     xpToIncrease: xpToIncrease
   };
+};
+
+export const getRecord = temporaryAchievement => {
+  let newRecord = getLastRatingEarned(temporaryAchievement);
+
+  if (temporaryAchievement.record) {
+    if (!newEarnedIsBiggerThenCurrent(newRecord, temporaryAchievement.record)) {
+      newRecord = temporaryAchievement.record;
+    }
+  }
+
+  return newRecord;
+};
+
+export const getQueryToFindCurrent = interaction => {
+  return {
+    kind: getKind(interaction),
+    initialDate: { $lte: new Date().toISOString() }
+  };
+};
+
+export const isBeforeLimitDate = temporaryAchievement => {
+  const currentDate = moment(new Date());
+  const limitDate = moment(temporaryAchievement.limitDate);
+  return limitDate.isSameOrAfter(currentDate);
+};
+
+export const isBeforeEndDate = temporaryAchievement => {
+  const currentDate = moment(new Date());
+  const limitDate = moment(temporaryAchievement.endDate);
+  return limitDate.isSameOrAfter(currentDate);
+};
+
+export const resetEarnedAchievements = temporaryAchievement => {
+  temporaryAchievement.ratings = temporaryAchievement.ratings.map(rating => {
+    rating.ranges = rating.ranges.map(range => {
+      return {
+        name: range.name,
+        value: range.value
+      };
+    });
+
+    return rating;
+  });
+
+  return temporaryAchievement;
 };
 
 const isInDeadline = temporaryAchievement => {
@@ -61,18 +105,6 @@ const generateDeadlineDate = (date, rangeTime) => {
   }
 
   return deadlineDate;
-};
-
-export const getRecord = temporaryAchievement => {
-  let newRecord = getLastRatingEarned(temporaryAchievement);
-
-  if (temporaryAchievement.record) {
-    if (!newEarnedIsBiggerThenCurrent(newRecord, temporaryAchievement.record)) {
-      newRecord = temporaryAchievement.record;
-    }
-  }
-
-  return newRecord;
 };
 
 const getLastRatingEarned = temporaryAchievement => {
@@ -144,25 +176,6 @@ const generateUpdatedRanges = rating => {
     xpToIncrease: xpToIncrease,
     wasUpdated: wasUpdated
   };
-};
-
-export const getQueryToFindCurrent = interaction => {
-  return {
-    kind: getKind(interaction),
-    initialDate: { $lte: new Date().toISOString() }
-  };
-};
-
-export const isBeforeLimitDate = temporaryAchievement => {
-  const currentDate = moment(new Date());
-  const limitDate = moment(temporaryAchievement.limitDate);
-  return limitDate.isSameOrAfter(currentDate);
-};
-
-export const isBeforeEndDate = temporaryAchievement => {
-  const currentDate = moment(new Date());
-  const limitDate = moment(temporaryAchievement.endDate);
-  return limitDate.isSameOrAfter(currentDate);
 };
 
 const getKind = interaction => {
