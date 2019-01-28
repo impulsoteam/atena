@@ -9,10 +9,10 @@ const StyledCard = styled.div`
   box-shadow: 8px 8px 60px rgba(0, 0, 0, 0.2);
   max-width: 640px;
   text-align: left;
+  position: relative;
 
   h1 {
     color: ${props => props.theme.color.primary};
-    /* margin-top: 0; */
   }
 
   ${props =>
