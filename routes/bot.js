@@ -200,7 +200,9 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
           attachments.push({
             text: `${achievement.name}: Você é ${
               currentAchievement.name
-            } com total de ${currentAchievement.total}. | :trophy: Seu record é ${
+            } com total de ${
+              currentAchievement.total
+            }. | :trophy: Seu record é ${
               achievement.record.name
             } com total de ${achievement.record.total}.`
           });
