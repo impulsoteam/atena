@@ -121,14 +121,13 @@ let normalize = data => {
       };
     } else {
       return {
-        origin: "rocket",
+        origin: data.origin,
         channel: data.rid,
         date: new Date(),
         description: data.msg,
         type: "message",
         user: data.u._id,
         username: data.u.name,
-        origin: data.origin,
         category: config.categories.network.type,
         action: config.actions.message.type
       };
