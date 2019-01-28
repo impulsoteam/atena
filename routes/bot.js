@@ -6,10 +6,12 @@ import { analyticsSendBotCollect, getRanking } from "../utils";
 import userController from "../controllers/user";
 import interactionController from "../controllers/interaction";
 import achievementController from "../controllers/achievement";
+import achievementTemporaryController from "../controllers/achievementTemporary";
 import rankingController from "../controllers/ranking";
 import { isCoreTeam, calculateAchievementsPosition } from "../utils";
 // import validSlackSecret from "../utils/validSecret";
 import { sendMessage } from "../rocket/bot";
+import { getLastRatingEarned } from "../utils/achievementsTemporary";
 const router = express.Router();
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
@@ -149,34 +151,68 @@ router.post("/sendpoints", urlencodedParser, async (req, res) => {
 });
 
 router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
-  let allAchievements = {};
-  let user = {};
-  let response = {
-    text: "Ops! Você ainda não tem conquistas registradas. :("
-  };
-
   // validSlackSecret(req, res);
 
+  let response = { text: "Ops! Você ainda não tem conquistas registradas. :(" };
+
   try {
-    user = await userController.find(req.body.user_id);
-    allAchievements = await achievementController.findAllByUser(
-      req.body.user_id
-    );
+    let user = {};
+    let attachments = [];
+    let interaction = {};
 
-    if (user && allAchievements.length > 0) {
-      const achievements = calculateAchievementsPosition(allAchievements);
-      if (achievements) {
-        let textsAchievements = achievements.map(achievement => {
-          return {
-            text: `${achievement.name}: Você é ${achievement.rating.name} com ${
-              achievement.total
-            }/${achievement.rating.value}.`
-          };
+    if (req.headers.origin === "rocket") {
+      interaction = {
+        origin: "rocket",
+        user: req.body.id
+      };
+    } else {
+      interaction = {
+        origin: "slack",
+        user: req.body.user_id
+      };
+    }
+
+    user = await userController.findByOrigin(interaction);
+
+    if (user) {
+      let achievements = await achievementController.findAllByUser(user._id);
+
+      if (achievements.length) {
+        achievements = calculateAchievementsPosition(achievements);
+        if (achievements.length) {
+          achievements.map(achievement => {
+            attachments.push({
+              text: `${achievement.name}: Você é ${
+                achievement.rating.name
+              } com ${achievement.total}/${achievement.rating.value}.`
+            });
+          });
+        }
+      }
+
+      let achievementsTemporary = await achievementTemporaryController.findAllByUser(
+        user._id
+      );
+
+      if (achievementsTemporary.length) {
+        achievementsTemporary.map(achievement => {
+          const currentAchievement = getLastRatingEarned(achievement);
+          attachments.push({
+            text: `${achievement.name}: Você é ${
+              currentAchievement.name
+            } com total de ${
+              currentAchievement.total
+            }. | :trophy: Seu record é ${
+              achievement.record.name
+            } com total de ${achievement.record.total}.`
+          });
         });
+      }
 
+      if (attachments.length) {
         response = {
           text: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
-          attachments: textsAchievements
+          attachments: attachments
         };
       }
     }

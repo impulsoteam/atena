@@ -57,6 +57,7 @@
     "googleapis": "34.0.0",
     "if-env": "^1.0.4",
     "make-requests": "^0.1.2",
+    "moment-timezone": "^0.5.23",
     "mime-types": "^2.1.21",
     "moment": "^2.22.2",
     "mongoose": "^5.2.14",
