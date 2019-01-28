@@ -20,13 +20,6 @@ router.use("/resources", resourcesRoutes);
 router.use("/integrations/github", githubRoutes);
 router.use("/integrations/disqus", disqusRoutes);
 
-router.get("/", (req, res) => {
-  const initialData = {
-    title: "Seja bem vindo! =D",
-    name: "Atena"
-  };
-
-  renderScreen(res, "Index", initialData);
-});
+router.get("/", (req, res) => renderScreen(res, "HowItWorks"));
 
 export default router;

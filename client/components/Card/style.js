@@ -3,16 +3,28 @@ import styled from "styled-components";
 const StyledCard = styled.div`
   background-color: ${props => props.theme.color.white};
   color: ${props => props.theme.color.gray};
-  text-align: center;
-  padding: 60px 60px 80px;
+  padding: 40px;
   border-radius: ${props => props.theme.fontSize.medium};
   margin: auto;
   box-shadow: 8px 8px 60px rgba(0, 0, 0, 0.2);
   max-width: 640px;
+  text-align: left;
 
   h1 {
     color: ${props => props.theme.color.primary};
+    /* margin-top: 0; */
   }
+
+  ${props =>
+    props.large &&
+    `
+    text-align: center;
+    padding: 60px 60px 80px;
+
+    h1 {
+      margin-top: 30px;
+    }
+  `}
 
   .cardIcon {
     background-color: ${props => props.theme.color.white};

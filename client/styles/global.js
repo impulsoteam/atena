@@ -19,9 +19,15 @@ const StyledApp = createGlobalStyle`
   }
 
   .layout {
-    display: flex;
+    display: block;
     min-height: calc(100vh - 320px);
     padding-top: 100px;
+  }
+
+  .container {
+    max-width: 980px;
+    margin: auto;
+    padding: 0 15px;
   }
 
   hr {
