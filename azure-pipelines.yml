@@ -16,4 +16,5 @@ steps:
     npm install
     npm i yarn -g
     yarn -i
-  displayName: 'yarn install'
+    yarn format
+  displayName: 'yarn install && yarn format'
