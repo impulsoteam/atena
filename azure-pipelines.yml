@@ -18,5 +18,4 @@ steps:
     yarn -i
     yarn format
     yarn lint
-    yarn test
   displayName: 'yarn tasks'
