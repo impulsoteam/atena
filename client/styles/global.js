@@ -19,9 +19,15 @@ const StyledApp = createGlobalStyle`
   }
 
   .layout {
-    display: flex;
+    display: block;
     min-height: calc(100vh - 320px);
     padding-top: 100px;
+  }
+
+  .container {
+    max-width: 980px;
+    margin: auto;
+    padding: 0 15px;
   }
 
   hr {
@@ -33,14 +39,14 @@ const StyledApp = createGlobalStyle`
     transition: .2s all ease-in-out;
   }
 
-  p.super {
+  main p {
     font-size: ${props => props.theme.fontSize.medium};
     line-height: 30px;
     margin: 0;
     text-align: center;
   }
 
-  p.super a {
+  main p a {
     color: ${props => props.theme.color.primaryLight};
     text-decoration: none;
     font-weight: bold;

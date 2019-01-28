@@ -4,6 +4,7 @@ const Theme = {
     default: "14px",
     medium: "20px",
     large: "36px",
+    veryLarge: "48px",
     super: "100px"
   },
 

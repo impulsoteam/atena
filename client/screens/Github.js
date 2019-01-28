@@ -9,7 +9,7 @@ const ScreenGithub = () => {
     <StyledScreenGithub>
       <Layout>
         <div className="_inner">
-          <Card>
+          <Card large>
             <span className="cardIcon">
               <i className="fab fa-github" />
             </span>
