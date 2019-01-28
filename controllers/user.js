@@ -8,7 +8,6 @@ import {
   getUserInfo,
   isCoreTeam
 } from "../utils";
-import { sendHelloOnSlack } from "../utils/bot";
 import { sendToUser } from "../rocket/bot";
 import { _throw } from "../helpers";
 
@@ -100,10 +99,12 @@ const findBy = async args => {
 
 const findAll = async (isCoreTeam = false, limit = 20) => {
   const UserModel = mongoose.model("User");
-  const result = await UserModel.find({
+  const base_query = {
     score: { $gt: 0 },
     isCoreTeam: isCoreTeam
-  })
+  };
+
+  const result = await UserModel.find(base_query)
     .sort({
       score: -1
     })
@@ -118,7 +119,8 @@ const findAll = async (isCoreTeam = false, limit = 20) => {
 
 const rankingPosition = async (userId, isCoreTeam = false) => {
   const allUsers = await findAll(isCoreTeam);
-  const position = allUsers.map(e => e.slackId).indexOf(userId) + 1;
+  const user = await getNetwork(userId);
+  const position = (await allUsers.map(e => e.id).indexOf(user.id)) + 1;
 
   return position;
 };
@@ -194,10 +196,27 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
   }
 
   sendToUser(
-    "Parabéns, agora você também está pontuando no nosso game! xD",
+    `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
+    \n\n
+    Em meus domínios terás que realizar tarefas para mim, teus feitos irão render-te *Pontos de Experiência* que, além de fortalecer-te, permitirão que obtenhas medalhas de *Conquistas* em forma de reconhecimento! Sou uma deusa amorosa, por isso saibas que, eventualmente, irei premiar-te de maneira especial!
+    \n\n
+    No decorrer do tempo, sentirás a necessidade de acompanhar o teu progresso. Por isso, podes consultar os livros de nossa biblioteca que contém tudo o que fizestes até então, são eles:
+    \n
+    - Pergaminhos de *Pontos de Experiência: !meuspontos* ou */meuspontos*;
+    \n
+    - e os Tomos de *Conquistas: !minhasconquistas* ou */minhasconquistas*.
+    \n\n
+    Ah! Claro que não estás só na realização destas tarefas. Os nomes dos(as) Impulsers estão dispostos nos murais no exterior de meu templo, esta é uma forma de reconhecer o teu valor e os teusesforços. Lá, tu encontrarás dois murais:
+    \n
+    - O *!ranking* ou */ranking _nº do mês_* onde estão os nomes dos(das) que mais se esforçaram neste mês. Aquele(a) que estiver em primeiro lugar receberá uma recompensa especial;
+    \n
+    - e o *!rakinggeral* ou */rankinggeral* onde os nomes ficam dispostos, indicando -toda a sua contribuição realizada até o presente momento.
+    \n
+    Sei que são muitas informações, mas tome nota, para que não te esqueças de nada. Neste papiro, encontrarás *tudo o que precisa* saber em caso de dúvidas: **http://atena.impulso.network.**
+    \n\n
+    Espero que aproveite ao máximo *tua jornada* por aqui!`,
     interaction.user
   );
-  sendHelloOnSlack(interaction.user);
 
   const instance = new UserModel(obj);
   return instance.save();
@@ -246,6 +265,22 @@ const updateUserData = (UserModel, interaction, score) => {
   }
 };
 
+const getNetwork = async user_id => {
+  let user = {};
+  const UserModel = mongoose.model("User");
+  const slack_user = await UserModel.findOne({ slackId: user_id });
+  const rocket_user = await UserModel.findOne({ rocketId: user_id });
+  if (slack_user) {
+    user = slack_user;
+    user.network = "slack";
+  } else if (rocket_user) {
+    user = rocket_user;
+    user.network = "rocket";
+  }
+
+  return user;
+};
+
 export default {
   find,
   findAll,
@@ -255,5 +290,6 @@ export default {
   checkCoreTeam,
   findInactivities,
   findBy,
-  findByOrigin
+  findByOrigin,
+  getNetwork
 };

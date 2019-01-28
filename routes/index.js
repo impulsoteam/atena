@@ -9,6 +9,8 @@ import githubRoutes from "./github";
 import disqusRoutes from "./disqus";
 import resourcesRoutes from "./resources";
 import achievementsTemporyDataRoutes from "./achievementsTemporyData";
+import { renderScreen } from "../utils/ssr";
+
 const router = express.Router();
 
 router.use("/slack", slackRoutes);
@@ -22,10 +24,6 @@ router.use("/integrations/github", githubRoutes);
 router.use("/integrations/disqus", disqusRoutes);
 router.use("/achievements/temporary/data", achievementsTemporyDataRoutes);
 
-router.get("/", (req, res) => {
-  res.render("index", {
-    title: "Seja bem vindo! =D"
-  });
-});
+router.get("/", (req, res) => renderScreen(res, "HowItWorks"));
 
 export default router;
