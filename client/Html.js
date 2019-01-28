@@ -7,13 +7,19 @@ const Html = props => {
   return (
     <html>
       <head>
-        <meta charset="UTF-8" />
+        <meta charSet="UTF-8" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
         <link rel="stylesheet" href="https://use.typekit.net/ilk7sdy.css" />
+        <link
+          rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.6.3/css/regular.css"
+          integrity="sha384-aubIA90W7NxJ+Ly4QHAqo1JBSwQ0jejV75iHhj59KRwVjLVHjuhS3LkDAoa/ltO4"
+          crossOrigin="anonymous"
+        />
         <link
           rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css"
