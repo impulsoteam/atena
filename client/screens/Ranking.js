@@ -1,29 +1,37 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import Header from "components/Header";
-import { Flex, Box } from "@rebass/grid";
+import React from "react";
+import { Flex } from "@rebass/grid";
+import StyledScreenRanking from "./Ranking.style";
+import Layout from "Layout";
+import Rectangle from "components/Rectangle";
+import RectangleGroup from "components/RectangleGroup";
+import Title from "components/Title";
 
-const ScreenRanking = ({ name }) => (
-  <Flex style={{ backgroundColor: "green" }}>
-    <Box width={1 / 6} px={2} style={{ backgroundColor: "red" }}>
-      <Header name={name} />
-      hal
-    </Box>
-    <Box width={1 / 2} px={2}>
-      <p>
-        Confira aqui a sua colocação no ranking da Atena. Vale lembrar que o
-        Ranking Mensal exibe o saldo de XP que você obteve durante um mês. Já o
-        Ranking Geral exibe o saldo de XP de toda sua jornada na Impulso!
-      </p>
-    </Box>
-  </Flex>
+const ScreenRanking = () => (
+  <StyledScreenRanking>
+    <Layout>
+      <div className="_inner">
+        <p className="super">
+          Confira aqui a sua colocação no ranking da Atena. Vale lembrar que o
+          <b> Ranking Mensal</b> exibe o <b>saldo</b> de XP que você obteve
+          <b> durante um mês</b>. Já o <b>Ranking Geral</b> exibe o saldo de XP
+          de toda sua jornada na Impulso!
+        </p>
+        <RectangleGroup>
+          <Rectangle active left>
+            <a href="#">Ranking Mensal</a>
+          </Rectangle>
+          <Rectangle right>
+            <a href="#">Ranking Geral</a>
+          </Rectangle>
+        </RectangleGroup>
+        <Flex justifyContent="center">
+          <Title width={"384px"} align={"center"} extraLarge>
+            RANKING DO MÊS DE <span className="month">JANEIRO</span>
+          </Title>
+        </Flex>
+      </div>
+    </Layout>
+  </StyledScreenRanking>
 );
-ScreenRanking.propTypes = {
-  name: PropTypes.string
-};
-
-ScreenRanking.defaultProps = {
-  name: "Ranking"
-};
 
 export default ScreenRanking;

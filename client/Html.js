@@ -7,7 +7,7 @@ const Html = props => {
   return (
     <html>
       <head>
-        <meta charset="UTF-8" />
+        <meta charSet="UTF-8" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta
           name="viewport"
