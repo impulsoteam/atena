@@ -3,13 +3,15 @@ import mongoose from "mongoose";
 import moment from "moment";
 import userController from "./user";
 import achievementController from "./achievement";
+import achievementTemporaryController from "./achievementTemporary";
 import { calculateScore } from "../utils";
-import { lastMessageTime, getAction } from "../utils/interactions";
+import { lastMessageTime, getAction, getOrigin } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 
 let normalize = data => {
   if (data.type === "reaction_added" || data.type === "reaction_removed") {
     return {
+      origin: "slack",
       channel: data.item.channel,
       date: new Date(),
       description: data.reaction,
@@ -24,6 +26,7 @@ let normalize = data => {
     };
   } else if (data.thread_ts) {
     return {
+      origin: "slack",
       channel: data.channel,
       date: new Date(),
       description: data.text,
@@ -38,6 +41,7 @@ let normalize = data => {
     };
   } else if (data.type === "manual") {
     return {
+      origin: "sistema",
       type: data.type,
       user: data.user,
       value: data.value,
@@ -49,6 +53,7 @@ let normalize = data => {
     };
   } else if (data.type === "inactivity") {
     return {
+      origin: "sistema",
       type: data.type,
       user: data.user,
       thread: false,
@@ -59,6 +64,7 @@ let normalize = data => {
     };
   } else if (data.type === "issue") {
     return {
+      origin: "github",
       type: data.type,
       user: data.user,
       thread: false,
@@ -69,6 +75,7 @@ let normalize = data => {
     };
   } else if (data.type === "review") {
     return {
+      origin: "github",
       type: data.type,
       user: data.user,
       thread: false,
@@ -79,6 +86,7 @@ let normalize = data => {
     };
   } else if (data.type === "pull_request") {
     return {
+      origin: "github",
       type: data.type,
       user: data.user,
       thread: false,
@@ -89,6 +97,7 @@ let normalize = data => {
     };
   } else if (data.type === "merged_pull_request") {
     return {
+      origin: "github",
       type: data.type,
       user: data.user,
       thread: false,
@@ -100,6 +109,7 @@ let normalize = data => {
   } else if (data.origin === "rocket") {
     if (data.reactions) {
       return {
+        origin: "rocket",
         channel: data.rid,
         date: new Date(),
         description: Object.keys(data.reactions).pop(),
@@ -111,19 +121,20 @@ let normalize = data => {
       };
     } else {
       return {
+        origin: data.origin,
         channel: data.rid,
         date: new Date(),
         description: data.msg,
         type: "message",
         user: data.u._id,
         username: data.u.name,
-        origin: data.origin,
         category: config.categories.network.type,
         action: config.actions.message.type
       };
     }
   } else if (data.type == "comment") {
     return {
+      origin: "blog",
       type: data.type,
       user: data.user,
       thread: false,
@@ -134,6 +145,7 @@ let normalize = data => {
     };
   } else {
     return {
+      origin: getOrigin(data),
       channel: data.channel,
       date: new Date(),
       description: data.text,
@@ -179,6 +191,7 @@ export const save = async data => {
     instance.score = await calculateScore(interaction);
     userController.update(interaction);
     achievementController.save(interaction);
+    achievementTemporaryController.save(interaction);
     if (
       ![
         "message",

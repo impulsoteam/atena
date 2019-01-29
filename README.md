@@ -7,7 +7,7 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/impulsonetwork.svg?style=social&label=Follow)](https://twitter.com/impulsonetwork)
 
 
-## Atena v.0.1 
+## Atena v.0.1
 
 ### [en](https://github.com/impulsonetwork/atena/blob/master/README_EN.md)
 
@@ -59,13 +59,15 @@ CHANNELS=CCWSMJZ6U CCXCXJWBW
 ```
 
 ### Executando
+
 - Inicie o servidor utilizando o seguinte comando:
 ```sh
 > yarn start:dev
 ```
 
 ### Debug
-- Em um terminal inicie o servidor com o seguinte comando:
+
+Em um terminal inicie o servidor com o seguinte comando:
 ```
 > yarn start:dev:debug
 ```
@@ -73,6 +75,7 @@ Rode o node inspect em outra janela de terminal
 ```
 > node-inspect localhost:9229
 ```
+
 ### Configurando o Bot do Rocket
 
 É preciso gerar um token, para isso o bot precisa da role de usuário. Logar com
