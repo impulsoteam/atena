@@ -7,7 +7,7 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/impulsonetwork.svg?style=social&label=Follow)](https://twitter.com/impulsonetwork)
 
 
-## Atena v.0.1
+## Atena v.0.2
 
 ### [en](https://github.com/impulsonetwork/atena/blob/master/README_EN.md)
 

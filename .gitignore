@@ -13,3 +13,6 @@ coverage/
 .DS_Store
 emoji/
 *.swm
+
+*-lock.json
+*.lock
