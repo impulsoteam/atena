@@ -32,7 +32,11 @@ const ScreenRanking = () => (
             RANKING DO MÊS DE <span className="month">JANEIRO</span>
           </Title>
         </Flex>
-        <UserCard>Teste</UserCard>
+        <Flex justifyContent="center">
+          <UserCard>Renato Tarantelli</UserCard>
+          <UserCard>Renato Tarantelli</UserCard>
+          <UserCard>Renato Tarantelli</UserCard>
+        </Flex>
       </div>
     </Layout>
   </StyledScreenRanking>

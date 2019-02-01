@@ -8,7 +8,7 @@ const StyledScreenRanking = styled.section`
 
   ._inner {
     flex: 1;
-    background-color: ${props => props.theme.color.white};
+    background-color: ${props => props.theme.color.bg};
     color: ${props => props.theme.color.gray};
   }
 
