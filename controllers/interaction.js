@@ -128,6 +128,7 @@ let normalize = data => {
         type: "message",
         user: data.u._id,
         username: data.u.name,
+        rocketUsername: data.u.username,
         category: config.categories.network.type,
         action: config.actions.message.type
       };
