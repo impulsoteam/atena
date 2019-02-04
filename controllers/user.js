@@ -100,7 +100,7 @@ const findBy = async args => {
   return result || _throw("Error finding user");
 };
 
-const findAll = async (isCoreTeam = false, limit = 20) => {
+const findAll = async (isCoreTeam = false, limit = 20, selectOptions = "") => {
   const UserModel = mongoose.model("User");
   const base_query = {
     score: { $gt: 0 },
@@ -112,6 +112,7 @@ const findAll = async (isCoreTeam = false, limit = 20) => {
       score: -1
     })
     .limit(limit)
+    .select(selectOptions)
     .exec();
   result.map(user => {
     user.score = parseInt(user.score);
