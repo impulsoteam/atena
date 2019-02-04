@@ -463,4 +463,34 @@ blog:
         IV: 288
         V: 313
       xp: 11
-  
+level:
+  bronze:
+    name: 'Bronze'
+    ranges:
+      I: 1
+      II: 2
+    xp: 3
+  prata:
+    name: 'Prata'
+    ranges:
+      I: 3
+      II: 4
+    xp: 5
+  ouro:
+    name: 'Ouro'
+    ranges:
+      I: 5
+      II: 6
+    xp: 7
+  platina:
+    name: 'Platina'
+    ranges:
+      I: 7
+      II: 8
+    xp: 9
+  diamante:
+    name: 'Diamante'
+    ranges:
+      I: 9
+      II: 10
+    xp: 11
