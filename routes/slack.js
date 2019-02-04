@@ -23,8 +23,6 @@ const handleEvent = async e => {
       `\n-- event into an invalid channel ${channel}`
     );
   }
-
-  analyticsSendCollect(e);
 };
 
 slackEvents.on("article", e => handleEvent(e));
