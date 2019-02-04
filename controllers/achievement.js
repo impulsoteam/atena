@@ -1,9 +1,10 @@
 import config from "config-yml";
 import AchievementModel from "../models/achievement";
-import UserModel from "../models/user";
 import { calculateLevel } from "../utils";
 import { isPositiveReaction, isAtenaReaction } from "../utils/reactions";
 import { _throw } from "../helpers";
+import { getInteractionType } from "../utils/achievements";
+import userController from "../controllers/user";
 
 export const findAllByUser = async userId => {
   const result = await AchievementModel.find({ user: userId }).exec();
@@ -15,41 +16,15 @@ export const save = async interaction => {
   try {
     if (isValidAction(interaction)) {
       const type = getInteractionType(interaction);
-      await saveUserAchievement(interaction.user, type, interaction);
+      await saveUserAchievement(type, interaction);
 
       if (interaction.parentUser) {
-        await saveUserAchievement(
-          interaction.parentUser,
-          "received",
-          interaction
-        );
+        await saveUserAchievement("received", interaction, true);
       }
     }
   } catch (error) {
     _throw("Error saving achievement");
   }
-};
-
-const getInteractionType = interaction => {
-  let type = interaction.type;
-
-  if (isChatInteraction(interaction)) {
-    type = "sended";
-  }
-
-  return type;
-};
-
-const isChatInteraction = interaction => {
-  return (
-    interaction.type === "reaction_added" ||
-    interaction.type === "reaction_removed" ||
-    interaction.type === "thread" ||
-    interaction.type === "manual" ||
-    interaction.type === "inactivity" ||
-    (interaction.type === "message" &&
-      interaction.action === config.actions.message.type)
-  );
 };
 
 const isValidAction = interaction => {
@@ -82,9 +57,15 @@ const findMain = (category, action, type) => {
   return achievements;
 };
 
-const saveUserAchievement = async (user, type, interaction) => {
+const saveUserAchievement = async (type, interaction, isParent = false) => {
+  const user = await userController.findByOrigin(interaction, isParent);
+
+  if (!user) {
+    _throw("Error no user found to achievement");
+  }
+
   const query = {
-    user: user,
+    user: user._id,
     kind: `${interaction.category}.${interaction.action}.${type}`
   };
 
@@ -107,11 +88,7 @@ const saveUserAchievement = async (user, type, interaction) => {
   }
 };
 
-const updateUserScore = async (userId, achievementScore) => {
-  const user = await UserModel.findOne({
-    slackId: userId
-  }).exec();
-
+const updateUserScore = async (user, achievementScore) => {
   if (user) {
     let newScore = user.score + achievementScore;
     user.level = calculateLevel(newScore);
@@ -160,17 +137,17 @@ const generateRange = doc => {
 
 const createAchievement = (interaction, type, user) => {
   const achievements = findMain(interaction.category, interaction.action, type);
-  let category = null;
+  let achievement = null;
 
   if (achievements) {
-    category = generateNewCategory(interaction, type, user);
+    achievement = generateNewAchievement(interaction, type, user);
 
     let currentRating = 0;
     for (let item in achievements) {
-      category.ratings.push(generateNewRating(achievements, item));
+      achievement.ratings.push(generateNewRating(achievements, item));
 
       for (let range in achievements[item].ranges) {
-        category.ratings[currentRating].ranges.push(
+        achievement.ratings[currentRating].ranges.push(
           generateNewRange(achievements, item, range)
         );
       }
@@ -178,20 +155,20 @@ const createAchievement = (interaction, type, user) => {
       currentRating++;
     }
 
-    category = addFirstNewEarnedDate(category);
+    achievement = addFirstNewEarnedDate(achievement);
   }
 
-  return category;
+  return achievement;
 };
 
-const generateNewCategory = (interaction, type, user) => {
+const generateNewAchievement = (interaction, type, user) => {
   const category = config.categories[interaction.category];
   const action = config.actions[interaction.action];
 
   return {
     name: `${category.name} | ${action.name} ${action[type]}`,
     kind: `${category.type}.${action.type}.${type}`,
-    user: user,
+    user: user._id,
     total: 1,
     ratings: []
   };
@@ -213,12 +190,12 @@ const generateNewRange = (achievements, item, range) => {
   };
 };
 
-const addFirstNewEarnedDate = category => {
-  if (category.ratings[0].ranges[0].value === 1) {
-    category.ratings[0].ranges[0].earnedDate = Date.now();
+const addFirstNewEarnedDate = achievement => {
+  if (achievement.ratings[0].ranges[0].value === 1) {
+    achievement.ratings[0].ranges[0].earnedDate = Date.now();
   }
 
-  return category;
+  return achievement;
 };
 
 export default {

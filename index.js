@@ -9,6 +9,7 @@ require("./models/user");
 require("./models/achievement");
 require("./models/ranking");
 require("./rocket/bot");
+require("./workers/receive");
 
 runCrons();
 
