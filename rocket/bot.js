@@ -27,7 +27,7 @@ const processMessages = async (err, message, messageOptions) => {
 
     if (ranking.test(message.msg)) {
       await driver.sendDirectToUser(
-        "Em breve você vai receber o raking",
+        "Em breve você vai receber o Ranking",
         message.u.username
       );
     }
