@@ -13,11 +13,12 @@ export const StyledRankingHeader = styled.div`
   .level {
     flex: 2;
     max-width: 83px;
+    text-align: center;
   }
   .xp {
-    padding-left: 30px;
     flex: 1;
     max-width: 120px;
+    text-align: center;
   }
   .userInfo {
     flex: 2;

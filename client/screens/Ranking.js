@@ -1,14 +1,15 @@
-import React from "react";
-import { Flex, Box } from "@rebass/grid";
+import React, { Fragment } from "react";
+import { Flex } from "@rebass/grid";
 import StyledScreenRanking from "./Ranking.style";
 import Layout from "Layout";
 import Rectangle from "components/Rectangle";
 import RectangleGroup from "components/RectangleGroup";
 import RankingHeader from "components/RankingHeader";
+import RankingRow from "components/RankingRow";
 import Title from "components/Title";
 import UserCard from "components/UserCard";
 
-const data = [
+const dataMock = [
   {
     name: "Renato Tarantelli",
     level: 10,
@@ -32,7 +33,7 @@ const data = [
   }
 ];
 
-const ScreenRanking = () => (
+const ScreenRanking = ({ monthName, first_users, last_users, error }) => (
   <StyledScreenRanking>
     <Layout>
       <div className="_inner">
@@ -53,18 +54,38 @@ const ScreenRanking = () => (
           </RectangleGroup>
         </Flex>
         <Flex justifyContent="center">
-          <Title width={"384px"} align={"center"} extraLarge>
-            RANKING DO MÊS DE <span className="month">JANEIRO</span>
+          <Title align={"center"} extraLarge>
+            RANKING DO <br />
+            MÊS DE <span className="month">{monthName}</span>
           </Title>
         </Flex>
-        <Flex justifyContent="center" mt={50} mb={80} ml={172} mr={172}>
-          {data.map((card, index) => (
-            <UserCard key={index} first={index == 1 && true} {...card} />
-          ))}
-        </Flex>
-        <Flex justifyContent="space-around" mt={50} mb={50} ml={172} mr={172}>
-          <RankingHeader />
-        </Flex>
+        {error && (
+          <Flex justifyContent="center">
+            <h1>{error}</h1>
+          </Flex>
+        )}
+        {!error && (
+          <Fragment>
+            <Flex justifyContent="center" mt={50} mb={80} ml={172} mr={172}>
+              {first_users.map((card, index) => (
+                <UserCard key={index} first={index == 1 && true} {...card} />
+              ))}
+            </Flex>
+            <Flex
+              justifyContent="space-around"
+              mt={50}
+              mb={50}
+              ml={172}
+              mr={172}
+              flexWrap="wrap"
+            >
+              <RankingHeader />
+              {last_users.map((card, index) => (
+                <RankingRow key={index} {...card} />
+              ))}
+            </Flex>
+          </Fragment>
+        )}
       </div>
     </Layout>
   </StyledScreenRanking>
