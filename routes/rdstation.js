@@ -6,7 +6,7 @@ router.post("/users", async (req, res) => {
   let result = [];
 
   try {
-    result = await UserController.findAll(false, -1, "-avatar -_id");
+    result = await UserController.findAll(false, -1, "-avatar -_id -email");
   } catch (e) {
     console.log(e);
   }

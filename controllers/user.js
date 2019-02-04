@@ -65,12 +65,14 @@ const update = async interaction => {
   }
 };
 
-const find = async (userId, isCoreTeam = false) => {
+const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({
     slackId: userId,
     isCoreTeam: isCoreTeam
-  }).exec();
+  })
+    .select(selectOptions)
+    .exec();
   if (result) result.score = result.score.toFixed(0);
 
   return result || _throw("Error finding a specific user");
@@ -100,7 +102,11 @@ const findBy = async args => {
   return result || _throw("Error finding user");
 };
 
-const findAll = async (isCoreTeam = false, limit = 20, selectOptions = "") => {
+const findAll = async (
+  isCoreTeam = false,
+  limit = 20,
+  selectOptions = "-email"
+) => {
   const UserModel = mongoose.model("User");
   const base_query = {
     score: { $gt: 0 },
