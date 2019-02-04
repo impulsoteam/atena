@@ -8,6 +8,7 @@ import userRoutes from "./user";
 import botRoutes from "./bot";
 import githubRoutes from "./github";
 import disqusRoutes from "./disqus";
+import rdRoutes from "./rdstation";
 import resourcesRoutes from "./resources";
 import achievementsTemporyDataRoutes from "./achievementsTemporyData";
 import { renderScreen } from "../utils/ssr";
@@ -24,6 +25,7 @@ router.use("/bot/commands", botRoutes);
 router.use("/resources", resourcesRoutes);
 router.use("/integrations/github", githubRoutes);
 router.use("/integrations/disqus", disqusRoutes);
+router.use("/integrations/rd", rdRoutes);
 router.use("/achievements/temporary/data", achievementsTemporyDataRoutes);
 
 router.get("/", (req, res) =>
