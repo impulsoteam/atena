@@ -27,15 +27,13 @@ const processMessages = async (err, message, messageOptions) => {
 
     if (ranking.test(message.msg)) {
       await driver.sendDirectToUser(
-        "Em breve enviar o ranking",
+        "Em breve você vai receber o Ranking",
         message.u.username
       );
     }
   } else {
     console.log(err, messageOptions);
   }
-
-  sendMessage("funciona sim!");
 };
 
 export const sendToUser = async (message, user) => {
