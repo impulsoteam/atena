@@ -5,12 +5,12 @@ import Header from "components/Header";
 import Footer from "components/Footer";
 
 const Layout = props => {
-  const { children } = props;
+  const { children, page } = props;
 
   return (
     <Fragment>
       <StyledApp />
-      <Header />
+      <Header page={page} />
       <main className="layout">{children}</main>
       <Footer />
     </Fragment>
@@ -18,7 +18,8 @@ const Layout = props => {
 };
 
 Layout.propTypes = {
-  children: PropTypes.element.isRequired
+  children: PropTypes.element.isRequired,
+  page: PropTypes.string
 };
 
 export default Layout;

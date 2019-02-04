@@ -24,6 +24,10 @@ router.use("/integrations/github", githubRoutes);
 router.use("/integrations/disqus", disqusRoutes);
 router.use("/achievements/temporary/data", achievementsTemporyDataRoutes);
 
-router.get("/", (req, res) => renderScreen(res, "HowItWorks"));
+router.get("/", (req, res) =>
+  renderScreen(res, "HowItWorks", {
+    page: "index"
+  })
+);
 
 export default router;

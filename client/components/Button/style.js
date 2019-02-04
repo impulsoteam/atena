@@ -9,6 +9,7 @@ const StyledButton = styled.button`
   border: 2px solid;
   margin: 20px 0 10px;
   cursor: pointer;
+  background-color: transparent;
 
   &:hover {
     color: ${props => props.theme.color.secondary};

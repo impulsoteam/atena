@@ -48,6 +48,7 @@ const StyledCard = styled.div`
 
   @media (max-width: 760px) {
     padding: 12px 12px 20px;
+    margin: 15px;
 
     .cardIcon {
       margin: -40px auto 20px;
