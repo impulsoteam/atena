@@ -2,19 +2,11 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import StyledAccordion from "./style";
 
-const handleItem = e => {
-  console.log("-----------------", e);
-};
-
 const renderItem = ({ content, awnser }, index) => (
   <article className="accordion__item" key={index}>
-    <a
-      href="javascript:;"
-      className="accordion__link"
-      onClick={e => handleItem(e)}
-    >
+    <a href="javascript:;" className="accordion__link">
       {content}
-      <i className="fa fa-sort-down" />
+      <i className="fas fa-sort-down" />
     </a>
     <div className="accordion_content">
       <p>{awnser}</p>

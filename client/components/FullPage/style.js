@@ -20,6 +20,11 @@ const StyledFullPage = styled.section`
   p {
     max-width: 740px;
   }
+
+  @media (max-width: 760px) {
+    height: auto;
+    padding: 80px 0;
+  }
 `;
 
 export default StyledFullPage;

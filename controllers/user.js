@@ -65,12 +65,14 @@ const update = async interaction => {
   }
 };
 
-const find = async (userId, isCoreTeam = false) => {
+const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({
     slackId: userId,
     isCoreTeam: isCoreTeam
-  }).exec();
+  })
+    .select(selectOptions)
+    .exec();
   if (result) result.score = result.score.toFixed(0);
 
   return result || _throw("Error finding a specific user");
@@ -100,7 +102,11 @@ const findBy = async args => {
   return result || _throw("Error finding user");
 };
 
-const findAll = async (isCoreTeam = false, limit = 20) => {
+const findAll = async (
+  isCoreTeam = false,
+  limit = 20,
+  selectOptions = "-email"
+) => {
   const UserModel = mongoose.model("User");
   const base_query = {
     score: { $gt: 0 },
@@ -112,6 +118,7 @@ const findAll = async (isCoreTeam = false, limit = 20) => {
       score: -1
     })
     .limit(limit)
+    .select(selectOptions)
     .exec();
   result.map(user => {
     user.score = parseInt(user.score);
@@ -284,6 +291,28 @@ const getNetwork = async user_id => {
   return user;
 };
 
+const changeTeams = async (userId, teams) => {
+  const UserModel = mongoose.model("User");
+  const user = await getNetwork(userId);
+
+  try {
+    await UserModel.findOne(
+      {
+        _id: user._id
+      },
+      (doc, err) => {
+        if (err) return false;
+
+        doc.teams = [...String(teams).split(",")] || "";
+        doc.save();
+      }
+    );
+  } catch (e) {
+    return false;
+  }
+  return true;
+};
+
 export default {
   find,
   findAll,
@@ -294,5 +323,6 @@ export default {
   findInactivities,
   findBy,
   findByOrigin,
-  getNetwork
+  getNetwork,
+  changeTeams
 };

@@ -16,7 +16,7 @@ const ScreenGithub = () => {
             <p className="super">
               <strong>Olá novamente, nobre Impulser!</strong>
             </p>
-            <Title>
+            <Title align="center">
               Sua dedicação foi posta a prova e você passou com honrarias!
             </Title>
             <p className="super">
