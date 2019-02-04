@@ -291,6 +291,28 @@ const getNetwork = async user_id => {
   return user;
 };
 
+const changeTeams = async (userId, teams) => {
+  const UserModel = mongoose.model("User");
+  const user = await getNetwork(userId);
+
+  try {
+    await UserModel.findOne(
+      {
+        _id: user._id
+      },
+      (doc, err) => {
+        if (err) return false;
+
+        doc.teams = [...String(teams).split(",")] || "";
+        doc.save();
+      }
+    );
+  } catch (e) {
+    return false;
+  }
+  return true;
+};
+
 export default {
   find,
   findAll,
@@ -301,5 +323,6 @@ export default {
   findInactivities,
   findBy,
   findByOrigin,
-  getNetwork
+  getNetwork,
+  changeTeams
 };
