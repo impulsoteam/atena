@@ -9,6 +9,7 @@ import {
   isCoreTeam
 } from "../utils";
 import { sendToUser } from "../rocket/bot";
+import AchievementLevelController from "./achievementLevel";
 import { _throw } from "../helpers";
 
 const updateParentUser = async interaction => {
@@ -65,12 +66,14 @@ const update = async interaction => {
   }
 };
 
-const find = async (userId, isCoreTeam = false) => {
+const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({
     slackId: userId,
     isCoreTeam: isCoreTeam
-  }).exec();
+  })
+    .select(selectOptions)
+    .exec();
   if (result) result.score = result.score.toFixed(0);
 
   return result || _throw("Error finding a specific user");
@@ -100,7 +103,11 @@ const findBy = async args => {
   return result || _throw("Error finding user");
 };
 
-const findAll = async (isCoreTeam = false, limit = 20) => {
+const findAll = async (
+  isCoreTeam = false,
+  limit = 20,
+  selectOptions = "-email"
+) => {
   const UserModel = mongoose.model("User");
   const base_query = {
     score: { $gt: 0 },
@@ -112,6 +119,7 @@ const findAll = async (isCoreTeam = false, limit = 20) => {
       score: -1
     })
     .limit(limit)
+    .select(selectOptions)
     .exec();
   result.map(user => {
     user.score = parseInt(user.score);
@@ -167,15 +175,16 @@ const findInactivities = async () => {
   return result || _throw("Error finding inactivity users");
 };
 
-const createUserData = (userInfo, score, interaction, UserModel) => {
+const createUserData = async (userInfo, score, interaction, UserModel) => {
   let obj = {};
+  const level = 1;
 
   if (userInfo) {
     obj = {
       avatar: userInfo.profile.image_72,
       name: userInfo.profile.real_name,
       email: userInfo.profile.email,
-      level: 1,
+      level: level,
       score: score,
       slackId: interaction.user,
       messages: interaction.type === "message" ? 1 : 0,
@@ -187,7 +196,7 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
   } else {
     obj = {
       name: interaction.username,
-      level: 1,
+      level: level,
       score: score,
       rocketId: interaction.user,
       messages: interaction.type === "message" ? 1 : 0,
@@ -218,11 +227,15 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
     Sei que são muitas informações, mas tome nota, para que não te esqueças de nada. Neste papiro, encontrarás *tudo o que precisa* saber em caso de dúvidas: **http://atena.impulso.network.**
     \n\n
     Espero que aproveite ao máximo *tua jornada* por aqui!`,
-    interaction.user
+    interaction.rocketUsername
   );
 
   const instance = new UserModel(obj);
-  return instance.save();
+  const user = await instance.save();
+
+  AchievementLevelController.save(user._id, level, level);
+
+  return user;
 };
 
 const updateUserData = (UserModel, interaction, score) => {
@@ -233,8 +246,13 @@ const updateUserData = (UserModel, interaction, score) => {
       },
       (err, doc) => {
         if (err) _throw("Error updating user");
+
         const newScore = doc.score + score;
-        doc.level = calculateLevel(newScore);
+        const newLevel = calculateLevel(newScore);
+
+        AchievementLevelController.save(doc._id, doc.level, newLevel);
+
+        doc.level = newLevel;
         doc.score = newScore < 0 ? 0 : newScore;
         doc.isCoreTeam = isCoreTeam(interaction.user);
         doc.messages =
@@ -252,8 +270,13 @@ const updateUserData = (UserModel, interaction, score) => {
       if (err) {
         throw new Error("Error updating user");
       }
+
       const newScore = doc.score + score;
-      doc.level = calculateLevel(newScore);
+      const newLevel = calculateLevel(newScore);
+
+      AchievementLevelController.save(doc._id, doc.level, newLevel);
+
+      doc.level = newLevel;
       doc.score = newScore < 0 ? 0 : newScore;
       doc.isCoreTeam = isCoreTeam(interaction.user);
       doc.messages =
@@ -284,6 +307,28 @@ const getNetwork = async user_id => {
   return user;
 };
 
+const changeTeams = async (userId, teams) => {
+  const UserModel = mongoose.model("User");
+  const user = await getNetwork(userId);
+
+  try {
+    await UserModel.findOne(
+      {
+        _id: user._id
+      },
+      (doc, err) => {
+        if (err) return false;
+
+        doc.teams = [...String(teams).split(",")] || "";
+        doc.save();
+      }
+    );
+  } catch (e) {
+    return false;
+  }
+  return true;
+};
+
 export default {
   find,
   findAll,
@@ -294,5 +339,6 @@ export default {
   findInactivities,
   findBy,
   findByOrigin,
-  getNetwork
+  getNetwork,
+  changeTeams
 };

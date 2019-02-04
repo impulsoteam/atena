@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const Html = props => {
-  const { children, title } = props;
+  const { children, title, page } = props;
 
   return (
     <html>
@@ -13,35 +13,24 @@ const Html = props => {
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
-        <link rel="stylesheet" href="https://use.typekit.net/ilk7sdy.css" />
+        <link rel="stylesheet" href="https://use.typekit.net/twf3caq.css" />
         <link
           rel="stylesheet"
-          href="https://use.fontawesome.com/releases/v5.6.3/css/regular.css"
-          integrity="sha384-aubIA90W7NxJ+Ly4QHAqo1JBSwQ0jejV75iHhj59KRwVjLVHjuhS3LkDAoa/ltO4"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="stylesheet"
-          href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css"
-          integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="stylesheet"
-          href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css"
-          integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0"
+          href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
           crossOrigin="anonymous"
         />
         <title>{title}</title>
       </head>
-      <body>{children}</body>
+      <body className={`page-${page}`}>{children}</body>
     </html>
   );
 };
 
 Html.propTypes = {
   children: PropTypes.element.isRequired,
-  title: PropTypes.string
+  title: PropTypes.string,
+  page: PropTypes.string
 };
 
 Html.defaultProps = {
