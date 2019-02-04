@@ -1,12 +1,49 @@
 import moment from "moment";
-import config from "config-yml";
-import { getInteractionType } from "./achievements";
+import {
+  getInteractionType,
+  getAchievementCurrentRating,
+  getRecord
+} from "./achievements";
+import { convertDataToAchievement } from "./achievementsTemporaryData";
+import { sendEarnedAchievementMessage } from "./achievementsMessages";
+import userController from "../controllers/user";
 
 const today = moment(new Date())
   .utc()
   .format();
 
-export const addEarnedAchievement = temporaryAchievement => {
+export const createAchievementTemporary = async (temporaryData, user) => {
+  let temporaryAchievement = convertDataToAchievement(temporaryData, user._id);
+
+  await sendEarnedAchievementMessage(
+    user,
+    getAchievementCurrentRating(temporaryAchievement)
+  );
+
+  return await temporaryAchievement.save();
+};
+
+export const updateAchievementTemporary = async (
+  temporaryAchievement,
+  user
+) => {
+  let achievementToUpdate = addEarnedAchievement(temporaryAchievement);
+
+  let temporaryAchievementUpdated = achievementToUpdate.achievement;
+  temporaryAchievement.record = getRecord(temporaryAchievementUpdated);
+
+  if (achievementToUpdate.xpToIncrease) {
+    await userController.updateScore(user, achievementToUpdate.xpToIncrease);
+    await sendEarnedAchievementMessage(
+      user,
+      getAchievementCurrentRating(temporaryAchievement)
+    );
+  }
+
+  return await temporaryAchievement.save();
+};
+
+const addEarnedAchievement = temporaryAchievement => {
   let xpToIncrease = 0;
   if (isInDeadline(temporaryAchievement)) {
     let wasUpdated = false;
@@ -34,18 +71,6 @@ export const addEarnedAchievement = temporaryAchievement => {
     achievement: temporaryAchievement,
     xpToIncrease: xpToIncrease
   };
-};
-
-export const getRecord = temporaryAchievement => {
-  let newRecord = getLastRatingEarned(temporaryAchievement);
-
-  if (temporaryAchievement.record) {
-    if (!newEarnedIsBiggerThenCurrent(newRecord, temporaryAchievement.record)) {
-      newRecord = temporaryAchievement.record;
-    }
-  }
-
-  return newRecord;
 };
 
 export const getQueryToFindCurrent = interaction => {
@@ -84,33 +109,6 @@ export const resetEarnedAchievements = temporaryAchievement => {
   return temporaryAchievement;
 };
 
-export const getLastRatingEarned = temporaryAchievement => {
-  let lastRatingEarned = {};
-  let lastRangeEarned = {};
-
-  let ratings = temporaryAchievement.ratings.filter(rating => {
-    let lastRangeFromRating = rating.ranges
-      .filter(range => range.earnedDate)
-      .pop();
-    if (lastRangeFromRating) {
-      lastRangeEarned = lastRangeFromRating;
-      return true;
-    }
-  });
-
-  lastRatingEarned = ratings.pop();
-  if (lastRatingEarned && lastRangeEarned) {
-    return {
-      name: lastRatingEarned.name,
-      range: lastRangeEarned.name,
-      total: temporaryAchievement.total,
-      earnedDate: today
-    };
-  }
-
-  return temporaryAchievement.record;
-};
-
 const isInDeadline = temporaryAchievement => {
   if (temporaryAchievement.lastEarnedDate) {
     const lastEarnedDate = moment(temporaryAchievement.lastEarnedDate);
@@ -137,27 +135,6 @@ const generateDeadlineDate = (date, rangeTime) => {
   }
 
   return deadlineDate;
-};
-
-const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
-  const positionRatings = getPositionRatings();
-  let newPosition = positionRatings.findIndex(
-    name => name.toLowerCase() == newEarned.name.toLowerCase()
-  );
-
-  let currentPosition = positionRatings.findIndex(
-    name => name.toLowerCase() == current.name.toLowerCase()
-  );
-
-  if (newPosition == currentPosition) {
-    return newEarned.total >= current.total;
-  } else {
-    return newPosition > currentPosition;
-  }
-};
-
-const getPositionRatings = () => {
-  return Object.keys(config.ratings).map(key => config.ratings[key]);
 };
 
 const generateUpdatedRanges = rating => {

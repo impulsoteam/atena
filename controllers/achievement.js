@@ -1,18 +1,23 @@
 import config from "config-yml";
-import AchievementModel from "../models/achievement";
-import { calculateLevel } from "../utils";
-import { isPositiveReaction, isAtenaReaction } from "../utils/reactions";
+
 import { _throw } from "../helpers";
-import { getInteractionType } from "../utils/achievements";
+import AchievementModel from "../models/achievement";
+import { isPositiveReaction, isAtenaReaction } from "../utils/reactions";
+import {
+  getInteractionType,
+  calculateAchievementScoreToIncrease,
+  getAchievementCurrentRating
+} from "../utils/achievements";
+import { sendEarnedAchievementMessage } from "../utils/achievementsMessages";
 import userController from "../controllers/user";
 
-export const findAllByUser = async userId => {
+const findAllByUser = async userId => {
   const result = await AchievementModel.find({ user: userId }).exec();
 
   return result || _throw("Error finding a specific achievement");
 };
 
-export const save = async interaction => {
+const save = async interaction => {
   try {
     if (isValidAction(interaction)) {
       const type = getInteractionType(interaction);
@@ -71,13 +76,9 @@ const saveUserAchievement = async (type, interaction, isParent = false) => {
 
   let achievement = await AchievementModel.findOne(query).exec();
   if (achievement) {
-    const newAchievement = updateRatings(achievement);
-
-    if (newAchievement.score > 0) {
-      updateUserScore(user, newAchievement.score);
-    }
-
-    achievement.ratings = newAchievement.ratings;
+    achievement.total += 1;
+    achievement.ratings = updateRangeEarnedDate(achievement);
+    await addScore(user, achievement);
     return achievement.save();
   } else {
     achievement = createAchievement(interaction, type, user);
@@ -88,35 +89,30 @@ const saveUserAchievement = async (type, interaction, isParent = false) => {
   }
 };
 
-const updateUserScore = async (user, achievementScore) => {
-  if (user) {
-    let newScore = user.score + achievementScore;
-    user.level = calculateLevel(newScore);
-    user.score = newScore;
-    return user.save();
-  }
+const addScore = async (user, achievement) => {
+  const score = calculateAchievementScoreToIncrease(achievement);
 
-  return;
+  if (score > 0) {
+    await userController.updateScore(user, score);
+    await sendEarnedAchievementMessage(
+      user,
+      getAchievementCurrentRating(achievement)
+    );
+  }
 };
 
-const updateRatings = achievement => {
-  let xpToIncrease = 0;
-  achievement.total += 1;
-  let ratings = achievement.ratings.map(rating => {
-    let ranges = rating.ranges.map((range, index) => {
-      if (range.earnedDate === null && range.value === achievement.total) {
+const updateRangeEarnedDate = achievement => {
+  return achievement.ratings.map(rating => {
+    let ranges = rating.ranges.map(range => {
+      if (!range.earnedDate && range.value === achievement.total) {
         range.earnedDate = Date.now();
-        if (rating.ranges.length == index + 1) xpToIncrease = rating.xp;
       }
 
       return generateRange(range);
     });
+
     return generateRating(rating, ranges);
   });
-  return {
-    score: xpToIncrease,
-    ratings: ratings
-  };
 };
 
 const generateRating = (rating, ranges) => {
@@ -156,9 +152,18 @@ const createAchievement = (interaction, type, user) => {
     }
 
     achievement = addFirstNewEarnedDate(achievement);
+    sendEarnedMessages(user, achievement);
   }
 
   return achievement;
+};
+
+const sendEarnedMessages = async (userId, achievement) => {
+  const user = await userController.findBy({ _id: userId });
+  await sendEarnedAchievementMessage(
+    user,
+    getAchievementCurrentRating(achievement)
+  );
 };
 
 const generateNewAchievement = (interaction, type, user) => {
