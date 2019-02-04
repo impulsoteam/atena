@@ -64,9 +64,9 @@ const update = async interaction => {
   }
 
   if (user) {
-    return updateUserData(UserModel, interaction, score);
+    return await updateUserData(user, interaction, score);
   } else {
-    return createUserData(userInfo, score, interaction, UserModel);
+    return await createUserData(userInfo, score, interaction, UserModel);
   }
 };
 
@@ -304,6 +304,22 @@ const getNetwork = async user_id => {
   return user;
 };
 
+const updateScore = async (user, score) => {
+  if (user) {
+    console.log("Entrou no updateScore");
+    const newScore = user.score + score;
+    const newLevel = calculateLevel(newScore);
+
+    await doLevelChangeActions(user._id, user.level, newLevel);
+
+    user.level = newLevel;
+    user.score = newScore;
+    return await user.save();
+  }
+
+  return;
+};
+
 export default {
   find,
   findAll,
@@ -314,5 +330,6 @@ export default {
   findInactivities,
   findBy,
   findByOrigin,
-  getNetwork
+  getNetwork,
+  updateScore
 };
