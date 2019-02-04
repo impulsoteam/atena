@@ -9,8 +9,8 @@ import {
   isCoreTeam
 } from "../utils";
 import { sendToUser } from "../rocket/bot";
-import AchievementLevelController from "./achievementLevel";
 import { _throw } from "../helpers";
+import { doLevelChangeActions } from "../utils/levels";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
@@ -30,7 +30,11 @@ const updateParentUser = async interaction => {
             throw new Error("Error updating parentUser");
           }
           const newScore = doc.score + score;
-          doc.level = calculateLevel(newScore);
+          const newLevel = calculateLevel(newScore);
+
+          doLevelChangeActions(doc._id, doc.level, newLevel);
+
+          doc.level = newLevel;
           doc.score = newScore < 0 ? 0 : newScore;
           doc.lastUpdate = Date.now();
           doc.save();
@@ -226,7 +230,7 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
   const instance = new UserModel(obj);
   const user = await instance.save();
 
-  AchievementLevelController.save(user._id, level, level);
+  await doLevelChangeActions(user._id, 0, level);
 
   return user;
 };
@@ -243,7 +247,7 @@ const updateUserData = (UserModel, interaction, score) => {
         const newScore = doc.score + score;
         const newLevel = calculateLevel(newScore);
 
-        AchievementLevelController.save(doc._id, doc.level, newLevel);
+        doLevelChangeActions(doc._id, doc.level, newLevel);
 
         doc.level = newLevel;
         doc.score = newScore < 0 ? 0 : newScore;
@@ -267,7 +271,7 @@ const updateUserData = (UserModel, interaction, score) => {
       const newScore = doc.score + score;
       const newLevel = calculateLevel(newScore);
 
-      AchievementLevelController.save(doc._id, doc.level, newLevel);
+      doLevelChangeActions(doc._id, doc.level, newLevel);
 
       doc.level = newLevel;
       doc.score = newScore < 0 ? 0 : newScore;

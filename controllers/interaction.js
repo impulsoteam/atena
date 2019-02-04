@@ -190,7 +190,7 @@ export const save = async data => {
 
   if (todayLimitStatus > 0 || !todayLimitStatus) {
     instance.score = await calculateScore(interaction);
-    userController.update(interaction);
+    await userController.update(interaction);
     achievementController.save(interaction);
     achievementTemporaryController.save(interaction);
     if (
