@@ -7,11 +7,14 @@ import userController from "../controllers/user";
 import interactionController from "../controllers/interaction";
 import achievementController from "../controllers/achievement";
 import achievementTemporaryController from "../controllers/achievementTemporary";
+import achievementLevelController from "../controllers/achievementLevel";
 import rankingController from "../controllers/ranking";
 import { isCoreTeam, calculateAchievementsPosition } from "../utils";
 // import validSlackSecret from "../utils/validSecret";
 import { sendMessage } from "../rocket/bot";
 import { getLastRatingEarned } from "../utils/achievementsTemporary";
+import { getLastRatingEarned as getLastRatingEarnedLevel } from "../utils/achievementsLevel";
+
 const router = express.Router();
 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
@@ -206,6 +209,23 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
               achievement.record.name
             } com total de ${achievement.record.total}.`
           });
+        });
+      }
+
+      let achievementLevel = await achievementLevelController.findByUser(
+        user._id
+      );
+
+      if (achievementLevel) {
+        const lastRating = getLastRatingEarnedLevel(achievementLevel);
+        attachments.push({
+          text: `Network | Nível: Você é ${lastRating.rating.name} ${
+            lastRating.range.name
+          } com nível ${lastRating.range.value}. | :trophy: Seu record é ${
+            achievementLevel.record.name
+          } ${achievementLevel.record.range} com nível ${
+            achievementLevel.record.level
+          }.`
         });
       }
 
