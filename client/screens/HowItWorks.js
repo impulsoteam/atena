@@ -13,10 +13,10 @@ const ScreenHowItWorks = () => {
   return (
     <StyledScreenHowItWorks>
       <Layout>
-        <FullPage background="#595B98">
+        <FullPage background="url('./images/hiwlpc.png')">
           <Flex alignItems="center" justifyContent="center" flex="1">
             <Box>
-              <Title large color="white">
+              <Title large color="white" align="center">
                 Bem vindo(a)
                 <br />à atena!
               </Title>
@@ -28,8 +28,8 @@ const ScreenHowItWorks = () => {
           </Flex>
         </FullPage>
         <section className="container about">
-          <Flex alignItems="center">
-            <Box width={1 / 2}>
+          <Flex alignItems="center" flexWrap="wrap">
+            <Box width={[1, 1 / 2]}>
               <Title large color="primary">
                 Mas afinal,
                 <br />o que é a <span className="red">Atena</span> ?
@@ -41,7 +41,7 @@ const ScreenHowItWorks = () => {
                 os esforços das pessoas que pertencem à Impulso Network.
               </p>
               <br />
-              <p className="super">
+              <p className="super ifdesktop">
                 Assim que você entra na comunidade, automaticamente se tornará
                 um(a) jogador(a) e poderá pontuar por meio da execução de
                 diversas <strong>atividades</strong>, alcançar{" "}
@@ -49,12 +49,15 @@ const ScreenHowItWorks = () => {
                 reconhecimento pelos seus esforços.
               </p>
             </Box>
+            <Box width={[1, 1 / 2]}>
+              <img src="./images/ilustra-atena.png" className="ilustra" />
+            </Box>
           </Flex>
         </section>
         <section className="container xprules">
           <Flex justifyContent="center">
             <Box width={4 / 5}>
-              <Title large>
+              <Title large align="center">
                 O que é e como <br />
                 ganhar <span className="red">xp</span>?
               </Title>
@@ -68,19 +71,29 @@ const ScreenHowItWorks = () => {
               </p>
             </Box>
           </Flex>
-          <Flex css={{ margin: "0 -25px" }} className="rules">
-            <Box width={1 / 3} px={25} className="selected">
-              01. Obtendo XP
+          <Flex css={{ margin: "0 -25px" }} className="rules ifdesktop">
+            <Box width={1 / 3} px={0}>
+              <a href="javascript:;" className="selected">
+                <span>01. Obtendo XP</span>
+              </a>
             </Box>
-            <Box width={1 / 3} px={25}>
-              02. Perdendo XP
+            <Box width={1 / 3} px={0}>
+              <a href="javascript:;">
+                <span>02. Perdendo XP</span>
+              </a>
             </Box>
-            <Box width={1 / 3} px={25}>
-              03. Exceções
+            <Box width={1 / 3} px={0}>
+              <a href="javascript:;">
+                <span>03. Exceções</span>
+              </a>
             </Box>
           </Flex>
-          <Flex css={{ margin: "0 -30px" }} className="rules__inner">
-            <Box width={1 / 2} px={30}>
+          <Flex
+            css={{ margin: "0 -30px" }}
+            className="rules__inner"
+            flexWrap="wrap"
+          >
+            <Box width={[1, 1 / 2]} px={30}>
               <Title>
                 <span className="red">01.</span>
                 <br />
@@ -93,12 +106,32 @@ const ScreenHowItWorks = () => {
                 mensagem no Rocket.chat e até criar uma postagem no nosso Blog.
               </p>
             </Box>
-            <Box width={1 / 2} px={30} />
+            <Box width={[1, 1 / 2]} px={30}>
+              <div className="roles__navigation">
+                <a href="javascript:;" className="selected">
+                  Rocket.Chat
+                </a>
+                <a href="javascript:;">Blog</a>
+                <a href="javascript:;">Open-Source</a>
+              </div>
+              <div className="rules__table">
+                <p>
+                  Mensagem postada <span className="value">+1 xp</span>
+                </p>
+                <p>
+                  Reaction dado <span className="value">+1 xp</span>
+                </p>
+                <p>
+                  Reply recebido <span className="value">+2 xp</span>
+                </p>
+              </div>
+              <Button>mais detalhes</Button>
+            </Box>
           </Flex>
         </section>
         <section className="container cards">
-          <Flex css={{ margin: "0 -25px" }}>
-            <Box width={1 / 2} px={25}>
+          <Flex css={{ margin: "0 -25px" }} flexWrap="wrap">
+            <Box width={[1, 1 / 2]} px={25}>
               <Card>
                 <img src="/images/stars.svg" />
                 <Title>
@@ -114,7 +147,14 @@ const ScreenHowItWorks = () => {
                 <Button>mais detalhes</Button>
               </Card>
             </Box>
-            <Box width={1 / 2} px={25}>
+            <Box
+              width={[1, 1 / 2]}
+              px={25}
+              css={{
+                display: "flex",
+                flexDirection: "column"
+              }}
+            >
               <Card>
                 <img src="/images/badge.svg" />
                 <Title>
