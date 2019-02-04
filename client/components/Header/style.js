@@ -10,7 +10,10 @@ const StyledHeader = styled.header`
   right: 0;
 
   @media (max-width: 760px) {
+    padding: 14px 20px;
+
     img {
+      height: 40px;
       display: block;
       margin: auto;
     }

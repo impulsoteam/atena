@@ -3,7 +3,7 @@ import { createEventAdapter } from "@slack/events-api";
 import interactionController from "../controllers/interaction";
 import { getChannel } from "../utils/interactions";
 
-import { isValidChannel, getStyleLog, analyticsSendCollect } from "../utils";
+import { isValidChannel, getStyleLog } from "../utils";
 const router = express.Router();
 const slackEvents = createEventAdapter(process.env.SLACK_SIGNIN_EVENTS);
 
@@ -23,8 +23,6 @@ const handleEvent = async e => {
       `\n-- event into an invalid channel ${channel}`
     );
   }
-
-  analyticsSendCollect(e);
 };
 
 slackEvents.on("article", e => handleEvent(e));

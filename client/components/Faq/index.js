@@ -39,13 +39,13 @@ const Faq = () => (
       alignItems="center"
       justifyContent="space-between"
       css={{ margin: "0 -25px" }}
+      flexWrap="wrap"
     >
-      <Box width={2 / 5} px={25}>
+      <Box width={[1, 2 / 5]} px={25}>
         <Title extralarge>
           Dúvi
           <br />
-          Das
-          <br />
+          Das <br />
           <span className="red">
             Fre
             <br />
@@ -55,7 +55,7 @@ const Faq = () => (
           </span>
         </Title>
       </Box>
-      <Box width={3 / 5} px={25}>
+      <Box width={[1, 3 / 5]} px={25}>
         <Accordion data={questions} />
         <Button>Mais dúvidas</Button>
       </Box>

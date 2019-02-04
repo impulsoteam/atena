@@ -3,10 +3,12 @@ import StyledMenu from "./Menu.style";
 
 const links = [
   {
+    class: "index",
     title: "como funciona",
     link: "javascript:;"
   },
   {
+    class: "ranking",
     title: "ranking",
     link: "javascript:;"
   }
@@ -15,7 +17,9 @@ const links = [
 const renderLinks = () =>
   links.map((item, index) => (
     <li key={index}>
-      <a href={item.link}>{item.title}</a>
+      <a className={item.class} href={item.link}>
+        {item.title}
+      </a>
     </li>
   ));
 
