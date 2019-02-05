@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import PropTypes from "prop-types";
 import { Flex } from "@rebass/grid";
 import StyledScreenRanking from "./Ranking.style";
 import Layout from "Layout";
@@ -8,30 +9,6 @@ import RankingHeader from "components/RankingHeader";
 import RankingRow from "components/RankingRow";
 import Title from "components/Title";
 import UserCard from "components/UserCard";
-
-const dataMock = [
-  {
-    name: "Renato Tarantelli",
-    level: 10,
-    xp: 1000,
-    avatar: 'https://chat.impulso.network/avatar/renato?_dc=0"',
-    position: 2
-  },
-  {
-    name: "Renato Tarantelli",
-    level: 10,
-    xp: 1000,
-    avatar: 'https://chat.impulso.network/avatar/renato?_dc=0"',
-    position: 1
-  },
-  {
-    name: "Renato Tarantelli",
-    level: 10,
-    xp: 1000,
-    avatar: 'https://chat.impulso.network/avatar/renato?_dc=0"',
-    position: 3
-  }
-];
 
 const ScreenRanking = ({ monthName, first_users, last_users, error }) => (
   <StyledScreenRanking>
@@ -90,5 +67,16 @@ const ScreenRanking = ({ monthName, first_users, last_users, error }) => (
     </Layout>
   </StyledScreenRanking>
 );
+
+ScreenRanking.propTypes = {
+  monthName: PropTypes.string.isRequired,
+  first_users: PropTypes.array.isRequired,
+  last_users: PropTypes.array.isRequired,
+  error: PropTypes.string
+};
+
+ScreenRanking.defaultProps = {
+  error: null
+};
 
 export default ScreenRanking;
