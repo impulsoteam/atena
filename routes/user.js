@@ -4,11 +4,11 @@ const router = express.Router();
 
 router.put("/change-teams/:id", async (req, res) => {
   const { id } = req.params;
-  const { teams } = req.body;
+  const { team } = req.headers;
   let result = false;
 
   try {
-    result = await UserController.changeTeams(id, teams);
+    result = await UserController.changeTeams(id, team);
   } catch (e) {
     console.log(e);
   }

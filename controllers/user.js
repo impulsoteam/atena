@@ -311,22 +311,25 @@ const changeTeams = async (userId, teams) => {
   const UserModel = mongoose.model("User");
   const user = await getNetwork(userId);
 
+  let result = {};
   try {
-    await UserModel.findOne(
+    result = await UserModel.findByIdAndUpdate(
+      user._id,
       {
-        _id: user._id
+        teams: teams.split(",") || ""
       },
-      (doc, err) => {
+      (err, doc) => {
         if (err) return false;
+        console.log(doc);
 
-        doc.teams = [...String(teams).split(",")] || "";
-        doc.save();
+        return doc;
       }
     );
   } catch (e) {
     return false;
   }
-  return true;
+
+  return result;
 };
 
 export default {

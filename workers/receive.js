@@ -13,7 +13,7 @@ const run = () => {
       ok = ok.then(ch => {
         ch.assertQueue(queue);
         ch.consume(queue, msg => {
-          msg && console.log(msg.toString());
+          msg && console.log(JSON.stringify(msg));
         });
       });
       return ok;
