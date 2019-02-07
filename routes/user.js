@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.put("/change-teams/:id", async (req, res) => {
   const { id } = req.params;
-  const { team } = req.headers;
+  const { team } = req.body;
   let result = false;
 
   try {

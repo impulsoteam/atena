@@ -3,7 +3,7 @@ import UserController from "../controllers/user";
 const router = express.Router();
 import { isValidToken } from "../utils/teams";
 
-router.get("/users", async (req, res) => {
+router.get("/ranking", async (req, res) => {
   const { team, token } = req.headers;
   let result = [];
 
