@@ -11,6 +11,7 @@ import disqusRoutes from "./disqus";
 import rdRoutes from "./rdstation";
 import resourcesRoutes from "./resources";
 import achievementsTemporyDataRoutes from "./achievementsTemporyData";
+import minerRoutes from "./miner";
 import { renderScreen } from "../utils/ssr";
 
 const router = express.Router();
@@ -25,6 +26,7 @@ router.use("/resources", resourcesRoutes);
 router.use("/integrations/github", githubRoutes);
 router.use("/integrations/disqus", disqusRoutes);
 router.use("/integrations/rd", rdRoutes);
+router.use("/miner", minerRoutes);
 router.use("/achievements/temporary/data", achievementsTemporyDataRoutes);
 
 router.get("/", (req, res) =>
