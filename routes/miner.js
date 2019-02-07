@@ -4,20 +4,20 @@ const router = express.Router();
 import { isValidToken } from "../utils/teams";
 
 router.get("/users", async (req, res) => {
-  // const { team, token } = req.headers;
+  const { team, token } = req.headers;
   let result = [];
 
   try {
-    result = await UserController.findAll();
+    result = await UserController.findAll(false, null, "", team);
   } catch (e) {
     console.log(e);
   }
 
-  // if (isValidToken(team, token)) {
-  res.json(result);
-  // } else {
-  //   res.send(401);
-  // }
+  if (isValidToken(team, token)) {
+    res.json(result);
+  } else {
+    res.send(401);
+  }
 });
 
 export default router;

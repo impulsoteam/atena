@@ -106,12 +106,14 @@ const findBy = async args => {
 const findAll = async (
   isCoreTeam = false,
   limit = 20,
-  selectOptions = "-email"
+  selectOptions = "-email -teams -_id -lastUpdate",
+  team = null
 ) => {
   const UserModel = mongoose.model("User");
   const base_query = {
     score: { $gt: 0 },
-    isCoreTeam: isCoreTeam
+    isCoreTeam: isCoreTeam,
+    teams: team
   };
 
   const result = await UserModel.find(base_query)
