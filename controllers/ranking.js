@@ -252,9 +252,64 @@ const sendToChannel = async () => {
 };
 
 const index = async (req, res) => {
+  let month = new Date(Date.now()).getMonth();
+  let monthName = monthNames[month];
+  if (req.params.month && (await valid_month(req.params.month))) {
+    month = req.params.month;
+    monthName = monthNames[month - 1];
+  } else {
+    month += 1;
+  }
+  let allUsers = await userController.findAll(false, 0);
+  let usersFromApi = [];
+  for (let user of allUsers) {
+    let name;
+    if (user.rocketId) {
+      let response = await rocket_info(user.rocketId);
+      name = response.data.user.name;
+    }
+    usersFromApi.push({
+      name: name,
+      user_id: user.rocketId
+    });
+  }
+  let first_users = [];
+  let last_users = [];
+  let error = null;
+  const rankingMonthly = await monthly(month);
+  if (!rankingMonthly.text && rankingMonthly.users.length === 0) {
+    error = "Ops! Ainda ninguem pontuou. =/";
+  } else if (rankingMonthly.text) {
+    error = rankingMonthly.text;
+  } else if (!rankingMonthly.text && rankingMonthly.users.length < 3) {
+    error = "Ops! Ranking incompleto.";
+  } else {
+    const users = rankingMonthly.users.slice(0, 20).map((user, index) => ({
+      name: usersFromApi.find(u => u.user_id == user.user).name,
+      xp: user.score,
+      level: user.level,
+      position: index + 1,
+      avatar: `https://${
+        process.env.ROCKET_HOST
+      }/api/v1/users.getAvatar?userId=${user.user}`
+    }));
+
+    first_users = users.slice(0, 3);
+    last_users = users.slice(3, 20);
+    const first = first_users[0];
+    const second = first_users[1];
+    first_users[0] = second;
+    first_users[1] = first;
+  }
+
   const initialData = {
-    title: "Ranking"
+    title: "Ranking",
+    first_users: first_users,
+    last_users: last_users,
+    monthName: monthName,
+    error: error
   };
+
   renderScreen(res, "Ranking", initialData);
 };
 

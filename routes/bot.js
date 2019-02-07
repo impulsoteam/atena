@@ -155,7 +155,6 @@ router.post("/sendpoints", urlencodedParser, async (req, res) => {
 
 router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
   // validSlackSecret(req, res);
-
   let response = { text: "Ops! Você ainda não tem conquistas registradas. :(" };
 
   try {

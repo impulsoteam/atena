@@ -14,7 +14,6 @@ import achievementsTemporyDataRoutes from "./achievementsTemporyData";
 import { renderScreen } from "../utils/ssr";
 
 const router = express.Router();
-
 router.use("/slack", slackRoutes);
 router.use("/rocket", rocketRoutes);
 router.use("/ranking", rankingRoutes);

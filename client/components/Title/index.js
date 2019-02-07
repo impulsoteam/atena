@@ -9,8 +9,8 @@ const Title = ({ children, extraLarge, width, align, ...others }) => (
 );
 
 Title.propTypes = {
-  children: PropTypes.string.isRequired,
-  extraLarge: PropTypes.boolean,
+  children: PropTypes.array.isRequired,
+  extraLarge: PropTypes.bool,
   width: PropTypes.string,
   align: PropTypes.string
 };

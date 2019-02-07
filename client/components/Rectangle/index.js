@@ -27,10 +27,10 @@ const Rectangle = ({ children, active, left, right, padding }) => {
 };
 
 Rectangle.propTypes = {
-  children: PropTypes.string.isRequired,
-  active: PropTypes.boolean,
-  left: PropTypes.boolean,
-  right: PropTypes.boolean,
+  children: PropTypes.object.isRequired,
+  active: PropTypes.bool,
+  left: PropTypes.bool,
+  right: PropTypes.bool,
   padding: PropTypes.number
 };
 
@@ -38,7 +38,7 @@ Rectangle.defaultProps = {
   active: false,
   left: false,
   right: false,
-  padding: props => props.theme.spacing.unit * 21.5
+  padding: 172
 };
 
 export default Rectangle;
