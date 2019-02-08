@@ -36,7 +36,6 @@ const questions = [
 const Faq = () => (
   <StyledFaq>
     <Flex
-      alignItems="center"
       justifyContent="space-between"
       css={{ margin: "0 -25px" }}
       flexWrap="wrap"
