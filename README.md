@@ -75,7 +75,6 @@ Rode o node inspect em outra janela de terminal
 ```
 > node-inspect localhost:9229
 ```
-
 ### Configurando o Bot do Rocket
 
 É preciso gerar um token, para isso o bot precisa da role de usuário. Logar com

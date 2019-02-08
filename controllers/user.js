@@ -106,12 +106,14 @@ const findBy = async args => {
 const findAll = async (
   isCoreTeam = false,
   limit = 20,
-  selectOptions = "-email"
+  selectOptions = "-email -teams -_id -lastUpdate",
+  team = null
 ) => {
   const UserModel = mongoose.model("User");
   const base_query = {
     score: { $gt: 0 },
-    isCoreTeam: isCoreTeam
+    isCoreTeam: isCoreTeam,
+    teams: team
   };
 
   const result = await UserModel.find(base_query)
@@ -311,22 +313,25 @@ const changeTeams = async (userId, teams) => {
   const UserModel = mongoose.model("User");
   const user = await getNetwork(userId);
 
+  let result = {};
   try {
-    await UserModel.findOne(
+    result = await UserModel.findByIdAndUpdate(
+      user._id,
       {
-        _id: user._id
+        teams: teams.split(",") || ""
       },
-      (doc, err) => {
+      (err, doc) => {
         if (err) return false;
+        console.log(doc);
 
-        doc.teams = [...String(teams).split(",")] || "";
-        doc.save();
+        return doc;
       }
     );
   } catch (e) {
     return false;
   }
-  return true;
+
+  return result;
 };
 
 export default {

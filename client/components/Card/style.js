@@ -63,4 +63,9 @@ const StyledCard = styled.div`
   }
 `;
 
+export const StyledUserCard = styled.div`
+  background-color: ${props => props.theme.color.white};
+  min-height: 413px;
+`;
+
 export default StyledCard;
