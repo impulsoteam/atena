@@ -48,6 +48,7 @@ const StyledCard = styled.div`
 
   @media (max-width: 760px) {
     padding: 12px 12px 20px;
+    margin: 15px;
 
     .cardIcon {
       margin: -40px auto 20px;
@@ -60,6 +61,11 @@ const StyledCard = styled.div`
       height: 69px;
     }
   }
+`;
+
+export const StyledUserCard = styled.div`
+  background-color: ${props => props.theme.color.white};
+  min-height: 413px;
 `;
 
 export default StyledCard;

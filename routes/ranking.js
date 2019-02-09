@@ -5,6 +5,7 @@ import rankingController from "../controllers/ranking";
 const router = express.Router();
 
 router.get("/", rankingController.index);
+router.get("/mes/:month", rankingController.index);
 
 //router.get("/", async (req, res) => {
 //  console.log(req.params);

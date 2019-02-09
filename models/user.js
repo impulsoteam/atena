@@ -75,6 +75,10 @@ export const userSchema = new mongoose.Schema({
   disqusUsername: {
     type: String,
     required: false
+  },
+  teams: {
+    type: Array,
+    required: false
   }
 });
 

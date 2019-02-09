@@ -4,7 +4,7 @@ import moment from "moment";
 import userController from "./user";
 import achievementController from "./achievement";
 import achievementTemporaryController from "./achievementTemporary";
-import { calculateScore } from "../utils";
+import { calculateScore, analyticsSendCollect } from "../utils";
 import { lastMessageTime, getAction, getOrigin } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 
@@ -168,6 +168,8 @@ export const save = async data => {
   const score = await todayScore(interaction.user);
   const todayLimitStatus = todayLimitScore - score;
   const instance = new InteractionModel(interaction);
+
+  analyticsSendCollect(interaction);
 
   if (
     interaction.type === "message" &&

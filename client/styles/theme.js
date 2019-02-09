@@ -3,6 +3,10 @@ const Theme = {
   spacing: {
     unit: 8
   },
+  fontFamily: {
+    primary: "proxima-nova",
+    secondary: "essonnes-display"
+  },
   fontSize: {
     default: "14px",
     medium: "20px",
@@ -17,7 +21,8 @@ const Theme = {
     gray: "#666C71",
     primary: "#595B98",
     primaryLight: "#8688D9",
-    secondary: "#DC3C2C"
+    secondary: "#DC3C2C",
+    bg: "#FDFDFD"
   }
 };
 

@@ -20,15 +20,41 @@ const StyledMenu = styled.ul`
     margin-right: ${props => props.theme.fontSize.default};
   }
 
+  li {
+    &:not(:first-child) a::after {
+      transform: translateY(6px) translateX(32px);
+    }
+  }
+
   a {
     color: ${props => props.theme.color.white};
     text-transform: uppercase;
     text-decoration: none;
     font-weight: bold;
-  }
 
-  a:hover {
-    color: ${props => props.theme.color.primaryLight};
+    &::after {
+      content: "";
+      display: block;
+      width: 0px;
+      height: 3px;
+      background: ${props => props.theme.color.primaryLight};
+      border-radius: 3px;
+      position: absolute;
+      transform: translateY(6px);
+      transition: 0.2s all ease-in;
+    }
+
+    &.selected::after {
+      width: 20px;
+    }
+
+    &:hover {
+      color: ${props => props.theme.color.primaryLight};
+
+      &::after {
+        width: 20px;
+      }
+    }
   }
 
   @media (max-width: 760px) {
@@ -49,6 +75,10 @@ const StyledMenu = styled.ul`
     a {
       padding: ${props => props.theme.fontSize.default};
       display: block;
+
+      &::after {
+        display: none;
+      }
     }
   }
 `;

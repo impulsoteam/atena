@@ -30,6 +30,15 @@ const StyledApp = createGlobalStyle`
     padding: 0 15px;
   }
 
+  .page-index header a.index,
+  .page-ranking header a.ranking {
+    color: ${props => props.theme.color.primaryLight};
+
+    &::after {
+      width: 20px;
+    }
+  }
+
   hr {
     border-color: ${props => props.theme.color.primaryLight};
     margin: 40px 0;
@@ -41,7 +50,7 @@ const StyledApp = createGlobalStyle`
 
   main p {
     font-size: ${props => props.theme.fontSize.medium};
-    line-height: 30px;
+    line-height: 1.5;
     margin: 0;
     text-align: center;
   }
@@ -53,8 +62,12 @@ const StyledApp = createGlobalStyle`
   }
 
   @media (max-width: 760px) {
-    main {
-      padding: 0 12px;
+    main p {
+      font-size: 16px;
+    }
+
+    .ifdesktop {
+      display: none !important;
     }
   }
 `;
