@@ -12,6 +12,8 @@ import { sendToUser } from "../rocket/bot";
 import AchievementLevelController from "./achievementLevel";
 import axios from "axios";
 import { _throw } from "../helpers";
+import { isValidToken } from "../utils/teams";
+import interactionController from "./interaction";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
@@ -381,6 +383,28 @@ const fromRocket = async usersAtena => {
   return users;
 };
 
+const details = async (req, res) => {
+  const { team, token } = req.headers;
+  const { id } = req.params;
+  let query = { rocketId: id };
+  if (isValidToken(team, token)) {
+    query = {
+      ...query,
+      teams: team
+    };
+  }
+  const user = await findBy(query);
+  const interactions = await interactionController.findBy({ user: id });
+  const response = {
+    user,
+    avatar: `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${
+      user.rocketId
+    }`,
+    interactions: interactions
+  };
+  res.json(response);
+};
+
 export default {
   find,
   findAll,
@@ -393,5 +417,6 @@ export default {
   findByOrigin,
   getNetwork,
   changeTeams,
-  fromRocket
+  fromRocket,
+  details
 };
