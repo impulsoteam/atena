@@ -1,6 +1,10 @@
 import express from "express";
+import bodyParser from "body-parser";
 import UserController from "../controllers/user";
 const router = express.Router();
+
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
 
 router.put("/change-teams/:id", async (req, res) => {
   const { id } = req.params;

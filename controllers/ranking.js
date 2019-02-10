@@ -3,27 +3,13 @@ import { driver } from "@rocket.chat/sdk";
 import userController from "./user";
 import interactionController from "./interaction";
 import { calculateLevel } from "../utils";
-import axios from "axios";
 import { renderScreen } from "../utils/ssr";
+import { isValidToken } from "../utils/teams";
 
 const myPosition = async (user_id, users) => {
   const user = await userController.getNetwork(user_id);
   const id = user.network === "rocket" ? user.rocketId : user.slackId;
   return users.map(e => e.user).indexOf(id) + 1;
-};
-
-const rocket_info = async user_id => {
-  const url = `https://${process.env.ROCKET_HOST}/api/v1/users.info`;
-
-  return axios.get(url, {
-    params: {
-      userId: user_id
-    },
-    headers: {
-      "X-Auth-Token": process.env.ROCKET_USER_TOKEN,
-      "X-User-Id": process.env.ROCKET_USER_ID
-    }
-  });
 };
 
 const bot_index = async (req, res) => {
@@ -45,24 +31,6 @@ const bot_index = async (req, res) => {
   }
 
   let allUsers = await userController.findAll(false, 0);
-  let usersFromApi = [];
-  for (let user of allUsers) {
-    let name;
-    let network;
-    if (user.rocketId) {
-      let response = await rocket_info(user.rocketId);
-      name = response.data.user.name;
-      network = "rocket";
-    } else {
-      name = user.name;
-      network = "slack";
-    }
-    usersFromApi.push({
-      name: name,
-      user_id: user.rocketId ? user.rocketId : user.slackId,
-      network: network
-    });
-  }
   const rankingMonthly = await monthly(month);
   if (rankingMonthly.text) {
     response = rankingMonthly;
@@ -72,7 +40,7 @@ const bot_index = async (req, res) => {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking);
     response.attachments = await limit_users.map((user, index) => ({
       text: `${index + 1}º lugar está ${
-        usersFromApi.find(u => u.user_id === user.user).name
+        allUsers.find(u => u.rocketId === user.user).name
       } com ${user.score} XP, no nível ${user.level}`
     }));
 
@@ -216,24 +184,6 @@ const sendToChannel = async () => {
     attachments: []
   };
   let allUsers = await userController.findAll(false, 0);
-  let usersFromApi = [];
-  for (let user of allUsers) {
-    let name;
-    let network;
-    if (user.rocketId) {
-      let response = await rocket_info(user.rocketId);
-      name = response.data.user.name;
-      network = "rocket";
-    } else {
-      name = user.name;
-      network = "slack";
-    }
-    usersFromApi.push({
-      name: name,
-      user_id: user.rocketId ? user.rocketId : user.slackId,
-      network: network
-    });
-  }
   const rankingMonthly = await monthly(today.getMonth() + 1);
   if (rankingMonthly.text) {
     response = rankingMonthly;
@@ -243,7 +193,7 @@ const sendToChannel = async () => {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking);
     response.attachments = await limit_users.map((user, index) => ({
       text: `${index + 1}º lugar está ${
-        usersFromApi.find(u => u.user_id === user.user).name
+        allUsers.find(u => u.rocketId === user.user).name
       } com ${user.score} XP, no nível ${user.level}`
     }));
   }
@@ -251,7 +201,49 @@ const sendToChannel = async () => {
   await driver.sendToRoom(response, roomname);
 };
 
+const normalize = async (users, first = 0, limit = 20) => {
+  const selectOptions = "-email -_id -lastUpdate";
+  const allUsers = await userController.findAll(false, 0, selectOptions);
+  return users.slice(first, limit).map((user, index) => {
+    const u = allUsers.find(u => u.rocketId == user.user);
+    return {
+      name: u.name,
+      xp: user.score,
+      level: user.level,
+      position: index + 1,
+      avatar: `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${
+        user.user
+      }`,
+      teams: u.teams
+    };
+  });
+};
+
+const firstUsers = async users => {
+  const limit = 3;
+  if (users.length < limit) return users;
+  let first_users = users.slice(0, limit);
+  const first = first_users[0];
+  const second = first_users[1];
+  first_users[0] = second;
+  first_users[1] = first;
+  return first_users;
+};
+
+const lastUsers = async (users, first = 3, limit = 20) =>
+  users.slice(first, limit);
+
+const byTeam = async (users, team) => users.filter(u => u.teams.includes(team));
+
 const index = async (req, res) => {
+  const miner = /miner/g;
+  const { team, token } = req.headers;
+  const isMiner = miner.test(req.originalUrl);
+  if ((isMiner && !team) || (isMiner && !isValidToken(team, token))) {
+    res.sendStatus(401);
+    return;
+  }
+
   let month = new Date(Date.now()).getMonth();
   let monthName = monthNames[month];
   if (req.params.month && (await valid_month(req.params.month))) {
@@ -259,19 +251,6 @@ const index = async (req, res) => {
     monthName = monthNames[month - 1];
   } else {
     month += 1;
-  }
-  let allUsers = await userController.findAll(false, 0);
-  let usersFromApi = [];
-  for (let user of allUsers) {
-    let name;
-    if (user.rocketId) {
-      let response = await rocket_info(user.rocketId);
-      name = response.data.user.name;
-    }
-    usersFromApi.push({
-      name: name,
-      user_id: user.rocketId
-    });
   }
   let first_users = [];
   let last_users = [];
@@ -284,22 +263,10 @@ const index = async (req, res) => {
   } else if (!rankingMonthly.text && rankingMonthly.users.length < 3) {
     error = "Ops! Ranking incompleto.";
   } else {
-    const users = rankingMonthly.users.slice(0, 20).map((user, index) => ({
-      name: usersFromApi.find(u => u.user_id == user.user).name,
-      xp: user.score,
-      level: user.level,
-      position: index + 1,
-      avatar: `https://${
-        process.env.ROCKET_HOST
-      }/api/v1/users.getAvatar?userId=${user.user}`
-    }));
-
-    first_users = users.slice(0, 3);
-    last_users = users.slice(3, 20);
-    const first = first_users[0];
-    const second = first_users[1];
-    first_users[0] = second;
-    first_users[1] = first;
+    let users = await normalize(rankingMonthly.users);
+    if (isMiner) users = await byTeam(users, team);
+    first_users = await firstUsers(users);
+    last_users = await lastUsers(users);
   }
 
   const initialData = {
@@ -310,7 +277,11 @@ const index = async (req, res) => {
     error: error
   };
 
-  renderScreen(res, "Ranking", initialData);
+  if (isMiner && isValidToken(team, token)) {
+    res.json(initialData);
+  } else {
+    renderScreen(res, "Ranking", initialData);
+  }
 };
 
 export default {
