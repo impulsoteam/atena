@@ -233,7 +233,13 @@ const firstUsers = async users => {
 const lastUsers = async (users, first = 3, limit = 20) =>
   users.slice(first, limit);
 
-const byTeam = async (users, team) => users.filter(u => u.teams.includes(team));
+const byTeam = async (users, team) =>
+  users
+    .filter(u => u.teams.includes(team))
+    .map((user, index) => ({
+      ...user,
+      position: index + 1
+    }));
 
 const index = async (req, res) => {
   const miner = /miner/g;
