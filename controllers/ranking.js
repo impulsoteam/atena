@@ -201,23 +201,11 @@ const sendToChannel = async () => {
   await driver.sendToRoom(response, roomname);
 };
 
-const normalize = async (users, first = 0, limit = 20) => {
-  const selectOptions = "-email -_id -lastUpdate";
-  const allUsers = await userController.findAll(false, 0, selectOptions);
-  return users.slice(first, limit).map((user, index) => {
-    const u = allUsers.find(u => u.rocketId == user.user);
-    return {
-      name: u.name,
-      xp: user.score,
-      level: user.level,
-      position: index + 1,
-      avatar: `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${
-        user.user
-      }`,
-      teams: u.teams
-    };
-  });
-};
+const position = async (users, first = 0, limit = 20) =>
+  users.slice(first, limit).map((user, index) => ({
+    ...user,
+    position: index + 1
+  }));
 
 const firstUsers = async users => {
   const limit = 3;
@@ -240,6 +228,33 @@ const byTeam = async (users, team) =>
       ...user,
       position: index + 1
     }));
+
+const group = async (users, isCoreTeam = false) => {
+  let listCoreTeam = [];
+  let listUsers = [];
+  for (let user of users) {
+    const u = await userController.getNetwork(user.user);
+    let avatar = `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${
+      user.user
+    }`;
+    if (u.network === "slack") avatar = u.avatar;
+    const data = {
+      name: u.name,
+      xp: user.score,
+      level: user.level,
+      avatar: avatar,
+      teams: u.teams || [],
+      slackId: u.slackId,
+      rocketId: u.rocketId
+    };
+    if (u.isCoreTeam) {
+      listCoreTeam.push(data);
+    } else {
+      listUsers.push(data);
+    }
+  }
+  return isCoreTeam ? listCoreTeam : listUsers;
+};
 
 const index = async (req, res) => {
   const miner = /miner/g;
@@ -269,7 +284,8 @@ const index = async (req, res) => {
   } else if (!rankingMonthly.text && rankingMonthly.users.length < 3) {
     error = "Ops! Ranking incompleto.";
   } else {
-    let users = await normalize(rankingMonthly.users);
+    let users = await group(rankingMonthly.users);
+    users = await position(users);
     if (isMiner) users = await byTeam(users, team);
     first_users = await firstUsers(users);
     last_users = await lastUsers(users);
