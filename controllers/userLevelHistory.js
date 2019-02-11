@@ -17,6 +17,9 @@ export const save = async (userId, oldLevel, newLevel) => {
     });
 
     await history.save();
+  } else {
+    historyExistent.earnedDate = Date.now();
+    await historyExistent.save();
   }
 };
 

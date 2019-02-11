@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { doLevelChangeActions } from "../utils/levels";
+import { isNewLevel } from "../utils/achievementsLevel";
 
 export const userSchema = new mongoose.Schema({
   avatar: {
@@ -12,7 +14,11 @@ export const userSchema = new mongoose.Schema({
   level: {
     type: Number,
     required: true,
-    default: 1
+    default: 0,
+    set: function(name) {
+      this._previousLevel = this.level;
+      return name;
+    }
   },
   score: {
     type: Number,
@@ -79,6 +85,22 @@ export const userSchema = new mongoose.Schema({
   teams: {
     type: Array,
     required: false
+  }
+});
+
+userSchema.pre("save", function(next) {
+  if (
+    this.isModified("level") &&
+    this._previousLevel != 0 &&
+    isNewLevel(this._previousLevel, this.level)
+  ) {
+    doLevelChangeActions(this._id, this._previousLevel, this.level).then(
+      function(resp) {
+        next();
+      }
+    );
+  } else {
+    next();
   }
 });
 
