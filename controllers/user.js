@@ -11,6 +11,9 @@ import {
 import { sendToUser } from "../rocket/bot";
 import { _throw } from "../helpers";
 import { doLevelChangeActions } from "../utils/levels";
+import axios from "axios";
+import { isValidToken } from "../utils/teams";
+import interactionController from "./interaction";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
@@ -112,11 +115,21 @@ const findAll = async (
   const UserModel = mongoose.model("User");
   const base_query = {
     score: { $gt: 0 },
-    isCoreTeam: isCoreTeam,
-    teams: team
+    isCoreTeam: isCoreTeam
   };
 
-  const result = await UserModel.find(base_query)
+  let query = {
+    ...base_query
+  };
+
+  if (team) {
+    query = {
+      ...base_query,
+      teams: team
+    };
+  }
+
+  const result = await UserModel.find(query)
     .sort({
       score: -1
     })
@@ -336,6 +349,64 @@ const changeTeams = async (userId, teams) => {
   return result;
 };
 
+const rocketInfo = async user_id => {
+  const url = `${process.env.ROCKET_HOST}/api/v1/users.info`;
+
+  return axios.get(url, {
+    params: {
+      userId: user_id
+    },
+    headers: {
+      "X-Auth-Token": process.env.ROCKET_USER_TOKEN,
+      "X-User-Id": process.env.ROCKET_USER_ID
+    }
+  });
+};
+
+const fromRocket = async usersAtena => {
+  let users = [];
+  for (let user of usersAtena) {
+    let name;
+    let network;
+    if (user.rocketId) {
+      let response = await rocketInfo(user.rocketId);
+      name = response.data.user.name;
+      network = "rocket";
+    } else {
+      name = user.name;
+      network = "slack";
+    }
+    users.push({
+      name: name,
+      user_id: user.rocketId,
+      network: network
+    });
+  }
+  return users;
+};
+
+const details = async (req, res) => {
+  const { team, token } = req.headers;
+  const { id } = req.params;
+  let query = { rocketId: id };
+  if (isValidToken(team, token)) {
+    query = {
+      ...query,
+      teams: team
+    };
+  }
+  const user = await findBy(query);
+  const interactions = await interactionController.findBy({ user: id });
+  const response = {
+    user,
+    avatar: `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${
+      user.rocketId
+    }`,
+    interactions: interactions
+  };
+  res.json(response);
+};
+
 export default {
   find,
   findAll,
@@ -348,5 +419,7 @@ export default {
   findByOrigin,
   getNetwork,
   updateScore,
-  changeTeams
+  changeTeams,
+  fromRocket,
+  details
 };
