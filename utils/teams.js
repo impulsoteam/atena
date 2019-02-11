@@ -1,2 +1,2 @@
 export const isValidToken = (team, token) =>
-  process.env[`TEAM_${team}_TOKEN`] === token;
+  process.env[`X_MINER_TOKEN`] === token;
