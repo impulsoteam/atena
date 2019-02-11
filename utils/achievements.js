@@ -48,12 +48,12 @@ export const getLastAchievementRatingEarned = achievement => {
   let ratings = achievement.ratings.filter(rating => {
     let lastRangeFromRating = rating.ranges.filter(range => range.earnedDate);
     if (lastRangeFromRating.length) {
-      lastRangeEarned = lastRangeFromRating.pop();
+      lastRangeEarned = lastRangeFromRating[lastRangeFromRating.length - 1];
       return true;
     }
   });
 
-  lastRatingEarned = ratings.pop();
+  lastRatingEarned = ratings[ratings.length - 1];
 
   if (lastRatingEarned && lastRangeEarned) {
     return {

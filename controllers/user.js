@@ -30,11 +30,7 @@ const updateParentUser = async interaction => {
             throw new Error("Error updating parentUser");
           }
           const newScore = doc.score + score;
-          const newLevel = calculateLevel(newScore);
-
-          doLevelChangeActions(doc._id, doc.level, newLevel);
-
-          doc.level = newLevel;
+          doc.level = calculateLevel(newScore);
           doc.score = newScore < 0 ? 0 : newScore;
           doc.lastUpdate = Date.now();
           doc.save();
@@ -64,7 +60,7 @@ const update = async interaction => {
   }
 
   if (user) {
-    return await updateUserData(user, interaction, score);
+    return await updateUserData(UserModel, interaction, score);
   } else {
     return await createUserData(userInfo, score, interaction, UserModel);
   }
@@ -104,7 +100,7 @@ const findByOrigin = async (interaction, isParent = false) => {
 const findBy = async args => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne(args).exec();
-  return result || _throw("Error finding user");
+  return result || _throw("Error findingd user");
 };
 
 const findAll = async (
@@ -213,6 +209,11 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
     };
   }
 
+  const instance = new UserModel(obj);
+  const user = await instance.save();
+
+  await doLevelChangeActions(user._id, 0, 1);
+
   sendToUser(
     `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
     \n\n
@@ -236,11 +237,6 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
     interaction.rocketUsername
   );
 
-  const instance = new UserModel(obj);
-  const user = await instance.save();
-
-  await doLevelChangeActions(user._id, 0, level);
-
   return user;
 };
 
@@ -254,11 +250,7 @@ const updateUserData = (UserModel, interaction, score) => {
         if (err) _throw("Error updating user");
 
         const newScore = doc.score + score;
-        const newLevel = calculateLevel(newScore);
-
-        doLevelChangeActions(doc._id, doc.level, newLevel);
-
-        doc.level = newLevel;
+        doc.level = calculateLevel(newScore);
         doc.score = newScore < 0 ? 0 : newScore;
         doc.isCoreTeam = isCoreTeam(interaction.user);
         doc.messages =
@@ -278,11 +270,6 @@ const updateUserData = (UserModel, interaction, score) => {
       }
 
       const newScore = doc.score + score;
-      const newLevel = calculateLevel(newScore);
-
-      doLevelChangeActions(doc._id, doc.level, newLevel);
-
-      doc.level = newLevel;
       doc.score = newScore < 0 ? 0 : newScore;
       doc.isCoreTeam = isCoreTeam(interaction.user);
       doc.messages =
@@ -315,19 +302,14 @@ const getNetwork = async user_id => {
 
 const updateScore = async (user, score) => {
   if (user) {
-    console.log("Entrou no updateScore");
     const newScore = user.score + score;
-    const newLevel = calculateLevel(newScore);
-
-    await doLevelChangeActions(user._id, user.level, newLevel);
-
-    user.level = newLevel;
+    user.level = calculateLevel(newScore);
     user.score = newScore;
     return await user.save();
   }
 
   return;
-}
+};
 
 const changeTeams = async (userId, teams) => {
   const UserModel = mongoose.model("User");

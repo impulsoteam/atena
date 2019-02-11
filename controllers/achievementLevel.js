@@ -3,7 +3,7 @@ import config from "config-yml";
 import userController from "./user";
 import AchievementLevelModel from "../models/achievementLevel";
 import { _throw } from "../helpers";
-import { setRangesEarnedDates } from "../utils/achievementsLevel";
+import { setRangesEarnedDates, isNewLevel } from "../utils/achievementsLevel";
 import {
   getAchievementCurrentRating,
   getRecord,
@@ -35,12 +35,6 @@ export const save = async (userId, currentLevel, newLevel) => {
   }
 
   const achievementExistent = await findByUser(userId);
-  console.log(
-    "isNewLevel(currentLevel, newLevel)",
-    isNewLevel(currentLevel, newLevel),
-    currentLevel,
-    newLevel
-  );
   if (!achievementExistent) {
     try {
       return await createAchievement(user, newLevel);
@@ -49,29 +43,36 @@ export const save = async (userId, currentLevel, newLevel) => {
     }
   } else if (isNewLevel(currentLevel, newLevel)) {
     try {
-      await updateAchievement(achievementExistent, user, newLevel);
+      return await updateAchievement(
+        achievementExistent,
+        user,
+        currentLevel,
+        newLevel
+      );
     } catch (error) {
       _throw("Error on update level achievement");
     }
   }
 };
 
-const isNewLevel = (currentLevel, newLevel) => {
-  return parseInt(currentLevel, 10) !== parseInt(newLevel, 10);
-};
-
 const createAchievement = async (user, newLevel) => {
   const achievement = await generateNewAchievement(user._id, newLevel);
-  await addNewScore(user, achievement);
+  await addScore(user, achievement, true);
   sendMessage(user, achievement);
-  await achievement.save();
+  return await achievement.save();
 };
 
-const updateAchievement = async (achievementExistent, user, newLevel) => {
+const updateAchievement = async (
+  achievementExistent,
+  user,
+  currentLevel,
+  newLevel
+) => {
   let achievement = setRangesEarnedDates(achievementExistent, newLevel);
   achievement.record = getRecord(achievement);
-  await achievement.save();
-  await addScore(user, achievement);
+  const isUpgrade = newLevel > currentLevel;
+  await addScore(user, achievement, isUpgrade);
+  return await achievement.save();
 };
 
 const sendMessage = async (user, achievement) => {
@@ -82,25 +83,19 @@ const sendMessage = async (user, achievement) => {
   );
 };
 
-const addScore = async (user, achievement) => {
+const addScore = async (user, achievement, isUpgrade) => {
   const score = getCurrentScoreToIncrease(achievement);
-  if (score > 0) {
-    await sendMessage(user, achievement);
+  if (score > 0 && isUpgrade) {
     await userController.updateScore(user, score);
-  }
-};
-
-const addNewScore = async (user, achievement) => {
-  const score = getAllScoreToIncrease(achievement);
-  if (score > 0) {
-    await userController.updateScore(user, score);
+    sendMessage(user, achievement);
   }
 };
 
 const getCurrentScoreToIncrease = achievement => {
   let score = 0;
   const last = getLastAchievementRatingEarned(achievement);
-  const range = last.rating.ranges.pop();
+  const ranges = last.rating.ranges;
+  const range = ranges[ranges.length - 1];
 
   if (range.earnedDate) {
     score = last.rating.xp;
