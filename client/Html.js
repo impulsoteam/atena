@@ -34,7 +34,7 @@ Html.propTypes = {
 };
 
 Html.defaultProps = {
-  title: "Atena | Gameficação da Impulso Network"
+  title: "Atena | Gamificação da Impulso Network"
 };
 
 export default Html;
