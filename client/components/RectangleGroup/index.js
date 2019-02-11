@@ -7,7 +7,7 @@ const RectangleGroup = ({ children }) => (
 );
 
 RectangleGroup.propTypes = {
-  children: PropTypes.string.isRequired
+  children: PropTypes.array.isRequired
 };
 
 export default RectangleGroup;

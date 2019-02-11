@@ -9,7 +9,11 @@ import {
   isCoreTeam
 } from "../utils";
 import { sendToUser } from "../rocket/bot";
+import AchievementLevelController from "./achievementLevel";
+import axios from "axios";
 import { _throw } from "../helpers";
+import { isValidToken } from "../utils/teams";
+import interactionController from "./interaction";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
@@ -65,12 +69,14 @@ const update = async interaction => {
   }
 };
 
-const find = async (userId, isCoreTeam = false) => {
+const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({
     slackId: userId,
     isCoreTeam: isCoreTeam
-  }).exec();
+  })
+    .select(selectOptions)
+    .exec();
   if (result) result.score = result.score.toFixed(0);
 
   return result || _throw("Error finding a specific user");
@@ -100,18 +106,35 @@ const findBy = async args => {
   return result || _throw("Error finding user");
 };
 
-const findAll = async (isCoreTeam = false, limit = 20) => {
+const findAll = async (
+  isCoreTeam = false,
+  limit = 20,
+  selectOptions = "-email -teams -_id -lastUpdate",
+  team = null
+) => {
   const UserModel = mongoose.model("User");
   const base_query = {
     score: { $gt: 0 },
     isCoreTeam: isCoreTeam
   };
 
-  const result = await UserModel.find(base_query)
+  let query = {
+    ...base_query
+  };
+
+  if (team) {
+    query = {
+      ...base_query,
+      teams: team
+    };
+  }
+
+  const result = await UserModel.find(query)
     .sort({
       score: -1
     })
     .limit(limit)
+    .select(selectOptions)
     .exec();
   result.map(user => {
     user.score = parseInt(user.score);
@@ -167,15 +190,16 @@ const findInactivities = async () => {
   return result || _throw("Error finding inactivity users");
 };
 
-const createUserData = (userInfo, score, interaction, UserModel) => {
+const createUserData = async (userInfo, score, interaction, UserModel) => {
   let obj = {};
+  const level = 1;
 
   if (userInfo) {
     obj = {
       avatar: userInfo.profile.image_72,
       name: userInfo.profile.real_name,
       email: userInfo.profile.email,
-      level: 1,
+      level: level,
       score: score,
       slackId: interaction.user,
       messages: interaction.type === "message" ? 1 : 0,
@@ -187,7 +211,7 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
   } else {
     obj = {
       name: interaction.username,
-      level: 1,
+      level: level,
       score: score,
       rocketId: interaction.user,
       messages: interaction.type === "message" ? 1 : 0,
@@ -218,11 +242,15 @@ const createUserData = (userInfo, score, interaction, UserModel) => {
     Sei que são muitas informações, mas tome nota, para que não te esqueças de nada. Neste papiro, encontrarás *tudo o que precisa* saber em caso de dúvidas: **http://atena.impulso.network.**
     \n\n
     Espero que aproveite ao máximo *tua jornada* por aqui!`,
-    interaction.user
+    interaction.rocketUsername
   );
 
   const instance = new UserModel(obj);
-  return instance.save();
+  const user = await instance.save();
+
+  AchievementLevelController.save(user._id, level, level);
+
+  return user;
 };
 
 const updateUserData = (UserModel, interaction, score) => {
@@ -233,8 +261,13 @@ const updateUserData = (UserModel, interaction, score) => {
       },
       (err, doc) => {
         if (err) _throw("Error updating user");
+
         const newScore = doc.score + score;
-        doc.level = calculateLevel(newScore);
+        const newLevel = calculateLevel(newScore);
+
+        AchievementLevelController.save(doc._id, doc.level, newLevel);
+
+        doc.level = newLevel;
         doc.score = newScore < 0 ? 0 : newScore;
         doc.isCoreTeam = isCoreTeam(interaction.user);
         doc.messages =
@@ -252,8 +285,13 @@ const updateUserData = (UserModel, interaction, score) => {
       if (err) {
         throw new Error("Error updating user");
       }
+
       const newScore = doc.score + score;
-      doc.level = calculateLevel(newScore);
+      const newLevel = calculateLevel(newScore);
+
+      AchievementLevelController.save(doc._id, doc.level, newLevel);
+
+      doc.level = newLevel;
       doc.score = newScore < 0 ? 0 : newScore;
       doc.isCoreTeam = isCoreTeam(interaction.user);
       doc.messages =
@@ -284,6 +322,89 @@ const getNetwork = async user_id => {
   return user;
 };
 
+const changeTeams = async (userId, teams) => {
+  const UserModel = mongoose.model("User");
+  const user = await getNetwork(userId);
+
+  let result = {};
+  try {
+    result = await UserModel.findByIdAndUpdate(
+      user._id,
+      {
+        teams: teams.split(",") || ""
+      },
+      (err, doc) => {
+        if (err) return false;
+        console.log(doc);
+
+        return doc;
+      }
+    );
+  } catch (e) {
+    return false;
+  }
+
+  return result;
+};
+
+const rocketInfo = async user_id => {
+  const url = `${process.env.ROCKET_HOST}/api/v1/users.info`;
+
+  return axios.get(url, {
+    params: {
+      userId: user_id
+    },
+    headers: {
+      "X-Auth-Token": process.env.ROCKET_USER_TOKEN,
+      "X-User-Id": process.env.ROCKET_USER_ID
+    }
+  });
+};
+
+const fromRocket = async usersAtena => {
+  let users = [];
+  for (let user of usersAtena) {
+    let name;
+    let network;
+    if (user.rocketId) {
+      let response = await rocketInfo(user.rocketId);
+      name = response.data.user.name;
+      network = "rocket";
+    } else {
+      name = user.name;
+      network = "slack";
+    }
+    users.push({
+      name: name,
+      user_id: user.rocketId,
+      network: network
+    });
+  }
+  return users;
+};
+
+const details = async (req, res) => {
+  const { team, token } = req.headers;
+  const { id } = req.params;
+  let query = { rocketId: id };
+  if (isValidToken(team, token)) {
+    query = {
+      ...query,
+      teams: team
+    };
+  }
+  const user = await findBy(query);
+  const interactions = await interactionController.findBy({ user: id });
+  const response = {
+    user,
+    avatar: `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${
+      user.rocketId
+    }`,
+    interactions: interactions
+  };
+  res.json(response);
+};
+
 export default {
   find,
   findAll,
@@ -294,5 +415,8 @@ export default {
   findInactivities,
   findBy,
   findByOrigin,
-  getNetwork
+  getNetwork,
+  changeTeams,
+  fromRocket,
+  details
 };
