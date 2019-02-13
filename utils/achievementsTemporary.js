@@ -1,8 +1,9 @@
 import moment from "moment";
 import {
   getInteractionType,
-  getAchievementCurrentRating,
-  getRecord
+  getRecord,
+  getCurrentScoreToIncrease,
+  getAchievementNextRating
 } from "./achievements";
 import { convertDataToAchievement } from "./achievementsTemporaryData";
 import { sendEarnedAchievementMessage } from "./achievementsMessages";
@@ -14,12 +15,7 @@ const today = moment(new Date())
 
 export const createAchievementTemporary = async (temporaryData, user) => {
   let temporaryAchievement = convertDataToAchievement(temporaryData, user._id);
-
-  await sendEarnedAchievementMessage(
-    user,
-    getAchievementCurrentRating(temporaryAchievement)
-  );
-
+  await sendMessageStart(user, temporaryAchievement);
   return await temporaryAchievement.save();
 };
 
@@ -27,50 +23,53 @@ export const updateAchievementTemporary = async (
   temporaryAchievement,
   user
 ) => {
-  let achievementToUpdate = addEarnedAchievement(temporaryAchievement);
-
-  let temporaryAchievementUpdated = achievementToUpdate.achievement;
-  temporaryAchievement.record = getRecord(temporaryAchievementUpdated);
-
-  if (achievementToUpdate.xpToIncrease) {
-    await userController.updateScore(user, achievementToUpdate.xpToIncrease);
-    await sendEarnedAchievementMessage(
-      user,
-      getAchievementCurrentRating(temporaryAchievement)
-    );
-  }
-
+  temporaryAchievement = addEarnedAchievement(temporaryAchievement);
+  temporaryAchievement.record = getRecord(temporaryAchievement);
+  await addScore(user, temporaryAchievement);
   return await temporaryAchievement.save();
 };
 
-const addEarnedAchievement = temporaryAchievement => {
-  let xpToIncrease = 0;
-  if (isInDeadline(temporaryAchievement)) {
-    let wasUpdated = false;
-    temporaryAchievement.ratings = temporaryAchievement.ratings.map(rating => {
-      if (!wasUpdated) {
-        let updatedRanges = generateUpdatedRanges(rating);
-
-        if (updatedRanges.wasUpdated) {
-          wasUpdated = true;
-          temporaryAchievement.lastEarnedDate = today;
-          temporaryAchievement.total += 1;
-        }
-
-        rating.ranges = updatedRanges.ranges;
-        if (updatedRanges.xpToIncrease > 0) {
-          xpToIncrease = updatedRanges.xpToIncrease;
-        }
-      }
-
-      return rating;
-    });
-  }
-
-  return {
-    achievement: temporaryAchievement,
-    xpToIncrease: xpToIncrease
+const sendMessageStart = async (user, temporaryAchievement) => {
+  const current = {
+    name: temporaryAchievement.name,
+    rating: temporaryAchievement.ratings[0].name,
+    range: temporaryAchievement.ratings[0].ranges[0].name
   };
+
+  await sendEarnedAchievementMessage(user, current);
+};
+
+const addScore = async (user, temporaryAchievement) => {
+  const score = getCurrentScoreToIncrease(temporaryAchievement);
+  if (score < 1) return;
+
+  await userController.updateScore(user, score);
+  await sendEarnedAchievementMessage(
+    user,
+    getAchievementNextRating(temporaryAchievement)
+  );
+};
+
+const addEarnedAchievement = temporaryAchievement => {
+  let wasUpdated = false;
+  temporaryAchievement.ratings = temporaryAchievement.ratings.map(rating => {
+    if (!wasUpdated) {
+      let updatedRanges = generateUpdatedRanges(rating);
+      rating.ranges = updatedRanges.ranges;
+
+      if (updatedRanges.wasUpdated) {
+        wasUpdated = true;
+        temporaryAchievement.lastEarnedDate = moment(new Date())
+          .subtract("day", 1)
+          .format(); //today;
+        temporaryAchievement.total += 1;
+      }
+    }
+
+    return rating;
+  });
+
+  return temporaryAchievement;
 };
 
 export const getQueryToFindCurrent = interaction => {

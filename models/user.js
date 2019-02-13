@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
-import { doLevelChangeActions } from "../utils/levels";
+import {
+  getLevelScore,
+  saveLevelHistoryChanges,
+  saveAchivementLevelChanges,
+  sendLevelMessage
+} from "../utils/levels";
 import { isNewLevel } from "../utils/achievementsLevel";
 
 export const userSchema = new mongoose.Schema({
@@ -88,17 +93,21 @@ export const userSchema = new mongoose.Schema({
   }
 });
 
-userSchema.pre("save", function(next) {
-  if (
-    this.isModified("level") &&
-    this._previousLevel != 0 &&
-    isNewLevel(this._previousLevel, this.level)
-  ) {
-    doLevelChangeActions(this._id, this._previousLevel, this.level).then(
-      function(resp) {
-        next();
-      }
+userSchema.pre("save", async function(next) {
+  if (this.isModified("level") && isNewLevel(this._previousLevel, this.level)) {
+    await saveLevelHistoryChanges(this._id, this._previousLevel, this.level);
+    const achievement = await saveAchivementLevelChanges(
+      this._id,
+      this._previousLevel,
+      this.level
     );
+
+    const score = getLevelScore(achievement);
+    let isUpdate = score > 0;
+    this.score += score;
+    await sendLevelMessage(this, achievement, isUpdate);
+
+    next();
   } else {
     next();
   }

@@ -7,6 +7,36 @@ const today = moment(new Date())
   .utc()
   .format();
 
+export const getCurrentScoreToIncrease = achievement => {
+  let score = 0;
+  const last = getLastAchievementRatingEarned(achievement);
+  const ranges = last.rating.ranges;
+  const range = ranges[ranges.length - 1];
+
+  if (
+    range.earnedDate &&
+    (!achievement.total || achievement.total === range.value)
+  ) {
+    score = last.rating.xp;
+  }
+
+  return score;
+};
+
+export const getScoreToIncrease = achievement => {
+  let score = 0;
+
+  if (achievement && achievement.ratings.length) {
+    score = achievement.ratings.reduce((total, rating) => {
+      const totalRanges = rating.ranges.length;
+      const earneds = rating.ranges.filter(range => range.earnedDate);
+      return total + (earneds.length == totalRanges ? rating.xp : 0);
+    }, 0);
+  }
+
+  return score;
+};
+
 export const getInteractionType = interaction => {
   let type = interaction.type;
 
@@ -18,27 +48,40 @@ export const getInteractionType = interaction => {
 };
 
 export const getAchievementCurrentRating = achievement => {
-  let currentRange = {};
   let currentRating = {};
+  let ranges = [];
+
   if (achievement.ratings.length) {
     for (let rating of achievement.ratings) {
-      currentRange = rating.ranges.filter(range => !range.earnedDate);
+      ranges = rating.ranges.filter(range => range.earnedDate);
 
-      if (currentRange.length) {
-        currentRating = {
-          name: achievement.name,
-          rating: rating.name,
-          xp: rating.xp,
-          range: currentRange[0].name,
-          total: currentRange[0].value
-        };
-
+      if (ranges.length) {
+        const lastRange = ranges[ranges.length - 1];
+        currentRating = convertToRating(achievement, rating, lastRange);
         break;
       }
     }
   }
 
   return currentRating;
+};
+
+export const getAchievementNextRating = achievement => {
+  let nextRating = {};
+  let ranges = [];
+
+  if (achievement.ratings.length) {
+    for (let rating of achievement.ratings) {
+      ranges = rating.ranges.filter(range => !range.earnedDate);
+
+      if (ranges.length) {
+        nextRating = convertToRating(achievement, rating, ranges[0]);
+        break;
+      }
+    }
+  }
+
+  return nextRating;
 };
 
 export const getLastAchievementRatingEarned = achievement => {
@@ -91,26 +134,14 @@ export const getRecord = achievement => {
   const lastRating = getLastAchievementRatingEarned(achievement);
   let newRecord = convertToRecord(lastRating, achievement);
 
-  if (achievement.record) {
-    if (!newEarnedIsBiggerThenCurrent(newRecord, achievement.record)) {
-      newRecord = achievement.record;
-    }
+  if (
+    achievement.record &&
+    !newEarnedIsBiggerThenCurrent(newRecord, achievement.record)
+  ) {
+    newRecord = achievement.record;
   }
 
   return newRecord;
-};
-
-const convertToRecord = (lastRating, achievement) => {
-  if (lastRating.rating && lastRating.range) {
-    return {
-      name: lastRating.rating.name,
-      range: lastRating.range.name,
-      level: lastRating.range.value,
-      earnedDate: today
-    };
-  }
-
-  return achievement.record;
 };
 
 export const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
@@ -126,13 +157,37 @@ export const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
   );
 
   if (newPosition == currentPosition) {
-    const type = newEarned.level ? "level" : "total";
+    const type = current.level && newEarned.level ? "level" : "total";
     return newEarned[type] >= current[type];
   } else {
     return newPosition > currentPosition;
   }
 };
 
+const convertToRecord = (lastRating, achievement) => {
+  if (lastRating.rating && lastRating.range) {
+    return {
+      name: lastRating.rating.name,
+      range: lastRating.range.name,
+      level: lastRating.range.value,
+      total: lastRating.range.value,
+      earnedDate: today
+    };
+  }
+
+  return achievement.record;
+};
+
 const getPositionRatings = () => {
   return Object.keys(config.ratings).map(key => config.ratings[key]);
+};
+
+const convertToRating = (achievement, rating, range) => {
+  return {
+    name: achievement.name,
+    rating: rating.name,
+    xp: rating.xp,
+    range: range.name,
+    total: range.value
+  };
 };

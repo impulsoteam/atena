@@ -4,24 +4,37 @@ import { getUserInfo } from "../rocket/api";
 import { calculateAchievementsPosition } from "./calculateAchievementsPosition";
 import { getLastAchievementRatingEarned } from "./achievements";
 
-export const sendEarnedAchievementMessage = async (user, achievement) => {
+export const sendEarnedAchievementMessage = async (
+  user,
+  achievement,
+  showLevel = false
+) => {
   if (!user) {
     _throw("Error no user pass to send earned achievement messages");
+  }
+
+  if (!achievement) {
+    _throw("Error no achievement pass to send earned achievement messages");
   }
 
   const rocketUser = await getUserInfo(user.rocketId);
 
   if (rocketUser) {
-    const privateMessage = `:medal: ${
-      achievement.name
-    }: Você acabou de conquistar ${achievement.rating}!`;
+    const name = achievement.name.split(" | ");
+    const level = showLevel ? ` ${user.level}` : "";
 
-    const publicMessage = `:medal: ${user.name} acabou de conquistar ${
+    const privateMessage = `:medal: Você obteve a conquista [${
       achievement.rating
-    } em ${achievement.name}`;
+    } ${achievement.range} | ${name[1]}${level}]!`;
+
+    const publicMessage = `:medal: @${
+      rocketUser.username
+    } obteve a conquista [${achievement.rating} ${achievement.range} | ${
+      name[1]
+    }${level}]!`;
 
     await sendToUser(privateMessage, rocketUser.username);
-    await sendMessage(publicMessage, "impulso-network");
+    await sendMessage(publicMessage, "thais-tests");
   }
 };
 

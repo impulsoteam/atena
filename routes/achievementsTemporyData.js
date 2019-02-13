@@ -1,27 +1,11 @@
 import express from "express";
 import bodyParser from "body-parser";
 import achievementTemporaryDataController from "../controllers/achievementTemporaryData";
-import InteractionModel from "../models/interaction";
-import UserModel from "../models/user";
-import UserLevelModel from "../models/userLevelHistory";
-import AchievementModel from "../models/achievement";
-import AchievementLevelModel from "../models/achievementLevel";
-import AchievementTempModel from "../models/achievementTemporary";
 
 const router = express.Router();
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
-
-router.get("/delete", async (req, res) => {
-  await InteractionModel.remove({}).exec();
-  await UserModel.remove({}).exec();
-  await UserLevelModel.remove({}).exec();
-  await AchievementModel.remove({}).exec();
-  await AchievementLevelModel.remove({}).exec();
-  await AchievementTempModel.remove({}).exec();
-  res.json({ result: true });
-});
 
 router.get("/", async (req, res) => {
   let achievementsTemporaryData = await achievementTemporaryDataController.getAll();

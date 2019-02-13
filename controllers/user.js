@@ -10,7 +10,6 @@ import {
 } from "../utils";
 import { sendToUser } from "../rocket/bot";
 import { _throw } from "../helpers";
-import { doLevelChangeActions } from "../utils/levels";
 import axios from "axios";
 import { isValidToken } from "../utils/teams";
 import interactionController from "./interaction";
@@ -50,6 +49,7 @@ const updateParentUser = async interaction => {
 
 const update = async interaction => {
   const score = calculateScore(interaction);
+
   const UserModel = mongoose.model("User");
   let user = {};
   let userInfo;
@@ -63,7 +63,7 @@ const update = async interaction => {
   }
 
   if (user) {
-    return await updateUserData(UserModel, interaction, score);
+    return await updateUserData(user, interaction, score);
   } else {
     return await createUserData(userInfo, score, interaction, UserModel);
   }
@@ -103,7 +103,7 @@ const findByOrigin = async (interaction, isParent = false) => {
 const findBy = async args => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne(args).exec();
-  return result || _throw("Error findingd user");
+  return result || _throw("Error finding user");
 };
 
 const findAll = async (
@@ -223,9 +223,6 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
   }
 
   const instance = new UserModel(obj);
-  const user = await instance.save();
-
-  await doLevelChangeActions(user._id, 0, 1);
 
   sendToUser(
     `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
@@ -250,51 +247,23 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
     interaction.rocketUsername
   );
 
-  return user;
+  return await instance.save();
 };
 
-const updateUserData = (UserModel, interaction, score) => {
-  if (interaction.origin === "rocket") {
-    return UserModel.findOne(
-      {
-        rocketId: interaction.user
-      },
-      (err, doc) => {
-        if (err) _throw("Error updating user");
+const updateUserData = async (user, interaction, score) => {
+  if (!user) _throw("Error updating user");
 
-        const newScore = doc.score + score;
-        doc.level = calculateLevel(newScore);
-        doc.score = newScore < 0 ? 0 : newScore;
-        doc.isCoreTeam = isCoreTeam(interaction.user);
-        doc.messages =
-          interaction.type === "message" ? doc.messages + 1 : doc.messages;
-        doc.replies =
-          interaction.type === "thread" ? doc.replies + 1 : doc.replies;
-        doc.reactions = calculateReactions(interaction, doc.reactions);
-        doc.lastUpdate = Date.now();
-        doc.save();
-        return doc;
-      }
-    );
-  } else {
-    return UserModel.findOne({ slackId: interaction.user }, (err, doc) => {
-      if (err) {
-        throw new Error("Error updating user");
-      }
-
-      const newScore = doc.score + score;
-      doc.score = newScore < 0 ? 0 : newScore;
-      doc.isCoreTeam = isCoreTeam(interaction.user);
-      doc.messages =
-        interaction.type === "message" ? doc.messages + 1 : doc.messages;
-      doc.replies =
-        interaction.type === "thread" ? doc.replies + 1 : doc.replies;
-      doc.reactions = calculateReactions(interaction, doc.reactions);
-      doc.lastUpdate = Date.now();
-      doc.save();
-      return doc;
-    });
-  }
+  const newScore = user.score + score;
+  user.level = calculateLevel(newScore);
+  user.score = newScore < 0 ? 0 : newScore;
+  user.isCoreTeam = isCoreTeam(interaction.user);
+  user.messages =
+    interaction.type === "message" ? user.messages + 1 : user.messages;
+  user.replies =
+    interaction.type === "thread" ? user.replies + 1 : user.replies;
+  user.reactions = calculateReactions(interaction, user.reactions);
+  user.lastUpdate = Date.now();
+  return await user.save();
 };
 
 const getNetwork = async user_id => {

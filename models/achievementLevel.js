@@ -48,7 +48,11 @@ const achievementLevelSchema = new mongoose.Schema({
   record: {
     type: recordSchema
   },
-  ratings: [ratingSchema]
+  ratings: [ratingSchema],
+  createdAt: {
+    type: Date,
+    default: Date.now()
+  }
 });
 
 export default mongoose.model(

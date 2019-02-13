@@ -6,7 +6,8 @@ import { isPositiveReaction, isAtenaReaction } from "../utils/reactions";
 import {
   getInteractionType,
   calculateAchievementScoreToIncrease,
-  getAchievementCurrentRating
+  getAchievementCurrentRating,
+  getAchievementNextRating
 } from "../utils/achievements";
 import { sendEarnedAchievementMessage } from "../utils/achievementsMessages";
 import userController from "../controllers/user";
@@ -96,7 +97,7 @@ const addScore = async (user, achievement) => {
     await userController.updateScore(user, score);
     await sendEarnedAchievementMessage(
       user,
-      getAchievementCurrentRating(achievement)
+      getAchievementNextRating(achievement)
     );
   }
 };
