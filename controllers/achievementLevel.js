@@ -3,7 +3,7 @@ import config from "config-yml";
 import AchievementLevelModel from "../models/achievementLevel";
 import { _throw } from "../helpers";
 import { setRangesEarnedDates, isNewLevel } from "../utils/achievementsLevel";
-import { getRecord, getCurrentScoreToIncrease } from "../utils/achievements";
+import { getRecord } from "../utils/achievements";
 
 export const findAll = async () => {
   const achievementsLevel = await AchievementLevelModel.find()
