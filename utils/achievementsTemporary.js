@@ -23,6 +23,10 @@ export const updateAchievementTemporary = async (
   temporaryAchievement,
   user
 ) => {
+  if (!isInDeadline(temporaryAchievement)) {
+    return temporaryAchievement;
+  }
+
   temporaryAchievement = addEarnedAchievement(temporaryAchievement);
   temporaryAchievement.record = getRecord(temporaryAchievement);
   await addScore(user, temporaryAchievement);
@@ -59,9 +63,7 @@ const addEarnedAchievement = temporaryAchievement => {
 
       if (updatedRanges.wasUpdated) {
         wasUpdated = true;
-        temporaryAchievement.lastEarnedDate = moment(new Date())
-          .subtract("day", 1)
-          .format(); //today;
+        temporaryAchievement.lastEarnedDate = today;
         temporaryAchievement.total += 1;
       }
     }
