@@ -3,15 +3,15 @@ import PropTypes from "prop-types";
 import StyledAccordion from "./style";
 
 const renderItem = ({ content, awnser }, index) => (
-  <article className="accordion__item" key={index}>
-    <a href="javascript:;" className="accordion__link">
+  <a href="javascript:;" className="accordion__item" key={index}>
+    <span className="accordion__link">
       {content}
       <i className="fas fa-sort-down" />
-    </a>
+    </span>
     <div className="accordion_content">
       <p>{awnser}</p>
     </div>
-  </article>
+  </a>
 );
 
 const renderItems = data =>
