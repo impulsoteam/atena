@@ -2,7 +2,8 @@ import config from "config-yml";
 
 import AchievementLevelModel from "../models/achievementLevel";
 import { _throw } from "../helpers";
-import { getRecord, setRangesEarnedDates } from "../utils/achievementsLevel";
+import { setRangesEarnedDates, isNewLevel } from "../utils/achievementsLevel";
+import { getRecord } from "../utils/achievements";
 
 export const findAll = async () => {
   const achievementsLevel = await AchievementLevelModel.find()
@@ -22,19 +23,35 @@ export const findByUser = async userId => {
 
 export const save = async (userId, currentLevel, newLevel) => {
   if (!userId) {
-    _throw("Error no user pass to find achievement level");
+    _throw("Error user found on save achievement level");
   }
 
   const achievementExistent = await findByUser(userId);
-
   if (!achievementExistent) {
-    const achievement = await generateNewAchievement(userId, newLevel);
-    await achievement.save();
-  } else if (currentLevel != newLevel) {
-    let achievement = setRangesEarnedDates(achievementExistent, newLevel);
-    achievement.record = getRecord(achievement);
-    await achievement.save();
+    try {
+      return await createAchievement(userId, newLevel);
+    } catch (error) {
+      _throw("Error on create level achievement");
+    }
+  } else if (isNewLevel(currentLevel, newLevel)) {
+    try {
+      return await updateAchievement(achievementExistent, newLevel);
+    } catch (error) {
+      _throw("Error on update level achievement");
+    }
   }
+};
+
+const createAchievement = async (userId, newLevel) => {
+  const achievement = await generateNewAchievement(userId, newLevel);
+  achievement.record = getRecord(achievement);
+  return await achievement.save();
+};
+
+const updateAchievement = async (achievementExistent, newLevel) => {
+  let achievement = setRangesEarnedDates(achievementExistent, newLevel);
+  achievement.record = getRecord(achievement);
+  return await achievement.save();
 };
 
 const generateNewAchievement = async (userId, newLevel) => {
@@ -43,8 +60,6 @@ const generateNewAchievement = async (userId, newLevel) => {
   achievement.ratings = generateRatings();
 
   achievement = setRangesEarnedDates(achievement, newLevel);
-  achievement.record = getRecord(achievement);
-
   return achievement;
 };
 

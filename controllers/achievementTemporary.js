@@ -2,14 +2,13 @@ import moment from "moment-timezone";
 import TemporaryAchievementModel from "../models/achievementTemporary";
 import TemporaryAchievementDataModel from "../models/achievementTemporaryData";
 import {
-  addEarnedAchievement,
   getQueryToFindCurrent,
-  getRecord,
   isBeforeLimitDate,
   isBeforeEndDate,
-  resetEarnedAchievements
+  resetEarnedAchievements,
+  createAchievementTemporary,
+  updateAchievementTemporary
 } from "../utils/achievementsTemporary";
-import { convertDataToAchievement } from "../utils/achievementsTemporaryData";
 import { _throw } from "../helpers";
 import userController from "../controllers/user";
 
@@ -38,28 +37,15 @@ export const save = async interaction => {
         !temporaryAchievementExistent &&
         isBeforeLimitDate(temporaryAchievementData)
       ) {
-        let temporaryAchievement = convertDataToAchievement(
+        temporaryAchievementExistent = await createAchievementTemporary(
           temporaryAchievementData,
-          user._id
+          user
         );
-
-        temporaryAchievementExistent = await temporaryAchievement.save();
       }
 
       if (temporaryAchievementExistent) {
         if (isBeforeEndDate(temporaryAchievementData)) {
-          let achievementToUpdate = addEarnedAchievement(
-            temporaryAchievementExistent
-          );
-
-          let temporaryAchievement = achievementToUpdate.achievement;
-          temporaryAchievement.record = getRecord(temporaryAchievement);
-          await temporaryAchievement.save();
-
-          if (achievementToUpdate.xpToIncrease) {
-            user.score += achievementToUpdate.xpToIncrease;
-            await user.save();
-          }
+          await updateAchievementTemporary(temporaryAchievementExistent, user);
         } else {
           let temporaryAchievement = resetEarnedAchievements(
             temporaryAchievementExistent

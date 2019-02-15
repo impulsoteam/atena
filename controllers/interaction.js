@@ -185,16 +185,17 @@ export const save = async data => {
   ) {
     const reaction = Object.keys(data.reactions).pop();
     const username = reaction.usernames.pop();
-    const user = userController.findBy({ name: username });
+    const user = await userController.findBy({ name: username });
 
     interaction.user = user || null;
   }
 
   if (todayLimitStatus > 0 || !todayLimitStatus) {
-    instance.score = await calculateScore(interaction);
-    userController.update(interaction);
-    achievementController.save(interaction);
-    achievementTemporaryController.save(interaction);
+    instance.score = calculateScore(interaction);
+    await userController.update(interaction);
+    await achievementController.save(interaction);
+    await achievementTemporaryController.save(interaction);
+
     if (
       ![
         "message",
@@ -206,7 +207,7 @@ export const save = async data => {
       ].includes(interaction.type) &&
       interaction.parentUser !== interaction.user
     ) {
-      userController.updateParentUser(interaction);
+      await userController.updateParentUser(interaction);
     }
   }
   const response = instance.save();
