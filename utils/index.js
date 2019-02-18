@@ -4,6 +4,7 @@ import request from "make-requests";
 
 import { calculateReceivedScore as calc } from "./calculateReceivedScore";
 import { calculateReactions as calcReactions } from "./calculateReactions";
+import { calculateAchievementsPosition as calcAchievements } from "./calculateAchievementsPosition";
 import userController from "../controllers/user";
 import { sendCollect, sendBotCollect } from "./analytics";
 if (process.env.NODE_ENV !== "production") {
@@ -68,6 +69,16 @@ export const calculateScore = interaction => {
     score = interaction.value;
   } else if (interaction.type === "inactivity") {
     score = config.xprules.inactive.value;
+  } else if (interaction.type === "issue") {
+    score = config.xprules.github.issue;
+  } else if (interaction.type === "review") {
+    score = config.xprules.github.review;
+  } else if (interaction.type === "pull_request") {
+    score = config.xprules.github.pull_request;
+  } else if (interaction.type === "merged_pull_request") {
+    score = config.xprules.github.merged_pull_request;
+  } else if (interaction.type === "comment") {
+    score = config.xprules.disqus.comment;
   }
   return score;
 };
@@ -131,17 +142,24 @@ export const getRanking = async (req, isCoreTeamMember) => {
     attachments: []
   };
 
+  const user_id =
+    req.headers.origin === "rocket" ? req.body.id : req.body.user_id;
+  console.log("USER ID ", user_id);
   try {
     users = await userController.findAll(isCoreTeamMember, 5);
     myPosition = await userController.rankingPosition(
-      req.body.user_id,
+      user_id,
       isCoreTeamMember
     );
     response.text =
       users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
     response.attachments = users.map((user, index) => ({
       text: `${index + 1}º lugar está ${
-        user.slackId === req.body.user_id ? "você" : user.name
+        user.slackId === user_id
+          ? "você"
+          : user.rocketId === user_id
+          ? "você"
+          : user.name
       } com ${user.score} XP, no nível ${user.level}`
     }));
 
@@ -151,10 +169,12 @@ export const getRanking = async (req, isCoreTeamMember) => {
 
     analyticsSendBotCollect(req.body);
   } catch (e) {
-    console.log("getRanking Error: ", e);
+    // console.log("getRanking Error: ", e);
   }
 
   return response;
 };
 
 export const calculateReactions = calcReactions;
+
+export const calculateAchievementsPosition = calcAchievements;

@@ -1,0 +1,24 @@
+network:
+  name: 'Network'
+  type: 'network'
+team:
+  name: 'Team'
+  type: 'team'
+academy:
+  name: 'Academy'
+  type: 'academy'
+mentoring:
+  name: 'Mentoring'
+  type: 'mentoring'
+meetups:
+  name: 'Meetups'
+  type: 'meetups'
+research:
+  name: 'Research'
+  type: 'research'
+nucleos:
+  name: 'Núcleos'
+  type: 'nucleos'
+missoes:
+  name: 'Missões'
+  type: 'missoes'

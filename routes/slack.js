@@ -1,21 +1,16 @@
 import express from "express";
 import { createEventAdapter } from "@slack/events-api";
-
 import interactionController from "../controllers/interaction";
-import {
-  getUserInfo,
-  getChannelInfo,
-  isValidChannel,
-  getStyleLog,
-  analyticsSendCollect
-} from "../utils";
+import { getChannel } from "../utils/interactions";
+
+import { isValidChannel, getStyleLog } from "../utils";
 const router = express.Router();
 const slackEvents = createEventAdapter(process.env.SLACK_SIGNIN_EVENTS);
 
 router.use("/events", slackEvents.expressMiddleware());
 
 const handleEvent = async e => {
-  const channel = e.type === "message" ? e.channel : e.item.channel;
+  const channel = getChannel(e);
 
   if (isValidChannel(channel)) {
     e.type === "reaction_removed"
@@ -28,9 +23,9 @@ const handleEvent = async e => {
       `\n-- event into an invalid channel ${channel}`
     );
   }
-
-  analyticsSendCollect(e);
 };
+
+slackEvents.on("article", e => handleEvent(e));
 
 slackEvents.on("message", e => handleEvent(e));
 

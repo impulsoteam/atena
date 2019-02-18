@@ -3,17 +3,6 @@ extends includes/layout
 block yield
   include includes/header
   main.container
-    h1.title-super Ranking do Game
-    section.ranking
-      ol.ranking__list
-        each user in users
-          li.ranking__list-item.gamer: a.row(href=`/ranking/user/${user.slackId}`, title="Veja os detalhes da pontuação deste Impulser")
-            if users.indexOf(user) < 3
-              .col.col__small.gamer__avatar: img(src=user.avatar, alt="Avatar")
-            .col: .row
-              .col.gamer__data
-                p.gamer__name= user.name
-                span.gamer__level= `Nível ${user.level}`
-              .col.col__small: span.gamer__xp= `${user.score} xp`
-
+    h1.title-super Ranking mensal do game
+        
   include includes/footer

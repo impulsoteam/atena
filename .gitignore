@@ -8,3 +8,13 @@ node_modules
 ngrok*
 coverage/
 *.swp
+*.swo
+*.swn
+.DS_Store
+emoji/
+*.swm
+
+*-lock.json
+*.lock
+*.swl
+FEATURE.md

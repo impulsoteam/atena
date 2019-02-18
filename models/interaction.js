@@ -13,13 +13,22 @@ const interactionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  category: {
+    type: String,
+    required: false
+  },
+  action: {
+    type: String,
+    required: false
+  },
   user: {
     type: String,
     required: true
   },
   thread: {
     type: Boolean,
-    required: true
+    required: true,
+    default: false
   },
   messageIdentifier: {
     type: String,
@@ -42,6 +51,10 @@ const interactionSchema = new mongoose.Schema({
     type: Date,
     required: true,
     default: Date.now
+  },
+  score: {
+    type: Number,
+    default: 0
   }
 });
 

@@ -2,14 +2,16 @@ import config from "config-yml";
 import mongoose from "mongoose";
 import moment from "moment";
 import userController from "./user";
-
-import { calculateScore } from "../utils";
-import { lastMessageTime } from "../utils/interactions";
+import achievementController from "./achievement";
+import achievementTemporaryController from "./achievementTemporary";
+import { calculateScore, analyticsSendCollect } from "../utils";
+import { lastMessageTime, getAction, getOrigin } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 
-const normalize = data => {
+let normalize = data => {
   if (data.type === "reaction_added" || data.type === "reaction_removed") {
     return {
+      origin: "slack",
       channel: data.item.channel,
       date: new Date(),
       description: data.reaction,
@@ -18,10 +20,13 @@ const normalize = data => {
       parentUser: data.item_user,
       thread: false,
       type: data.type,
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: config.actions.reaction.type
     };
   } else if (data.thread_ts) {
     return {
+      origin: "slack",
       channel: data.channel,
       date: new Date(),
       description: data.text,
@@ -30,27 +35,118 @@ const normalize = data => {
       parentUser: data.parent_user_id,
       thread: true,
       type: "thread",
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: config.actions.thread.type
     };
   } else if (data.type === "manual") {
     return {
+      origin: "sistema",
       type: data.type,
       user: data.user,
       value: data.value,
       thread: false,
       description: data.text,
-      channel: "mundão"
+      channel: "mundão",
+      category: config.categories.network.type,
+      action: "manual"
     };
   } else if (data.type === "inactivity") {
     return {
+      origin: "sistema",
       type: data.type,
       user: data.user,
       thread: false,
       description: "ação do sistema",
-      channel: "matrix"
+      channel: "matrix",
+      category: config.categories.network.type,
+      action: "inactivity"
+    };
+  } else if (data.type === "issue") {
+    return {
+      origin: "github",
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "new github issue",
+      channel: data.repository.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
+    };
+  } else if (data.type === "review") {
+    return {
+      origin: "github",
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "review",
+      channel: data.review.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
+    };
+  } else if (data.type === "pull_request") {
+    return {
+      origin: "github",
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "review",
+      channel: data.pull_request.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
+    };
+  } else if (data.type === "merged_pull_request") {
+    return {
+      origin: "github",
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "merged pull request",
+      channel: data.pull_request.id,
+      category: config.categories.network.type,
+      action: config.actions.github.type
+    };
+  } else if (data.origin === "rocket") {
+    if (data.reactions) {
+      return {
+        origin: "rocket",
+        channel: data.rid,
+        date: new Date(),
+        description: Object.keys(data.reactions).pop(),
+        parentUser: data.u._id,
+        user: null,
+        type: "reaction_added",
+        category: config.categories.network.type,
+        action: config.actions.reaction.type
+      };
+    } else {
+      return {
+        origin: data.origin,
+        channel: data.rid,
+        date: new Date(),
+        description: data.msg,
+        type: "message",
+        user: data.u._id,
+        username: data.u.name,
+        rocketUsername: data.u.username,
+        category: config.categories.network.type,
+        action: config.actions.message.type
+      };
+    }
+  } else if (data.type == "comment") {
+    return {
+      origin: "blog",
+      type: data.type,
+      user: data.user,
+      thread: false,
+      description: "comment on blog",
+      channel: data.id,
+      category: config.categories.network.type,
+      action: config.actions.blog.type
     };
   } else {
     return {
+      origin: getOrigin(data),
       channel: data.channel,
       date: new Date(),
       description: data.text,
@@ -58,7 +154,9 @@ const normalize = data => {
       parentMessage: null,
       thread: false,
       type: "message",
-      user: data.user
+      user: data.user,
+      category: config.categories.network.type,
+      action: getAction(data)
     };
   }
 };
@@ -70,25 +168,49 @@ export const save = async data => {
   const score = await todayScore(interaction.user);
   const todayLimitStatus = todayLimitScore - score;
   const instance = new InteractionModel(interaction);
-  const response = instance.save();
+
+  analyticsSendCollect(interaction);
 
   if (
     interaction.type === "message" &&
-    moment(interaction.date).diff(
-      await lastMessageTime(interaction.user),
-      "seconds"
-    ) < 5
+    moment(interaction.date).diff(await lastMessageTime(instance), "seconds") <
+      5
   ) {
     return _throw("User makes flood");
   }
 
-  if (todayLimitStatus > 0) {
-    userController.update(interaction);
-    interaction.type !== "message" &&
-      interaction.parentUser !== interaction.user &&
-      userController.updateParentUser(interaction);
+  if (
+    interaction.type === "reaction_added" &&
+    interaction.origin === "rocket"
+  ) {
+    const reaction = Object.keys(data.reactions).pop();
+    const username = reaction.usernames.pop();
+    const user = await userController.findBy({ name: username });
+
+    interaction.user = user || null;
   }
 
+  if (todayLimitStatus > 0 || !todayLimitStatus) {
+    instance.score = calculateScore(interaction);
+    await userController.update(interaction);
+    await achievementController.save(interaction);
+    await achievementTemporaryController.save(interaction);
+
+    if (
+      ![
+        "message",
+        "issue",
+        "review",
+        "pull_request",
+        "merged_pull_request",
+        "comment"
+      ].includes(interaction.type) &&
+      interaction.parentUser !== interaction.user
+    ) {
+      await userController.updateParentUser(interaction);
+    }
+  }
+  const response = instance.save();
   return response || _throw("Error adding new interaction");
 };
 
@@ -146,14 +268,15 @@ export const remove = async data => {
   return _throw("Error removing interactions");
 };
 
-export const lastMessage = async user => {
+export const lastMessage = async interaction => {
   const InteractionModel = mongoose.model("Interaction");
   const result = await InteractionModel.find({
-    user: user,
-    type: "message"
+    user: interaction.user,
+    type: "message",
+    _id: { $lt: interaction.id }
   })
     .sort({
-      date: -1
+      _id: -1
     })
     .limit(1)
     .exec();
@@ -176,11 +299,102 @@ const manualInteractions = async data => {
   }
 };
 
+const findAll = async () => {
+  const InterActionModel = mongoose.model("Interaction");
+  const result = await InterActionModel.find()
+    .sort()
+    .exec();
+  return result;
+};
+
+const findBy = async args => {
+  const InterActionModel = mongoose.model("Interaction");
+  const result = await InterActionModel.find(args).exec();
+  return result || null;
+};
+
+const calculate = async interaction => {
+  const todayLimitScore = config.xprules.limits.daily;
+  const scoreDay = await dayScore(interaction);
+  const todayLimitStatus = todayLimitScore - scoreDay;
+  if (
+    interaction.type === "message" &&
+    moment(interaction.date).diff(
+      await lastMessageTime(interaction),
+      "seconds"
+    ) < 5
+  ) {
+    return _throw("User makes flood");
+  }
+  if (todayLimitStatus > 0 || !todayLimitStatus) {
+    return await calculateScore(interaction);
+  }
+};
+
+const dayScore = async interaction => {
+  const date = new Date(interaction.date);
+  let score = 0;
+  const InteractionModel = mongoose.model("Interaction");
+  const start = date.setHours(0, 0, 0, 0);
+  const end = date.setHours(23, 59, 59, 999);
+  const result = await InteractionModel.find({
+    user: interaction.user,
+    date: {
+      $gte: start,
+      $lt: end
+    }
+  }).exec();
+
+  result.map(item => {
+    score = score + calculateScore(item);
+  });
+  return +score;
+};
+
+const normalizeScore = async (req, res) => {
+  const interactions = await findAll();
+  await interactions.map(async interaction => {
+    const score = await calculate(interaction);
+    interaction.score = score;
+    interaction.save();
+  });
+  res.send("Interações normalizadas");
+};
+
+const aggregateBy = async args => {
+  const InterActionModel = mongoose.model("Interaction");
+  const result = await InterActionModel.aggregate(args).exec();
+  return result || null;
+};
+
+const byDate = async (year, month) => {
+  return await aggregateBy([
+    {
+      $match: {
+        date: { $gte: new Date(year, month), $lt: new Date(year, month + 1) },
+        score: { $gte: 0 }
+      }
+    },
+    {
+      $group: {
+        _id: { user: "$user" },
+        totalScore: { $sum: "$score" }
+      }
+    },
+    {
+      $sort: { totalScore: -1 }
+    }
+  ]);
+};
+
 export default {
+  findBy,
   find,
   remove,
   save,
   todayScore,
   lastMessage,
-  manualInteractions
+  manualInteractions,
+  normalizeScore,
+  byDate
 };
