@@ -19,5 +19,5 @@ github:
 disqus:
   comment: 2
 inactive:
-  mindays: 14
-  value: -1
+  mindays: 8
+  value: -2
