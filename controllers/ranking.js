@@ -203,7 +203,13 @@ const sendToChannel = async () => {
 
 const position = async (users, first = 0, limit = 20) =>
   users.slice(first, limit).map((user, index) => ({
-    ...user,
+    name: user.name,
+    xp: user.score,
+    level: user.level,
+    avatar: user.avatar,
+    teams: user.teams || [],
+    slackId: user.slackId,
+    rocketId: user.rocketId,
     position: index + 1
   }));
 
@@ -302,7 +308,29 @@ const index = async (req, res) => {
   if (isMiner && isValidToken(team, token)) {
     res.json(initialData);
   } else {
-    renderScreen(res, "Ranking", initialData);
+    renderScreen(req, res, "Ranking", initialData);
+  }
+};
+
+const general = async (req, res) => {
+  let first_users = [];
+  let last_users = [];
+  let users = await userController.findAll();
+  users = await position(users);
+  first_users = await firstUsers(users);
+  last_users = await lastUsers(users);
+  const initialData = {
+    title: "Ranking Geral",
+    first_users: first_users,
+    last_users: last_users,
+    monthName: "GERAL",
+    page: "general"
+  };
+
+  if (req.query.format === "json") {
+    res.json(initialData);
+  } else {
+    renderScreen(req, res, "Ranking", initialData);
   }
 };
 
@@ -314,5 +342,6 @@ export default {
   findAll,
   myPosition,
   save,
-  sendToChannel
+  sendToChannel,
+  general
 };

@@ -9,10 +9,10 @@ import Card from "../components/Card";
 import Button from "../components/Button";
 import Faq from "../components/Faq";
 
-const ScreenHowItWorks = () => {
+const ScreenHowItWorks = props => {
   return (
     <StyledScreenHowItWorks>
-      <Layout>
+      <Layout {...props}>
         <FullPage background="url('./images/hiwlpc.png')">
           <Flex alignItems="center" justifyContent="center" flex="1">
             <Box>

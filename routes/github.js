@@ -129,7 +129,7 @@ router.get("/callback", async (req, res) => {
     response
   };
 
-  renderScreen(res, "Github", initialData);
+  renderScreen(req, res, "Github", initialData);
 });
 
 router.use("/", async (req, res) => {

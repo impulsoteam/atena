@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import { Flex } from "@rebass/grid";
+import { Flex, Box } from "@rebass/grid";
 import StyledScreenRanking from "./Ranking.style";
 import Layout from "Layout";
 import Rectangle from "components/Rectangle";
@@ -9,10 +9,39 @@ import RankingHeader from "components/RankingHeader";
 import RankingRow from "components/RankingRow";
 import Title from "components/Title";
 import UserCard from "components/UserCard";
+import FullPage from "../components/FullPage";
 
-const ScreenRanking = ({ monthName, first_users, last_users, error }) => (
+const generalTitle = () => (
+  <Fragment>
+    RANKING <br />
+    <span className="month">GERAL</span>
+  </Fragment>
+);
+
+const monthlyTitle = monthName => (
+  <Fragment>
+    RANKING DO <br />
+    MÊS DE <span className="month">{monthName}</span>
+  </Fragment>
+);
+const ScreenRanking = ({
+  page = "monthly",
+  monthName,
+  first_users,
+  last_users,
+  error
+}) => (
   <StyledScreenRanking>
     <Layout>
+      <FullPage background="url('./images/bg_ranking.png')" height="40" overlay>
+        <Flex alignItems="baseline" justifyContent="center" flex="1">
+          <Box>
+            <Title large color="white" align="center">
+              Ranking
+            </Title>
+          </Box>
+        </Flex>
+      </FullPage>
       <div className="_inner">
         <p className="super">
           Confira aqui a sua colocação no ranking da Atena. Vale lembrar que o
@@ -22,18 +51,17 @@ const ScreenRanking = ({ monthName, first_users, last_users, error }) => (
         </p>
         <Flex justifyContent="center" alignItems="center" mt={100} mb={100}>
           <RectangleGroup>
-            <Rectangle active left>
-              <a href="#">Ranking Mensal</a>
+            <Rectangle active={page === "monthly"} left>
+              <a href="/ranking">Ranking Mensal</a>
             </Rectangle>
-            <Rectangle right>
-              <a href="#">Ranking Geral</a>
+            <Rectangle active={page === "general"} right>
+              <a href="/ranking/geral">Ranking Geral</a>
             </Rectangle>
           </RectangleGroup>
         </Flex>
         <Flex justifyContent="center">
           <Title align={"center"} extraLarge>
-            RANKING DO <br />
-            MÊS DE <span className="month">{monthName}</span>
+            {page === "general" ? generalTitle() : monthlyTitle(monthName)}
           </Title>
         </Flex>
         {error && (
@@ -72,7 +100,8 @@ ScreenRanking.propTypes = {
   monthName: PropTypes.string.isRequired,
   first_users: PropTypes.array.isRequired,
   last_users: PropTypes.array.isRequired,
-  error: PropTypes.string
+  error: PropTypes.string,
+  page: PropTypes.string
 };
 
 ScreenRanking.defaultProps = {

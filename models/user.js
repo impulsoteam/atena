@@ -90,6 +90,10 @@ export const userSchema = new mongoose.Schema({
   teams: {
     type: Array,
     required: false
+  },
+  linkedinId: {
+    type: String,
+    required: false
   }
 });
 
