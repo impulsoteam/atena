@@ -1,19 +1,8 @@
 import styled from "styled-components";
-/*
- *
- background: ${props => props.background || props.theme.color.primary};
-    background-size: cover;
-    background-position: center;
-    */
-const StyledScreenRanking = styled.section`
-  .layout {
-    padding-top: 0;
-    background-color: #fdfdfd;
-    color: #666c71;
-    padding-bottom: 80px;
-  }
+
+const StyledScreenError = styled.section`
   main {
-    padding-top: 240px;
+    padding-top: 250px;
     padding-bottom: 100px;
   }
 
@@ -21,6 +10,7 @@ const StyledScreenRanking = styled.section`
     flex: 1;
     background-color: ${props => props.theme.color.bg};
     color: ${props => props.theme.color.gray};
+    min-height: 400px;
   }
 
   ._inner > p {
@@ -41,7 +31,6 @@ const StyledScreenRanking = styled.section`
 
   .month {
     color: ${props => props.theme.color.secondary};
-    text-transform: uppercase;
   }
 
   @media (max-width: 760px) {
@@ -56,4 +45,4 @@ const StyledScreenRanking = styled.section`
   }
 `;
 
-export default StyledScreenRanking;
+export default StyledScreenError;

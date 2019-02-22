@@ -26,6 +26,19 @@ const StyledMenu = styled.ul`
     }
   }
 
+  .user {
+    margin-top: -15px;
+    ::before {
+      background: none;
+    }
+
+    img {
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+    }
+  }
+
   a {
     color: ${props => props.theme.color.white};
     text-transform: uppercase;

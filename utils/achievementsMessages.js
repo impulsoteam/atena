@@ -34,7 +34,7 @@ export const sendEarnedAchievementMessage = async (
     }${level}]!`;
 
     await sendToUser(privateMessage, rocketUser.username);
-    await sendMessage(publicMessage, "thais-tests");
+    await sendMessage(publicMessage, "impulso-network");
   }
 };
 
