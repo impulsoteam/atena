@@ -13,7 +13,7 @@ const Html = props => {
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
-        <link rel="stylesheet" href="https://use.typekit.net/twf3caq.css" />
+        {/* <link rel="stylesheet" href="https://use.typekit.net/twf3caq.css" /> */}
         <link
           rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
@@ -34,7 +34,7 @@ Html.propTypes = {
 };
 
 Html.defaultProps = {
-  title: "Atena | Gameficação da Impulso Network"
+  title: "Atena | Gamificação da Impulso Network"
 };
 
 export default Html;

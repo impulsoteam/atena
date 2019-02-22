@@ -9,11 +9,14 @@ import achievementController from "../controllers/achievement";
 import achievementTemporaryController from "../controllers/achievementTemporary";
 import achievementLevelController from "../controllers/achievementLevel";
 import rankingController from "../controllers/ranking";
-import { isCoreTeam, calculateAchievementsPosition } from "../utils";
+import { isCoreTeam } from "../utils";
 // import validSlackSecret from "../utils/validSecret";
 import { sendMessage } from "../rocket/bot";
-import { getLastRatingEarned } from "../utils/achievementsTemporary";
-import { getLastRatingEarned as getLastRatingEarnedLevel } from "../utils/achievementsLevel";
+import {
+  generateAchievementsMessages,
+  generateAchievementsTemporaryMessages,
+  generateAchievementLevelMessage
+} from "../utils/achievementsMessages";
 
 const router = express.Router();
 
@@ -180,16 +183,8 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
       let achievements = await achievementController.findAllByUser(user._id);
 
       if (achievements.length) {
-        achievements = calculateAchievementsPosition(achievements);
-        if (achievements.length) {
-          achievements.map(achievement => {
-            attachments.push({
-              text: `${achievement.name}: Você é ${
-                achievement.rating.name
-              } com ${achievement.total}/${achievement.rating.value}.`
-            });
-          });
-        }
+        const achievementsMessages = generateAchievementsMessages(achievements);
+        attachments = attachments.concat(achievementsMessages);
       }
 
       let achievementsTemporary = await achievementTemporaryController.findAllByUser(
@@ -197,18 +192,10 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
       );
 
       if (achievementsTemporary.length) {
-        achievementsTemporary.map(achievement => {
-          const currentAchievement = getLastRatingEarned(achievement);
-          attachments.push({
-            text: `${achievement.name}: Você é ${
-              currentAchievement.name
-            } com total de ${
-              currentAchievement.total
-            }. | :trophy: Seu record é ${
-              achievement.record.name
-            } com total de ${achievement.record.total}.`
-          });
-        });
+        const achievementsMessages = generateAchievementsTemporaryMessages(
+          achievementsTemporary
+        );
+        attachments = attachments.concat(achievementsMessages);
       }
 
       let achievementLevel = await achievementLevelController.findByUser(
@@ -216,16 +203,10 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
       );
 
       if (achievementLevel) {
-        const lastRating = getLastRatingEarnedLevel(achievementLevel);
-        attachments.push({
-          text: `Network | Nível: Você é ${lastRating.rating.name} ${
-            lastRating.range.name
-          } com nível ${lastRating.range.value}. | :trophy: Seu record é ${
-            achievementLevel.record.name
-          } ${achievementLevel.record.range} com nível ${
-            achievementLevel.record.level
-          }.`
-        });
+        const achievementMessage = generateAchievementLevelMessage(
+          achievementLevel
+        );
+        attachments = attachments.concat(achievementMessage);
       }
 
       if (attachments.length) {

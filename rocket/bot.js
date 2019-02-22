@@ -46,9 +46,9 @@ export const sendToUser = async (message, user) => {
   }
 };
 
-export const sendMessage = async message => {
+export const sendMessage = async (message, room = "comunicados") => {
   try {
-    await driver.sendToRoom(message, "comunicados");
+    await driver.sendToRoom(message, room);
     return true;
   } catch (e) {
     console.log(e);

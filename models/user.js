@@ -1,4 +1,11 @@
 import mongoose from "mongoose";
+import {
+  getLevelScore,
+  saveLevelHistoryChanges,
+  saveAchivementLevelChanges,
+  sendLevelMessage
+} from "../utils/levels";
+import { isNewLevel } from "../utils/achievementsLevel";
 
 export const userSchema = new mongoose.Schema({
   avatar: {
@@ -12,7 +19,11 @@ export const userSchema = new mongoose.Schema({
   level: {
     type: Number,
     required: true,
-    default: 1
+    default: 0,
+    set: function(name) {
+      this._previousLevel = this.level;
+      return name;
+    }
   },
   score: {
     type: Number,
@@ -79,6 +90,30 @@ export const userSchema = new mongoose.Schema({
   teams: {
     type: Array,
     required: false
+  },
+  linkedinId: {
+    type: String,
+    required: false
+  }
+});
+
+userSchema.pre("save", async function(next) {
+  if (this.isModified("level") && isNewLevel(this._previousLevel, this.level)) {
+    await saveLevelHistoryChanges(this._id, this._previousLevel, this.level);
+    const achievement = await saveAchivementLevelChanges(
+      this._id,
+      this._previousLevel,
+      this.level
+    );
+
+    const score = getLevelScore(achievement);
+    let isUpdate = score > 0;
+    this.score += score;
+    await sendLevelMessage(this, achievement, isUpdate);
+
+    next();
+  } else {
+    next();
   }
 });
 

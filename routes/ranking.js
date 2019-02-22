@@ -13,25 +13,7 @@ router.get("/mes/:month", rankingController.index);
 //  res.json({});
 //});
 
-router.get("/geral", async (req, res) => {
-  // const { limit } = req.params;
-  let users = [];
-
-  try {
-    users = await userController.findAll();
-  } catch (e) {
-    console.log(e);
-  }
-
-  if (req.query.format === "json") {
-    res.json(users);
-  } else {
-    res.render("rankinggeral", {
-      title: "Veja o Ranking do nosso game | Impulso Network",
-      users
-    });
-  }
-});
+router.get("/geral", rankingController.general);
 
 router.get("/user/:id", async (req, res) => {
   const { id } = req.params;

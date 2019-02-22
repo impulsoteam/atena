@@ -1,6 +1,10 @@
 import express from "express";
-import UserController from "../controllers/user";
+import bodyParser from "body-parser";
+import userController from "../controllers/user";
 const router = express.Router();
+
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
 
 router.put("/change-teams/:id", async (req, res) => {
   const { id } = req.params;
@@ -8,11 +12,13 @@ router.put("/change-teams/:id", async (req, res) => {
   let result = false;
 
   try {
-    result = await UserController.changeTeams(id, team);
+    result = await userController.changeTeams(id, team);
   } catch (e) {
     console.log(e);
   }
   res.json(result);
 });
+
+router.get("/:id", userController.details);
 
 export default router;

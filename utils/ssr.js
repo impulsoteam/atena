@@ -4,7 +4,7 @@ import { ServerStyleSheet, ThemeProvider } from "styled-components";
 import Html from "../client/Html";
 import Theme from "styles/theme";
 
-export const renderScreen = (res, screen, props) => {
+export const renderScreen = (req, res, screen, props) => {
   const Component = require(`../client/screens/${screen}`).default;
   const sheet = new ServerStyleSheet();
 
@@ -13,7 +13,7 @@ export const renderScreen = (res, screen, props) => {
       renderToNodeStream(
         <Html {...props}>
           <ThemeProvider theme={Theme}>
-            <Component {...props} />
+            <Component {...props} user={req.user} />
           </ThemeProvider>
         </Html>
       )

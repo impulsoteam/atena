@@ -4,11 +4,16 @@ import mongoose from "mongoose";
 import runCrons from "./cron";
 import appRoutes from "./routes";
 import compression from "compression";
+import session from "express-session";
+import passport from "passport";
+import bodyParser from "body-parser";
 require("./models/interaction");
 require("./models/user");
 require("./models/achievement");
 require("./models/ranking");
 require("./rocket/bot");
+require("./rocket/api");
+require("./workers/receive");
 
 runCrons();
 
@@ -38,6 +43,11 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static("public"));
+app.use(session({ secret: "atenagamification" }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use("/", appRoutes);
 
 process.env.NODE_ENV !== "test" &&
