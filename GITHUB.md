@@ -7,8 +7,8 @@ Criar um OAuth Apps em development settings na conta do github e configurar o en
 Configurar as variáveis de ambiente no atena:
 
 ```
-GITHUB_CLIENT_ID=a1e8e0d86d57411ef452
-GITHUB_CLIENT_SECRET=f9aadb802a08a19938e9bd19398c09bbdc5d5edb
+GITHUB_CLIENT_ID=123clientid
+GITHUB_CLIENT_SECRET=12343clientsecret
 GITHUB_REPOSITORIES=161529771
 ```
 
