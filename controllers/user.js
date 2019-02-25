@@ -144,10 +144,14 @@ const findAll = async (
 };
 
 const rankingPosition = async (userId, isCoreTeam = false) => {
-  const allUsers = await findAll(isCoreTeam);
+  let position;
+  const allUsers = await findAll(isCoreTeam, 0);
   const user = await getNetwork(userId);
-  const position = (await allUsers.map(e => e.id).indexOf(user.id)) + 1;
-
+  if (user.network === "rocket") {
+    position = (await allUsers.map(e => e.rocketId).indexOf(user.rocketId)) + 1;
+  } else {
+    position = (await allUsers.map(e => e.rocketId).indexOf(user.slackId)) + 1;
+  }
   return position;
 };
 
