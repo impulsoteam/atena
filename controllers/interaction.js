@@ -7,6 +7,7 @@ import achievementTemporaryController from "./achievementTemporary";
 import { calculateScore, analyticsSendCollect } from "../utils";
 import { lastMessageTime, getAction, getOrigin } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
+import { getUserFromReaction } from "../utils/reactions";
 
 let normalize = data => {
   if (data.type === "reaction_added" || data.type === "reaction_removed") {
@@ -183,11 +184,11 @@ export const save = async data => {
     interaction.type === "reaction_added" &&
     interaction.origin === "rocket"
   ) {
-    const reaction = Object.keys(data.reactions).pop();
-    const username = reaction.usernames.pop();
-    const user = await userController.findBy({ name: username });
+    const user = await getUserFromReaction(data);
 
-    interaction.user = user || null;
+    interaction.user = user ? user.id : null;
+    interaction.rocketUsername = user ? user.username : null;
+    interaction.username = user ? user.name : null;
   }
 
   if (todayLimitStatus > 0 || !todayLimitStatus) {

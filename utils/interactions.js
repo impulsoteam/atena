@@ -11,7 +11,7 @@ export const lastMessageTime = async interaction => {
 };
 
 export const getChannel = e => {
-  return e.type === "message" || e.type === "article"
+  return e.origin === "rocket" || e.type === "article"
     ? e.channel
     : e.item.channel;
 };

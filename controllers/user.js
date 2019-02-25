@@ -13,37 +13,29 @@ import { _throw } from "../helpers";
 import axios from "axios";
 import { isValidToken } from "../utils/teams";
 import interactionController from "./interaction";
+import { getUserInfo as getRocketUserInfo } from "../rocket/api";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
-  const userInfo = await getUserInfo(interaction.parentUser);
+  const userInfo = await getRocketUserInfo(interaction.parentUser);
 
-  if (userInfo.ok) {
-    const UserModel = mongoose.model("User");
-    const user = await UserModel.findOne({
-      slackId: interaction.parentUser
-    }).exec();
+  if (userInfo) {
+    let user = await findByOrigin(interaction, true);
 
     if (user) {
-      return UserModel.findOne(
-        { slackId: interaction.parentUser },
-        (err, doc) => {
-          if (err) {
-            throw new Error("Error updating parentUser");
-          }
-          const newScore = doc.score + score;
-          doc.level = calculateLevel(newScore);
-          doc.score = newScore < 0 ? 0 : newScore;
-          doc.lastUpdate = Date.now();
-          doc.save();
-          return doc;
-        }
-      );
+      if (score > 0) {
+        const newScore = user.score + score;
+        user.level = calculateLevel(newScore);
+        user.score = newScore < 0 ? 0 : newScore;
+        user.lastUpdate = Date.now();
+        return await user.save();
+      }
     } else {
-      throw new Error(`Error: parentUser does not exist `);
+      const UserModel = mongoose.model("User");
+      return await createUserData(false, score, interaction, UserModel);
     }
   } else {
-    throw new Error(`Error: ${userInfo.error}`);
+    throw new Error(`Error on finding parentUser on rocket`);
   }
 };
 
