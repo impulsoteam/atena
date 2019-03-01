@@ -25,4 +25,14 @@ export const getUserInfo = async userId => {
   }
 };
 
+export const getUserInfoByUsername = async username => {
+  try {
+    const result = await api.get("users.info", { username: username });
+    return result.user;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
 runAPI();

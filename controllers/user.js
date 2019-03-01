@@ -13,37 +13,29 @@ import { _throw } from "../helpers";
 import axios from "axios";
 import { isValidToken } from "../utils/teams";
 import interactionController from "./interaction";
+import { getUserInfo as getRocketUserInfo } from "../rocket/api";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
-  const userInfo = await getUserInfo(interaction.parentUser);
+  const userInfo = await getRocketUserInfo(interaction.parentUser);
 
-  if (userInfo.ok) {
-    const UserModel = mongoose.model("User");
-    const user = await UserModel.findOne({
-      slackId: interaction.parentUser
-    }).exec();
+  if (userInfo) {
+    let user = await findByOrigin(interaction, true);
 
     if (user) {
-      return UserModel.findOne(
-        { slackId: interaction.parentUser },
-        (err, doc) => {
-          if (err) {
-            throw new Error("Error updating parentUser");
-          }
-          const newScore = doc.score + score;
-          doc.level = calculateLevel(newScore);
-          doc.score = newScore < 0 ? 0 : newScore;
-          doc.lastUpdate = Date.now();
-          doc.save();
-          return doc;
-        }
-      );
+      if (score > 0) {
+        const newScore = user.score + score;
+        user.level = calculateLevel(newScore);
+        user.score = newScore < 0 ? 0 : newScore;
+        user.lastUpdate = Date.now();
+        return await user.save();
+      }
     } else {
-      throw new Error(`Error: parentUser does not exist `);
+      const UserModel = mongoose.model("User");
+      return await createUserData(false, score, interaction, UserModel);
     }
   } else {
-    throw new Error(`Error: ${userInfo.error}`);
+    throw new Error(`Error on finding parentUser on rocket`);
   }
 };
 
@@ -144,10 +136,14 @@ const findAll = async (
 };
 
 const rankingPosition = async (userId, isCoreTeam = false) => {
-  const allUsers = await findAll(isCoreTeam);
+  let position;
+  const allUsers = await findAll(isCoreTeam, 0);
   const user = await getNetwork(userId);
-  const position = (await allUsers.map(e => e.id).indexOf(user.id)) + 1;
-
+  if (user.network === "rocket") {
+    position = (await allUsers.map(e => e.rocketId).indexOf(user.rocketId)) + 1;
+  } else {
+    position = (await allUsers.map(e => e.rocketId).indexOf(user.slackId)) + 1;
+  }
   return position;
 };
 
@@ -226,15 +222,15 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
 
   sendToUser(
     `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
-    \n\n
+    \n
     Em meus domínios terás que realizar tarefas para mim, teus feitos irão render-te *Pontos de Experiência* que, além de fortalecer-te, permitirão que obtenhas medalhas de *Conquistas* em forma de reconhecimento! Sou uma deusa amorosa, por isso saibas que, eventualmente, irei premiar-te de maneira especial!
-    \n\n
+    \n
     No decorrer do tempo, sentirás a necessidade de acompanhar o teu progresso. Por isso, podes consultar os livros de nossa biblioteca que contém tudo o que fizestes até então, são eles:
     \n
     - Pergaminhos de *Pontos de Experiência: !meuspontos* ou */meuspontos*;
     \n
     - e os Tomos de *Conquistas: !minhasconquistas* ou */minhasconquistas*.
-    \n\n
+    \n
     Ah! Claro que não estás só na realização destas tarefas. Os nomes dos(as) Impulsers estão dispostos nos murais no exterior de meu templo, esta é uma forma de reconhecer o teu valor e os teusesforços. Lá, tu encontrarás dois murais:
     \n
     - O *!ranking* ou */ranking _nº do mês_* onde estão os nomes dos(das) que mais se esforçaram neste mês. Aquele(a) que estiver em primeiro lugar receberá uma recompensa especial;
@@ -242,7 +238,7 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
     - e o *!rakinggeral* ou */rankinggeral* onde os nomes ficam dispostos, indicando -toda a sua contribuição realizada até o presente momento.
     \n
     Sei que são muitas informações, mas tome nota, para que não te esqueças de nada. Neste papiro, encontrarás *tudo o que precisa* saber em caso de dúvidas: **http://atena.impulso.network.**
-    \n\n
+    \n
     Espero que aproveite ao máximo *tua jornada* por aqui!`,
     interaction.rocketUsername
   );
