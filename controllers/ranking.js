@@ -262,14 +262,20 @@ const group = async (users, isCoreTeam = false) => {
   return isCoreTeam ? listCoreTeam : listUsers;
 };
 
-const index = async (req, res) => {
+const miner = async (req, res) => {
   const miner = /miner/g;
   const { team, token } = req.headers;
-  const isMiner = miner.test(req.originalUrl);
+  const isMiner = miner.test(req.originalUrl) || false;
   if ((isMiner && !team) || (isMiner && !isValidToken(team, token))) {
     res.sendStatus(401);
     return;
   }
+  return isMiner;
+};
+
+const index = async (req, res) => {
+  const isMiner = await miner(req, res);
+  const { team, token } = req.headers;
 
   let month = new Date(Date.now()).getMonth();
   let monthName = monthNames[month];
@@ -313,10 +319,19 @@ const index = async (req, res) => {
 };
 
 const general = async (req, res) => {
+  const isMiner = await miner(req, res);
+  const { team, token } = req.headers;
   let first_users = [];
   let last_users = [];
-  let users = await userController.findAll();
+  const limit = isMiner ? 0 : 20;
+
+  let users = await userController.findAll(
+    false,
+    limit,
+    "-email -_id -lastUpdate"
+  );
   users = await position(users);
+  if (isMiner) users = await byTeam(users, team);
   first_users = await firstUsers(users);
   last_users = await lastUsers(users);
   const initialData = {
@@ -327,7 +342,7 @@ const general = async (req, res) => {
     page: "general"
   };
 
-  if (req.query.format === "json") {
+  if (req.query.format === "json" || (isMiner && isValidToken(team, token))) {
     res.json(initialData);
   } else {
     renderScreen(req, res, "Ranking", initialData);
