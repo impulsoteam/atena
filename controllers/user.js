@@ -92,7 +92,7 @@ const findByOrigin = async (interaction, isParent = false) => {
   return user;
 };
 
-const findBy = async args => {
+export const findBy = async args => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne(args).exec();
   return result || _throw("Error finding user");
@@ -372,6 +372,12 @@ const details = async (req, res) => {
   res.json(response);
 };
 
+export const save = async obj => {
+  const UserModel = mongoose.model("User");
+  const user = new UserModel(obj);
+  return await user.save();
+};
+
 export default {
   find,
   findAll,
@@ -386,5 +392,6 @@ export default {
   updateScore,
   changeTeams,
   fromRocket,
-  details
+  details,
+  save
 };

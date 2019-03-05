@@ -132,7 +132,9 @@ router.get("/callback", async (req, res) => {
   renderScreen(req, res, "Github", initialData);
 });
 
-router.use("/", async (req, res) => {
+router.use("/", githubController.index);
+
+router.use("/old", async (req, res) => {
   let user = {};
   let string;
   try {

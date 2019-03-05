@@ -1,6 +1,7 @@
 import config from "config-yml";
 import express from "express";
-import request from "make-requests";
+// import request from "make-requests";
+import axios from "axios";
 import bodyParser from "body-parser";
 import { analyticsSendBotCollect, getRanking } from "../utils";
 import userController from "../controllers/user";
@@ -109,7 +110,7 @@ router.post("/feedback", urlencodedParser, async (req, res) => {
       `Tio, ${user.name} mandou um super feedback, saca só: _${req.body.text}_`
     )}&user=${process.env.SLACK_USER_FEEDBACK}&pretty=1`;
 
-    response = await request(url, "POST");
+    response = await axios.post(url);
   } catch (e) {
     response.error = e;
   }

@@ -11,18 +11,18 @@ require("./models/interaction");
 require("./models/user");
 require("./models/achievement");
 require("./models/ranking");
-require("./rocket/bot");
-require("./rocket/api");
-require("./workers/receive");
+
+if (process.env.NODE_ENV !== "test") {
+  require("./rocket/bot");
+  require("./rocket/api");
+  require("./workers/receive");
+}
 
 runCrons();
 
 process.env.NODE_ENV !== "production" && dotenv.config();
 
-const mongooseConnectUri =
-  process.env.NODE_ENV === "test"
-    ? process.env.MONGODB_TEST_URI
-    : process.env.MONGODB_URI;
+const mongooseConnectUri = process.env.MONGODB_URI;
 
 mongoose.connect(mongooseConnectUri);
 mongoose.set("useCreateIndexes", true);

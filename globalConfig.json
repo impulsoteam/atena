@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+{"mongoDBName":"jest","mongoUri":"mongodb://127.0.0.1:55182/31dc20f1-ee21-43f4-bd45-f46eeaeb3f2f"}
+=======
+{"mongoDBName":"jest","mongoUri":"mongodb://127.0.0.1:50448/f586207c-6f44-4cbb-9b09-b3036ca36fa8"}
+>>>>>>> e6d6c345... wip tests refactor stash
