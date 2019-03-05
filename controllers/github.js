@@ -1,22 +1,15 @@
+import axios from "axios";
+import config from "config-yml";
+import queryString from "querystring";
 import userController from "./user";
-import mongoose from "mongoose";
+import { renderScreen } from "../utils/ssr";
+import { isValidRepository } from "../utils/github";
+import interactionController from "./interaction";
+import { getStyleLog } from "../utils";
 
-const link_auth = `https://github.com/login/oauth/authorize?scope=user:email&client_id=${
-  process.env.GITHUB_CLIENT_ID
-}`;
-
-const updateUserData = (slackId, githubId) => {
-  const UserModel = mongoose.model("User");
-  return UserModel.findOne({ slackId: slackId }, (err, doc) => {
-    if (err) {
-      throw new Error("Error updating user");
-    }
-    doc.githubId = githubId;
-    doc.lastUpdate = Date.now();
-    doc.save();
-    return doc;
-  });
-};
+const link_auth = `${
+  process.env.GITHUB_OAUTH_URL
+}authorize?scope=user:email&client_id=${process.env.GITHUB_CLIENT_ID}`;
 
 const index = async (req, res) => {
   let response = {};
@@ -47,7 +40,120 @@ Portanto, tens o que é preciso para estar entre nós, ${
   res.json(response);
 };
 
+const accessToken = async code => {
+  const url = `${process.env.GITHUB_OAUTH_URL}access_token`;
+  let res = await axios.post(url, {
+    client_id: process.env.GITHUB_CLIENT_ID,
+    client_secret: process.env.GITHUB_CLIENT_SECRET,
+    code: code,
+    accept: "json"
+  });
+  return await queryString.parse(res.data);
+};
+
+const info = async (access_token, user) => {
+  await axios
+    .get(`${process.env.GITHUB_API_URL}user`, {
+      params: {
+        access_token: access_token
+      }
+    })
+    .then(res_token => {
+      const githubId = res_token.data.id;
+      if (!user.githubId) {
+        user.githubId = githubId;
+        user.save();
+      }
+    })
+    .catch(e => {
+      console.log("Error: ", e);
+    });
+};
+
+const callback = async (req, res) => {
+  let response;
+  let user;
+  const code = req.query.code;
+  const rocketId = req.query.state;
+  try {
+    user = await userController.findBy({ rocketId: rocketId });
+  } catch (e) {
+    /* instanbul ignore next */
+  }
+  let data = await accessToken(code);
+  if (data.access_token) {
+    response = `Olá novamente, nobre Impulser! Sua dedicação foi posta a prova e você passou com honrarias!<br><br>
+          A partir de agora você pode desempenhar trabalhos junto aos *nossos* projetos open-source!<br><br>
+          Ainda está em dúvida de como funcionam?! Não tem problema, dá uma olhadinha aqui neste papiro: <a href="${
+            process.env.ATENA_SOURCE_URL
+          }">${process.env.ATENA_SOURCE_URL}</a>`;
+    await info(data.access_token, user);
+  } else if (data.error) {
+    response = `Ops! parece que você entrou na caverna errada. Que falta faz um GPS, não é? Siga esse caminho e não vai errar: <a href="${link_auth}&state=${rocketId}">${link_auth}&state=${rocketId}</a> para tentar novamente.`;
+  } else {
+    response =
+      "Não conseguimos localizar seu e-mail público ou privado na API do GITHUB, Seu esse recurso sua armadura de cavaleiro não está pronta para ganhar bonificações na contribuição do projeto Atena!";
+  }
+
+  const inititalData = {
+    title: "Batalha do Open Source | Impulso Network",
+    response
+  };
+
+  renderScreen(req, res, "Github", inititalData);
+};
+
+const events = async (req, res) => {
+  let data = req.body;
+  let user = {};
+  if (data.issue) data.type = "issue";
+  if (data.review) data.type = "review";
+  if (data.pull_request && data.action === "opened") data.type = "pull_request";
+  if (data.pull_request && data.action === "closed")
+    data.type = "merged_pull_request";
+  const githubId =
+    data.pull_request && data.pull_request.merged
+      ? data.pull_request.user.id
+      : data.sender.id;
+  try {
+    user = await userController.findByGithub({ githubId: githubId });
+  } catch (e) {
+    /* istanbul ignore next */
+  }
+  data.user = user.rocketId;
+  const repository = req.body.repository.id.toString();
+  if (
+    isValidRepository(repository) &&
+    !config.atenateam.members.includes(user.rocketId)
+  ) {
+    if (data.type) {
+      let valid = false;
+      if (data.type === "issue" && data.action === "opened") valid = true;
+      if (data.type === "review" && data.action === "submitted") valid = true;
+      if (data.type === "pull_request" && data.action === "opened")
+        valid = true;
+      if (
+        data.type === "merged_pull_request" &&
+        data.action === "closed" &&
+        data.pull_request.merged
+      ) {
+        valid = true;
+      }
+      if (valid) interactionController.save(data);
+    } else {
+      console.log(getStyleLog("yellow"), `\n-- event an type invalid`);
+    }
+  } else {
+    console.log(
+      getStyleLog("yellow"),
+      `\n-- event into an invalid repository ${repository}`
+    );
+  }
+  res.json(req.body);
+};
+
 export default {
-  updateUserData,
-  index
+  index,
+  callback,
+  events
 };

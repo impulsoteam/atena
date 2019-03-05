@@ -62,6 +62,7 @@ const update = async interaction => {
 };
 
 const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
+  // change find by slackId and release to rocketId too
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({
     slackId: userId,
