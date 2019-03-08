@@ -1,0 +1,78 @@
+{
+  "name": "atena",
+  "scripts": {},
+  "env": {
+    "CHANNELS": {
+      "required": true
+    },
+    "CLOUDAMQP_APIKEY": {
+      "required": true
+    },
+    "CLOUDAMQP_URL": {
+      "required": true
+    },
+    "GA": {
+      "required": true
+    },
+    "GITHUB_CLIENT_ID": {
+      "required": true
+    },
+    "GITHUB_CLIENT_SECRET": {
+      "required": true
+    },
+    "LINKEDIN_CLIENT_ID": {
+      "required": true
+    },
+    "LINKEDIN_CLIENT_SECRET": {
+      "required": true
+    },
+    "LINKEDIN_KEY": {
+      "required": true
+    },
+    "LINKEDIN_SECRET": {
+      "required": true
+    },
+    "MONGODB_URI": {
+      "required": true
+    },
+    "NODE_ENV": {
+      "required": true
+    },
+    "ROCKET_BOT_PASS": {
+      "required": true
+    },
+    "ROCKET_BOT_USER": {
+      "required": true
+    },
+    "ROCKET_HOST": {
+      "required": true
+    },
+    "SLACK_SIGNIN_EVENTS": {
+      "required": true
+    },
+    "SLACK_TOKEN": {
+      "required": true
+    },
+    "TEAM_NETWORK_TOKEN": {
+      "required": true
+    },
+    "X_MINER_TOKEN": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "cloudamqp",
+    "mongolab"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "stack": "heroku-18"
+}
