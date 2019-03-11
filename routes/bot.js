@@ -11,7 +11,6 @@ import achievementTemporaryController from "../controllers/achievementTemporary"
 import achievementLevelController from "../controllers/achievementLevel";
 import rankingController from "../controllers/ranking";
 import { isCoreTeam } from "../utils";
-// import validSlackSecret from "../utils/validSecret";
 import { sendMessage } from "../rocket/bot";
 import {
   generateAchievementsMessages,
@@ -37,7 +36,6 @@ router.post("/score", urlencodedParser, async (req, res) => {
     query_user = { rocketId: req.body.user_id };
   } else {
     query_user = { slackId: req.body.user_id };
-    // validSlackSecret(req, res);
   }
   try {
     user = await userController.findBy(query_user);
@@ -54,7 +52,7 @@ router.post("/score", urlencodedParser, async (req, res) => {
     };
     analyticsSendBotCollect(req.body);
   } catch (e) {
-    // console.log("Bot -> Score:", e);
+    console.log("Bot -> Score:", e);
   }
 
   res.json(response);
@@ -80,7 +78,6 @@ router.post("/general-raking", urlencodedParser, async (req, res) => {
 });
 
 router.post("/coreteamranking", urlencodedParser, async (req, res) => {
-  // validSlackSecret(req, res);
   let response = {};
 
   if (isCoreTeam(req.body.user_id)) {
@@ -127,23 +124,23 @@ router.post("/sendpoints", urlencodedParser, async (req, res) => {
   let response = {
     text: "você tá tentando dar pontos prum coleguinha, né?!"
   };
-  const value = +req.body.text.split("> ")[1];
-  const userId = req.body.text
-    .split("|")[0]
-    .substring(2, req.body.text.split("|")[0].length);
+  const value = +req.body.text.split("> ")[1] || 0;
+  const theUser = req.body.username || "ninguém";
+  const impulser =
+    req.body.text
+      .split("|")[0]
+      .substring(2, req.body.text.split("|")[0].length) || "ninguém";
 
-  if (config.coreteam.admins.some(user => user === req.body.user_id)) {
+  if (config.coreteam.admins.some(user => user === theUser)) {
     try {
       await interactionController.manualInteractions({
         type: "manual",
-        user: userId,
-        text: `você recebeu esses ${value || 0} pontos de ${req.body
-          .user_name || "ninguém"}`,
+        user: impulser,
+        text: `você recebeu esses ${value} pontos de @${theUser}`,
         value: value
       });
 
-      response.text = `você tá dando ${value || 0} pontos para ${userId ||
-        "ninguém"}`;
+      response.text = `você tá dando ${value} pontos para @${impulser}`;
     } catch (e) {
       response.text =
         "Ocorreu um erro nessa sua tentativa legal de dar pontos para outro coleguinha";
@@ -158,7 +155,6 @@ router.post("/sendpoints", urlencodedParser, async (req, res) => {
 });
 
 router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
-  // validSlackSecret(req, res);
   let response = { text: "Ops! Você ainda não tem conquistas registradas. :(" };
 
   try {
