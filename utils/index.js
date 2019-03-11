@@ -1,7 +1,6 @@
 import config from "config-yml";
 import dotenv from "dotenv";
-import request from "make-requests";
-
+import axios from "axios";
 import { calculateReceivedScore as calc } from "./calculateReceivedScore";
 import { calculateReactions as calcReactions } from "./calculateReactions";
 import { calculateAchievementsPosition as calcAchievements } from "./calculateAchievementsPosition";
@@ -17,7 +16,7 @@ export const getUserInfo = async id => {
   const url = `https://slack.com/api/users.profile.get?token=${slackToken}&user=${id}`;
   let response = {};
   try {
-    response = await request(url);
+    response = await axios(url);
   } catch (e) {
     console.log(
       getStyleLog("red"),
@@ -34,7 +33,7 @@ export const getChannelInfo = async id => {
   let response = {};
 
   try {
-    response = await request(url);
+    response = await axios(url);
   } catch (e) {
     console.log(
       getStyleLog("red"),
