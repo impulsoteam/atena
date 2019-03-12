@@ -8,6 +8,7 @@ import { calculateScore, analyticsSendCollect } from "../utils";
 import { lastMessageTime, getAction, getOrigin } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 import { getUserFromReaction } from "../utils/reactions";
+import { isBot } from "../utils/bot";
 
 let normalize = data => {
   if (data.type === "reaction_added" || data.type === "reaction_removed") {
@@ -164,6 +165,10 @@ let normalize = data => {
 };
 
 export const save = async data => {
+  if (isBot(data)) {
+    return;
+  }
+
   const InteractionModel = mongoose.model("Interaction");
   const interaction = normalize(data);
   const todayLimitScore = config.xprules.limits.daily;
