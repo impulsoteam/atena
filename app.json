@@ -12,7 +12,7 @@
       "required": true
     },
     "GA": {
-      "required": true
+      "required": false
     },
     "GITHUB_CLIENT_ID": {
       "required": true
