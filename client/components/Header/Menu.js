@@ -24,7 +24,7 @@ const links = user => {
     {
       class: "index",
       title: "como funciona",
-      link: "javascript:;"
+      link: "/"
     },
     {
       class: "ranking",

@@ -308,7 +308,8 @@ const index = async (req, res) => {
     first_users: first_users,
     last_users: last_users,
     monthName: monthName,
-    error: error
+    error: error,
+    page: "ranking"
   };
 
   if (isMiner && isValidToken(team, token)) {
@@ -339,7 +340,7 @@ const general = async (req, res) => {
     first_users: first_users,
     last_users: last_users,
     monthName: "GERAL",
-    page: "general"
+    page: "geral"
   };
 
   if (req.query.format === "json" || (isMiner && isValidToken(team, token))) {
