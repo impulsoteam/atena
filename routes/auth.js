@@ -1,5 +1,6 @@
 import express from "express";
 import passport from "passport";
+import { sendMessage } from "../rocket/bot";
 import userController from "../controllers/user";
 import authController from "../controllers/auth";
 const router = express.Router();
@@ -40,6 +41,16 @@ passport.use(
           return done(null, user);
         } catch (error) {
           console.log("error", error);
+          await sendMessage(
+            `Esse nobre cavaleiro não conseguiu logar no santuário: \nID: ${
+              profile.id
+            } \nDISPLAYNAME: ${profile.displayName} \nEMAIL: ${
+              profile._json.emailAddress
+            } \n FOTO: ${profile._json.pictureUrl} \n PROFILE: ${
+              profile._json.publicProfileUrl
+            } `,
+            "projeto-atena"
+          );
         }
         if (!user) {
           return done(null, false);
