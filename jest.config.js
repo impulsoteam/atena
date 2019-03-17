@@ -3,7 +3,7 @@ module.exports = {
   watchPathIgnorePatterns: [
     "calculateReactions",
     "reactions",
-    "interaction",
+    // "interaction",
     "userLevelHistory",
     "user",
     "disqus"
