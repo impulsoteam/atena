@@ -1,6 +1,6 @@
-// import sinon from "sinon";
 import interaction from "./interaction";
 import interactionModel from "../models/interaction";
+import { messageAttachmentFromHistory } from "../mocks/rocket";
 
 jest.mock("../rocket/api", () => jest.fn());
 jest.mock("../rocket/bot", () => jest.fn());
@@ -11,6 +11,20 @@ jest.mock("./achievementTemporary");
 
 describe("Interaction Controller", () => {
   // describe("normalize", () => {});
+  describe("history", () => {
+    describe("attachments", () => {
+      it("should returns successfuly interaction with reactions", done => {
+        interaction.todayScore = jest.fn().mockReturnValue(0);
+        let data = messageAttachmentFromHistory;
+        data.origin = "rocket";
+        interaction.save(data).then(response => {
+          expect(response).toEqual({});
+        });
+        done();
+      });
+    });
+  });
+  /*
   describe("save", () => {
     beforeEach(() => {
       // sinon.stub(interactionModel.prototype, "save");
@@ -42,6 +56,7 @@ describe("Interaction Controller", () => {
       // expect(response).toEqual({});
     });
   });
+  */
   // describe("find", () => {});
   // describe("todayScore", () => {});
   // describe("remove", () => {});

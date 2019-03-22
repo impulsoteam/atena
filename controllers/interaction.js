@@ -204,6 +204,7 @@ export const save = async data => {
     interaction.origin === "rocket"
   ) {
     const user = await getUserFromReaction(data);
+    console.log("tem user", user);
 
     interaction.user = user ? user.id : null;
     interaction.rocketUsername = user ? user.username : null;
@@ -416,9 +417,11 @@ const history = async (req, res) => {
   const messages = await getHistory("Aa6fSXib23WpHjof7");
 
   for (let message of messages.reverse()) {
-    console.log("=====> ", message);
     message.origin = "rocket";
-    await exportFunctions.save(message);
+    if (!message.t) {
+      console.log("=====> ", message);
+      await exportFunctions.save(message);
+    }
   }
   res.json(messages.reverse());
 };
