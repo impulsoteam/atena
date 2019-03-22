@@ -26,13 +26,29 @@ export const getUserInfo = async userId => {
 };
 
 export const getUserInfoByUsername = async username => {
+  console.log("try getUsernfoByUsername");
   try {
     const result = await api.get("users.info", { username: username });
+    console.log("tem result? ", result);
     return result.user;
   } catch (e) {
     console.log(e);
     return false;
   }
+};
+
+export const getHistory = async roomId => {
+  try {
+    const result = await api.get("channels.history", {
+      roomId: roomId,
+      count: 7500,
+      oldest: "2019-02-06T00:00:00.304Z"
+    });
+    return result.messages;
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
 };
 
 runAPI();

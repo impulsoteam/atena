@@ -18,7 +18,10 @@ const myPosition = async (user_id, users) => {
  */
 const commandIndex = async message => {
   let month = new Date(Date.now()).getMonth() + 1;
-  const generalResponse = await generalIndex(message.u._id, month);
+  const generalResponse = await exportFunctions.generalIndex(
+    message.u._id,
+    month
+  );
   const customResponse = {
     msg: generalResponse.text,
     attachments: generalResponse.attachments
@@ -40,6 +43,7 @@ const commandGeneral = async message => {
 
   await driver.sendDirectToUser(customResponse, message.u.username);
 };
+const slashIndex = async (req, res) => {};
 
 const generalIndex = async (user_id, month) => {
   let response = {
@@ -413,7 +417,7 @@ const general = async (req, res) => {
   }
 };
 
-export default {
+const exportFunctions = {
   bot_index,
   index,
   monthly,
@@ -424,5 +428,8 @@ export default {
   sendToChannel,
   general,
   commandIndex,
-  commandGeneral
+  commandGeneral,
+  generalIndex
 };
+
+export default exportFunctions;

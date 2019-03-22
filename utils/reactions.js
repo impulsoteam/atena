@@ -29,10 +29,16 @@ export const getUserFromReaction = async data => {
       username = data.reactions[reaction].usernames.pop();
     }
 
+    console.log("getUserFromReaction", username);
+
     let user;
     if (username) {
+      console.log("has username");
       user = await getUserInfoByUsername(username);
+      console.log("nao pegou");
     }
+
+    console.log("getUserInfoByUsername ", user);
 
     return {
       id: user ? user._id : null,

@@ -27,4 +27,6 @@ router.get("/channel/:id", async (req, res) => {
 
 router.get("/normalize", interactionController.normalizeScore);
 
+router.get("/history", interactionController.history);
+
 export default router;
