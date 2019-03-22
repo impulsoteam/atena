@@ -7,7 +7,9 @@ const Header = props => (
   <StyledHeader>
     <Flex justifyContent="space-between" alignItems="center">
       <Box flex="1">
-        <img src="/images/atena.svg" />
+        <a href="/">
+          <img src="/images/atena.svg" />
+        </a>
       </Box>
       <Box>
         <Menu {...props} />

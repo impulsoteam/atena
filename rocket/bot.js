@@ -1,5 +1,6 @@
 import { driver } from "@rocket.chat/sdk";
 import interactionController from "../controllers/interaction";
+import rankingController from "../controllers/ranking";
 
 var myuserid;
 const runBot = async () => {
@@ -17,20 +18,20 @@ const runBot = async () => {
   await driver.reactToMessages(processMessages);
 };
 
+const commands = async message => {
+  const rankingRegex = /!ranking/g;
+  if (rankingRegex.test(message.msg)) {
+    await rankingController.commandIndex(message);
+  }
+};
+
 const processMessages = async (err, message, messageOptions) => {
-  const ranking = /!ranking/g;
   if (!err) {
     message.origin = "rocket";
     console.log("MESSAGE: ", message, messageOptions);
     if (message.u._id === myuserid) return;
     interactionController.save(message);
-
-    if (ranking.test(message.msg)) {
-      await driver.sendDirectToUser(
-        "Em breve você vai receber o Ranking",
-        message.u.username
-      );
-    }
+    await commands(message);
   } else {
     console.log(err, messageOptions);
   }
