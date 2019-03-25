@@ -26,6 +26,21 @@ const commandIndex = async message => {
   await driver.sendDirectToUser(customResponse, message.u.username);
 };
 
+const commandGeneral = async message => {
+  const users = await findAll(false, null, 5);
+  const rankingUsers = users.map((x, y) => ({
+    text: `${++y}º lugar está ${x.name} com ${x.score} pontos, no nível ${
+      x.level
+    }`
+  }));
+  const customResponse = {
+    msg: "Veja as primeiras pessoas do ranking geral:",
+    attachments: rankingUsers
+  };
+
+  await driver.sendDirectToUser(customResponse, message.u.username);
+};
+
 const generalIndex = async (user_id, month) => {
   let response = {
     text: "Veja as primeiras pessoas do ranking:",
@@ -408,5 +423,6 @@ export default {
   save,
   sendToChannel,
   general,
-  commandIndex
+  commandIndex,
+  commandGeneral
 };

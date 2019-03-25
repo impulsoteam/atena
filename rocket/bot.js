@@ -20,12 +20,18 @@ const runBot = async () => {
 };
 
 const commands = async message => {
-  const rankingRegex = /!ranking/g;
-  const meusPontosRegex = /!meuspontos/g;
-  if (rankingRegex.test(message.msg)) {
+  const regex = {
+    ranking: /!ranking/g,
+    rankingGeral: /!rankinggeral/g,
+    meusPontos: /!meuspontos/g
+  };
+
+  if (regex.ranking.test(message.msg)) {
     await rankingController.commandIndex(message);
-  } else if (meusPontosRegex.test(message.msg)) {
+  } else if (regex.meusPontos.test(message.msg)) {
     await userController.commandScore(message);
+  } else if (regex.rankingGeral.test(message.msg)) {
+    await rankingController.commandGeneral(message);
   }
 };
 
