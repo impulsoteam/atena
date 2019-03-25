@@ -1,6 +1,5 @@
 import config from "config-yml";
 import express from "express";
-// import request from "make-requests";
 import axios from "axios";
 import bodyParser from "body-parser";
 import { analyticsSendBotCollect, getRanking } from "../utils";
