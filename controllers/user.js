@@ -1,5 +1,6 @@
 import config from "config-yml";
 import mongoose from "mongoose";
+import { driver } from "@rocket.chat/sdk";
 import {
   calculateScore,
   calculateReceivedScore,
@@ -379,6 +380,16 @@ export const save = async obj => {
   return await user.save();
 };
 
+export const commandScore = async message => {
+  const user = await find(message.u._id);
+
+  const customResponse = {
+    msg: `você está no nível ${user.level}, com ${user.score} pontos.`
+  };
+
+  await driver.sendDirectToUser(customResponse, message.u.username);
+};
+
 export default {
   find,
   findAll,
@@ -394,5 +405,6 @@ export default {
   changeTeams,
   fromRocket,
   details,
-  save
+  save,
+  commandScore
 };
