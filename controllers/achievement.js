@@ -1,5 +1,5 @@
 import config from "config-yml";
-
+import { driver } from "@rocket.chat/sdk";
 import { _throw } from "../helpers";
 import AchievementModel from "../models/achievement";
 import { isPositiveReaction, isAtenaReaction } from "../utils/reactions";
@@ -9,8 +9,72 @@ import {
   getAchievementCurrentRating,
   getAchievementNextRating
 } from "../utils/achievements";
+import {
+  generateAchievementsMessages,
+  generateAchievementsTemporaryMessages,
+  generateAchievementLevelMessage
+} from "../utils/achievementsMessages";
+import achievementTemporaryController from "../controllers/achievementTemporary";
+import achievementLevelController from "../controllers/achievementLevel";
 import { sendEarnedAchievementMessage } from "../utils/achievementsMessages";
 import userController from "../controllers/user";
+
+const commandIndex = async message => {
+  let response = { text: "Ops! Você ainda não tem conquistas registradas. :(" };
+
+  try {
+    let user = {};
+    let attachments = [];
+    let interaction = {
+      origin: "rocket",
+      user: message.u._id
+    };
+
+    user = await userController.findByOrigin(interaction);
+
+    if (user) {
+      let achievements = await findAllByUser(user._id);
+
+      if (achievements.length) {
+        const achievementsMessages = generateAchievementsMessages(achievements);
+        attachments = attachments.concat(achievementsMessages);
+      }
+
+      let achievementsTemporary = await achievementTemporaryController.findAllByUser(
+        user._id
+      );
+
+      if (achievementsTemporary.length) {
+        const achievementsMessages = generateAchievementsTemporaryMessages(
+          achievementsTemporary
+        );
+        attachments = attachments.concat(achievementsMessages);
+      }
+
+      let achievementLevel = await achievementLevelController.findByUser(
+        user._id
+      );
+
+      if (achievementLevel) {
+        const achievementMessage = generateAchievementLevelMessage(
+          achievementLevel
+        );
+        attachments = attachments.concat(achievementMessage);
+      }
+
+      if (attachments.length) {
+        response = {
+          text: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
+          attachments: attachments
+        };
+      }
+    }
+
+    await driver.sendDirectToUser(response, message.u.username);
+  } catch (e) {
+    console.log("Minhas Conquistas:", e);
+  }
+};
 
 const findAllByUser = async userId => {
   const result = await AchievementModel.find({ user: userId }).exec();
@@ -206,5 +270,6 @@ const addFirstNewEarnedDate = achievement => {
 
 export default {
   findAllByUser,
-  save
+  save,
+  commandIndex
 };
