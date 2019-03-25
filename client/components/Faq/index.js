@@ -9,27 +9,27 @@ const questions = [
   {
     content: "Como me comunico com a Atena?",
     awnser:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      "Para centralizar as informações a respeito da sua Experiência, Níveis e Conquistas criamos a bot ATENA. Através de comandos é possível pedir à Atena para exibir seu XP (/meuspontos), Ranking Geral de XP (/ranking) e Conquistas (/minhasconquistas)."
   },
   {
     content: "Existirão atualizações?",
     awnser:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      "Sim! A Impulso Network é muito dinâmica e não para de crescer. O surgimento de novos canais, atividades e práticas corriqueiras e positivas na comunidade serão mapeadas para que novas features sejam criadas."
   },
   {
     content: "Existe alguma premiação?",
     awnser:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      "Claro! Além da Reputação obtida através da sua participação na comunidade (representada por XP e Níveis), Atena poderá te premiar com acesso a atividades especiais da comunidade, cupons de desconto para serviços, além de produtos e brindes exclusivos."
   },
   {
     content: "Qual a diferença entre ranking mensal e geral?",
     awnser:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      "Enquanto o Ranking Geral valoriza o esforço durante todo o seu percurso com a Atena e mostra o acumulado de XP e seu Nível, o Ranking Mensal foca no que foi realizado e recompensa o primeiro colocado naquele mês."
   },
   {
     content: "Como faço para participar do projeto?",
     awnser:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      "Qualquer pessoa pode ajudar Atena a crescer, basta entrar no canal #projeto-atena no nosso Rocket.chat ou acessar diretamente o nosso repositório no Github (http://github.com/impulsonetwork/atena). Ainda não faz parte da Impulso Network? Basta acessar o https://app.impulso.network/ e fazer o seu cadastro, é rapidinho."
   }
 ];
 
