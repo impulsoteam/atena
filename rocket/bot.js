@@ -2,7 +2,7 @@ import { driver } from "@rocket.chat/sdk";
 import interactionController from "../controllers/interaction";
 import rankingController from "../controllers/ranking";
 import userController from "../controllers/user";
-
+import achievementController from "../controllers/achievement";
 var myuserid;
 const runBot = async () => {
   await driver.connect({
@@ -23,7 +23,8 @@ const commands = async message => {
   const regex = {
     ranking: /!ranking/g,
     rankingGeral: /!rankinggeral/g,
-    meusPontos: /!meuspontos/g
+    meusPontos: /!meuspontos/g,
+    minhasConquistas: /!minhasconquistas/g
   };
 
   if (regex.ranking.test(message.msg)) {
@@ -32,7 +33,11 @@ const commands = async message => {
     await userController.commandScore(message);
   } else if (regex.rankingGeral.test(message.msg)) {
     await rankingController.commandGeneral(message);
+  } else if (regex.minhasConquistas.test(message.msg)) {
+    await achievementController.commandIndex(message);
   }
+
+  return;
 };
 
 const processMessages = async (err, message, messageOptions) => {
