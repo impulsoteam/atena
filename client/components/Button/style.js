@@ -11,6 +11,11 @@ const StyledButton = styled.button`
   cursor: pointer;
   background-color: transparent;
 
+  & a {
+    text-decoration: none;
+    color: ${props => props.theme.color.primary};
+  }
+
   &:hover {
     color: ${props => props.theme.color.secondary};
   }
