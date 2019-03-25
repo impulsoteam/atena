@@ -56,7 +56,11 @@ const Faq = () => (
       </Box>
       <Box width={[1, 3 / 5]} px={25}>
         <Accordion data={questions} />
-        <Button>Mais dúvidas</Button>
+        <Button>
+          <a href="https://www.notion.so/impulso/Atena-Um-projeto-de-gamifica-o-open-source-da-Impulso-cac95f0898e648f6a31f5911a3c46d41">
+            Mais dúvidas
+          </a>
+        </Button>
       </Box>
     </Flex>
   </StyledFaq>
