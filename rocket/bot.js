@@ -1,6 +1,7 @@
 import { driver } from "@rocket.chat/sdk";
 import interactionController from "../controllers/interaction";
 import rankingController from "../controllers/ranking";
+import userController from "../controllers/user";
 
 var myuserid;
 const runBot = async () => {
@@ -20,8 +21,11 @@ const runBot = async () => {
 
 const commands = async message => {
   const rankingRegex = /!ranking/g;
+  const meusPontosRegex = /!meuspontos/g;
   if (rankingRegex.test(message.msg)) {
     await rankingController.commandIndex(message);
+  } else if (meusPontosRegex.test(message.msg)) {
+    await userController.commandScore(message);
   }
 };
 
