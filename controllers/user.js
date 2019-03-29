@@ -236,12 +236,12 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
       name: interaction.username,
       level: level,
       score: score,
-      rocketId: interaction.user,
-      messages: interaction.type === "message" ? 1 : 0,
-      replies: interaction.type === "thread" ? 1 : 0,
-      reactions: calculateReactions(interaction, 0),
+      rocketId: interaction && interaction.user,
+      messages: interaction && interaction.type === "message" ? 1 : 0,
+      replies: interaction && interaction.type === "thread" ? 1 : 0,
+      reactions: calculateReactions(interaction, 0) || 0,
       lastUpdate: new Date(),
-      isCoreTeam: isCoreTeam(interaction.user)
+      isCoreTeam: isCoreTeam(interaction.user) || false
     };
   }
 
