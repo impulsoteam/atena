@@ -1,3 +1,5 @@
+import userController from "../controllers/user";
+
 const url = process.env.CLOUDAMQP_URL;
 const queue = process.env.CLOUDMQP_QUEUE;
 
@@ -11,11 +13,14 @@ const consumer = conn => {
     if (err != null) bail(err);
 
     ch.assertQueue(queue);
-    ch.consume(queue, msg => {
-      console.log("--- tá consumindo");
-      console.log(msg.toString());
+    ch.consume(queue, async msg => {
       if (msg !== null) {
-        console.log(msg.content.toString());
+        try {
+          await userController.handleFromNext();
+          console.log(msg.content.toString());
+        } catch (err) {
+          console.error(err);
+        }
         ch.ack(msg);
       }
     });
