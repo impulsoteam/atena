@@ -7,7 +7,6 @@ const bail = err => {
 };
 
 const consumer = conn => {
-  const ok = conn.createChannel(on_open);
   const on_open = (err, ch) => {
     if (err != null) bail(err);
 
@@ -19,6 +18,8 @@ const consumer = conn => {
       }
     });
   };
+
+  conn.createChannel(on_open);
 };
 
 const run = () => {
