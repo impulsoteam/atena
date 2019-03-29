@@ -9,7 +9,6 @@ import {
   createAchievementTemporary,
   updateAchievementTemporary
 } from "../utils/achievementsTemporary";
-import { _throw } from "../helpers";
 import userController from "../controllers/user";
 
 export const save = async interaction => {
@@ -17,7 +16,7 @@ export const save = async interaction => {
     const user = await userController.findByOrigin(interaction);
 
     if (!user) {
-      _throw("Error on find user to saving temporary achievement");
+      console.log("Error on find user to saving temporary achievement");
     }
 
     const query = getQueryToFindCurrent(interaction);
@@ -55,7 +54,7 @@ export const save = async interaction => {
       }
     }
   } catch (error) {
-    _throw("Error saving temporary achievement");
+    console.log("Error saving temporary achievement");
   }
 };
 

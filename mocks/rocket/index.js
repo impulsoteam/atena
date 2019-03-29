@@ -1,3 +1,16 @@
+export const apiGetInfoUserByUserId = {
+  user: {
+    _id: "2BQ3wWnRBh7vXGYdP",
+    type: "user",
+    status: "online",
+    active: true,
+    name: "Ikki de Fênix",
+    utcOffset: -3,
+    username: "ikki"
+  },
+  success: true
+};
+
 export const responseOpensourceSlash = {
   id: "2BQ3wWnRBh7vXGYdP",
   username: "ikki",
@@ -90,6 +103,19 @@ export const messageAttachmentFromHistory = {
       usernames: ["renato"]
     }
   }
+};
+
+export const saveInteraction = {
+  _id: "5c97bb78079546634e30a20",
+  thread: false,
+  score: 0,
+  type: "type",
+  channel: "test",
+  description: "desccription",
+  user: "2BQ3wWnRBh7vXGYdP",
+  lastUpdate: "2019-03-23T20:25:14.889Z",
+  date: "2019-03-23T20:25:14.889Z",
+  __v: 0
 };
 
 export default message;
