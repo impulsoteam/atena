@@ -1,7 +1,5 @@
 import config from "config-yml";
-
 import AchievementLevelModel from "../models/achievementLevel";
-import { _throw } from "../helpers";
 import { setRangesEarnedDates, isNewLevel } from "../utils/achievementsLevel";
 import { getRecord } from "../utils/achievements";
 
@@ -23,7 +21,7 @@ export const findByUser = async userId => {
 
 export const save = async (userId, currentLevel, newLevel) => {
   if (!userId) {
-    _throw("Error user found on save achievement level");
+    console.log("Error user found on save achievement level");
   }
 
   const achievementExistent = await findByUser(userId);
@@ -31,13 +29,13 @@ export const save = async (userId, currentLevel, newLevel) => {
     try {
       return await createAchievement(userId, newLevel);
     } catch (error) {
-      _throw("Error on create level achievement");
+      console.log("Error on create level achievement");
     }
   } else if (isNewLevel(currentLevel, newLevel)) {
     try {
       return await updateAchievement(achievementExistent, newLevel);
     } catch (error) {
-      _throw("Error on update level achievement");
+      console.log("Error on update level achievement");
     }
   }
 };

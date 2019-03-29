@@ -7,6 +7,7 @@ import compression from "compression";
 import session from "express-session";
 import passport from "passport";
 import bodyParser from "body-parser";
+import log4js from "log4js";
 require("./models/interaction");
 require("./models/user");
 require("./models/achievement");
@@ -26,6 +27,11 @@ const mongooseConnectUri = process.env.MONGODB_URI;
 
 mongoose.connect(mongooseConnectUri);
 mongoose.set("useCreateIndexes", true);
+
+log4js.configure({
+  appenders: { history: { type: "file", filename: "history.log" } },
+  categories: { default: { appenders: ["history"], level: "error" } }
+});
 
 const port = process.env.PORT || 9001;
 const app = express();

@@ -20,6 +20,10 @@ export const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  username: {
+    type: String,
+    required: true
+  },
   level: {
     type: Number,
     required: true,
@@ -93,6 +97,7 @@ export const userSchema = new mongoose.Schema({
   },
   teams: {
     type: Array,
+    default: ["network"],
     required: false
   },
   linkedinId: {
@@ -102,6 +107,7 @@ export const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("save", async function(next) {
+  this.lastUpdate = new Date();
   if (this.isModified("level") && isNewLevel(this._previousLevel, this.level)) {
     await saveLevelHistoryChanges(this._id, this._previousLevel, this.level);
     const achievement = await saveAchivementLevelChanges(

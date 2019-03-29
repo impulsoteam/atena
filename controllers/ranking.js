@@ -43,7 +43,7 @@ const commandGeneral = async message => {
 
   await driver.sendDirectToUser(customResponse, message.u.username);
 };
-const slashIndex = async (req, res) => {};
+// const slashIndex = async (req, res) => {};
 
 const generalIndex = async (user_id, month) => {
   let response = {

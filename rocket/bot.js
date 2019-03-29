@@ -45,8 +45,17 @@ const processMessages = async (err, message, messageOptions) => {
   if (!err) {
     message.origin = "rocket";
     console.log("MESSAGE: ", message, messageOptions);
-    if (message.u._id === myuserid) return;
-    interactionController.save(message);
+    if (message.u._id === myuserid || message.t) return;
+    interactionController.save(message).catch(() => {
+      console.log(
+        "Erro ao salvar interação do usuário: id: ",
+        message.u._id,
+        " name: ",
+        message.u.name,
+        " em: ",
+        new Date(message.ts["$date"]).toLocaleDateString("en-US")
+      );
+    });
     await commands(message);
   } else {
     console.log(err, messageOptions);
@@ -55,6 +64,7 @@ const processMessages = async (err, message, messageOptions) => {
 
 export const sendToUser = async (message, user) => {
   try {
+    console.log(message, user);
     await driver.sendDirectToUser(message, user);
     return true;
   } catch (e) {
@@ -65,6 +75,7 @@ export const sendToUser = async (message, user) => {
 
 export const sendMessage = async (message, room = "comunicados") => {
   try {
+    console.log(message, room);
     await driver.sendToRoom(message, room);
     return true;
   } catch (e) {
