@@ -12,6 +12,8 @@ const consumer = conn => {
 
     ch.assertQueue(queue);
     ch.consume(queue, msg => {
+      console.log("--- tá consumindo");
+      console.log(msg.toString());
       if (msg !== null) {
         console.log(msg.content.toString());
         ch.ack(msg);
