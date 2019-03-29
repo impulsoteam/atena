@@ -11,11 +11,11 @@ require("./models/interaction");
 require("./models/user");
 require("./models/achievement");
 require("./models/ranking");
+require("./workers/receive");
 
 if (process.env.NODE_ENV !== "test") {
   require("./rocket/bot");
   require("./rocket/api");
-  require("./workers/receive");
 }
 
 runCrons();
