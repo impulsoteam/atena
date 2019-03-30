@@ -3,26 +3,39 @@ import userController from "../controllers/user";
 const url = process.env.CLOUDAMQP_URL;
 const queue = process.env.CLOUDMQP_QUEUE;
 
-const run = async () => {
-  if (url) {
-    const { Connection } = require("amqplib-as-promised");
-    const connection = new Connection(url);
-    await connection.init();
-    const channel = await connection.createChannel();
-    await channel.assertQueue(queue);
-    await channel.consume(queue, async msg => {
+const bail = err => {
+  console.error(err);
+  process.exit(1);
+};
+
+const consumer = conn => {
+  const on_open = (err, ch) => {
+    if (err != null) bail(err);
+
+    ch.assertQueue(queue, { durable: false });
+    console.log("[*] Waiting for messages in %s.", queue);
+    ch.consume(queue, async msg => {
       if (msg !== null) {
+        console.log(msg.content.toString());
         try {
           await userController.handleFromNext();
-          console.log(msg.content.toString());
         } catch (err) {
-          console.log(err);
+          console.error(err);
         }
-        channel.ack(msg);
+        ch.ack(msg);
       }
     });
-    await channel.close();
-    await connection.close();
+  };
+
+  conn.createChannel(on_open);
+};
+
+const run = () => {
+  if (url) {
+    require("amqplib/callback_api").connect(url, (err, conn) => {
+      if (err != null) bail(err);
+      consumer(conn);
+    });
   }
 };
 
