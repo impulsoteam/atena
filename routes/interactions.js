@@ -15,7 +15,12 @@ router.get("/user/:id", async (req, res) => {
 });
 
 router.get("/channel/:id", async (req, res) => {
-  const interactions = await interactionController.findBy(req.params.id);
+  let interactions = []
+  try {
+    interactions = await interactionController.findBy(req.params.id);
+  } catch (err) {
+    console.log(err)
+  }
 
   res.send(groupBy(interactions, "user"));
 })
