@@ -403,8 +403,40 @@ export const handleFromNext = async data => {
       await interactionController.manualInteractions({
         type: "manual",
         user: data.rocket_chat.username,
-        text: "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
+        text:
+          "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
         value: config.xprules.linkedin.value
+      });
+    }
+
+    if (data.oppotunities_feed.length) {
+      let text, value;
+
+      switch (data.oppotunities_feed.status) {
+        case "interview":
+          text =
+            "Você recebeu pontos por participar da entrevista de uma oportunidade";
+          value = 5;
+          break;
+        case "approved":
+          text = "Você recebeu pontos por ser aprovado para uma oportunidade";
+          value = 7;
+          break;
+        case "allocated":
+          text = "Você recebeu pontos por ser alocado em uma oportunidade";
+          value = 9;
+          break;
+        default:
+          text = "";
+          value = 0;
+          break;
+      }
+
+      await interactionController.manualInteractions({
+        type: "manual",
+        user: data.rocket_chat.username,
+        text: text,
+        value: value
       });
     }
 
