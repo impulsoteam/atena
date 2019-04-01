@@ -10,6 +10,7 @@ import { lastMessageTime, getAction, getOrigin } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 import { getUserFromReaction } from "../utils/reactions";
 import { isBot } from "../utils/bot";
+import { fromPrivateChannel } from "../utils/rocket";
 import interactionModel from "../models/interaction";
 import { getHistory } from "../rocket/api";
 
@@ -121,8 +122,8 @@ let normalize = data => {
   } else if (data.origin === "rocket") {
     if (data.reactions) {
       return {
-        origin: "rocket",
-        channel: data.rid,
+        origin: data.origin,
+        channel: data.roomName,
         date: new Date(),
         description: Object.keys(data.reactions).pop(),
         parentUser: data.u._id,
@@ -134,9 +135,9 @@ let normalize = data => {
     } else {
       return {
         origin: data.origin,
-        channel: data.rid,
+        channel: data.roomName,
         date: new Date(),
-        description: data.msg,
+        description: fromPrivateChannel(data) ? "" : data.msg,
         type: "message",
         user: data.u._id,
         username: data.u.name,
