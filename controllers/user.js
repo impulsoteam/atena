@@ -409,7 +409,7 @@ export const handleFromNext = async data => {
       });
     }
 
-    if(data.referrer) {
+    if (data.referrer) {
       await interactionController.manualInteractions({
         type: "manual",
         user: data.rocket_chat.username,
