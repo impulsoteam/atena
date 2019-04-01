@@ -405,7 +405,16 @@ export const handleFromNext = async data => {
         user: data.rocket_chat.username,
         text:
           "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
-        value: config.xprules.linkedin.value
+        value: config.xprules.linkedin
+      });
+    }
+
+    if(data.referrer) {
+      await interactionController.manualInteractions({
+        type: "manual",
+        user: data.rocket_chat.username,
+        text: "você recebeu pontos por indicar a Impulso",
+        value: config.xprules.referral
       });
     }
 
@@ -416,15 +425,15 @@ export const handleFromNext = async data => {
         case "interview":
           text =
             "Você recebeu pontos por participar da entrevista de uma oportunidade";
-          value = 5;
+          value = config.xprules.team.interview;
           break;
         case "approved":
           text = "Você recebeu pontos por ser aprovado para uma oportunidade";
-          value = 7;
+          value = config.xprules.team.approved;
           break;
         case "allocated":
           text = "Você recebeu pontos por ser alocado em uma oportunidade";
-          value = 9;
+          value = config.xprules.team.allocated;
           break;
         default:
           text = "";
