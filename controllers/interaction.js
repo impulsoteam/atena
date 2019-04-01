@@ -137,7 +137,7 @@ let normalize = data => {
         origin: data.origin,
         channel: data.roomName,
         date: new Date(),
-        description: data.msg,
+        description: fromPrivateChannel(data) ? "" : data.msg,
         type: "message",
         user: data.u._id,
         username: data.u.name,
@@ -175,7 +175,7 @@ let normalize = data => {
 };
 
 export const save = async data => {
-  if (isBot(data) && fromPrivateChannel(data)) {
+  if (isBot(data)) {
     return;
   }
   const interaction = exportFunctions.normalize(data);
