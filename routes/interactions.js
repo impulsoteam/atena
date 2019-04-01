@@ -15,15 +15,15 @@ router.get("/user/:id", async (req, res) => {
 });
 
 router.get("/channel/:id", async (req, res) => {
-  let interactions = []
+  let interactions = [];
   try {
     interactions = await interactionController.findBy(req.params.id);
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 
   res.send(groupBy(interactions, "user"));
-})
+});
 
 router.get("/normalize", interactionController.normalizeScore);
 
