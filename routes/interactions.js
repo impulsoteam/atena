@@ -1,5 +1,6 @@
 import express from "express";
 import { getUserInfo } from "../utils";
+import { groupBy } from "../helpers/array";
 
 import interactionController from "../controllers/interaction";
 const router = express.Router();
@@ -12,6 +13,12 @@ router.get("/user/:id", async (req, res) => {
     interactions: interactions
   });
 });
+
+router.get("/channel/:id", async (req, res) => {
+  const interactions = await interactionController.findBy(req.params.id);
+
+  res.send(groupBy(interactions, "user"));
+})
 
 router.get("/normalize", interactionController.normalizeScore);
 
