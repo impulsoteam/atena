@@ -398,6 +398,16 @@ export const handleFromNext = async data => {
 
   try {
     user = await find(data.rocket_chat.id);
+
+    if (!user.linkedin) {
+      await interactionController.manualInteractions({
+        type: "manual",
+        user: data.rocket_chat.username,
+        text: "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
+        value: config.xprules.linkedin.value
+      });
+    }
+
     const userData = {
       rocketId: data.rocket_chat.id,
       name: data.fullname,

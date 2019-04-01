@@ -21,3 +21,5 @@ disqus:
 inactive:
   mindays: 8
   value: -2
+linkedin:
+  value: 3
