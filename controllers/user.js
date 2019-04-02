@@ -398,6 +398,57 @@ export const handleFromNext = async data => {
 
   try {
     user = await find(data.rocket_chat.id);
+
+    if (!user.linkedin) {
+      await interactionController.manualInteractions({
+        type: "manual",
+        user: data.rocket_chat.username,
+        text:
+          "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
+        value: config.xprules.linkedin
+      });
+    }
+
+    if (data.referrer) {
+      await interactionController.manualInteractions({
+        type: "manual",
+        user: data.rocket_chat.username,
+        text: "você recebeu pontos por indicar a Impulso",
+        value: config.xprules.referral
+      });
+    }
+
+    if (data.oppotunities_feed.length) {
+      let text, value;
+
+      switch (data.oppotunities_feed.status) {
+        case "interview":
+          text =
+            "Você recebeu pontos por participar da entrevista de uma oportunidade";
+          value = config.xprules.team.interview;
+          break;
+        case "approved":
+          text = "Você recebeu pontos por ser aprovado para uma oportunidade";
+          value = config.xprules.team.approved;
+          break;
+        case "allocated":
+          text = "Você recebeu pontos por ser alocado em uma oportunidade";
+          value = config.xprules.team.allocated;
+          break;
+        default:
+          text = "";
+          value = 0;
+          break;
+      }
+
+      await interactionController.manualInteractions({
+        type: "manual",
+        user: data.rocket_chat.username,
+        text: text,
+        value: value
+      });
+    }
+
     const userData = {
       rocketId: data.rocket_chat.id,
       name: data.fullname,
