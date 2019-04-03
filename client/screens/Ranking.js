@@ -25,7 +25,7 @@ const monthlyTitle = monthName => (
   </Fragment>
 );
 const ScreenRanking = ({
-  page = "monthly",
+  page = "ranking",
   monthName,
   first_users,
   last_users,
@@ -51,10 +51,10 @@ const ScreenRanking = ({
         </p>
         <Flex justifyContent="center" alignItems="center" mt={100} mb={100}>
           <RectangleGroup>
-            <Rectangle active={page === "monthly"} left>
+            <Rectangle active={page === "ranking"} left>
               <a href="/ranking">Ranking Mensal</a>
             </Rectangle>
-            <Rectangle active={page === "general"} right>
+            <Rectangle active={page === "geral"} right>
               <a href="/ranking/geral">Ranking Geral</a>
             </Rectangle>
           </RectangleGroup>

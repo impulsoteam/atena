@@ -7,12 +7,6 @@ const router = express.Router();
 router.get("/", rankingController.index);
 router.get("/mes/:month", rankingController.index);
 
-//router.get("/", async (req, res) => {
-//  console.log(req.params);
-// search by ranking mensal
-//  res.json({});
-//});
-
 router.get("/geral", rankingController.general);
 
 router.get("/user/:id", async (req, res) => {

@@ -1,5 +1,6 @@
 import config from "config-yml";
 import mongoose from "mongoose";
+import { driver } from "@rocket.chat/sdk";
 import {
   calculateScore,
   calculateReceivedScore,
@@ -54,6 +55,31 @@ const update = async interaction => {
     user = await UserModel.findOne({ rocketId: interaction.user }).exec();
   }
 
+  if (user.score === 0) {
+    sendToUser(
+      `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
+
+      Em meus domínios terás que realizar tarefas para mim, teus feitos irão render-te *Pontos de Experiência* que, além de fortalecer-te, permitirão que obtenhas medalhas de *Conquistas* em forma de reconhecimento! Sou uma deusa amorosa, por isso saibas que, eventualmente, irei premiar-te de maneira especial!
+
+      No decorrer do tempo, sentirás a necessidade de acompanhar o teu progresso. Por isso, podes consultar os livros de nossa biblioteca que contém tudo o que fizestes até então, são eles:
+
+      - Pergaminhos de *Pontos de Experiência: !meuspontos* ou */meuspontos*;
+
+      - e os Tomos de *Conquistas: !minhasconquistas* ou */minhasconquistas*.
+
+      Ah! Claro que não estás só na realização destas tarefas. Os nomes dos(as) Impulsers estão dispostos nos murais no exterior de meu templo, esta é uma forma de reconhecer o teu valor e os teusesforços. Lá, tu encontrarás dois murais:
+
+      - O *!ranking* ou */ranking _nº do mês_* onde estão os nomes dos(das) que mais se esforçaram neste mês. Aquele(a) que estiver em primeiro lugar receberá uma recompensa especial;
+
+      - e o *!rakinggeral* ou */rankinggeral* onde os nomes ficam dispostos, indicando -toda a sua contribuição realizada até o presente momento.
+
+      Sei que são muitas informações, mas tome nota, para que não te esqueças de nada. Neste papiro, encontrarás *tudo o que precisa* saber em caso de dúvidas: **http://atena.impulso.network.**
+
+      Espero que aproveite ao máximo *tua jornada* por aqui!`,
+      interaction.rocketUsername
+    );
+  }
+
   if (user) {
     return await updateUserData(user, interaction, score);
   } else {
@@ -62,6 +88,7 @@ const update = async interaction => {
 };
 
 const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
+  // change find by slackId and release to rocketId too
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne({
     slackId: userId,
@@ -92,7 +119,7 @@ const findByOrigin = async (interaction, isParent = false) => {
   return user;
 };
 
-const findBy = async args => {
+export const findBy = async args => {
   const UserModel = mongoose.model("User");
   const result = await UserModel.findOne(args).exec();
   return result || _throw("Error finding user");
@@ -197,52 +224,28 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
       email: userInfo.profile.email,
       level: level,
       score: score,
-      slackId: interaction.user,
-      messages: interaction.type === "message" ? 1 : 0,
-      replies: interaction.type === "thread" ? 1 : 0,
-      reactions: calculateReactions(interaction, 0),
+      slackId: interaction && interaction.user,
+      messages: interaction && interaction.type === "message" ? 1 : 0,
+      replies: interaction && interaction.type === "thread" ? 1 : 0,
+      reactions: calculateReactions(interaction, 0) || 0,
       lastUpdate: new Date(),
-      isCoreTeam: isCoreTeam(interaction.user)
+      isCoreTeam: isCoreTeam(interaction.user) || false
     };
   } else {
     obj = {
       name: interaction.username,
       level: level,
       score: score,
-      rocketId: interaction.user,
-      messages: interaction.type === "message" ? 1 : 0,
-      replies: interaction.type === "thread" ? 1 : 0,
-      reactions: calculateReactions(interaction, 0),
+      rocketId: interaction && interaction.user,
+      messages: interaction && interaction.type === "message" ? 1 : 0,
+      replies: interaction && interaction.type === "thread" ? 1 : 0,
+      reactions: calculateReactions(interaction, 0) || 0,
       lastUpdate: new Date(),
-      isCoreTeam: isCoreTeam(interaction.user)
+      isCoreTeam: isCoreTeam(interaction.user) || false
     };
   }
 
   const instance = new UserModel(obj);
-
-  sendToUser(
-    `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
-    \n
-    Em meus domínios terás que realizar tarefas para mim, teus feitos irão render-te *Pontos de Experiência* que, além de fortalecer-te, permitirão que obtenhas medalhas de *Conquistas* em forma de reconhecimento! Sou uma deusa amorosa, por isso saibas que, eventualmente, irei premiar-te de maneira especial!
-    \n
-    No decorrer do tempo, sentirás a necessidade de acompanhar o teu progresso. Por isso, podes consultar os livros de nossa biblioteca que contém tudo o que fizestes até então, são eles:
-    \n
-    - Pergaminhos de *Pontos de Experiência: !meuspontos* ou */meuspontos*;
-    \n
-    - e os Tomos de *Conquistas: !minhasconquistas* ou */minhasconquistas*.
-    \n
-    Ah! Claro que não estás só na realização destas tarefas. Os nomes dos(as) Impulsers estão dispostos nos murais no exterior de meu templo, esta é uma forma de reconhecer o teu valor e os teusesforços. Lá, tu encontrarás dois murais:
-    \n
-    - O *!ranking* ou */ranking _nº do mês_* onde estão os nomes dos(das) que mais se esforçaram neste mês. Aquele(a) que estiver em primeiro lugar receberá uma recompensa especial;
-    \n
-    - e o *!rakinggeral* ou */rankinggeral* onde os nomes ficam dispostos, indicando -toda a sua contribuição realizada até o presente momento.
-    \n
-    Sei que são muitas informações, mas tome nota, para que não te esqueças de nada. Neste papiro, encontrarás *tudo o que precisa* saber em caso de dúvidas: **http://atena.impulso.network.**
-    \n
-    Espero que aproveite ao máximo *tua jornada* por aqui!`,
-    interaction.rocketUsername
-  );
-
   return await instance.save();
 };
 
@@ -252,13 +255,14 @@ const updateUserData = async (user, interaction, score) => {
   const newScore = user.score + score;
   user.level = calculateLevel(newScore);
   user.score = newScore < 0 ? 0 : newScore;
-  user.isCoreTeam = isCoreTeam(interaction.user);
-  user.messages =
-    interaction.type === "message" ? user.messages + 1 : user.messages;
-  user.replies =
-    interaction.type === "thread" ? user.replies + 1 : user.replies;
-  user.reactions = calculateReactions(interaction, user.reactions);
-  user.lastUpdate = Date.now();
+  user.isCoreTeam = isCoreTeam(interaction.user) || false;
+  if (interaction) {
+    user.messages =
+      interaction.type === "message" ? user.messages + 1 : user.messages;
+    user.replies =
+      interaction.type === "thread" ? user.replies + 1 : user.replies;
+    user.reactions = calculateReactions(interaction, user.reactions);
+  }
   return await user.save();
 };
 
@@ -372,6 +376,97 @@ const details = async (req, res) => {
   res.json(response);
 };
 
+export const save = async obj => {
+  const UserModel = mongoose.model("User");
+  const user = new UserModel(obj);
+  return await user.save();
+};
+
+export const commandScore = async message => {
+  const user = await find(message.u._id);
+
+  const customResponse = {
+    msg: `você está no nível ${user.level}, com ${user.score} pontos.`
+  };
+
+  await driver.sendDirectToUser(customResponse, message.u.username);
+};
+
+export const handleFromNext = async data => {
+  let user = null;
+  const UserModel = mongoose.model("User");
+
+  try {
+    user = await find(data.rocket_chat.id);
+
+    if (!user.linkedin) {
+      await interactionController.manualInteractions({
+        type: "manual",
+        user: data.rocket_chat.username,
+        text:
+          "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
+        value: config.xprules.linkedin
+      });
+    }
+
+    if (data.referrer) {
+      await interactionController.manualInteractions({
+        type: "manual",
+        user: data.rocket_chat.username,
+        text: "você recebeu pontos por indicar a Impulso",
+        value: config.xprules.referral
+      });
+    }
+
+    if (data.oppotunities_feed.length) {
+      let text, value;
+
+      switch (data.oppotunities_feed.status) {
+        case "interview":
+          text =
+            "Você recebeu pontos por participar da entrevista de uma oportunidade";
+          value = config.xprules.team.interview;
+          break;
+        case "approved":
+          text = "Você recebeu pontos por ser aprovado para uma oportunidade";
+          value = config.xprules.team.approved;
+          break;
+        case "allocated":
+          text = "Você recebeu pontos por ser alocado em uma oportunidade";
+          value = config.xprules.team.allocated;
+          break;
+        default:
+          text = "";
+          value = 0;
+          break;
+      }
+
+      await interactionController.manualInteractions({
+        type: "manual",
+        user: data.rocket_chat.username,
+        text: text,
+        value: value
+      });
+    }
+
+    const userData = {
+      rocketId: data.rocket_chat.id,
+      name: data.fullname,
+      email: data.network_email,
+      linkedinId: data.linkedin.uid,
+      ...data
+    };
+
+    if (user.length) {
+      return await updateUserData(userData, {}, 0);
+    } else {
+      return await createUserData(userData, 0, {}, UserModel);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export default {
   find,
   findAll,
@@ -386,5 +481,8 @@ export default {
   updateScore,
   changeTeams,
   fromRocket,
-  details
+  details,
+  save,
+  commandScore,
+  handleFromNext
 };
