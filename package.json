@@ -36,6 +36,9 @@
       "remark-preset-lint-recommended"
     ]
   },
+  "engine": {
+    "node": "8.11.4"
+  },
   "dependencies": {
     "@rebass/grid": "^6.0.0-7",
     "@rocket.chat/sdk": "^0.2.9",
@@ -86,8 +89,8 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.3.4",
     "@babel/node": "^7.2.2",
+    "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.3.4",
     "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.3.4",
