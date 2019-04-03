@@ -12,7 +12,7 @@
       "required": true
     },
     "GA": {
-      "required": true
+      "required": false
     },
     "GITHUB_CLIENT_ID": {
       "required": true
@@ -62,7 +62,8 @@
   },
   "formation": {
     "web": {
-      "quantity": 1
+      "quantity": 1,
+      "size": "free"
     }
   },
   "addons": [

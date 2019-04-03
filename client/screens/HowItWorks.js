@@ -125,7 +125,11 @@ const ScreenHowItWorks = props => {
                   Reply recebido <span className="value">+2 xp</span>
                 </p>
               </div>
-              <Button>mais detalhes</Button>
+              <Button>
+                <a href="https://www.notion.so/impulso/XP-O-que-e-como-ganhar-372bc91f3e404b418b50267ddcadce6f">
+                  mais detalhes
+                </a>
+              </Button>
             </Box>
           </Flex>
         </section>
@@ -144,7 +148,11 @@ const ScreenHowItWorks = props => {
                   quantidade de <strong>XP</strong>. Além disso, eles conferem o
                   acesso à novas missões, cargos e recompensas.
                 </p>
-                <Button>mais detalhes</Button>
+                <Button>
+                  <a href="https://www.notion.so/impulso/N-veis-O-que-s-o-e-como-ganhar-6d67592b078f49b3879ce4db91081be4">
+                    mais detalhes
+                  </a>
+                </Button>
               </Card>
             </Box>
             <Box
@@ -167,7 +175,11 @@ const ScreenHowItWorks = props => {
                   você será condecorado(a) com uma <strong>medalha</strong> que
                   representa este marco.
                 </p>
-                <Button>mais detalhes</Button>
+                <Button>
+                  <a href="notion.so/impulso/Conquistas-O-que-s-o-e-como-ganhar-f8cded2569e7411ebabb78c8e99a2f94">
+                    mais detalhes
+                  </a>
+                </Button>
               </Card>
             </Box>
           </Flex>

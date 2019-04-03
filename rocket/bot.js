@@ -1,6 +1,8 @@
 import { driver } from "@rocket.chat/sdk";
 import interactionController from "../controllers/interaction";
-
+import rankingController from "../controllers/ranking";
+import userController from "../controllers/user";
+import achievementController from "../controllers/achievement";
 var myuserid;
 const runBot = async () => {
   await driver.connect({
@@ -17,20 +19,34 @@ const runBot = async () => {
   await driver.reactToMessages(processMessages);
 };
 
+const commands = async message => {
+  const regex = {
+    ranking: /!ranking/g,
+    rankingGeral: /!rankinggeral/g,
+    meusPontos: /!meuspontos/g,
+    minhasConquistas: /!minhasconquistas/g
+  };
+
+  if (regex.ranking.test(message.msg)) {
+    await rankingController.commandIndex(message);
+  } else if (regex.meusPontos.test(message.msg)) {
+    await userController.commandScore(message);
+  } else if (regex.rankingGeral.test(message.msg)) {
+    await rankingController.commandGeneral(message);
+  } else if (regex.minhasConquistas.test(message.msg)) {
+    await achievementController.commandIndex(message);
+  }
+
+  return;
+};
+
 const processMessages = async (err, message, messageOptions) => {
-  const ranking = /!ranking/g;
   if (!err) {
     message.origin = "rocket";
     console.log("MESSAGE: ", message, messageOptions);
     if (message.u._id === myuserid) return;
     interactionController.save(message);
-
-    if (ranking.test(message.msg)) {
-      await driver.sendDirectToUser(
-        "Em breve você vai receber o Ranking",
-        message.u.username
-      );
-    }
+    await commands(message);
   } else {
     console.log(err, messageOptions);
   }

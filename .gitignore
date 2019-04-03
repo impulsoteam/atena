@@ -18,3 +18,5 @@ emoji/
 *.lock
 *.swl
 FEATURE.md
+globalConfig.json
+globalConfig.json

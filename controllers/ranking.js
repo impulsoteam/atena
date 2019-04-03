@@ -12,6 +12,69 @@ const myPosition = async (user_id, users) => {
   return users.map(e => e.user).indexOf(id) + 1;
 };
 
+/**
+ * Devo ter funcoes que montam o response. e me retorna isso.. e a partir disso
+ * de acordo com o proposito mando essa resposta
+ */
+const commandIndex = async message => {
+  let month = new Date(Date.now()).getMonth() + 1;
+  const generalResponse = await generalIndex(message.u._id, month);
+  const customResponse = {
+    msg: generalResponse.text,
+    attachments: generalResponse.attachments
+  };
+  await driver.sendDirectToUser(customResponse, message.u.username);
+};
+
+const commandGeneral = async message => {
+  const users = await findAll(false, null, 5);
+  const rankingUsers = users.map((x, y) => ({
+    text: `${++y}º lugar está ${x.name} com ${x.score} pontos, no nível ${
+      x.level
+    }`
+  }));
+  const customResponse = {
+    msg: "Veja as primeiras pessoas do ranking geral:",
+    attachments: rankingUsers
+  };
+
+  await driver.sendDirectToUser(customResponse, message.u.username);
+};
+
+const generalIndex = async (user_id, month) => {
+  let response = {
+    text: "Veja as primeiras pessoas do ranking:",
+    attachments: []
+  };
+  const limit_ranking = 5;
+
+  let allUsers = await userController.findAll(false, 0);
+  const rankingMonthly = await monthly(month);
+  if (rankingMonthly.text) {
+    response = rankingMonthly;
+  } else if (!rankingMonthly.text && rankingMonthly.users.length === 0) {
+    response = { text: "Ops! Ainda ninguém pontuou. =/" };
+  } else {
+    const limit_users = rankingMonthly.users.slice(0, limit_ranking);
+    response.attachments = await limit_users.map((user, index) => ({
+      text: `${index + 1}º lugar está ${
+        allUsers.find(u => u.rocketId === user.user).name
+      } com ${user.score} XP, no nível ${user.level}`
+    }));
+
+    let msg_user;
+    const position = await myPosition(user_id, rankingMonthly.users);
+    if (position > 0) {
+      msg_user = `Ah, e você está na posição ${position} do ranking`;
+    } else {
+      msg_user = `Opa, você não pontuou no game nesse mês`;
+    }
+    response.attachments.push({ text: msg_user });
+  }
+
+  return response;
+};
+
 const bot_index = async (req, res) => {
   let response = {
     text: "Veja as primeiras pessoas do ranking:",
@@ -308,7 +371,8 @@ const index = async (req, res) => {
     first_users: first_users,
     last_users: last_users,
     monthName: monthName,
-    error: error
+    error: error,
+    page: "ranking"
   };
 
   if (isMiner && isValidToken(team, token)) {
@@ -339,7 +403,7 @@ const general = async (req, res) => {
     first_users: first_users,
     last_users: last_users,
     monthName: "GERAL",
-    page: "general"
+    page: "geral"
   };
 
   if (req.query.format === "json" || (isMiner && isValidToken(team, token))) {
@@ -358,5 +422,7 @@ export default {
   myPosition,
   save,
   sendToChannel,
-  general
+  general,
+  commandIndex,
+  commandGeneral
 };

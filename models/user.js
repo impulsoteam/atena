@@ -12,6 +12,10 @@ export const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  uuid: {
+    type: String,
+    required: false
+  },
   name: {
     type: String,
     required: true

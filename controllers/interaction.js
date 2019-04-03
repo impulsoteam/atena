@@ -1,6 +1,7 @@
 import config from "config-yml";
 import mongoose from "mongoose";
 import moment from "moment";
+import batch from "batchflow";
 import userController from "./user";
 import achievementController from "./achievement";
 import achievementTemporaryController from "./achievementTemporary";
@@ -8,7 +9,17 @@ import { calculateScore, analyticsSendCollect } from "../utils";
 import { lastMessageTime, getAction, getOrigin } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
 import { getUserFromReaction } from "../utils/reactions";
+import { isBot } from "../utils/bot";
+import { fromPrivateChannel } from "../utils/rocket";
+import interactionModel from "../models/interaction";
+import { getHistory } from "../rocket/api";
 
+/**
+ * Some ideias to refactor normalize function:
+ *
+ * identify origin and get by type
+ *
+ */
 let normalize = data => {
   if (data.type === "reaction_added" || data.type === "reaction_removed") {
     return {
@@ -45,6 +56,7 @@ let normalize = data => {
       origin: "sistema",
       type: data.type,
       user: data.user,
+      rocketUsername: data.user,
       value: data.value,
       thread: false,
       description: data.text,
@@ -110,8 +122,8 @@ let normalize = data => {
   } else if (data.origin === "rocket") {
     if (data.reactions) {
       return {
-        origin: "rocket",
-        channel: data.rid,
+        origin: data.origin,
+        channel: data.roomName,
         date: new Date(),
         description: Object.keys(data.reactions).pop(),
         parentUser: data.u._id,
@@ -123,9 +135,9 @@ let normalize = data => {
     } else {
       return {
         origin: data.origin,
-        channel: data.rid,
+        channel: data.roomName,
         date: new Date(),
-        description: data.msg,
+        description: fromPrivateChannel(data) ? "" : data.msg,
         type: "message",
         user: data.u._id,
         username: data.u.name,
@@ -163,19 +175,22 @@ let normalize = data => {
 };
 
 export const save = async data => {
-  const InteractionModel = mongoose.model("Interaction");
-  const interaction = normalize(data);
+  if (isBot(data)) {
+    return;
+  }
+  const interaction = exportFunctions.normalize(data);
   const todayLimitScore = config.xprules.limits.daily;
-  const score = await todayScore(interaction.user);
+  const score = await exportFunctions.todayScore(interaction.user);
   const todayLimitStatus = todayLimitScore - score;
-  const instance = new InteractionModel(interaction);
+  const instance = interactionModel(interaction);
+  const maxSeconds = 5;
 
   analyticsSendCollect(interaction);
 
   if (
     interaction.type === "message" &&
     moment(interaction.date).diff(await lastMessageTime(instance), "seconds") <
-      5
+      maxSeconds
   ) {
     return _throw("User makes flood");
   }
@@ -237,7 +252,6 @@ export const todayScore = async user => {
       $gte: _today.start
     }
   }).exec();
-
   result.map(item => {
     score = score + calculateScore(item);
   });
@@ -287,9 +301,9 @@ export const lastMessage = async interaction => {
 
 const manualInteractions = async data => {
   const InteractionModel = mongoose.model("Interaction");
-  const interaction = normalize(data);
+  const interaction = exportFunctions.normalize(data);
   const instance = new InteractionModel(interaction);
-  const score = await todayScore(interaction.user);
+  const score = await exportFunctions.todayScore(interaction.user);
   const todayLimitStatus = config.xprules.limits.daily - score;
 
   if (todayLimitStatus > 0) {
@@ -354,11 +368,17 @@ const dayScore = async interaction => {
 
 const normalizeScore = async (req, res) => {
   const interactions = await findAll();
-  await interactions.map(async interaction => {
-    const score = await calculate(interaction);
-    interaction.score = score;
-    interaction.save();
-  });
+  batch(interactions)
+    .sequential()
+    .each(async (i, item, done) => {
+      const score = await calculate(item);
+      item.score = score;
+      item.save();
+      done();
+    })
+    .end(results => {
+      console.log("results ", results);
+    });
   res.send("Interações normalizadas");
 };
 
@@ -388,7 +408,18 @@ const byDate = async (year, month) => {
   ]);
 };
 
-export default {
+const history = async (req, res) => {
+  const messages = await getHistory("Aa6fSXib23WpHjof7");
+
+  for (let message of messages.reverse()) {
+    console.log("=====> ", message);
+    message.origin = "rocket";
+    await exportFunctions.save(message);
+  }
+  res.json(messages.reverse());
+};
+
+const exportFunctions = {
   findBy,
   find,
   remove,
@@ -397,5 +428,9 @@ export default {
   lastMessage,
   manualInteractions,
   normalizeScore,
-  byDate
+  normalize,
+  byDate,
+  history
 };
+
+export default exportFunctions;

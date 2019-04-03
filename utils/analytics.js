@@ -1,4 +1,4 @@
-import request from "make-requests";
+import axios from "axios";
 import querystring from "querystring";
 import { getChannel } from "../utils/interactions";
 
@@ -33,7 +33,7 @@ export const sendCollect = async e => {
     )}`;
     let response = {};
     try {
-      response = await request(url, "POST");
+      response = await axios.post(url);
     } catch (e) {
       console.log(getStyleLog("red"), e);
     }
@@ -72,7 +72,7 @@ export const sendBotCollect = async e => {
     )}`;
     let response = {};
     try {
-      response = await request(url, "POST");
+      response = await axios.post(url);
     } catch (e) {
       console.log(getStyleLog("red"), e);
     }

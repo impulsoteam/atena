@@ -8,6 +8,7 @@ const StyledHeader = styled.header`
   top: 0;
   left: 0;
   right: 0;
+  z-index: 999;
 
   @media (max-width: 760px) {
     padding: 14px 20px;
