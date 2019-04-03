@@ -1,5 +1,5 @@
 import { _throw } from "../helpers";
-import { sendToUser, sendMessage } from "../rocket/bot";
+import { sendToUser } from "../rocket/bot";
 import { getUserInfo } from "../rocket/api";
 import { calculateAchievementsPosition } from "./calculateAchievementsPosition";
 import { getLastAchievementRatingEarned } from "./achievements";
