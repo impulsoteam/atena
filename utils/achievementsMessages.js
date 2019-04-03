@@ -27,14 +27,14 @@ export const sendEarnedAchievementMessage = async (
       achievement.rating
     } ${achievement.range} | ${name[1]}${level}]!`;
 
-    const publicMessage = `:medal: @${
-      rocketUser.username
-    } obteve a conquista [${achievement.rating} ${achievement.range} | ${
-      name[1]
-    }${level}]!`;
+    // const publicMessage = `:medal: @${
+    //   rocketUser.username
+    // } obteve a conquista [${achievement.rating} ${achievement.range} | ${
+    //   name[1]
+    // }${level}]!`;
 
     await sendToUser(privateMessage, rocketUser.username);
-    await sendMessage(publicMessage, "impulso-network");
+    // await sendMessage(publicMessage, "impulso-network");
   }
 };
 
