@@ -1,2 +1,2 @@
 printf "\n👊   Running...\n"
-npm start
+npm run start
