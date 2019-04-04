@@ -18,7 +18,9 @@ const consumer = conn => {
       if (msg !== null) {
         console.log(msg.content.toString());
         try {
-          await userController.handleFromNext();
+          await userController.handleFromNext(
+            JSON.parse(msg.content.toString())
+          );
         } catch (err) {
           console.error(err);
         }
