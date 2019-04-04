@@ -397,7 +397,7 @@ export const handleFromNext = async data => {
   const UserModel = mongoose.model("User");
 
   try {
-    user = await find(data.rocket_chat.id);
+    user = await findBy({ rocketId: data.rocket_chat.id });
 
     if (!user.linkedin) {
       await interactionController.manualInteractions({
