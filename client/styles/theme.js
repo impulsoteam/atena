@@ -21,6 +21,8 @@ const Theme = {
     gray: "#666C71",
     primary: "#595B98",
     primaryLight: "#8688D9",
+    primaryHover: "#9598ED",
+    primaryFocus: "#414287",
     secondary: "#DC3C2C",
     bg: "#FDFDFD"
   }
