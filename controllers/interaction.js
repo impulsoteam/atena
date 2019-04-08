@@ -401,8 +401,7 @@ const normalizeScore = async (req, res) => {
 };
 
 const aggregateBy = async args => {
-  const InterActionModel = mongoose.model("Interaction");
-  const result = await InterActionModel.aggregate(args).exec();
+  const result = await interactionModel.aggregate(args).exec();
   return result || null;
 };
 
@@ -422,6 +421,32 @@ const byDate = async (year, month) => {
     },
     {
       $sort: { totalScore: -1 }
+    }
+  ]);
+};
+
+const mostActives = async (beginDate, endDate) => {
+  return await aggregateBy([
+    {
+      $match: {
+        date: { $gte: beginDate, $lt: endDate },
+        score: { $gte: 0 }
+      }
+    },
+    {
+      $group: {
+        _id: "$user",
+        count: { $sum: 1 },
+        date: { $first: "$date" }
+      }
+    },
+    {
+      $match: {
+        count: { $gte: 6 }
+      }
+    },
+    {
+      $sort: { count: -1 }
     }
   ]);
 };
@@ -484,7 +509,8 @@ const exportFunctions = {
   byDate,
   history,
   validInteraction,
-  flood
+  flood,
+  mostActives
 };
 
 export default exportFunctions;
