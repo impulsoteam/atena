@@ -50,7 +50,7 @@ const ScreenHowItWorks = props => {
               </p>
             </Box>
             <Box width={[1, 1 / 2]}>
-              <img src="./images/ilustra-atena.png" className="ilustra" />
+              <img src="./images/ilustra-atena.svg" className="ilustra" />
             </Box>
           </Flex>
         </section>
@@ -71,26 +71,60 @@ const ScreenHowItWorks = props => {
               </p>
             </Box>
           </Flex>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+            window.onload=function(){
+              document
+              .querySelectorAll(".a--rules--button")
+              .forEach(function(x) {
+                x.addEventListener('click', function(ev) {
+                  if (!ev.currentTarget.classList.contains('selected')) {
+                    document.querySelector('.a--rules--button.selected').classList.remove('selected');
+                    ev.currentTarget.classList.add('selected');
+                    document.querySelector('.rules__inner.selected').classList.remove('selected');
+                    console.log(ev.currentTarget.dataset.destiny);
+                    document.querySelector('.rules__inner-'+ev.currentTarget.dataset.destiny).classList.add('selected');
+
+                  }
+                })
+              });
+            }
+          `
+            }}
+          />
           <Flex css={{ margin: "0 -25px" }} className="rules ifdesktop">
             <Box width={1 / 3} px={0}>
-              <a href="javascript:;" className="selected">
+              <a
+                href="javascript:;"
+                className="selected a--rules--button"
+                data-destiny="1"
+              >
                 <span>01. Obtendo XP</span>
               </a>
             </Box>
             <Box width={1 / 3} px={0}>
-              <a href="javascript:;">
+              <a
+                href="javascript:;"
+                className="a--rules--button"
+                data-destiny="2"
+              >
                 <span>02. Perdendo XP</span>
               </a>
             </Box>
             <Box width={1 / 3} px={0}>
-              <a href="javascript:;">
+              <a
+                href="javascript:;"
+                className="a--rules--button"
+                data-destiny="3"
+              >
                 <span>03. Exceções</span>
               </a>
             </Box>
           </Flex>
           <Flex
             css={{ margin: "0 -30px" }}
-            className="rules__inner"
+            className="rules__inner rules__inner-1 selected"
             flexWrap="wrap"
           >
             <Box width={[1, 1 / 2]} px={30}>
@@ -130,6 +164,47 @@ const ScreenHowItWorks = props => {
                   mais detalhes
                 </a>
               </Button>
+            </Box>
+          </Flex>
+          <Flex
+            css={{ margin: "0 -30px" }}
+            className="rules__inner rules__inner-2"
+            flexWrap="wrap"
+          >
+            <Box width={[1, 1 / 2]} px={30}>
+              <Title>
+                <span className="red">02.</span>
+                <br />
+                PERDENDO XP
+              </Title>
+              <p>
+                Em oposição às atividades que promovem a obtenção de XP, a única
+                forma de perder pontos de experiência é através da{" "}
+                <strong>Inatividade Completa</strong> na comunidade Impulso. A
+                inatividade começa a contar no dia seguinte à sua última
+                participação e a perda de pontos a partir da quantidade de dias
+                pré-definida, que varia de acordo com cada canal.
+              </p>
+            </Box>
+          </Flex>
+          <Flex
+            css={{ margin: "0 -30px" }}
+            className="rules__inner rules__inner-3"
+            flexWrap="wrap"
+          >
+            <Box width={[1, 1 / 2]} px={30}>
+              <Title>
+                <span className="red">03.</span>
+                <br />
+                EXCEÇÕES
+              </Title>
+              <p>
+                Caso a <strong>quantidade de XP</strong> que você obteve através
+                de <strong>reactions negativos recebidos</strong> em uma
+                publicação <strong>seja superior</strong> à obtida por reactions
+                positivos o XP não é negativado, a pontuação através das
+                reactions daquela mensagem ficará zerada (0).
+              </p>
             </Box>
           </Flex>
         </section>

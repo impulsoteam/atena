@@ -109,6 +109,15 @@ const StyledScreenHowItWorks = styled.section`
     .rules__inner {
       text-align: left;
       margin-bottom: 60px;
+      opacity: 0;
+      visibility: 0;
+      display: none;
+
+      &.selected {
+        opacity: 1;
+        visibility: visible;
+        display: flex;
+      }
 
       h1 {
         margin-top: 0;
