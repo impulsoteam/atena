@@ -185,6 +185,10 @@ export const save = async data => {
   const instance = interactionModel(interaction);
   const maxSeconds = 5;
 
+  if (fromPrivateChannel(data)) {
+    interaction.description = "mensagem enviada em canal privado";
+  }
+
   analyticsSendCollect(interaction);
 
   if (
