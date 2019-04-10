@@ -394,8 +394,6 @@ export const commandScore = async message => {
 
 export const handleFromNext = async data => {
   let user = null;
-  const UserModel = mongoose.model("User");
-
   try {
     user = await findBy({ rocketId: data.rocket_chat.id });
 
@@ -418,10 +416,10 @@ export const handleFromNext = async data => {
       });
     }
 
-    if (data.oppotunities_feed.length) {
+    if (data.opportunities_feed.length) {
       let text, value;
 
-      switch (data.oppotunities_feed.status) {
+      switch (data.opportunities_feed.status) {
         case "interview":
           text =
             "Você recebeu pontos por participar da entrevista de uma oportunidade";
@@ -449,21 +447,24 @@ export const handleFromNext = async data => {
       });
     }
 
+    if (user) {
+      user.rocketId = data.rocket_chat.id;
+      user.name = data.fullname;
+      user.email = data.network_email;
+      user.linkedinId = data.linkedin.uid;
+      user.uuid = data.uuid;
+      return await user.save();
+    }
+  } catch (err) {
+    console.error(err);
     const userData = {
       rocketId: data.rocket_chat.id,
       name: data.fullname,
       email: data.network_email,
       linkedinId: data.linkedin.uid,
-      ...data
+      uuid: data.uuid
     };
-
-    if (user.length) {
-      return await updateUserData(userData, {}, 0);
-    } else {
-      return await createUserData(userData, 0, {}, UserModel);
-    }
-  } catch (err) {
-    console.error(err);
+    return await save(userData);
   }
 };
 
