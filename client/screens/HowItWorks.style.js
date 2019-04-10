@@ -48,10 +48,10 @@ const StyledScreenHowItWorks = styled.section`
     z-index: 10;
 
     &::before {
-      content: url("./images/shape.svg");
+      content: url("./images/img-bg.svg");
       display: block;
       position: absolute;
-      transform: translateY(-50%) translateX(75%);
+      transform: translateY(-50%) translateX(0%);
       z-index: -1;
       right: 0;
     }
