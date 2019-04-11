@@ -22,7 +22,7 @@ const StyledMenu = styled.ul`
 
   li {
     &:not(:first-child) a::after {
-      transform: translateY(6px) translateX(32px);
+      transform: translateY(5px) translateX(32px);
     }
   }
 
@@ -43,7 +43,7 @@ const StyledMenu = styled.ul`
     color: ${props => props.theme.color.white};
     text-transform: uppercase;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
 
     &::after {
       content: "";
@@ -53,7 +53,7 @@ const StyledMenu = styled.ul`
       background: ${props => props.theme.color.primaryLight};
       border-radius: 3px;
       position: absolute;
-      transform: translateY(6px);
+      transform: translateY(5px);
       transition: 0.2s all ease-in;
     }
 

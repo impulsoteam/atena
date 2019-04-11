@@ -48,10 +48,10 @@ const StyledScreenHowItWorks = styled.section`
     z-index: 10;
 
     &::before {
-      content: url("./images/shape.svg");
+      content: url("./images/img-bg.svg");
       display: block;
       position: absolute;
-      transform: translateY(-50%) translateX(75%);
+      transform: translateY(-50%) translateX(0%);
       z-index: -1;
       right: 0;
     }
@@ -109,6 +109,15 @@ const StyledScreenHowItWorks = styled.section`
     .rules__inner {
       text-align: left;
       margin-bottom: 60px;
+      opacity: 0;
+      visibility: 0;
+      display: none;
+
+      &.selected {
+        opacity: 1;
+        visibility: visible;
+        display: flex;
+      }
 
       h1 {
         margin-top: 0;
