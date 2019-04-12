@@ -5,8 +5,7 @@ import userLevelHistoryController from "../controllers/userLevelHistory";
 import {
   getScoreToIncrease,
   getCurrentScoreToIncrease,
-  getAchievementCurrentRating,
-  getAchievementNextRating
+  getAchievementCurrentRating
 } from "./achievements";
 import { sendEarnedAchievementMessage } from "./achievementsMessages";
 
@@ -14,7 +13,7 @@ export const saveLevelHistoryChanges = async (userId, oldLevel, newLevel) => {
   await userLevelHistoryController.save(userId, oldLevel, newLevel);
 };
 
-export const sendLevelMessage = async (user, achievement, isUpdate) => {
+export const sendLevelMessage = async (user, achievement) => {
   achievement.name = "Network | Nível";
   let rating = getAchievementCurrentRating(achievement);
 

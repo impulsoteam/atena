@@ -117,9 +117,8 @@ userSchema.pre("save", async function(next) {
     );
 
     const score = getLevelScore(achievement);
-    let isUpdate = score > 0;
     this.score += score;
-    await sendLevelMessage(this, achievement, isUpdate);
+    await sendLevelMessage(this, achievement);
 
     next();
   } else {
