@@ -3,7 +3,7 @@ import config from "config-yml";
 import AchievementLevelModel from "../models/achievementLevel";
 import { _throw } from "../helpers";
 import { setRangesEarnedDates, isNewLevel } from "../utils/achievementsLevel";
-import { getRecord } from "../utils/achievements";
+import { getLevelRecord } from "../utils/achievements";
 
 export const findAll = async () => {
   const achievementsLevel = await AchievementLevelModel.find()
@@ -44,13 +44,13 @@ export const save = async (userId, currentLevel, newLevel) => {
 
 const createAchievement = async (userId, newLevel) => {
   const achievement = await generateNewAchievement(userId, newLevel);
-  achievement.record = getRecord(achievement);
+  achievement.record = getLevelRecord(achievement);
   return await achievement.save();
 };
 
 const updateAchievement = async (achievementExistent, newLevel) => {
   let achievement = setRangesEarnedDates(achievementExistent, newLevel);
-  achievement.record = getRecord(achievement);
+  achievement.record = getLevelRecord(achievement);
   return await achievement.save();
 };
 

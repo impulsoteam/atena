@@ -130,6 +130,22 @@ export const calculateAchievementScoreToIncrease = achievement => {
   return scoreToIncrease;
 };
 
+export const getLevelRecord = achievement => {
+  const lastRating = getLastAchievementRatingEarned(achievement);
+  let newRecord = convertToLevelRecord(lastRating, achievement);
+
+  if (
+    !achievement.record ||
+    !achievement.record.name ||
+    !achievement.record.level ||
+    newRecord.level > achievement.record.level
+  ) {
+    return newRecord;
+  }
+
+  return achievement.record;
+};
+
 export const getRecord = achievement => {
   const lastRating = getLastAchievementRatingEarned(achievement);
   let newRecord = convertToRecord(lastRating, achievement);
@@ -145,7 +161,7 @@ export const getRecord = achievement => {
 };
 
 export const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
-  if (!current.name) return true;
+  if (!current || !current.name) return true;
 
   const positionRatings = getPositionRatings();
   let newPosition = positionRatings.findIndex(
@@ -164,12 +180,24 @@ export const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
   }
 };
 
-const convertToRecord = (lastRating, achievement) => {
+const convertToLevelRecord = (lastRating, achievement) => {
   if (lastRating.rating && lastRating.range) {
     return {
       name: lastRating.rating.name,
       range: lastRating.range.name,
       level: lastRating.range.value,
+      earnedDate: today
+    };
+  }
+
+  return achievement.record;
+};
+
+const convertToRecord = (lastRating, achievement) => {
+  if (lastRating.rating && lastRating.range) {
+    return {
+      name: lastRating.rating.name,
+      range: lastRating.range.name,
       total: lastRating.range.value,
       earnedDate: today
     };
