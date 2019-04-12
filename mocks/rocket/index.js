@@ -32,6 +32,24 @@ export const responseOpensourceSlash = {
   lastLoginAt: "2019-03-04T10:58:46.701Z"
 };
 
+export const responseEngagedSlash = {
+  id: "H9kcNkWwXF92XxtTF",
+  username: "ikki",
+  emails: [{ address: "ikki@impulso.network", verified: false }],
+  type: 0,
+  isEnabled: true,
+  name: "Ikki",
+  roles: ["admin"],
+  status: "online",
+  statusConnection: "online",
+  utcOffset: -3,
+  createdAt: "2019-02-09T18:29:53.208Z",
+  updatedAt: "2019-04-12T16:24:53.234Z",
+  lastLoginAt: "2019-04-12T12:27:01.872Z",
+  begin: "10102019",
+  end: "20102019"
+};
+
 export const headerOpensourceSlash = {
   host: "atena.herokuapp.com",
   "user-agent": "Go-http-client/1.1",
