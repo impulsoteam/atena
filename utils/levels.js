@@ -16,13 +16,7 @@ export const saveLevelHistoryChanges = async (userId, oldLevel, newLevel) => {
 
 export const sendLevelMessage = async (user, achievement, isUpdate) => {
   achievement.name = "Network | Nível";
-  let rating = {};
-
-  if (isUpdate) {
-    rating = getAchievementNextRating(achievement);
-  } else {
-    rating = getAchievementCurrentRating(achievement);
-  }
+  let rating = getAchievementCurrentRating(achievement);
 
   await sendEarnedAchievementMessage(user, rating, true);
 };
