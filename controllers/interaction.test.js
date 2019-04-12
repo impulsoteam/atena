@@ -3,41 +3,15 @@ import interactionModel from "../models/interaction";
 import { saveInteraction, message } from "../mocks/rocket";
 import userController from "./user";
 import config from "config-yml";
-// import mockHistory from "../mocks/rocket/history_impulso_network.json";
-// import hours from '../../../../internals/fixtures/hours.json';
-
-// jest.mock("../rocket/api", () => jest.fn());
 jest.mock("../rocket/api");
 jest.mock("../rocket/bot", () => jest.fn());
 jest.mock("../utils");
 jest.mock("./user");
 jest.mock("./achievement");
 jest.mock("./achievementTemporary");
-// jest.mock("../models/interaction");
 
 describe("Interaction Controller", () => {
   afterEach(() => jest.restoreAllMocks());
-  // describe("normalize", () => {});
-  /*
-  describe("history", () => {
-    describe("attachments", () => {
-      it("should returns successfuly interaction with reactions", done => {
-        const messages = JSON.stringify(mockHistory);
-        console.log("mockHistory ===> ", messages.length);
-        interaction.todayScore = jest.fn().mockReturnValue(0);
-        let data = messageAttachmentFromHistory;
-        data.origin = "rocket";
-        interaction.save(data).then(response => {
-          expect(response).toEqual({});
-        }).catch(() => {
-          console.log("error");
-        });
-        done();
-      });
-    });
-  });
-  */
-
   const mockFullUser = {
     username: "ikki",
     reactions: { positives: 0, negatives: 0, others: 0 },
@@ -116,7 +90,6 @@ describe("Interaction Controller", () => {
 
   describe("save", () => {
     describe("rocket origin", () => {
-      // afterEach(() => jest.restoreAllMocks());
       it("should return reject promise when user not in rocket database", async () => {
         const data = message;
         data.origin = "rocket";
