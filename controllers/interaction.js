@@ -495,6 +495,32 @@ const history = async (req, res) => {
   res.json("success");
 };
 
+const validDate = date => {
+  return moment(date, "DD-MM-YYYY", true).isValid();
+};
+
+const engaged = async (req, res) => {
+  let response = {
+    text: "Top Engajados",
+    attachments: []
+  };
+  const rocketId = req.body.id;
+  const begin = req.body.begin;
+  const end = req.body.end;
+  const isCoreTeam = await userController.isCoreTeam({ rocketId: rocketId });
+  // moment('31/12/2012', 'DD/MM/YYYY',true).isValid()
+  if (isCoreTeam && validDate(begin) && validDate(end)) {
+    console.log(req.body.begin);
+  } else if ((!validDate(begin) || !validDate(end)) && isCoreTeam) {
+    response.text =
+      "Datas em formatos inválidos por favor use datas com o formato ex: 10-10-2019";
+  } else {
+    response.text =
+      "Você não tem uma armadura de ouro, e não pode entrar nessa casa!";
+  }
+  res.json(response);
+};
+
 const exportFunctions = {
   findBy,
   find,
@@ -510,7 +536,8 @@ const exportFunctions = {
   history,
   validInteraction,
   flood,
-  mostActives
+  mostActives,
+  engaged
 };
 
 export default exportFunctions;
