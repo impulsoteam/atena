@@ -1,6 +1,5 @@
 import config from "config-yml";
 import { driver } from "@rocket.chat/sdk";
-// import { _throw } from "../helpers";
 import AchievementModel from "../models/achievement";
 import { isPositiveReaction, isAtenaReaction } from "../utils/reactions";
 import {

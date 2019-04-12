@@ -43,7 +43,6 @@ const getHistory = async roomId => {
       count: 8000
     });
 
-    // oldest: "2019-02-070:00:00.304Z"
     return result.messages;
   } catch (e) {
     console.log(e);
