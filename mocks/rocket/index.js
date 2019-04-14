@@ -46,8 +46,8 @@ export const responseEngagedSlash = {
   createdAt: "2019-02-09T18:29:53.208Z",
   updatedAt: "2019-04-12T16:24:53.234Z",
   lastLoginAt: "2019-04-12T12:27:01.872Z",
-  begin: "10102019",
-  end: "20102019"
+  begin: "10-10-2019",
+  end: "20-10-2019"
 };
 
 export const headerOpensourceSlash = {

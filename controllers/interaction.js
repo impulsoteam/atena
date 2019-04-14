@@ -207,8 +207,7 @@ export const save = async data => {
         }
         return res;
       })
-      .catch(err => {
-        console.log("error valid interaction", err);
+      .catch(() => {
         valid = false;
       });
   } else {
@@ -229,11 +228,9 @@ export const save = async data => {
       await achievementController.save(interaction, user);
       await achievementTemporaryController.save(interaction);
     } else {
-      console.log("já chegou no limite máximo de pontos");
       instance.score = 0;
     }
     analyticsSendCollect(interaction);
-    console.log("final interaction ", interaction, user);
     return instance.save();
   } else {
     return new Promise((resolve, reject) => {
@@ -372,8 +369,7 @@ const dayScore = async interaction => {
       );
       return Promise.resolve(total);
     })
-    .catch(err => {
-      console.log("============== DAY SCORE ERROR ============", err);
+    .catch(() => {
       return Promise.reject(0);
     });
 };
@@ -386,7 +382,6 @@ const normalizeScore = async (req, res) => {
       const data = item;
       data.origin = "slack";
       calculate(data).then(res => {
-        console.log("normalize score then", res);
         if (res) {
           item.score = res;
           item.save();
@@ -428,14 +423,30 @@ const byDate = async (year, month) => {
 const mostActives = async (beginDate, endDate) => {
   return await aggregateBy([
     {
+      $lookup: {
+        from: "users",
+        localField: "user",
+        foreignField: "rocketId",
+        as: "userObject"
+      }
+    },
+    {
+      $unwind: "$userObject"
+    },
+    {
       $match: {
-        date: { $gte: beginDate, $lt: endDate },
-        score: { $gte: 0 }
+        date: { $gte: beginDate, $lte: endDate },
+        score: { $gt: 0 }
       }
     },
     {
       $group: {
-        _id: "$user",
+        _id: {
+          _id: "$userObject._id",
+          name: "$userObject.name",
+          rocketId: "$userObject.rocketId",
+          username: "$userObject.username"
+        },
         count: { $sum: 1 },
         date: { $first: "$date" }
       }
@@ -499,19 +510,44 @@ const validDate = date => {
   return moment(date, "DD-MM-YYYY", true).isValid();
 };
 
+const validInterval = (begin, end) => {
+  const momentBegin = moment(begin, "DD-MM-YYYY", true);
+  const momentEnd = moment(end, "DD-MM-YYYY", true);
+  return momentEnd.diff(momentBegin) >= 0;
+};
+
 const engaged = async (req, res) => {
   let response = {
-    text: "Top Engajados",
+    text: "",
     attachments: []
   };
   const rocketId = req.body.id;
-  const begin = req.body.begin;
-  const end = req.body.end;
+  const beginDate = req.body.begin;
+  const endDate = req.body.end;
   const isCoreTeam = await userController.isCoreTeam({ rocketId: rocketId });
-  // moment('31/12/2012', 'DD/MM/YYYY',true).isValid()
-  if (isCoreTeam && validDate(begin) && validDate(end)) {
-    console.log(req.body.begin);
-  } else if ((!validDate(begin) || !validDate(end)) && isCoreTeam) {
+  const validDates =
+    exportFunctions.validDate(beginDate) && exportFunctions.validDate(endDate);
+  const validIntervals = validInterval(beginDate, endDate);
+  if (isCoreTeam && validDates && validIntervals) {
+    const users = await exportFunctions.mostActives(
+      moment(beginDate, "DD-MM-YYYY")
+        .startOf("day")
+        .toDate(),
+      moment(endDate, "DD-MM-YYYY")
+        .endOf("day")
+        .toDate()
+    );
+    response.text = `Total de ${users.length} usuário engajados`;
+    users.forEach(user => {
+      response.attachments.push({
+        text: `Username: @${user._id.username} | Name: ${
+          user._id.name
+        } | Qtd. interações: ${user.count}`
+      });
+    });
+  } else if (isCoreTeam && validDates && !validIntervals) {
+    response.text = "Data de ínicio não pode ser maior que data final";
+  } else if (!validDates && isCoreTeam) {
     response.text =
       "Datas em formatos inválidos por favor use datas com o formato ex: 10-10-2019";
   } else {
@@ -537,7 +573,9 @@ const exportFunctions = {
   validInteraction,
   flood,
   mostActives,
-  engaged
+  engaged,
+  validDate,
+  validInterval
 };
 
 export default exportFunctions;
