@@ -5,6 +5,7 @@ import interactionController from "./interaction";
 import { calculateLevel } from "../utils";
 import { renderScreen } from "../utils/ssr";
 import { isValidToken } from "../utils/teams";
+import minerController from "./miner";
 
 const myPosition = async (user_id, users) => {
   const user = await userController.getNetwork(user_id);
@@ -324,19 +325,8 @@ const group = async (users, isCoreTeam = false) => {
   return isCoreTeam ? listCoreTeam : listUsers;
 };
 
-const miner = async (req, res) => {
-  const miner = /miner/g;
-  const { team, token } = req.headers;
-  const isMiner = miner.test(req.originalUrl) || false;
-  if ((isMiner && !team) || (isMiner && !isValidToken(team, token))) {
-    res.sendStatus(401);
-    return;
-  }
-  return isMiner;
-};
-
 const index = async (req, res) => {
-  const isMiner = await miner(req, res);
+  const isMiner = await minerController.isMiner(req, res);
   const { team, token } = req.headers;
 
   let month = new Date(Date.now()).getMonth();
@@ -382,7 +372,7 @@ const index = async (req, res) => {
 };
 
 const general = async (req, res) => {
-  const isMiner = await miner(req, res);
+  const isMiner = await minerController.isMiner(req, res);
   const { team, token } = req.headers;
   let first_users = [];
   let last_users = [];
