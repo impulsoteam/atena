@@ -1,6 +1,10 @@
 import interaction from "./interaction";
 import interactionModel from "../models/interaction";
-import { saveInteraction, message, responseEngagedSlash } from "../mocks/rocket";
+import {
+  saveInteraction,
+  message,
+  responseEngagedSlash
+} from "../mocks/rocket";
 import userController from "./user";
 import config from "config-yml";
 jest.mock("../rocket/api");

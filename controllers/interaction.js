@@ -14,6 +14,8 @@ import { fromPrivateChannel } from "../utils/rocket";
 import interactionModel from "../models/interaction";
 import api from "../rocket/api";
 import log4js from "log4js";
+import minerController from "./miner";
+import { isValidToken } from "../utils/teams";
 
 /**
  * Some ideias to refactor normalize function:
@@ -517,18 +519,21 @@ const validInterval = (begin, end) => {
 };
 
 const engaged = async (req, res) => {
+  const { team, token, begin, end } = req.headers;
+  const isMiner = await minerController.isMiner(req, res);
   let response = {
     text: "",
     attachments: []
   };
   const rocketId = req.body.id;
-  const beginDate = req.body.begin;
-  const endDate = req.body.end;
+  const beginDate = isMiner ? begin : req.body.begin;
+  const endDate = isMiner ? end : req.body.end;
   const isCoreTeam = await userController.isCoreTeam({ rocketId: rocketId });
   const validDates =
     exportFunctions.validDate(beginDate) && exportFunctions.validDate(endDate);
   const validIntervals = validInterval(beginDate, endDate);
-  if (isCoreTeam && validDates && validIntervals) {
+  const validFunctions = validDates && validIntervals;
+  if ((isCoreTeam && validFunctions) || (isMiner && validFunctions)) {
     const users = await exportFunctions.mostActives(
       moment(beginDate, "DD-MM-YYYY")
         .startOf("day")
@@ -554,6 +559,12 @@ const engaged = async (req, res) => {
     response.text =
       "Você não tem uma armadura de ouro, e não pode entrar nessa casa!";
   }
+
+  if (isMiner && !isValidToken(team, token)) {
+    response.text = "Invalid Token";
+    response.attachments = [];
+  }
+
   res.json(response);
 };
 
