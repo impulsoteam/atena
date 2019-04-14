@@ -12,10 +12,6 @@ const myPosition = async (user_id, users) => {
   return users.map(e => e.user).indexOf(id) + 1;
 };
 
-/**
- * Devo ter funcoes que montam o response. e me retorna isso.. e a partir disso
- * de acordo com o proposito mando essa resposta
- */
 const commandIndex = async message => {
   let month = new Date(Date.now()).getMonth() + 1;
   const generalResponse = await exportFunctions.generalIndex(
@@ -43,7 +39,6 @@ const commandGeneral = async message => {
 
   await driver.sendDirectToUser(customResponse, message.u.username);
 };
-// const slashIndex = async (req, res) => {};
 
 const generalIndex = async (user_id, month) => {
   let response = {
