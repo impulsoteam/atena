@@ -467,6 +467,7 @@ export const handleFromNext = async data => {
       user.name = data.fullname;
       user.email = data.network_email;
       user.linkedinId = data.linkedin.uid;
+      user.username = data.rocket_chat.username;
       user.uuid = data.uuid;
       return await user.save();
     }
@@ -477,6 +478,7 @@ export const handleFromNext = async data => {
       name: data.fullname,
       email: data.network_email,
       linkedinId: data.linkedin.uid,
+      username: data.rocket_chat.username,
       uuid: data.uuid
     };
     return await save(userData);
