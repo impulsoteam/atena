@@ -13,6 +13,9 @@ const handleEvent = async e => {
   const channel = getChannel(e);
 
   if (isValidChannel(channel)) {
+    if (e.type === "article") {
+      e.origin = "blog";
+    }
     e.type === "reaction_removed"
       ? interactionController.remove(e)
       : interactionController.save(e);

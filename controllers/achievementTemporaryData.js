@@ -1,5 +1,4 @@
 import moment from "moment-timezone";
-import { _throw } from "../helpers";
 import TemporaryAchievementDataModel from "../models/achievementTemporaryData";
 import {
   generateKind,
@@ -21,7 +20,7 @@ export const save = async data => {
 
     return await obj.save();
   } catch (error) {
-    _throw("Error saving temporary achievement data");
+    console.log("Error saving temporary achievement data");
   }
 };
 
@@ -32,7 +31,7 @@ export const update = async (data, id) => {
     ).exec();
 
     if (!temporaryAchievementData) {
-      _throw(
+      console.log(
         "Error not found temporaryAchievementData on update temporary achievement data"
       );
     }
@@ -45,7 +44,7 @@ export const update = async (data, id) => {
 
     temporaryAchievementData.save();
   } catch (error) {
-    _throw("Error update temporary achievement data");
+    console.log("Error update temporary achievement data");
   }
 };
 
@@ -56,7 +55,7 @@ export const disable = async id => {
     ).exec();
 
     if (!temporaryAchievementData) {
-      _throw(
+      console.log(
         "Error not found temporaryAchievementData on update temporary achievement data"
       );
     }
@@ -71,7 +70,7 @@ export const disable = async id => {
 
     temporaryAchievementData.save();
   } catch (error) {
-    _throw("Error delete temporary achievement data");
+    console.log("Error delete temporary achievement data");
   }
 };
 
@@ -82,7 +81,7 @@ export const getById = async id => {
     );
     return achivementTemporyData;
   } catch (error) {
-    _throw("Error delete temporary achievement data");
+    console.log("Error delete temporary achievement data");
   }
 };
 
@@ -91,7 +90,7 @@ export const getAll = async () => {
     const achivementsTemporyData = await TemporaryAchievementDataModel.find();
     return achivementsTemporyData;
   } catch (error) {
-    _throw("Error delete temporary achievement data");
+    console.log("Error delete temporary achievement data");
   }
 };
 

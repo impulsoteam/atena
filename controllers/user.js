@@ -5,7 +5,6 @@ import {
   calculateScore,
   calculateReceivedScore,
   calculateReactions,
-  calculateLevel,
   getUserInfo,
   isCoreTeam
 } from "../utils";
@@ -15,6 +14,8 @@ import axios from "axios";
 import { isValidToken } from "../utils/teams";
 import interactionController from "./interaction";
 import { getUserInfo as getRocketUserInfo } from "../rocket/api";
+import api from "../rocket/api";
+import userModel from "../models/user";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
@@ -85,6 +86,21 @@ const update = async interaction => {
   } else {
     return await createUserData(userInfo, score, interaction, UserModel);
   }
+};
+
+const customUpdate = async (user, interactionScore, interaction) => {
+  // TODO: Remove argument interaction.
+  // just added because function calculateReactions need that
+  return userModel.findOne({ rocketId: user }).then((doc, err) => {
+    if (err) {
+      console.log("erro ao fazer update no usuario ", user, interactionScore);
+    }
+    const newScore = doc.score + interactionScore;
+    doc.score = newScore;
+    doc.level = calculateLevel(newScore);
+    doc.reactions = calculateReactions(interaction, 0);
+    return doc.save();
+  });
 };
 
 const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
@@ -377,8 +393,7 @@ const details = async (req, res) => {
 };
 
 export const save = async obj => {
-  const UserModel = mongoose.model("User");
-  const user = new UserModel(obj);
+  const user = userModel(obj);
   return await user.save();
 };
 
@@ -468,7 +483,45 @@ export const handleFromNext = async data => {
   }
 };
 
-export default {
+export const valid = async data => {
+  return api
+    .getUserInfo(data.u._id)
+    .then(res => {
+      return userModel
+        .findOneAndUpdate(
+          {
+            rocketId: res._id
+          },
+          {
+            name: res.name,
+            rocketId: res._id,
+            level: 1,
+            username: res.username
+          },
+          { upsert: true, setDefaultsOnInsert: true },
+          (err, doc) => {
+            return doc;
+          }
+        )
+        .exec();
+    })
+    .then(res => {
+      return res;
+    })
+    .catch(() => {
+      return new Promise((resolve, reject) => {
+        reject("usuário não encontrado na api do rocket");
+      });
+    });
+};
+
+export const calculateLevel = score => {
+  const level = config.levelrules.levels_range.findIndex(l => score < l) + 1;
+  return level;
+};
+
+export const defaultFunctions = {
+  calculateLevel,
   find,
   findAll,
   update,
@@ -485,5 +538,9 @@ export default {
   details,
   save,
   commandScore,
-  handleFromNext
+  handleFromNext,
+  valid,
+  customUpdate
 };
+
+export default defaultFunctions;
