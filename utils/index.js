@@ -79,11 +79,13 @@ export const calculateScore = interaction => {
   } else if (interaction.type === "comment") {
     score = config.xprules.disqus.comment;
   }
+  console.log("===== UTILS CALCULATE SCORE ======", score);
   return score;
 };
 
 export const calculateReceivedScore = calc;
 
+// deprected @todo remove it
 export const calculateLevel = score => {
   const level = config.levelrules.levels_range.findIndex(l => score < l) + 1;
   return level;

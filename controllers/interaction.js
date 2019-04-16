@@ -3,15 +3,19 @@ import mongoose from "mongoose";
 import moment from "moment";
 import batch from "batchflow";
 import userController from "./user";
+import rocketController from "./rocket";
 import achievementController from "./achievement";
 import achievementTemporaryController from "./achievementTemporary";
 import { calculateScore, analyticsSendCollect } from "../utils";
-import { lastMessageTime, getAction, getOrigin } from "../utils/interactions";
+import { lastMessageTime } from "../utils/interactions";
 import { _throw, _today } from "../helpers";
-import { getUserFromReaction } from "../utils/reactions";
 import { isBot } from "../utils/bot";
+import { fromPrivateChannel } from "../utils/rocket";
 import interactionModel from "../models/interaction";
-import { getHistory } from "../rocket/api";
+import api from "../rocket/api";
+import log4js from "log4js";
+import minerController from "./miner";
+import { isValidToken } from "../utils/teams";
 
 /**
  * Some ideias to refactor normalize function:
@@ -20,37 +24,7 @@ import { getHistory } from "../rocket/api";
  *
  */
 let normalize = data => {
-  if (data.type === "reaction_added" || data.type === "reaction_removed") {
-    return {
-      origin: "slack",
-      channel: data.item.channel,
-      date: new Date(),
-      description: data.reaction,
-      messageIdentifier: data.event_ts,
-      parentMessage: data.item.ts,
-      parentUser: data.item_user,
-      thread: false,
-      type: data.type,
-      user: data.user,
-      category: config.categories.network.type,
-      action: config.actions.reaction.type
-    };
-  } else if (data.thread_ts) {
-    return {
-      origin: "slack",
-      channel: data.channel,
-      date: new Date(),
-      description: data.text,
-      messageIdentifier: data.ts,
-      parentMessage: data.event_ts,
-      parentUser: data.parent_user_id,
-      thread: true,
-      type: "thread",
-      user: data.user,
-      category: config.categories.network.type,
-      action: config.actions.thread.type
-    };
-  } else if (data.type === "manual") {
+  if (data.type === "manual") {
     return {
       origin: "sistema",
       type: data.type,
@@ -83,7 +57,8 @@ let normalize = data => {
       description: "new github issue",
       channel: data.repository.id,
       category: config.categories.network.type,
-      action: config.actions.github.type
+      action: config.actions.github.type,
+      score: config.xprules.github.issue
     };
   } else if (data.type === "review") {
     return {
@@ -94,7 +69,8 @@ let normalize = data => {
       description: "review",
       channel: data.review.id,
       category: config.categories.network.type,
-      action: config.actions.github.type
+      action: config.actions.github.type,
+      score: config.xprules.github.review
     };
   } else if (data.type === "pull_request") {
     return {
@@ -105,7 +81,8 @@ let normalize = data => {
       description: "review",
       channel: data.pull_request.id,
       category: config.categories.network.type,
-      action: config.actions.github.type
+      action: config.actions.github.type,
+      score: config.xprules.github.pull_request
     };
   } else if (data.type === "merged_pull_request") {
     return {
@@ -116,13 +93,15 @@ let normalize = data => {
       description: "merged pull request",
       channel: data.pull_request.id,
       category: config.categories.network.type,
-      action: config.actions.github.type
+      action: config.actions.github.type,
+      score: config.xprules.github.merged_pull_request
     };
   } else if (data.origin === "rocket") {
+    // TODO: Remove
     if (data.reactions) {
       return {
-        origin: "rocket",
-        channel: data.rid,
+        origin: data.origin,
+        channel: data.roomName,
         date: new Date(),
         description: Object.keys(data.reactions).pop(),
         parentUser: data.u._id,
@@ -134,9 +113,9 @@ let normalize = data => {
     } else {
       return {
         origin: data.origin,
-        channel: data.rid,
+        channel: data.roomName,
         date: new Date(),
-        description: data.msg,
+        description: fromPrivateChannel(data) ? "" : data.msg,
         type: "message",
         user: data.u._id,
         username: data.u.name,
@@ -156,9 +135,9 @@ let normalize = data => {
       category: config.categories.network.type,
       action: config.actions.blog.type
     };
-  } else {
+  } else if (data.type == "article") {
     return {
-      origin: getOrigin(data),
+      origin: "blog",
       channel: data.channel,
       date: new Date(),
       description: data.text,
@@ -168,65 +147,98 @@ let normalize = data => {
       type: "message",
       user: data.user,
       category: config.categories.network.type,
-      action: getAction(data)
+      action: config.actions.blog.type
     };
   }
+};
+
+const flood = async data => {
+  return exportFunctions
+    .lastMessage(data.u._id)
+    .then(msg => {
+      let lastDate = 0;
+      if (msg) {
+        lastDate = msg.date;
+      }
+      const maxSeconds = 5;
+      const type = rocketController.type(data);
+      if (
+        type === "message" &&
+        moment(data.date).diff(lastDate, "seconds") < maxSeconds
+      ) {
+        return Promise.reject("usuario fez flood");
+      } else {
+        return Promise.resolve(true);
+      }
+    })
+    .catch(err => {
+      return Promise.reject(err);
+    });
+};
+
+const validInteraction = async data => {
+  let user;
+  return userController
+    .valid(data)
+    .then(res => {
+      user = res;
+      return flood(data);
+    })
+    .then(() => {
+      return user;
+    })
+    .catch(err => {
+      return new Promise.reject(err);
+    });
 };
 
 export const save = async data => {
   if (isBot(data)) {
     return;
   }
-  const interaction = exportFunctions.normalize(data);
-  const todayLimitScore = config.xprules.limits.daily;
-  const score = await exportFunctions.todayScore(interaction.user);
-  const todayLimitStatus = todayLimitScore - score;
-  const instance = interactionModel(interaction);
-  const maxSeconds = 5;
-
-  analyticsSendCollect(interaction);
-
-  if (
-    interaction.type === "message" &&
-    moment(interaction.date).diff(await lastMessageTime(instance), "seconds") <
-      maxSeconds
-  ) {
-    return _throw("User makes flood");
+  let valid = true;
+  let interaction;
+  let user;
+  // apply valid function to others integrations
+  if (data.origin === "rocket") {
+    user = await exportFunctions
+      .validInteraction(data)
+      .then(res => {
+        if (res) {
+          interaction = rocketController.normalize(data);
+        }
+        return res;
+      })
+      .catch(() => {
+        valid = false;
+      });
+  } else {
+    interaction = exportFunctions.normalize(data);
   }
 
-  if (
-    interaction.type === "reaction_added" &&
-    interaction.origin === "rocket"
-  ) {
-    const user = await getUserFromReaction(data);
-
-    interaction.user = user ? user.id : null;
-    interaction.rocketUsername = user ? user.username : null;
-    interaction.username = user ? user.name : null;
-  }
-
-  if (todayLimitStatus > 0 || !todayLimitStatus) {
-    instance.score = calculateScore(interaction);
-    await userController.update(interaction);
-    await achievementController.save(interaction);
-    await achievementTemporaryController.save(interaction);
-
-    if (
-      ![
-        "message",
-        "issue",
-        "review",
-        "pull_request",
-        "merged_pull_request",
-        "comment"
-      ].includes(interaction.type) &&
-      interaction.parentUser !== interaction.user
-    ) {
-      await userController.updateParentUser(interaction);
+  if (valid && interaction.type !== "reaction_added") {
+    const todayScore = await exportFunctions.todayScore(interaction.user);
+    const todayLimiteScore = config.xprules.limits.daily;
+    const todayLimitStatus = todayLimiteScore - todayScore;
+    const instance = interactionModel(interaction);
+    if (todayLimitStatus > 0 || !todayLimitStatus) {
+      await userController.customUpdate(
+        user.rocketId,
+        interaction.score,
+        interaction
+      );
+      await achievementController.save(interaction, user);
+      await achievementTemporaryController.save(interaction);
+    } else {
+      instance.score = 0;
     }
+    analyticsSendCollect(interaction);
+    return instance.save();
+  } else {
+    return new Promise((resolve, reject) => {
+      reject("add new interaction");
+    });
   }
-  const response = instance.save();
-  return response || _throw("Error adding new interaction");
 };
 
 export const find = async user => {
@@ -243,19 +255,23 @@ export const find = async user => {
 };
 
 export const todayScore = async user => {
-  let score = 0;
-  const InteractionModel = mongoose.model("Interaction");
-  const result = await InteractionModel.find({
-    user: user,
-    date: {
-      $gte: _today.start
-    }
-  }).exec();
-  result.map(item => {
-    score = score + calculateScore(item);
-  });
-
-  return +score;
+  return interactionModel
+    .find({
+      user: user,
+      date: {
+        $gte: _today.start
+      }
+    })
+    .then(interactions => {
+      const total = interactions.reduce(
+        (prevVal, interaction) => prevVal + interaction.score,
+        0
+      );
+      return Promise.resolve(total);
+    })
+    .catch(() => {
+      return Promise.reject(0);
+    });
 };
 
 export const remove = async data => {
@@ -282,20 +298,10 @@ export const remove = async data => {
   return _throw("Error removing interactions");
 };
 
-export const lastMessage = async interaction => {
-  const InteractionModel = mongoose.model("Interaction");
-  const result = await InteractionModel.find({
-    user: interaction.user,
-    type: "message",
-    _id: { $lt: interaction.id }
-  })
-    .sort({
-      _id: -1
-    })
-    .limit(1)
-    .exec();
-
-  return result || _throw("Error finding last interaction by user");
+const lastMessage = async userId => {
+  return interactionModel.findOne({ user: userId, type: "message" }, "date", {
+    sort: { _id: -1 }
+  });
 };
 
 const manualInteractions = async data => {
@@ -328,6 +334,7 @@ const findBy = async args => {
 };
 
 const calculate = async interaction => {
+  // pegar o user
   const todayLimitScore = config.xprules.limits.daily;
   const scoreDay = await dayScore(interaction);
   const todayLimitStatus = todayLimitScore - scoreDay;
@@ -341,28 +348,32 @@ const calculate = async interaction => {
     return _throw("User makes flood");
   }
   if (todayLimitStatus > 0 || !todayLimitStatus) {
-    return await calculateScore(interaction);
+    return scoreDay;
   }
 };
 
 const dayScore = async interaction => {
   const date = new Date(interaction.date);
-  let score = 0;
-  const InteractionModel = mongoose.model("Interaction");
   const start = date.setHours(0, 0, 0, 0);
   const end = date.setHours(23, 59, 59, 999);
-  const result = await InteractionModel.find({
-    user: interaction.user,
-    date: {
-      $gte: start,
-      $lt: end
-    }
-  }).exec();
-
-  result.map(item => {
-    score = score + calculateScore(item);
-  });
-  return +score;
+  return interactionModel
+    .find({
+      user: interaction.user,
+      date: {
+        $gte: start,
+        $lt: end
+      }
+    })
+    .then(interactions => {
+      const total = interactions.reduce(
+        (prevVal, interaction) => prevVal + calculateScore(interaction),
+        0
+      );
+      return Promise.resolve(total);
+    })
+    .catch(() => {
+      return Promise.reject(0);
+    });
 };
 
 const normalizeScore = async (req, res) => {
@@ -370,9 +381,14 @@ const normalizeScore = async (req, res) => {
   batch(interactions)
     .sequential()
     .each(async (i, item, done) => {
-      const score = await calculate(item);
-      item.score = score;
-      item.save();
+      const data = item;
+      data.origin = "slack";
+      calculate(data).then(res => {
+        if (res) {
+          item.score = res;
+          item.save();
+        }
+      });
       done();
     })
     .end(results => {
@@ -382,8 +398,7 @@ const normalizeScore = async (req, res) => {
 };
 
 const aggregateBy = async args => {
-  const InterActionModel = mongoose.model("Interaction");
-  const result = await InterActionModel.aggregate(args).exec();
+  const result = await interactionModel.aggregate(args).exec();
   return result || null;
 };
 
@@ -407,15 +422,150 @@ const byDate = async (year, month) => {
   ]);
 };
 
-const history = async (req, res) => {
-  const messages = await getHistory("Aa6fSXib23WpHjof7");
+const mostActives = async (beginDate, endDate) => {
+  return await aggregateBy([
+    {
+      $lookup: {
+        from: "users",
+        localField: "user",
+        foreignField: "rocketId",
+        as: "userObject"
+      }
+    },
+    {
+      $unwind: "$userObject"
+    },
+    {
+      $match: {
+        date: { $gte: beginDate, $lte: endDate },
+        score: { $gt: 0 }
+      }
+    },
+    {
+      $group: {
+        _id: {
+          _id: "$userObject._id",
+          name: "$userObject.name",
+          rocketId: "$userObject.rocketId",
+          username: "$userObject.username"
+        },
+        count: { $sum: 1 },
+        date: { $first: "$date" }
+      }
+    },
+    {
+      $match: {
+        count: { $gte: 6 }
+      }
+    },
+    {
+      $sort: { count: -1 }
+    }
+  ]);
+};
 
-  for (let message of messages.reverse()) {
-    console.log("=====> ", message);
-    message.origin = "rocket";
-    await exportFunctions.save(message);
+const history = async (req, res) => {
+  const logger = log4js.getLogger("history");
+  const channels = await api.getChannels();
+  console.log(channels);
+  for (let channel of channels) {
+    console.log("======= CHANNEL", channel._id);
+    const messages = await api.getHistory(channel._id);
+    // const messages = await api.getHistory("Aa6fSXib23WpHjof7");
+    batch(messages.reverse())
+      .sequential()
+      .each(async (i, item, done) => {
+        item.origin = "rocket";
+        item.history = true;
+        if (!item.t) {
+          console.log("MSG", i);
+          exportFunctions.save(item).catch(err => {
+            console.log(
+              "Erro ao salvar interação do usuário: id: ",
+              item.u._id,
+              " name: ",
+              item.u.name,
+              " em: ",
+              item.ts,
+              " ===> ",
+              err
+            );
+            logger.error(item, err);
+          });
+        }
+        done();
+      })
+      .end(() => {
+        console.log("finish");
+      });
+    console.log(
+      "quantidade de mensagens ",
+      messages.length,
+      " para o channel: ",
+      channel._id
+    );
   }
-  res.json(messages.reverse());
+  res.json("success");
+};
+
+const validDate = date => {
+  return moment(date, "DD-MM-YYYY", true).isValid();
+};
+
+const validInterval = (begin, end) => {
+  const momentBegin = moment(begin, "DD-MM-YYYY", true);
+  const momentEnd = moment(end, "DD-MM-YYYY", true);
+  return momentEnd.diff(momentBegin) >= 0;
+};
+
+const engaged = async (req, res) => {
+  const { team, token, begin, end } = req.headers;
+  const isMiner = await minerController.isMiner(req, res);
+  let response = {
+    text: "",
+    attachments: []
+  };
+  const rocketId = req.body.id;
+  const beginDate = isMiner ? begin : req.body.begin;
+  const endDate = isMiner ? end : req.body.end;
+  const isCoreTeam = await userController.isCoreTeam({ rocketId: rocketId });
+  const validDates =
+    exportFunctions.validDate(beginDate) && exportFunctions.validDate(endDate);
+  const validIntervals = validInterval(beginDate, endDate);
+  const validFunctions = validDates && validIntervals;
+  if ((isCoreTeam && validFunctions) || (isMiner && validFunctions)) {
+    const users = await exportFunctions.mostActives(
+      moment(beginDate, "DD-MM-YYYY")
+        .startOf("day")
+        .toDate(),
+      moment(endDate, "DD-MM-YYYY")
+        .endOf("day")
+        .toDate()
+    );
+    response.text = `Total de ${users.length} usuário engajados`;
+    users.forEach(user => {
+      response.attachments.push({
+        text: `Username: @${user._id.username} | Name: ${
+          user._id.name
+        } | Qtd. interações: ${user.count}`
+      });
+    });
+  } else if (isCoreTeam && validDates && !validIntervals) {
+    response.text = "Data de ínicio não pode ser maior que data final";
+  } else if (!validDates && isCoreTeam) {
+    response.text =
+      "Datas em formatos inválidos por favor use datas com o formato ex: 10-10-2019";
+  } else {
+    response.text =
+      "Você não tem uma armadura de ouro, e não pode entrar nessa casa!";
+  }
+
+  if (isMiner && !isValidToken(team, token)) {
+    response.text = "Invalid Token";
+    response.attachments = [];
+  }
+
+  res.json(response);
 };
 
 const exportFunctions = {
@@ -423,13 +573,20 @@ const exportFunctions = {
   find,
   remove,
   save,
+  dayScore,
   todayScore,
   lastMessage,
   manualInteractions,
   normalizeScore,
   normalize,
   byDate,
-  history
+  history,
+  validInteraction,
+  flood,
+  mostActives,
+  engaged,
+  validDate,
+  validInterval
 };
 
 export default exportFunctions;

@@ -7,15 +7,16 @@ import compression from "compression";
 import session from "express-session";
 import passport from "passport";
 import bodyParser from "body-parser";
+import log4js from "log4js";
 require("./models/interaction");
 require("./models/user");
 require("./models/achievement");
 require("./models/ranking");
+require("./workers/receive");
 
 if (process.env.NODE_ENV !== "test") {
   require("./rocket/bot");
   require("./rocket/api");
-  require("./workers/receive");
 }
 
 runCrons();
@@ -26,6 +27,11 @@ const mongooseConnectUri = process.env.MONGODB_URI;
 
 mongoose.connect(mongooseConnectUri);
 mongoose.set("useCreateIndexes", true);
+
+log4js.configure({
+  appenders: { history: { type: "file", filename: "history.log" } },
+  categories: { default: { appenders: ["history"], level: "error" } }
+});
 
 const port = process.env.PORT || 9001;
 const app = express();
@@ -43,7 +49,13 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static("public"));
-app.use(session({ secret: "atenagamification" }));
+app.use(
+  session({
+    secret: "atenagamification",
+    resave: false,
+    saveUninitialized: false
+  })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());

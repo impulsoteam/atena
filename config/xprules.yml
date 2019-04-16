@@ -21,3 +21,9 @@ disqus:
 inactive:
   mindays: 8
   value: -2
+linkedin: 3
+team:
+  interview: 5
+  approved: 7
+  allocated: 9
+referral: 3
