@@ -1,4 +1,5 @@
 import express from "express";
+import interactionController from "../controllers/interaction";
 import UserController from "../controllers/user";
 const router = express.Router();
 import { isValidToken } from "../utils/teams";
@@ -24,5 +25,7 @@ router.get("/ranking", async (req, res) => {
 router.get("/ranking/mes/:month", rankingController.index);
 
 router.get("/ranking/geral", rankingController.general);
+
+router.get("/mostactive", interactionController.engaged);
 
 export default router;

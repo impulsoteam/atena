@@ -8,7 +8,7 @@ var myuserid;
 const runBot = async () => {
   await driver.connect({
     host: process.env.ROCKET_HOST,
-    useSsl: true
+    useSsl: process.env.ROCKET_SSL === true
   });
 
   myuserid = await driver.login({

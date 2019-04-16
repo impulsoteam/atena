@@ -5,6 +5,7 @@ import interactionController from "./interaction";
 import { calculateLevel } from "../utils";
 import { renderScreen } from "../utils/ssr";
 import { isValidToken } from "../utils/teams";
+import minerController from "./miner";
 
 const myPosition = async (user_id, users) => {
   const user = await userController.getNetwork(user_id);
@@ -12,10 +13,6 @@ const myPosition = async (user_id, users) => {
   return users.map(e => e.user).indexOf(id) + 1;
 };
 
-/**
- * Devo ter funcoes que montam o response. e me retorna isso.. e a partir disso
- * de acordo com o proposito mando essa resposta
- */
 const commandIndex = async message => {
   let month = new Date(Date.now()).getMonth() + 1;
   const generalResponse = await exportFunctions.generalIndex(
@@ -43,7 +40,6 @@ const commandGeneral = async message => {
 
   await driver.sendDirectToUser(customResponse, message.u.username);
 };
-// const slashIndex = async (req, res) => {};
 
 const generalIndex = async (user_id, month) => {
   let response = {
@@ -329,19 +325,8 @@ const group = async (users, isCoreTeam = false) => {
   return isCoreTeam ? listCoreTeam : listUsers;
 };
 
-const miner = async (req, res) => {
-  const miner = /miner/g;
-  const { team, token } = req.headers;
-  const isMiner = miner.test(req.originalUrl) || false;
-  if ((isMiner && !team) || (isMiner && !isValidToken(team, token))) {
-    res.sendStatus(401);
-    return;
-  }
-  return isMiner;
-};
-
 const index = async (req, res) => {
-  const isMiner = await miner(req, res);
+  const isMiner = await minerController.isMiner(req, res);
   const { team, token } = req.headers;
 
   let month = new Date(Date.now()).getMonth();
@@ -387,7 +372,7 @@ const index = async (req, res) => {
 };
 
 const general = async (req, res) => {
-  const isMiner = await miner(req, res);
+  const isMiner = await minerController.isMiner(req, res);
   const { team, token } = req.headers;
   let first_users = [];
   let last_users = [];
