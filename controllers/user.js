@@ -494,10 +494,14 @@ export const valid = async data => {
             rocketId: res._id
           },
           {
-            name: res.name,
-            rocketId: res._id,
-            level: 1,
-            username: res.username
+            $set: {
+              name: res.name,
+              rocketId: res._id,
+              username: res.username
+            },
+            $setOnInsert: {
+              level: 1
+            }
           },
           { upsert: true, setDefaultsOnInsert: true },
           (err, doc) => {

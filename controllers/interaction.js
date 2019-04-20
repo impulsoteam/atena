@@ -216,7 +216,7 @@ export const save = async data => {
     interaction = exportFunctions.normalize(data);
   }
 
-  if (valid && interaction.type !== "reaction_added") {
+  if (user && valid && interaction.type !== "reaction_added") {
     const todayScore = await exportFunctions.todayScore(interaction.user);
     const todayLimiteScore = config.xprules.limits.daily;
     const todayLimitStatus = todayLimiteScore - todayScore;
