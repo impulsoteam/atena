@@ -1,6 +1,3 @@
-jest.mock("../models/achievementLevel");
-jest.unmock("./achievementLevel");
-
 import controller from "./achievementLevel";
 import model from "../models/achievementLevel";
 import * as utils from "../utils/achievements";
@@ -38,7 +35,9 @@ describe("Achievement Level Controller", () => {
 
   describe("Find By User", () => {
     it("should return all achievements for an user", done => {
-      const achievementLevelWithoutUser = Object.assign(achievementLevel);
+      const achievementLevelWithoutUser = JSON.parse(
+        JSON.stringify(achievementLevel)
+      );
       delete achievementLevelWithoutUser.user;
       const exec = jest.fn(() => Promise.resolve(achievementLevelWithoutUser));
       const spy = jest.spyOn(model, "findOne").mockImplementationOnce(() => {

@@ -7,9 +7,9 @@ const today = moment(new Date())
   .utc()
   .format();
 
-export const getCurrentScoreToIncrease = achievement => {
+const getCurrentScoreToIncrease = achievement => {
   let score = 0;
-  const last = getLastAchievementRatingEarned(achievement);
+  const last = defaultFunctions.getLastAchievementRatingEarned(achievement);
   const ranges = last.rating.ranges;
   const range = ranges[ranges.length - 1];
 
@@ -23,7 +23,7 @@ export const getCurrentScoreToIncrease = achievement => {
   return score;
 };
 
-export const getScoreToIncrease = achievement => {
+const getScoreToIncrease = achievement => {
   let score = 0;
 
   if (achievement && achievement.ratings.length) {
@@ -37,7 +37,7 @@ export const getScoreToIncrease = achievement => {
   return score;
 };
 
-export const getInteractionType = interaction => {
+const getInteractionType = interaction => {
   let type = interaction.type;
 
   if (isChatInteraction(interaction)) {
@@ -47,26 +47,27 @@ export const getInteractionType = interaction => {
   return type;
 };
 
-export const getAchievementCurrentRating = achievement => {
+const getAchievementCurrentRating = achievement => {
   let currentRating = {};
   let ranges = [];
 
   if (achievement.ratings.length) {
     for (let rating of achievement.ratings) {
       ranges = rating.ranges.filter(range => range.earnedDate);
-
-      if (ranges.length) {
-        const lastRange = ranges[ranges.length - 1];
-        currentRating = convertToRating(achievement, rating, lastRange);
-        break;
-      }
+      if (!ranges.length) break;
+      const lastRange = ranges[ranges.length - 1];
+      currentRating = defaultFunctions.convertToRating(
+        achievement,
+        rating,
+        lastRange
+      );
     }
   }
 
   return currentRating;
 };
 
-export const getAchievementNextRating = achievement => {
+const getAchievementNextRating = achievement => {
   let nextRating = {};
   let ranges = [];
 
@@ -75,7 +76,11 @@ export const getAchievementNextRating = achievement => {
       ranges = rating.ranges.filter(range => !range.earnedDate);
 
       if (ranges.length) {
-        nextRating = convertToRating(achievement, rating, ranges[0]);
+        nextRating = defaultFunctions.convertToRating(
+          achievement,
+          rating,
+          ranges[0]
+        );
         break;
       }
     }
@@ -84,7 +89,7 @@ export const getAchievementNextRating = achievement => {
   return nextRating;
 };
 
-export const getLastAchievementRatingEarned = achievement => {
+const getLastAchievementRatingEarned = achievement => {
   let lastRatingEarned = {};
   let lastRangeEarned = {};
 
@@ -109,7 +114,7 @@ export const getLastAchievementRatingEarned = achievement => {
   return achievement.record || {};
 };
 
-export const calculateAchievementScoreToIncrease = achievement => {
+const calculateAchievementScoreToIncrease = achievement => {
   let scoreToIncrease = 0;
   const today = moment(new Date());
 
@@ -130,7 +135,7 @@ export const calculateAchievementScoreToIncrease = achievement => {
   return scoreToIncrease;
 };
 
-export const getLevelRecord = achievement => {
+const getLevelRecord = achievement => {
   const lastRating = getLastAchievementRatingEarned(achievement);
   let newRecord = convertToLevelRecord(lastRating, achievement);
 
@@ -146,7 +151,7 @@ export const getLevelRecord = achievement => {
   return achievement.record;
 };
 
-export const getRecord = achievement => {
+const getRecord = achievement => {
   const lastRating = getLastAchievementRatingEarned(achievement);
   let newRecord = convertToRecord(lastRating, achievement);
 
@@ -160,7 +165,7 @@ export const getRecord = achievement => {
   return newRecord;
 };
 
-export const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
+const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
   if (!current || !current.name) return true;
 
   const positionRatings = getPositionRatings();
@@ -219,3 +224,19 @@ const convertToRating = (achievement, rating, range) => {
     total: range.value
   };
 };
+
+const defaultFunctions = {
+  getCurrentScoreToIncrease,
+  getLastAchievementRatingEarned,
+  getScoreToIncrease,
+  getInteractionType,
+  getAchievementCurrentRating,
+  getAchievementNextRating,
+  calculateAchievementScoreToIncrease,
+  getLevelRecord,
+  getRecord,
+  newEarnedIsBiggerThenCurrent,
+  convertToRating
+};
+
+export default defaultFunctions;
