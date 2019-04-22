@@ -8,6 +8,7 @@ import {
   getUserInfo,
   isCoreTeam
 } from "../utils";
+import { isEligibleToPro } from "../utils/pro";
 import { sendToUser } from "../rocket/bot";
 import { _throw } from "../helpers";
 import axios from "axios";
@@ -16,6 +17,7 @@ import interactionController from "./interaction";
 import { getUserInfo as getRocketUserInfo } from "../rocket/api";
 import api from "../rocket/api";
 import userModel from "../models/user";
+import { runPublisher } from "../workers/publisher"
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
@@ -23,6 +25,8 @@ const updateParentUser = async interaction => {
 
   if (userInfo) {
     let user = await findByOrigin(interaction, true);
+
+    user.pro = handlePro(user) || false;
 
     if (user) {
       if (score > 0) {
@@ -55,6 +59,8 @@ const update = async interaction => {
     userInfo = false;
     user = await UserModel.findOne({ rocketId: interaction.user }).exec();
   }
+
+  user.pro = handlePro(user) || false;
 
   if (user.score === 0) {
     sendToUser(
@@ -468,6 +474,13 @@ export const handleFromNext = async data => {
       user.email = data.network_email;
       user.linkedinId = data.linkedin.uid;
       user.uuid = data.uuid;
+
+      if (isEligibleToPro(user)) {
+        user.pro = true;
+      } else if (!isEligibleToPro(user) && user.pro) {
+        user.pro = false;
+      }
+
       return await user.save();
     }
   } catch (err) {
@@ -520,6 +533,16 @@ export const calculateLevel = score => {
   return level;
 };
 
+export const handlePro = user => {
+  if (isEligibleToPro(user) && isEligibleToPro(user) != user.pro) {
+    user.pro = isEligibleToPro(user);
+    runPublisher(user);
+    return isEligibleToPro(user);
+  }
+
+  return null;
+};
+
 export const defaultFunctions = {
   calculateLevel,
   find,
@@ -540,7 +563,8 @@ export const defaultFunctions = {
   commandScore,
   handleFromNext,
   valid,
-  customUpdate
+  customUpdate,
+  handlePro
 };
 
 export default defaultFunctions;
