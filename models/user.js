@@ -103,6 +103,10 @@ export const userSchema = new mongoose.Schema({
   linkedinId: {
     type: String,
     required: false
+  },
+  pro: {
+    type: Boolean,
+    default: false
   }
 });
 

@@ -7,6 +7,7 @@ import {
   calculateReactions,
   getUserInfo
 } from "../utils";
+import { isEligibleToPro } from "../utils/pro";
 import { sendToUser } from "../rocket/bot";
 import { _throw } from "../helpers";
 import axios from "axios";
@@ -15,6 +16,7 @@ import interactionController from "./interaction";
 import { getUserInfo as getRocketUserInfo } from "../rocket/api";
 import api from "../rocket/api";
 import userModel from "../models/user";
+import { runPublisher } from "../workers/publisher";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
@@ -22,6 +24,8 @@ const updateParentUser = async interaction => {
 
   if (userInfo) {
     let user = await findByOrigin(interaction, true);
+
+    user.pro = handlePro(user) || false;
 
     if (user) {
       if (score > 0) {
@@ -55,7 +59,8 @@ const update = async interaction => {
     user = await UserModel.findOne({ rocketId: interaction.user }).exec();
   }
 
-  if (user && user.score === 0) {
+  user.pro = handlePro(user) || false;
+  if (user.score === 0) {
     sendToUser(
       `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
 
@@ -468,6 +473,13 @@ export const handleFromNext = async data => {
       user.linkedinId = data.linkedin.uid;
       user.username = data.rocket_chat.username;
       user.uuid = data.uuid;
+
+      if (isEligibleToPro(user)) {
+        user.pro = true;
+      } else if (!isEligibleToPro(user) && user.pro) {
+        user.pro = false;
+      }
+
       return await user.save();
     }
   } catch (err) {
@@ -539,6 +551,16 @@ const isCoreTeam = async obj => {
     });
 };
 
+export const handlePro = user => {
+  if (isEligibleToPro(user) && isEligibleToPro(user) != user.pro) {
+    user.pro = isEligibleToPro(user);
+    runPublisher(user);
+    return isEligibleToPro(user);
+  }
+
+  return null;
+};
+
 export const defaultFunctions = {
   calculateLevel,
   find,
@@ -560,7 +582,8 @@ export const defaultFunctions = {
   handleFromNext,
   valid,
   customUpdate,
-  isCoreTeam
+  isCoreTeam,
+  handlePro
 };
 
 export default defaultFunctions;
