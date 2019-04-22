@@ -397,13 +397,26 @@ export const save = async obj => {
 };
 
 export const commandScore = async message => {
-  const user = await find(message.u._id);
+  let user = {};
+  let myPosition = 0;
+  let response = {
+    text: "Ops! Você ainda não tem pontos registrados."
+  };
+  user = await findBy({ username: message.u.username });
+  myPosition = await rankingPosition(user.rocketId);
 
-  const customResponse = {
-    msg: `você está no nível ${user.level}, com ${user.score} pontos.`
+  response = {
+    text: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${
+      user.score
+    } XP`,
+    attachments: [
+      {
+        text: `Ah, e você está na posição ${myPosition} do ranking`
+      }
+    ]
   };
 
-  await driver.sendDirectToUser(customResponse, message.u.username);
+  await driver.sendDirectToUser(response, message.u.username);
 };
 
 export const handleFromNext = async data => {
