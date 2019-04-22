@@ -1,6 +1,10 @@
 import interaction from "./interaction";
 import interactionModel from "../models/interaction";
-import { saveInteraction, message } from "../mocks/rocket";
+import {
+  saveInteraction,
+  message,
+  responseEngagedSlash
+} from "../mocks/rocket";
 import userController from "./user";
 import config from "config-yml";
 jest.mock("../rocket/api");
@@ -148,6 +152,119 @@ describe("Interaction Controller", () => {
           expect(res.score).toEqual(score);
         });
       });
+    });
+  });
+
+  describe("engaged", () => {
+    it("should return is not core team", async done => {
+      const mockReq = {
+        body: responseEngagedSlash
+      };
+      const mockRes = {
+        json: jest.fn()
+      };
+      const mockResponse = {
+        text:
+          "Você não tem uma armadura de ouro, e não pode entrar nessa casa!",
+        attachments: []
+      };
+      userController.isCoreTeam = jest
+        .fn()
+        .mockReturnValue(new Promise(resolve => resolve(false)));
+      interaction.engaged(mockReq, mockRes).then(() => {
+        expect(mockRes.json).toHaveBeenCalledWith(mockResponse);
+      });
+      done();
+    });
+
+    it("should return wrong invalid dates", async done => {
+      const mockReq = {
+        body: {
+          ...responseEngagedSlash,
+          begin: "10/10/2019",
+          end: "10/10/2019"
+        }
+      };
+      const mockRes = {
+        json: jest.fn()
+      };
+      const mockResponse = {
+        text:
+          "Datas em formatos inválidos por favor use datas com o formato ex: 10-10-2019",
+        attachments: []
+      };
+      userController.isCoreTeam = jest
+        .fn()
+        .mockReturnValue(new Promise(resolve => resolve(true)));
+      interaction.engaged(mockReq, mockRes).then(() => {
+        expect(mockRes.json).toHaveBeenCalledWith(mockResponse);
+      });
+      done();
+    });
+
+    it("should return date begin more than date end", async done => {
+      const mockReq = {
+        body: {
+          ...responseEngagedSlash,
+          begin: "01-02-2019",
+          end: "01-01-2019"
+        }
+      };
+
+      const mockRes = {
+        json: jest.fn()
+      };
+
+      const mockResponse = {
+        text: "Data de ínicio não pode ser maior que data final",
+        attachments: []
+      };
+
+      userController.isCoreTeam = jest
+        .fn()
+        .mockReturnValue(new Promise(resolve => resolve(true)));
+
+      interaction.engaged(mockReq, mockRes).then(() => {
+        expect(mockRes.json).toHaveBeenCalledWith(mockResponse);
+      });
+      done();
+    });
+
+    it("should return a list users engaged", async done => {
+      const mockUsers = [
+        {
+          _id: {
+            _id: 123456,
+            name: "Ikki",
+            rocketId: "H9kcNkWwXF92XxtTF",
+            username: "ikki"
+          },
+          count: 6,
+          date: "2019-04-13T13:00:12.000Z"
+        }
+      ];
+      const mockReq = {
+        body: responseEngagedSlash
+      };
+      const mockRes = {
+        json: jest.fn()
+      };
+      const mockResponse = {
+        text: "Total de 1 usuário engajados",
+        attachments: [
+          { text: "Username: @ikki | Name: Ikki | Qtd. interações: 6" }
+        ]
+      };
+      userController.isCoreTeam = jest
+        .fn()
+        .mockReturnValue(new Promise(resolve => resolve(true)));
+      interaction.mostActives = jest
+        .fn()
+        .mockReturnValue(new Promise(resolve => resolve(mockUsers)));
+      interaction.engaged(mockReq, mockRes).then(() => {
+        expect(mockRes.json).toHaveBeenCalledWith(mockResponse);
+      });
+      done();
     });
   });
   // describe("find", () => {});

@@ -57,7 +57,7 @@ describe("[Models] Achievement", () => {
       });
     });
 
-    it("should be invalid if kind is empty", () => {
+    it("should be invalid if user is empty", () => {
       achievement.user = null;
       achievement.validate(err => {
         expect(err.errors.user).toBeTruthy();

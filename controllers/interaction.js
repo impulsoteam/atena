@@ -14,6 +14,8 @@ import { fromPrivateChannel } from "../utils/rocket";
 import interactionModel from "../models/interaction";
 import api from "../rocket/api";
 import log4js from "log4js";
+import minerController from "./miner";
+import { isValidToken } from "../utils/teams";
 
 /**
  * Some ideias to refactor normalize function:
@@ -207,15 +209,14 @@ export const save = async data => {
         }
         return res;
       })
-      .catch(err => {
-        console.log("error valid interaction", err);
+      .catch(() => {
         valid = false;
       });
   } else {
     interaction = exportFunctions.normalize(data);
   }
 
-  if (valid && interaction.type !== "reaction_added") {
+  if (user && valid && interaction.type !== "reaction_added") {
     const todayScore = await exportFunctions.todayScore(interaction.user);
     const todayLimiteScore = config.xprules.limits.daily;
     const todayLimitStatus = todayLimiteScore - todayScore;
@@ -229,11 +230,9 @@ export const save = async data => {
       await achievementController.save(interaction, user);
       await achievementTemporaryController.save(interaction);
     } else {
-      console.log("já chegou no limite máximo de pontos");
       instance.score = 0;
     }
     analyticsSendCollect(interaction);
-    console.log("final interaction ", interaction, user);
     return instance.save();
   } else {
     return new Promise((resolve, reject) => {
@@ -372,8 +371,7 @@ const dayScore = async interaction => {
       );
       return Promise.resolve(total);
     })
-    .catch(err => {
-      console.log("============== DAY SCORE ERROR ============", err);
+    .catch(() => {
       return Promise.reject(0);
     });
 };
@@ -386,7 +384,6 @@ const normalizeScore = async (req, res) => {
       const data = item;
       data.origin = "slack";
       calculate(data).then(res => {
-        console.log("normalize score then", res);
         if (res) {
           item.score = res;
           item.save();
@@ -401,8 +398,7 @@ const normalizeScore = async (req, res) => {
 };
 
 const aggregateBy = async args => {
-  const InterActionModel = mongoose.model("Interaction");
-  const result = await InterActionModel.aggregate(args).exec();
+  const result = await interactionModel.aggregate(args).exec();
   return result || null;
 };
 
@@ -422,6 +418,48 @@ const byDate = async (year, month) => {
     },
     {
       $sort: { totalScore: -1 }
+    }
+  ]);
+};
+
+const mostActives = async (beginDate, endDate) => {
+  return await aggregateBy([
+    {
+      $lookup: {
+        from: "users",
+        localField: "user",
+        foreignField: "rocketId",
+        as: "userObject"
+      }
+    },
+    {
+      $unwind: "$userObject"
+    },
+    {
+      $match: {
+        date: { $gte: beginDate, $lte: endDate },
+        score: { $gt: 0 }
+      }
+    },
+    {
+      $group: {
+        _id: {
+          _id: "$userObject._id",
+          name: "$userObject.name",
+          rocketId: "$userObject.rocketId",
+          username: "$userObject.username"
+        },
+        count: { $sum: 1 },
+        date: { $first: "$date" }
+      }
+    },
+    {
+      $match: {
+        count: { $gte: 6 }
+      }
+    },
+    {
+      $sort: { count: -1 }
     }
   ]);
 };
@@ -470,6 +508,66 @@ const history = async (req, res) => {
   res.json("success");
 };
 
+const validDate = date => {
+  return moment(date, "DD-MM-YYYY", true).isValid();
+};
+
+const validInterval = (begin, end) => {
+  const momentBegin = moment(begin, "DD-MM-YYYY", true);
+  const momentEnd = moment(end, "DD-MM-YYYY", true);
+  return momentEnd.diff(momentBegin) >= 0;
+};
+
+const engaged = async (req, res) => {
+  const { team, token, begin, end } = req.headers;
+  const isMiner = await minerController.isMiner(req, res);
+  let response = {
+    text: "",
+    attachments: []
+  };
+  const rocketId = req.body.id;
+  const beginDate = isMiner ? begin : req.body.begin;
+  const endDate = isMiner ? end : req.body.end;
+  const isCoreTeam = await userController.isCoreTeam({ rocketId: rocketId });
+  const validDates =
+    exportFunctions.validDate(beginDate) && exportFunctions.validDate(endDate);
+  const validIntervals = validInterval(beginDate, endDate);
+  const validFunctions = validDates && validIntervals;
+  if ((isCoreTeam && validFunctions) || (isMiner && validFunctions)) {
+    const users = await exportFunctions.mostActives(
+      moment(beginDate, "DD-MM-YYYY")
+        .startOf("day")
+        .toDate(),
+      moment(endDate, "DD-MM-YYYY")
+        .endOf("day")
+        .toDate()
+    );
+    response.text = `Total de ${users.length} usuário engajados`;
+    users.forEach(user => {
+      response.attachments.push({
+        text: `Username: @${user._id.username} | Name: ${
+          user._id.name
+        } | Qtd. interações: ${user.count}`
+      });
+    });
+  } else if (isCoreTeam && validDates && !validIntervals) {
+    response.text = "Data de ínicio não pode ser maior que data final";
+  } else if (!validDates && isCoreTeam) {
+    response.text =
+      "Datas em formatos inválidos por favor use datas com o formato ex: 10-10-2019";
+  } else {
+    response.text =
+      "Você não tem uma armadura de ouro, e não pode entrar nessa casa!";
+  }
+
+  if (isMiner && !isValidToken(team, token)) {
+    response.text = "Invalid Token";
+    response.attachments = [];
+  }
+
+  res.json(response);
+};
+
 const exportFunctions = {
   findBy,
   find,
@@ -484,7 +582,11 @@ const exportFunctions = {
   byDate,
   history,
   validInteraction,
-  flood
+  flood,
+  mostActives,
+  engaged,
+  validDate,
+  validInterval
 };
 
 export default exportFunctions;

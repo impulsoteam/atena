@@ -5,8 +5,7 @@ import {
   calculateScore,
   calculateReceivedScore,
   calculateReactions,
-  getUserInfo,
-  isCoreTeam
+  getUserInfo
 } from "../utils";
 import { isEligibleToPro } from "../utils/pro";
 import { sendToUser } from "../rocket/bot";
@@ -62,7 +61,7 @@ const update = async interaction => {
 
   user.pro = handlePro(user) || false;
 
-  if (user.score === 0) {
+  if (user && user.score === 0) {
     sendToUser(
       `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
 
@@ -251,7 +250,7 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
       replies: interaction && interaction.type === "thread" ? 1 : 0,
       reactions: calculateReactions(interaction, 0) || 0,
       lastUpdate: new Date(),
-      isCoreTeam: isCoreTeam(interaction.user) || false
+      isCoreTeam: false
     };
   } else {
     obj = {
@@ -263,7 +262,7 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
       replies: interaction && interaction.type === "thread" ? 1 : 0,
       reactions: calculateReactions(interaction, 0) || 0,
       lastUpdate: new Date(),
-      isCoreTeam: isCoreTeam(interaction.user) || false
+      isCoreTeam: false
     };
   }
 
@@ -277,7 +276,7 @@ const updateUserData = async (user, interaction, score) => {
   const newScore = user.score + score;
   user.level = calculateLevel(newScore);
   user.score = newScore < 0 ? 0 : newScore;
-  user.isCoreTeam = isCoreTeam(interaction.user) || false;
+  user.isCoreTeam = false;
   if (interaction) {
     user.messages =
       interaction.type === "message" ? user.messages + 1 : user.messages;
@@ -473,6 +472,7 @@ export const handleFromNext = async data => {
       user.name = data.fullname;
       user.email = data.network_email;
       user.linkedinId = data.linkedin.uid;
+      user.username = data.rocket_chat.username;
       user.uuid = data.uuid;
 
       if (isEligibleToPro(user)) {
@@ -490,6 +490,7 @@ export const handleFromNext = async data => {
       name: data.fullname,
       email: data.network_email,
       linkedinId: data.linkedin.uid,
+      username: data.rocket_chat.username,
       uuid: data.uuid
     };
     return await save(userData);
@@ -506,10 +507,14 @@ export const valid = async data => {
             rocketId: res._id
           },
           {
-            name: res.name,
-            rocketId: res._id,
-            level: 1,
-            username: res.username
+            $set: {
+              name: res.name,
+              rocketId: res._id,
+              username: res.username
+            },
+            $setOnInsert: {
+              level: 1
+            }
           },
           { upsert: true, setDefaultsOnInsert: true },
           (err, doc) => {
@@ -541,6 +546,20 @@ export const handlePro = user => {
   }
 
   return null;
+}
+
+const isCoreTeam = async obj => {
+  return userModel
+    .findOne(obj)
+    .then((doc, err) => {
+      if (err) {
+        return false;
+      }
+      return doc.isCoreTeam;
+    })
+    .catch(() => {
+      return false;
+    });
 };
 
 export const defaultFunctions = {
@@ -564,7 +583,8 @@ export const defaultFunctions = {
   handleFromNext,
   valid,
   customUpdate,
-  handlePro
+  handlePro,
+  isCoreTeam
 };
 
 export default defaultFunctions;

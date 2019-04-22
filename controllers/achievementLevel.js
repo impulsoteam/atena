@@ -1,9 +1,9 @@
 import config from "config-yml";
 import AchievementLevelModel from "../models/achievementLevel";
 import { setRangesEarnedDates, isNewLevel } from "../utils/achievementsLevel";
-import { getRecord } from "../utils/achievements";
+import { getLevelRecord } from "../utils/achievements";
 
-export const findAll = async () => {
+const findAll = async () => {
   const achievementsLevel = await AchievementLevelModel.find()
     .populate("user")
     .exec();
@@ -11,7 +11,7 @@ export const findAll = async () => {
   return achievementsLevel;
 };
 
-export const findByUser = async userId => {
+const findByUser = async userId => {
   const achievementLevel = await AchievementLevelModel.findOne({
     user: userId
   }).exec();
@@ -19,21 +19,25 @@ export const findByUser = async userId => {
   return achievementLevel;
 };
 
-export const save = async (userId, currentLevel, newLevel) => {
+const save = async (userId, currentLevel, newLevel) => {
   if (!userId) {
     console.log("Error user found on save achievement level");
+    return;
   }
 
   const achievementExistent = await findByUser(userId);
   if (!achievementExistent) {
     try {
-      return await createAchievement(userId, newLevel);
+      return await defaultFunctions.createAchievement(userId, newLevel);
     } catch (error) {
       console.log("Error on create level achievement");
     }
   } else if (isNewLevel(currentLevel, newLevel)) {
     try {
-      return await updateAchievement(achievementExistent, newLevel);
+      return await defaultFunctions.updateAchievement(
+        achievementExistent,
+        newLevel
+      );
     } catch (error) {
       console.log("Error on update level achievement");
     }
@@ -41,14 +45,17 @@ export const save = async (userId, currentLevel, newLevel) => {
 };
 
 const createAchievement = async (userId, newLevel) => {
-  const achievement = await generateNewAchievement(userId, newLevel);
-  achievement.record = getRecord(achievement);
+  const achievement = await defaultFunctions.generateNewAchievement(
+    userId,
+    newLevel
+  );
+  achievement.record = getLevelRecord(achievement);
   return await achievement.save();
 };
 
 const updateAchievement = async (achievementExistent, newLevel) => {
   let achievement = setRangesEarnedDates(achievementExistent, newLevel);
-  achievement.record = getRecord(achievement);
+  achievement.record = getLevelRecord(achievement);
   return await achievement.save();
 };
 
@@ -89,8 +96,13 @@ const generateRanges = ranges => {
   return newRanges;
 };
 
-export default {
+const defaultFunctions = {
   save,
   findByUser,
-  findAll
+  findAll,
+  createAchievement,
+  updateAchievement,
+  generateNewAchievement
 };
+
+export default defaultFunctions;
