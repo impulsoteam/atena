@@ -75,15 +75,18 @@ export const generateAchievementsTemporaryMessages = achievements => {
 export const generateAchievementLevelMessage = achievement => {
   let messages = [];
   const lastRating = getLastAchievementRatingEarned(achievement);
+  const recordRange = achievement.record.range
+    ? ` ${achievement.record.range}`
+    : "";
 
   messages.push({
     text: `*Network | Nível*:
     \n Você é ${lastRating.rating.name} ${lastRating.range.name} com nível ${
       lastRating.range.value
     }.
-    \n :trophy: Seu record é ${achievement.record.name} ${
-      achievement.record.range
-    } com nível ${achievement.record.level}.`
+    \n :trophy: Seu record é ${
+      achievement.record.name
+    }${recordRange} com nível ${achievement.record.level}.`
   });
 
   return messages;
