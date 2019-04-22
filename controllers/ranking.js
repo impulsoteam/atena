@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { driver } from "@rocket.chat/sdk";
 import userController from "./user";
 import interactionController from "./interaction";
-import { calculateLevel } from "../utils";
+import { calculateLevel, getRanking, isCoreTeam } from "../utils";
 import { renderScreen } from "../utils/ssr";
 import { isValidToken } from "../utils/teams";
 import minerController from "./miner";
@@ -27,18 +27,19 @@ const commandIndex = async message => {
 };
 
 const commandGeneral = async message => {
-  const users = await findAll(false, null, 5);
-  const rankingUsers = users.map((x, y) => ({
-    text: `${++y}º lugar está ${x.name} com ${x.score} pontos, no nível ${
-      x.level
-    }`
-  }));
-  const customResponse = {
-    msg: "Veja as primeiras pessoas do ranking geral:",
-    attachments: rankingUsers
+  let response = {};
+  // const user = await userController.findBy({ username: message.u.username });
+  const req = {
+    // TODO
   };
 
-  await driver.sendDirectToUser(customResponse, message.u.username);
+  try {
+    response = await getRanking(req, isCoreTeam(message.u._id));
+  } catch (e) {
+    console.log(e);
+  }
+
+  await driver.sendDirectToUser(response, message.u.username);
 };
 
 const generalIndex = async (user_id, month) => {
