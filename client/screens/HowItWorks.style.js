@@ -51,9 +51,10 @@ const StyledScreenHowItWorks = styled.section`
       content: url("./images/img-bg.svg");
       display: block;
       position: absolute;
-      transform: translateY(-50%) translateX(0%);
       z-index: -1;
       right: 0;
+      right: 0;
+      transform: translateX(60%);
     }
 
     .rules {
