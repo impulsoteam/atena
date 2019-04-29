@@ -15,22 +15,21 @@ const myPosition = async (user_id, users) => {
 
 const commandIndex = async message => {
   let month = new Date(Date.now()).getMonth() + 1;
-  const generalResponse = await exportFunctions.generalIndex(
-    message.u._id,
-    month
-  );
-  const customResponse = {
-    msg: generalResponse.text,
-    attachments: generalResponse.attachments
-  };
-  await driver.sendDirectToUser(customResponse, message.u.username);
+  const generalResponse = await generalIndex(message.u._id, month);
+
+  await driver.sendDirectToUser(generalResponse.text, message.u.username);
 };
 
 const commandGeneral = async message => {
   let response = {};
-  // const user = await userController.findBy({ username: message.u.username });
+
   const req = {
-    // TODO
+    headers: {
+      origin: "rocket"
+    },
+    body: {
+      id: message.u._id
+    }
   };
 
   try {
@@ -39,7 +38,7 @@ const commandGeneral = async message => {
     console.log(e);
   }
 
-  await driver.sendDirectToUser(response, message.u.username);
+  await driver.sendDirectToUser(response.text, message.u.username);
 };
 
 const generalIndex = async (user_id, month) => {
