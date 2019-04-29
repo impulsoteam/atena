@@ -145,8 +145,8 @@ const ScreenHowItWorks = props => {
                 <a href="javascript:;" className="selected">
                   Rocket.Chat
                 </a>
-                <a href="javascript:;">Blog</a>
-                <a href="javascript:;">Open-Source</a>
+                {/* <a href="javascript:;">Blog</a>
+                <a href="javascript:;">Open-Source</a> */}
               </div>
               <div className="rules__table">
                 <p>
