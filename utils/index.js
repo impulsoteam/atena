@@ -5,6 +5,7 @@ import { calculateReceivedScore as calc } from "./calculateReceivedScore";
 import { calculateReactions as calcReactions } from "./calculateReactions";
 import { calculateAchievementsPosition as calcAchievements } from "./calculateAchievementsPosition";
 import userController from "../controllers/user";
+import rocketApi from "../rocket/api";
 import { sendCollect, sendBotCollect } from "./analytics";
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
@@ -129,10 +130,10 @@ export const analyticsSendBotCollect = e => {
   sendBotCollect(e);
 };
 
-export const isCoreTeam = userId => {
-  const allCoreTeam = config.coreteam.members;
+export const isCoreTeam = async userId => {
+  const { roles } = await rocketApi.getUserInfo(userId);
 
-  return !!allCoreTeam.find(member => member === userId);
+  return !!roles.find(role => role === "core-team");
 };
 
 export const getRanking = async (req, isCoreTeamMember) => {
