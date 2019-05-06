@@ -466,7 +466,7 @@ export const handleFromNext = async data => {
           value = config.xprules.team.allocated;
           break;
         default:
-          text = "";
+          text = "Esta é uma interação sem pontos";
           value = 0;
           break;
       }
