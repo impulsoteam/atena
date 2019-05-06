@@ -2,6 +2,8 @@ import moment from "moment-timezone";
 import config from "config-yml";
 
 import { isChatInteraction } from "./interactions";
+import interactionController from "../controllers/interaction";
+import InteractionModel from "../models/interaction";
 
 const today = moment(new Date())
   .utc()
@@ -225,6 +227,20 @@ export const convertToRating = (achievement, rating, range) => {
   };
 };
 
+export const saveScoreInteraction = async (user, achievement, score, text) => {
+  const interactionData = interactionController.normalize({
+    type: "manual",
+    user: user.rocketId,
+    rocketUsername: user.username,
+    score: score,
+    value: achievement._id,
+    text: text
+  });
+
+  const interaction = new InteractionModel(interactionData);
+  await interaction.save();
+};
+
 const defaultFunctions = {
   getCurrentScoreToIncrease,
   getLastAchievementRatingEarned,
@@ -236,7 +252,8 @@ const defaultFunctions = {
   getLevelRecord,
   getRecord,
   newEarnedIsBiggerThenCurrent,
-  convertToRating
+  convertToRating,
+  saveScoreInteraction
 };
 
 export default defaultFunctions;
