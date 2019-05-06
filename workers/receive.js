@@ -12,7 +12,7 @@ const consumer = conn => {
   const on_open = (err, ch) => {
     if (err != null) bail(err);
 
-    ch.assertQueue(queue, { durable: false });
+    ch.assertQueue(queue, { durable: true });
     console.log("[*] Waiting for messages in %s.", queue);
     ch.consume(queue, async msg => {
       if (msg !== null) {
