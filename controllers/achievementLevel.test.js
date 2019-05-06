@@ -6,6 +6,8 @@ import { achievementLevel } from "../mocks/achievements/level";
 import { user } from "../mocks/user";
 
 jest.mock("@rocket.chat/sdk");
+jest.mock("../rocket/api");
+jest.mock("../rocket/bot", () => jest.fn());
 
 describe("Achievement Level Controller", () => {
   afterEach(() => jest.restoreAllMocks());
