@@ -29,10 +29,11 @@ const ScreenRanking = ({
   monthName,
   first_users,
   last_users,
-  error
+  error,
+  ...props
 }) => (
   <StyledScreenRanking>
-    <Layout>
+    <Layout {...props}>
       <FullPage background="url('./images/bg_ranking.png')" height="40" overlay>
         <Flex alignItems="baseline" justifyContent="center" flex="1">
           <Box>
