@@ -11,7 +11,7 @@ const StyledAccordion = styled.div`
       outline: none;
 
       .accordion__link {
-        color: ${props => props.theme.color.secondary};
+        color: ${props => props.theme.color.primary};
 
         i {
           transition: 0.2s all ease-in;
@@ -49,7 +49,7 @@ const StyledAccordion = styled.div`
     padding: 30px 0px;
 
     &:hover {
-      color: ${props => props.theme.color.secondary};
+      color: ${props => props.theme.color.primary};
     }
   }
 `;

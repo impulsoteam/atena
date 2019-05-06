@@ -1,5 +1,6 @@
 import { api } from "@rocket.chat/sdk";
 import { getStyleLog } from "../utils";
+import { getOr } from "lodash/fp";
 
 var loginData;
 const runAPI = async () => {
@@ -15,24 +16,59 @@ const runAPI = async () => {
   }
 };
 
-export const getUserInfo = async userId => {
+const getUserInfo = async userId => {
   try {
     const result = await api.get("users.info", { userId: userId });
-    return result.user;
+    return getOr(false, "user", result);
   } catch (e) {
     console.log(e);
     return false;
   }
 };
 
-export const getUserInfoByUsername = async username => {
+const getUserInfoByUsername = async username => {
   try {
     const result = await api.get("users.info", { username: username });
-    return result.user;
+    return getOr(false, "user", result);
   } catch (e) {
     console.log(e);
     return false;
   }
 };
 
-runAPI();
+const getHistory = async roomId => {
+  try {
+    const result = await api.get("channels.history", {
+      roomId: roomId,
+      count: 8000
+    });
+
+    return result.messages;
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
+};
+
+const getChannels = async () => {
+  try {
+    const result = await api.get("channels.list", { count: 400 });
+    return result.channels;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
+if (process.env.NODE_ENV !== "test") {
+  runAPI();
+}
+
+const exportFunctions = {
+  getUserInfo,
+  getUserInfoByUsername,
+  getHistory,
+  getChannels
+};
+
+export default exportFunctions;

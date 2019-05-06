@@ -47,6 +47,9 @@
     "ROCKET_HOST": {
       "required": true
     },
+    "ROCKETCHAT_URL": {
+      "required": true
+    },
     "SLACK_SIGNIN_EVENTS": {
       "required": true
     },

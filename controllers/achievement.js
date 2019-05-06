@@ -1,6 +1,5 @@
 import config from "config-yml";
 import { driver } from "@rocket.chat/sdk";
-import { _throw } from "../helpers";
 import AchievementModel from "../models/achievement";
 import { isPositiveReaction, isAtenaReaction } from "../utils/reactions";
 import {
@@ -79,21 +78,24 @@ const commandIndex = async message => {
 const findAllByUser = async userId => {
   const result = await AchievementModel.find({ user: userId }).exec();
 
-  return result || _throw("Error finding a specific achievement");
+  return result || console.log("Error finding a specific achievement");
+  // return result || _throw("Error finding a specific achievement");
 };
 
-const save = async interaction => {
+const save = async (interaction, user) => {
   try {
     if (isValidAction(interaction)) {
       const type = getInteractionType(interaction);
-      await saveUserAchievement(type, interaction);
+      await saveUserAchievement(type, interaction, user);
 
       if (interaction.parentUser) {
-        await saveUserAchievement("received", interaction, true);
+        const parentUser = await userController.findByOrigin(interaction, true);
+        await saveUserAchievement("received", interaction, parentUser);
       }
     }
   } catch (error) {
-    _throw("Error saving achievement");
+    console.log("Error achievement ", error);
+    // _throw("Error saving achievement");
   }
 };
 
@@ -127,13 +129,7 @@ const findMain = (category, action, type) => {
   return achievements;
 };
 
-const saveUserAchievement = async (type, interaction, isParent = false) => {
-  const user = await userController.findByOrigin(interaction, isParent);
-
-  if (!user) {
-    _throw("Error no user found to achievement");
-  }
-
+const saveUserAchievement = async (type, interaction, user) => {
   const query = {
     user: user._id,
     kind: `${interaction.category}.${interaction.action}.${type}`
