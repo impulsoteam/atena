@@ -1,4 +1,5 @@
 import config from "config-yml";
+import { driver } from "@rocket.chat/sdk";
 import mongoose from "mongoose";
 import moment from "moment";
 import batch from "batchflow";
@@ -12,11 +13,14 @@ import { _throw, _today } from "../helpers";
 import { isBot } from "../utils/bot";
 import { fromPrivateChannel } from "../utils/rocket";
 import interactionModel from "../models/interaction";
+import channelCheckPointModel from "../models/channelCheckPoint";
+import checkPointModel from "../models/checkpoint";
 import api from "../rocket/api";
 import log4js from "log4js";
 import minerController from "./miner";
 import { isValidToken } from "../utils/teams";
 
+moment.locale("pt-br");
 /**
  * Some ideias to refactor normalize function:
  *
@@ -188,7 +192,10 @@ const validInteraction = async data => {
       return user;
     })
     .catch(err => {
-      return new Promise.reject(err);
+      // return Promise.reject(new Error(err));
+      return new Promise((resolve, reject) => {
+        reject(err);
+      });
     });
 };
 
@@ -234,11 +241,10 @@ export const save = async data => {
     }
     analyticsSendCollect(interaction);
     return instance.save();
-  } else {
-    return new Promise((resolve, reject) => {
-      reject("add new interaction");
-    });
   }
+  return new Promise((resolve, reject) => {
+    reject("add new interaction");
+  });
 };
 
 export const find = async user => {
@@ -422,7 +428,36 @@ const byDate = async (year, month) => {
   ]);
 };
 
-const mostActives = async (beginDate, endDate) => {
+const byChannel = async (beginDate, endDate, channelId) => {
+  return await aggregateBy([
+    {
+      $match: {
+        date: { $gte: beginDate, $lte: endDate },
+        score: { $gte: 0 },
+        channel: { $eq: channelId }
+      }
+    }
+  ]);
+};
+
+const mostActives = async (
+  beginDate,
+  endDate,
+  channel = false,
+  minCount = 6
+) => {
+  let queryMatch = {
+    date: { $gte: beginDate, $lte: endDate },
+    score: { $gte: 0 }
+  };
+
+  if (channel) {
+    queryMatch = {
+      ...queryMatch,
+      channel: { $eq: channel }
+    };
+  }
+
   return await aggregateBy([
     {
       $lookup: {
@@ -436,10 +471,7 @@ const mostActives = async (beginDate, endDate) => {
       $unwind: "$userObject"
     },
     {
-      $match: {
-        date: { $gte: beginDate, $lte: endDate },
-        score: { $gt: 0 }
-      }
+      $match: queryMatch
     },
     {
       $group: {
@@ -447,7 +479,8 @@ const mostActives = async (beginDate, endDate) => {
           _id: "$userObject._id",
           name: "$userObject.name",
           rocketId: "$userObject.rocketId",
-          username: "$userObject.username"
+          username: "$userObject.username",
+          channel: "$channel"
         },
         count: { $sum: 1 },
         date: { $first: "$date" }
@@ -455,7 +488,7 @@ const mostActives = async (beginDate, endDate) => {
     },
     {
       $match: {
-        count: { $gte: 6 }
+        count: { $gte: minCount }
       }
     },
     {
@@ -519,8 +552,14 @@ const validInterval = (begin, end) => {
 };
 
 const engaged = async (req, res) => {
-  const { team, token, begin, end } = req.headers;
+  let team, token, begin, end;
   const isMiner = await minerController.isMiner(req, res);
+  if (isMiner) {
+    team = req.headers.team;
+    token = req.headers.token;
+    begin = req.headers.begin;
+    end = req.headers.end;
+  }
   let response = {
     text: "",
     attachments: []
@@ -544,10 +583,22 @@ const engaged = async (req, res) => {
     );
     response.text = `Total de ${users.length} usuário engajados`;
     users.forEach(user => {
+      let usernameText = null;
+      let nameText = null;
+      let rocketIdText = null;
+      if (user._id.username) {
+        usernameText = `Username: @${user._id.username} |`;
+      }
+      if (user._id.name) {
+        nameText = `Name: ${user._id.name} |`;
+      }
+      if (user._id.rocketId) {
+        rocketIdText = `Rocket ID: ${user._id.rocketId} |`;
+      }
       response.attachments.push({
-        text: `Username: @${user._id.username} | Name: ${
-          user._id.name
-        } | Qtd. interações: ${user.count}`
+        text: `${usernameText} ${nameText} ${rocketIdText} Qtd. interações: ${
+          user.count
+        }`
       });
     });
   } else if (isCoreTeam && validDates && !validIntervals) {
@@ -568,6 +619,126 @@ const engaged = async (req, res) => {
   res.json(response);
 };
 
+const checkpoints = async (type = "week") => {
+  // quarterly
+  const channels = (await api.getChannels()) || [];
+  const today = moment();
+  const beginQuarter = moment()
+    .quarter(moment().quarter())
+    .startOf("quarter");
+  const endQuarter = moment()
+    .quarter(moment().quarter())
+    .endOf("quarter");
+  if (type === "week") {
+    if (today.weekday() === 1) {
+      const lastMonday = today.clone().subtract(7, "days");
+      const lastSunday = today.clone().subtract(1, "day");
+      channels.map(async channel => {
+        const users = await exportFunctions.mostActives(
+          lastMonday.startOf("day").toDate(),
+          lastSunday.endOf("day").toDate(),
+          channel._id
+        );
+
+        if (users.length > 0) {
+          await channelCheckPointModel.findOneAndUpdate(
+            {
+              beginDate: beginQuarter
+            },
+            {
+              $set: {
+                beginDate: beginQuarter,
+                endDate: endQuarter,
+                engagedUsers: users,
+                channel: channel._id
+              }
+            },
+            { upsert: true, setDefaultsOnInsert: true }
+          );
+        }
+      });
+    } else {
+      return Promise.reject(
+        "O checkpoint por semana deve ser feito em uma segunda feira"
+      );
+    }
+  } else {
+    if (today.isSame(beginQuarter)) {
+      // close before quarter
+      const beforeQuarter = today.clone().subtract(1, "quarter");
+      const beginBeforeQuarter = moment()
+        .quarter(beforeQuarter.quarter())
+        .startOf("quarter");
+
+      const endBeforeQuarter = moment()
+        .quarter(beforeQuarter.quarter())
+        .startOf("quarter");
+
+      channels.forEach(async channel => {
+        const { _id, name } = channel;
+        // total de interacoes validas do trimeste
+        const quarterInteractions = await exportFunctions.byChannel(
+          beginBeforeQuarter,
+          endBeforeQuarter,
+          _id
+        );
+
+        const channelCheckPoint = await channelCheckPointModel.findOne({
+          channelId: _id,
+          beginDate: { $eq: beginBeforeQuarter }
+        });
+
+        const checkpoint = await checkPointModel.findOne({
+          totalEngagedUsers: { $gte: channelCheckPoint.engagedUsers.length },
+          xp: { $gte: quarterInteractions.length }
+        });
+
+        channelCheckPoint.totalInteractions = quarterInteractions.length;
+        channelCheckPoint.channel = _id;
+        if (checkpoint) {
+          channelCheckPoint.level = checkpoint.level;
+          channelCheckPoint.status = "winner";
+          channelCheckPoint.minEngagedUsers = checkpoint.totalEngagedUsers;
+          channelCheckPoint.qtdInteractions = checkpoint.xp;
+          let msg = "";
+          if (checkpoint.level === "bronze") {
+            msg = `Residentes de #${name}], hoje chamaram a atenção da tua deusa por todo teu trabalho em conjunto e crescimento! Por isso, a partir de agora recebem o status de Povoado! <br>
+              E como forma de comemorar este feito vocês receberão uma recompensa a altura!`;
+          } else if (checkpoint.level === "prata") {
+            msg = `
+							Povoado de #${name}, muito me alegra ver o quão rápido continuam a crescer e desta forma a alcunha de Povoado precisa ser revogado! A partir de hoje, passam ao status de Aldeia!<br>
+							E para de comemorar tal feito receberão uma recompensa!<Paste>
+            `;
+          } else if (checkpoint.level === "ouro") {
+            msg = `Aldeia de #${name}, vejo o quanto vocês cresceram e que muitos são os que povoam estas terras, desta forma teu status de Aldeia não faz mais juz a teu tamanho! A partir de hoje, passam ao status de Vila!<br>
+            E isto merece uma comemoração! Esta é a recompensa que merecem por sua ascenção!`;
+          } else if (checkpoint.level === "platina") {
+            msg = `Vila de #${name}! Não param de me impressionar! Entre os muitos de meu reino vocês alcançaram uma proporção digna de destaque! A partir de hoje, passam ao status de Cidade!
+              <br>Hoje é dia de festa e toda ela merece uma recompensa!"`;
+          } else if (checkpoint.level === "diamante") {
+            msg = `Cidade de #${name}! Jamais imaginei que chegariam tão longe, tão grande é tua extensão e tantos são os teus que não consigo estimar! Por alcançar tamanha notoriedade a partir de hoje, o status de apena Cidade não é o bastante para ti! E passam ao status de Cidade-Estado!<br>
+Por alcançarem tamanho feito irei conferir a recompensa máxima que um dos meus reinos pode receber!`;
+          }
+          let response = {
+            text: msg,
+            attachments: []
+          };
+
+          response.attachments.push({
+            text: `Recompensas`
+          });
+          checkpoint.rewards.forEach(item => {
+            response.attachments.push({ text: item });
+          });
+          driver.sendToRoomId(response, _id);
+        } else {
+          channelCheckPoint.status = "loser";
+        }
+      });
+    }
+  }
+};
+
 const exportFunctions = {
   findBy,
   find,
@@ -586,7 +757,9 @@ const exportFunctions = {
   mostActives,
   engaged,
   validDate,
-  validInterval
+  validInterval,
+  checkpoints,
+  byChannel
 };
 
 export default exportFunctions;
