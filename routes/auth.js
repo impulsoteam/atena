@@ -20,6 +20,7 @@ passport.deserializeUser(async function(id, done) {
   }
   user = {
     name: user.name,
+    isCoreTeam: user.isCoreTeam,
     avatar
   };
   done(null, user);
@@ -70,14 +71,6 @@ router.get(
     failureRedirect: "/auth/error"
   })
 );
-
-router.get("/myuser", async (req, res) => {
-  let user = await userController.findBy({ rocketId: "H9kcNkWwXF92XxtTF" });
-  user.linkedinId = "hQXxqdaqVD";
-  await user.save();
-
-  res.send("Update user");
-});
 
 router.get("/error", authController.error);
 
