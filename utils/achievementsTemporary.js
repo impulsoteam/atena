@@ -3,7 +3,8 @@ import {
   getInteractionType,
   getRecord,
   getCurrentScoreToIncrease,
-  getAchievementNextRating
+  getAchievementNextRating,
+  saveScoreInteraction
 } from "./achievements";
 import { convertDataToAchievement } from "./achievementsTemporaryData";
 import { sendEarnedAchievementMessage } from "./achievementsMessages";
@@ -48,6 +49,12 @@ const addScore = async (user, temporaryAchievement) => {
   if (score < 1) return;
 
   await userController.updateScore(user, score);
+  await saveScoreInteraction(
+    user,
+    temporaryAchievement,
+    score,
+    "Conquista Temporária"
+  );
   await sendEarnedAchievementMessage(
     user,
     getAchievementNextRating(temporaryAchievement)
@@ -112,13 +119,14 @@ export const resetEarnedAchievements = temporaryAchievement => {
 
 const isInDeadline = temporaryAchievement => {
   if (temporaryAchievement.lastEarnedDate) {
-    const lastEarnedDate = moment(temporaryAchievement.lastEarnedDate);
-    const today = moment(new Date());
+    const lastEarnedDate = moment(temporaryAchievement.lastEarnedDate)
+      .utc()
+      .format();
     const deadlineDate = generateDeadlineDate(
       temporaryAchievement.lastEarnedDate,
       temporaryAchievement.rangeTime
     );
-
+    const today = moment(new Date()).utc();
     return !today.isSame(lastEarnedDate, "day") && today.isBefore(deadlineDate);
   }
 

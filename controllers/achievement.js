@@ -6,7 +6,8 @@ import {
   getInteractionType,
   calculateAchievementScoreToIncrease,
   getAchievementCurrentRating,
-  getAchievementNextRating
+  getAchievementNextRating,
+  saveScoreInteraction
 } from "../utils/achievements";
 import {
   generateAchievementsMessages,
@@ -155,6 +156,12 @@ const addScore = async (user, achievement) => {
 
   if (score > 0) {
     await userController.updateScore(user, score);
+    await saveScoreInteraction(
+      user,
+      achievement,
+      score,
+      "Conquista Permanente"
+    );
     await sendEarnedAchievementMessage(
       user,
       getAchievementNextRating(achievement)

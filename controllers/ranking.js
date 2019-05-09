@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { driver } from "@rocket.chat/sdk";
 import userController from "./user";
 import interactionController from "./interaction";
-import { calculateLevel } from "../utils";
+import { calculateLevel, getRanking, isCoreTeam } from "../utils";
 import { renderScreen } from "../utils/ssr";
 import { isValidToken } from "../utils/teams";
 import minerController from "./miner";
@@ -15,30 +15,30 @@ const myPosition = async (user_id, users) => {
 
 const commandIndex = async message => {
   let month = new Date(Date.now()).getMonth() + 1;
-  const generalResponse = await exportFunctions.generalIndex(
-    message.u._id,
-    month
-  );
-  const customResponse = {
-    msg: generalResponse.text,
-    attachments: generalResponse.attachments
-  };
-  await driver.sendDirectToUser(customResponse, message.u.username);
+  const generalResponse = await generalIndex(message.u._id, month);
+
+  await driver.sendDirectToUser(generalResponse.text, message.u.username);
 };
 
 const commandGeneral = async message => {
-  const users = await findAll(false, null, 5);
-  const rankingUsers = users.map((x, y) => ({
-    text: `${++y}º lugar está ${x.name} com ${x.score} pontos, no nível ${
-      x.level
-    }`
-  }));
-  const customResponse = {
-    msg: "Veja as primeiras pessoas do ranking geral:",
-    attachments: rankingUsers
+  let response = {};
+
+  const req = {
+    headers: {
+      origin: "rocket"
+    },
+    body: {
+      id: message.u._id
+    }
   };
 
-  await driver.sendDirectToUser(customResponse, message.u.username);
+  try {
+    response = await getRanking(req, isCoreTeam(message.u._id));
+  } catch (e) {
+    console.log(e);
+  }
+
+  await driver.sendDirectToUser(response.text, message.u.username);
 };
 
 const generalIndex = async (user_id, month) => {

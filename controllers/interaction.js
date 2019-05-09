@@ -35,7 +35,8 @@ let normalize = data => {
       description: data.text,
       channel: "mundão",
       category: config.categories.network.type,
-      action: "manual"
+      action: "manual",
+      score: data.score || 0
     };
   } else if (data.type === "inactivity") {
     return {
