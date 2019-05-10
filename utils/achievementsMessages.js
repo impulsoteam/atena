@@ -1,11 +1,11 @@
-// import { _throw } from "../helpers";
-import { sendToUser } from "../rocket/bot";
+import { sendMessage, sendToUser } from "../rocket/bot";
 import { calculateAchievementsPosition } from "./calculateAchievementsPosition";
 import { getLastAchievementRatingEarned } from "./achievements";
 
 export const sendEarnedAchievementMessage = async (
   user,
   achievement,
+  channelName,
   showLevel = false
 ) => {
   if (!user) {
@@ -25,14 +25,13 @@ export const sendEarnedAchievementMessage = async (
     achievement.rating
   } ${achievement.range} | ${name[1]}${level}]!`;
 
-  // const publicMessage = `:medal: @${
-  //   rocketUser.username
-  // } obteve a conquista [${achievement.rating} ${achievement.range} | ${
-  //   name[1]
-  // }${level}]!`;
+  const publicMessage = `:medal: @${user.username} obteve a conquista [${
+    achievement.rating
+  } ${achievement.range} | ${name[1]}${level}]!`;
 
   await sendToUser(privateMessage, user.username);
-  // await sendMessage(publicMessage, "impulso-network");
+  // await for channel
+  await sendMessage(publicMessage, channelName);
 };
 
 export const generateAchievementsMessages = achievements => {

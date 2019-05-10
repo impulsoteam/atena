@@ -8,6 +8,7 @@ const normalize = data => {
     origin: "rocket",
     category: config.categories.network.type,
     channel: data.rid,
+    channelName: data.roomName || null,
     date: dateMessage,
     type: exportFunctions.type(data)
   };

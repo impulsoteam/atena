@@ -80,23 +80,25 @@ const findAllByUser = async userId => {
   const result = await AchievementModel.find({ user: userId }).exec();
 
   return result || console.log("Error finding a specific achievement");
-  // return result || _throw("Error finding a specific achievement");
 };
 
 const save = async (interaction, user) => {
   try {
     if (isValidAction(interaction)) {
       const type = getInteractionType(interaction);
-      await saveUserAchievement(type, interaction, user);
+      await exportFunctions.saveUserAchievement(type, interaction, user);
 
       if (interaction.parentUser) {
         const parentUser = await userController.findByOrigin(interaction, true);
-        await saveUserAchievement("received", interaction, parentUser);
+        await exportFunctions.saveUserAchievement(
+          "received",
+          interaction,
+          parentUser
+        );
       }
     }
   } catch (error) {
     console.log("Error achievement ", error);
-    // _throw("Error saving achievement");
   }
 };
 
@@ -140,7 +142,7 @@ const saveUserAchievement = async (type, interaction, user) => {
   if (achievement) {
     achievement.total += 1;
     achievement.ratings = updateRangeEarnedDate(achievement);
-    await addScore(user, achievement);
+    await addScore(user, achievement, interaction.channelName);
     return achievement.save();
   } else {
     achievement = createAchievement(interaction, type, user);
@@ -151,7 +153,7 @@ const saveUserAchievement = async (type, interaction, user) => {
   }
 };
 
-const addScore = async (user, achievement) => {
+const addScore = async (user, achievement, channelName) => {
   const score = calculateAchievementScoreToIncrease(achievement);
 
   if (score > 0) {
@@ -164,7 +166,8 @@ const addScore = async (user, achievement) => {
     );
     await sendEarnedAchievementMessage(
       user,
-      getAchievementNextRating(achievement)
+      getAchievementNextRating(achievement),
+      channelName
     );
   }
 };
@@ -220,17 +223,18 @@ const createAchievement = (interaction, type, user) => {
     }
 
     achievement = addFirstNewEarnedDate(achievement);
-    sendEarnedMessages(user, achievement);
+    sendEarnedMessages(user, achievement, interaction.channelName);
   }
 
   return achievement;
 };
 
-const sendEarnedMessages = async (userId, achievement) => {
+const sendEarnedMessages = async (userId, achievement, channelName) => {
   const user = await userController.findBy({ _id: userId });
   await sendEarnedAchievementMessage(
     user,
-    getAchievementCurrentRating(achievement)
+    getAchievementCurrentRating(achievement),
+    channelName
   );
 };
 
@@ -271,8 +275,11 @@ const addFirstNewEarnedDate = achievement => {
   return achievement;
 };
 
-export default {
+const exportFunctions = {
   findAllByUser,
   save,
-  commandIndex
+  commandIndex,
+  saveUserAchievement
 };
+
+export default exportFunctions;

@@ -47,6 +47,10 @@ const processMessages = async (err, message, messageOptions) => {
     message.origin = "rocket";
     console.log("MESSAGE: ", message, messageOptions);
     if (message.u._id === myuserid || message.t) return;
+    message = {
+      ...message,
+      ...messageOptions
+    };
     interactionController.save(message).catch(() => {
       console.log(
         "Erro ao salvar interação do usuário: id: ",
