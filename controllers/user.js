@@ -16,7 +16,7 @@ import interactionController from "./interaction";
 import { getUserInfo as getRocketUserInfo } from "../rocket/api";
 import api from "../rocket/api";
 import userModel from "../models/user";
-import { runPublisher } from "../workers/publisher"
+import { runPublisher } from "../workers/publisher";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
@@ -559,7 +559,7 @@ export const handlePro = user => {
   }
 
   return null;
-}
+};
 
 const isCoreTeam = async obj => {
   return userModel
