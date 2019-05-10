@@ -6,6 +6,7 @@ import {
 } from "../utils/levels";
 import { isNewLevel } from "../utils/achievementsLevel";
 import achievementLevelController from "../controllers/achievementLevel";
+import { saveScoreInteraction } from "../utils/achievements";
 
 export const userSchema = new mongoose.Schema({
   avatar: {
@@ -103,6 +104,10 @@ export const userSchema = new mongoose.Schema({
   linkedinId: {
     type: String,
     required: false
+  },
+  pro: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -117,7 +122,16 @@ userSchema.pre("save", async function(next) {
     );
 
     const score = getLevelScore(achievement);
-    this.score += score;
+    if (score > 0) {
+      this.score += score;
+      await saveScoreInteraction(
+        this,
+        achievement,
+        score,
+        "Conquista de Nível"
+      );
+    }
+
     await sendLevelMessage(this, achievement);
 
     next();
