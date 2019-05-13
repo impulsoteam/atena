@@ -12,6 +12,8 @@ require("./models/interaction");
 require("./models/user");
 require("./models/achievement");
 require("./models/ranking");
+require("./models/checkpoint");
+require("./models/channelCheckPoint");
 require("./workers/receive");
 
 if (process.env.NODE_ENV !== "test") {

@@ -1,21 +1,35 @@
+import MockDate from "mockdate";
+import { driver } from "@rocket.chat/sdk";
+// import mockingoose from 'mockingoose';
 import interaction from "./interaction";
 import interactionModel from "../models/interaction";
+import channelCheckPointModel from "../models/channelCheckPoint";
 import {
   saveInteraction,
   message,
-  responseEngagedSlash
+  responseEngagedSlash,
+  apiGetChannels
 } from "../mocks/rocket";
+import api from "../rocket/api";
 import userController from "./user";
+import minerController from "./miner";
 import config from "config-yml";
+import achievementController from "./achievement";
+import achievementTemporaryController from "./achievementTemporary";
+
 jest.mock("../rocket/api");
 jest.mock("../rocket/bot", () => jest.fn());
 jest.mock("../utils");
 jest.mock("./user");
 jest.mock("./achievement");
 jest.mock("./achievementTemporary");
+jest.mock("@rocket.chat/sdk");
 
 describe("Interaction Controller", () => {
-  afterEach(() => jest.restoreAllMocks());
+  afterEach(() => {
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+  });
   const mockFullUser = {
     username: "ikki",
     reactions: { positives: 0, negatives: 0, others: 0 },
@@ -33,7 +47,7 @@ describe("Interaction Controller", () => {
   };
 
   describe("todayScore", () => {
-    it("should return score equal 0", async () => {
+    it("should return score equal 0", async done => {
       const mockInteractions = [{ score: 0 }];
       const user = "123456";
       const spy = jest
@@ -42,10 +56,11 @@ describe("Interaction Controller", () => {
       interaction.todayScore(user).then(res => {
         expect(spy).toHaveBeenCalled();
         expect(res).toEqual(0);
+        done();
       });
     });
 
-    it("should return score not equal zero", async () => {
+    it("should return score not equal zero", async done => {
       const mockInteractions = [{ score: 2 }];
       const score = config.xprules.messages.send;
       const user = "123456";
@@ -55,6 +70,7 @@ describe("Interaction Controller", () => {
       interaction.todayScore(user).then(res => {
         expect(spy).toHaveBeenCalled();
         expect(res).toEqual(score);
+        done();
       });
     });
   });
@@ -65,7 +81,7 @@ describe("Interaction Controller", () => {
       date: "2019-03-27T22:32:46.000Z"
     };
 
-    it("should return rocket user", async () => {
+    it("should return rocket user", async done => {
       const data = message;
       interaction.lastMessage = jest
         .fn()
@@ -75,34 +91,50 @@ describe("Interaction Controller", () => {
         .mockReturnValue(new Promise(resolve => resolve(mockFullUser)));
       interaction.validInteraction(data).then(response => {
         expect(response).toEqual(mockFullUser);
+        done();
       });
     });
 
-    it("should return user makes flood", async () => {
+    it("should return user makes flood", async done => {
       const data = message;
-      interaction.lastMessage = jest
-        .fn()
-        .mockReturnValue(Promise.reject("usuario fez flood"));
+      interaction.lastMessage = jest.fn().mockReturnValue(
+        new Promise((resolve, reject) => {
+          reject("usuario fez flood");
+        })
+      );
       userController.valid = jest
         .fn()
         .mockReturnValue(new Promise(resolve => resolve(mockFullUser)));
-      interaction.validInteraction(data).then(response => {
-        expect(response).toEqual("usuario fez flood");
+      interaction.validInteraction(data).catch(err => {
+        expect(err).toEqual("usuario fez flood");
+        done();
       });
     });
   });
 
   describe("save", () => {
     describe("rocket origin", () => {
-      it("should return reject promise when user not in rocket database", async () => {
-        const data = message;
-        data.origin = "rocket";
-        await expect(interaction.save(message)).rejects.toEqual(
-          "add new interaction"
-        );
+      beforeEach(() => {
+        achievementTemporaryController.save = jest
+          .fn()
+          .mockReturnValue(new Promise(resolve => resolve(true)));
+        userController.customUpdate = jest
+          .fn()
+          .mockReturnValue(new Promise(resolve => resolve(true)));
+        interaction.todayScore = jest.fn().mockReturnValue(0);
+        achievementController.save = jest.fn().mockReturnValue(true);
       });
 
-      it("should return successfully when user is on rocket database", async () => {
+      it("should return reject promise when user not in rocket database", async done => {
+        const data = message;
+        data.origin = "rocket";
+        expect(interaction.save(message)).rejects.toEqual(
+          "add new interaction"
+        );
+        done();
+      });
+
+      it("should return successfully when user is on rocket database", async done => {
         const data = message;
         data.origin = "rocket";
         jest
@@ -111,13 +143,13 @@ describe("Interaction Controller", () => {
         interaction.validInteraction = jest
           .fn()
           .mockReturnValue(new Promise(resolve => resolve(mockFullUser)));
-        interaction.todayScore = jest.fn().mockReturnValue(0);
         interaction.save(message).then(response => {
           expect(response).toEqual(saveInteraction);
+          done();
         });
       });
 
-      it("should return interaction whitout update score", async () => {
+      it("should return interaction whitout update score", async done => {
         const data = message;
         const score = 0;
         data.origin = "rocket";
@@ -131,10 +163,11 @@ describe("Interaction Controller", () => {
         interaction.save(data).then(res => {
           expect(spy).toHaveBeenCalled();
           expect(res.score).toEqual(score);
+          done();
         });
       });
 
-      it("should return interaction whith update score", async () => {
+      it("should return interaction whith update score", async done => {
         const data = message;
         const score = config.xprules.messages.send;
         data.origin = "rocket";
@@ -150,6 +183,27 @@ describe("Interaction Controller", () => {
           .mockReturnValue(new Promise(resolve => resolve(mockFullUser)));
         interaction.save(data).then(res => {
           expect(res.score).toEqual(score);
+          done();
+        });
+      });
+
+      it("should return interaction with channel general saved", async done => {
+        const data = message;
+        data.origin = "rocket";
+        const customSaveInteraction = {
+          ...saveInteraction,
+          description: "msg in general",
+          channel: "GENERAL"
+        };
+        jest
+          .spyOn(interactionModel.prototype, "save")
+          .mockImplementationOnce(() => Promise.resolve(customSaveInteraction));
+        interaction.validInteraction = jest
+          .fn()
+          .mockReturnValue(new Promise(resolve => resolve(mockFullUser)));
+        interaction.save(data).then(res => {
+          expect(res.channel).toEqual("GENERAL");
+          done();
         });
       });
     });
@@ -168,6 +222,10 @@ describe("Interaction Controller", () => {
           "Você não tem uma armadura de ouro, e não pode entrar nessa casa!",
         attachments: []
       };
+
+      minerController.isMiner = jest
+        .fn()
+        .mockReturnValue(new Promise(resolve => resolve(false)));
       userController.isCoreTeam = jest
         .fn()
         .mockReturnValue(new Promise(resolve => resolve(false)));
@@ -196,6 +254,10 @@ describe("Interaction Controller", () => {
       userController.isCoreTeam = jest
         .fn()
         .mockReturnValue(new Promise(resolve => resolve(true)));
+
+      minerController.isMiner = jest
+        .fn()
+        .mockReturnValue(new Promise(resolve => resolve(false)));
       interaction.engaged(mockReq, mockRes).then(() => {
         expect(mockRes.json).toHaveBeenCalledWith(mockResponse);
       });
@@ -219,6 +281,10 @@ describe("Interaction Controller", () => {
         text: "Data de ínicio não pode ser maior que data final",
         attachments: []
       };
+
+      minerController.isMiner = jest
+        .fn()
+        .mockReturnValue(new Promise(resolve => resolve(false)));
 
       userController.isCoreTeam = jest
         .fn()
@@ -252,31 +318,109 @@ describe("Interaction Controller", () => {
       const mockResponse = {
         text: "Total de 1 usuário engajados",
         attachments: [
-          { text: "Username: @ikki | Name: Ikki | Qtd. interações: 6" }
+          {
+            text:
+              "Username: @ikki | Name: Ikki | Rocket ID: H9kcNkWwXF92XxtTF | Qtd. interações: 6"
+          }
         ]
       };
+
+      minerController.isMiner = jest
+        .fn()
+        .mockReturnValue(new Promise(resolve => resolve(false)));
       userController.isCoreTeam = jest
         .fn()
         .mockReturnValue(new Promise(resolve => resolve(true)));
       interaction.mostActives = jest
         .fn()
         .mockReturnValue(new Promise(resolve => resolve(mockUsers)));
-      interaction.engaged(mockReq, mockRes).then(() => {
-        expect(mockRes.json).toHaveBeenCalledWith(mockResponse);
-      });
+      interaction
+        .engaged(mockReq, mockRes)
+        .then(() => {
+          expect(mockRes.json).toHaveBeenCalledWith(mockResponse);
+        })
+        .catch(err => {
+          expect(err).toBeNull();
+        });
       done();
     });
   });
-  // describe("find", () => {});
-  // describe("todayScore", () => {});
-  // describe("remove", () => {});
-  // describe("lastMessage", () => {});
-  // describe("manualInteractions", () => {});
-  // describe("findAll", () => {});
-  // describe("findBy", () => {});
-  // describe("calculate", () => {});
-  // describe("dayScore", () => {});
-  // describe("normalizeScore", () => {});
-  // describe("aggregateBy", () => {});
-  // describe("byDate", () => {});
+
+  describe("checkpoints", () => {
+    beforeEach(() => {
+      api.getChannels = jest
+        .fn()
+        .mockReturnValue(
+          new Promise(resolve => resolve(apiGetChannels.channels))
+        );
+    });
+    describe("week", () => {
+      it("should return a reject promise when not called from an monday", async done => {
+        MockDate.set("04-27-2019");
+
+        interaction.checkpoints().catch(err => {
+          expect(err).toEqual(
+            "O checkpoint por semana deve ser feito em uma segunda feira"
+          );
+          MockDate.reset();
+          done();
+        });
+      });
+
+      it("should return a week engaged users to quarterly", async done => {
+        MockDate.set("04-29-2019");
+        const mockUsers = [
+          { id: "1", name: "Fulano" },
+          { id: "2", name: "Ciclano" },
+          { id: "3", name: "Beltrano" }
+        ];
+
+        interaction.mostActives = jest
+          .fn()
+          .mockReturnValue(new Promise(resolve => resolve(mockUsers)));
+        const spy = jest
+          .spyOn(channelCheckPointModel, "findOneAndUpdate")
+          .mockImplementationOnce(() => Promise.resolve({}));
+
+        interaction.checkpoints().then(() => {
+          expect(api.getChannels).toHaveBeenCalled();
+          expect(interaction.mostActives).toHaveBeenCalled();
+          expect(interaction.mostActives).toHaveBeenCalledTimes(4);
+          expect(spy).toHaveBeenCalledTimes(4);
+          expect(spy).toHaveBeenCalled();
+          MockDate.reset();
+          done();
+        });
+      });
+    });
+
+    describe("quarter", () => {
+      it("should close checkpoint on begin of new quarter", async done => {
+        MockDate.set("04-01-2019");
+        let interactions = [];
+        for (let i = 1; i <= 10; i++) {
+          interactions.push({ _id: i, score: 1, channel: "GENERAL" });
+        }
+
+        interaction.byChannel = jest
+          .fn()
+          .mockReturnValue(new Promise(resolve => resolve(interactions)));
+
+        channelCheckPointModel.findOne = jest
+          .fn()
+          .mockResolvedValue({ channel: "GENERAL" });
+        driver.sendToRoomId = jest.fn().mockResolvedValue({});
+
+        interaction.checkpoints("quarter").then(() => {
+          expect(api.getChannels).toHaveBeenCalled();
+          expect(interaction.byChannel).toHaveBeenCalledTimes(4);
+          expect(channelCheckPointModel.findOne).toHaveBeenCalledTimes(4);
+          // expect(spy).toHaveBeenCalledTimes(4);
+          // expect(driver.sendToRoomId).toHaveBeenCalledTimes(4);
+          MockDate.reset();
+          done();
+        });
+      });
+    });
+  });
 });

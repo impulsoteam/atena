@@ -11,6 +11,138 @@ export const apiGetInfoUserByUserId = {
   success: true
 };
 
+export const apiGetChannels = {
+  channels: [
+    {
+      _id: "hJEoEF9Etxa9HaqnY",
+      name: "channel-jose",
+      fname: "channel-jose",
+      t: "c",
+      msgs: 1,
+      usersCount: 2,
+      u: {
+        _id: "7xQoephgRzEGcBaN8",
+        username: "lulu"
+      },
+      customFields: {},
+      ts: "2019-04-03T18:32:31.700Z",
+      ro: false,
+      sysMes: true,
+      default: false,
+      _updatedAt: "2019-04-03T18:41:05.267Z"
+    },
+    {
+      _id: "RbAZGqre7m2bGN8aN",
+      name: "comunicados",
+      fname: "comunicados",
+      t: "c",
+      msgs: 648,
+      usersCount: 5,
+      u: {
+        _id: "2BQ3wWnRBh7vXGYdP",
+        username: "eduardo.junior"
+      },
+      customFields: {},
+      broadcast: false,
+      encrypted: false,
+      ts: "2019-02-03T21:28:25.704Z",
+      ro: false,
+      sysMes: true,
+      default: false,
+      _updatedAt: "2019-04-27T09:00:10.307Z",
+      lm: "2019-02-11T12:29:27.502Z",
+      lastMessage: {
+        msg:
+          ":medal: Ikki de Fênix acabou de conquistar Bronze em Network | Mensagens Enviadas",
+        bot: {
+          i: "js.SDK"
+        },
+        rid: "RbAZGqre7m2bGN8aN",
+        ts: "2019-02-11T12:29:27.502Z",
+        u: {
+          _id: "EbMkCCoJzqrNf9uzK",
+          username: "atena-thais-bot",
+          name: "Atena Thais Bot"
+        },
+        _id: "nHs5WPriCPNKDQhMw",
+        _updatedAt: "2019-02-11T12:29:27.524Z",
+        mentions: [],
+        channels: [],
+        sandstormSessionId: null
+      }
+    },
+    {
+      _id: "GENERAL",
+      ts: "2019-01-22T16:18:11.980Z",
+      t: "c",
+      name: "general",
+      usernames: [],
+      msgs: 1225,
+      usersCount: 45,
+      default: true,
+      _updatedAt: "2019-04-26T14:08:45.246Z",
+      lm: "2019-04-26T14:08:36.604Z",
+      jitsiTimeout: "2019-02-01T15:55:25.913Z",
+      lastMessage: {
+        _id: "4GgqrGYaGMm6HoAyP",
+        rid: "GENERAL",
+        msg: "!meuspontos",
+        ts: "2019-04-26T12:55:57.778Z",
+        u: {
+          _id: "ueofoughzADn6uA3T",
+          username: "emir",
+          name: "emir segundo"
+        },
+        _updatedAt: "2019-04-26T12:55:57.796Z",
+        mentions: [],
+        channels: []
+      },
+      muted: []
+    },
+    {
+      _id: "kqXAv69KbQqBJFsrY",
+      name: "impulso-network",
+      fname: "impulso-network",
+      t: "c",
+      msgs: 770,
+      usersCount: 13,
+      u: {
+        _id: "2GcRwb7Hh4pwTFf8q",
+        username: "thais.martins"
+      },
+      customFields: {},
+      broadcast: false,
+      encrypted: false,
+      ts: "2019-02-11T14:34:55.701Z",
+      ro: false,
+      sysMes: true,
+      default: false,
+      _updatedAt: "2019-04-24T12:53:55.771Z",
+      lm: "2019-04-24T12:53:55.742Z",
+      lastMessage: {
+        _id: "bxaMCsrx3PJcFguq9",
+        rid: "kqXAv69KbQqBJFsrY",
+        msg: "!meuspontos",
+        ts: "2019-04-24T12:53:55.742Z",
+        u: {
+          _id: "ueofoughzADn6uA3T",
+          username: "emir",
+          name: "emir segundo"
+        },
+        _updatedAt: "2019-04-24T12:53:55.758Z",
+        mentions: [],
+        channels: [],
+        sandstormSessionId: null
+      },
+      topic: "teste de topico"
+    }
+  ],
+  count: 9,
+  offset: 1,
+  total: 10,
+  success: true
+};
+
 export const responseOpensourceSlash = {
   id: "2BQ3wWnRBh7vXGYdP",
   username: "ikki",

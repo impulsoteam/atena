@@ -1,8 +1,9 @@
 import moment from "moment-timezone";
-
 import utils from "./achievements";
 import { achievementLevel } from "../mocks/achievements/level";
 import { message } from "../mocks/rocket";
+jest.mock("../rocket/api");
+jest.mock("../rocket/bot", () => jest.fn());
 
 const today = moment(new Date())
   .utc()
