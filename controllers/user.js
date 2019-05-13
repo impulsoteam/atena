@@ -426,14 +426,24 @@ export const commandScore = async message => {
 };
 
 export const handleFromNext = async data => {
-  let user = null;
   try {
-    user = await findBy({ rocketId: data.rocket_chat.id });
+    let user = await findBy({ rocketId: data.rocket_chat.id });
+    if (!user) {
+      const userData = {
+        rocketId: data.rocket_chat.id,
+        name: data.fullname,
+        username: data.rocket_chat.username,
+        uuid: data.uuid
+      };
+
+      user = await save(userData);
+    }
 
     if (!user.linkedin) {
       await interactionController.manualInteractions({
         type: "manual",
-        user: data.rocket_chat.username,
+        user: data.rocket_chat.id,
+        username: data.rocket_chat.username,
         text:
           "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
         value: config.xprules.linkedin
@@ -443,7 +453,8 @@ export const handleFromNext = async data => {
     if (data.referrer) {
       await interactionController.manualInteractions({
         type: "manual",
-        user: data.rocket_chat.username,
+        user: data.rocket_chat.id,
+        username: data.rocket_chat.username,
         text: "você recebeu pontos por indicar a Impulso",
         value: config.xprules.referral
       });
@@ -474,39 +485,29 @@ export const handleFromNext = async data => {
 
       await interactionController.manualInteractions({
         type: "manual",
-        user: data.rocket_chat.username,
+        user: data.rocket_chat.id,
+        username: data.rocket_chat.username,
         text: text,
         value: value
       });
     }
 
-    if (user) {
-      user.rocketId = data.rocket_chat.id;
-      user.name = data.fullname;
-      user.email = data.network_email;
-      user.linkedinId = data.linkedin.uid;
-      user.username = data.rocket_chat.username;
-      user.uuid = data.uuid;
+    user.rocketId = data.rocket_chat.id;
+    user.name = data.fullname;
+    user.email = data.network_email;
+    user.linkedinId = data.linkedin.uid;
+    user.username = data.rocket_chat.username;
+    user.uuid = data.uuid;
 
-      if (isEligibleToPro(user)) {
-        user.pro = true;
-      } else if (!isEligibleToPro(user) && user.pro) {
-        user.pro = false;
-      }
-
-      return await user.save();
+    if (isEligibleToPro(user)) {
+      user.pro = true;
+    } else if (!isEligibleToPro(user) && user.pro) {
+      user.pro = false;
     }
+
+    return await user.save();
   } catch (err) {
     console.error(err);
-    const userData = {
-      rocketId: data.rocket_chat.id,
-      name: data.fullname,
-      email: data.network_email,
-      linkedinId: data.linkedin.uid,
-      username: data.rocket_chat.username,
-      uuid: data.uuid
-    };
-    return await save(userData);
   }
 };
 
