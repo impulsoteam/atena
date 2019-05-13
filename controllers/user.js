@@ -425,78 +425,8 @@ export const commandScore = async message => {
 };
 
 export const handleFromNext = async data => {
-  let user = null;
-  try {
-    user = await findBy({ rocketId: data.rocket_chat.id });
-
-    if (!user.linkedin) {
-      await interactionController.manualInteractions({
-        type: "manual",
-        user: data.rocket_chat.username,
-        text:
-          "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
-        value: config.xprules.linkedin
-      });
-    }
-
-    if (data.referrer) {
-      await interactionController.manualInteractions({
-        type: "manual",
-        user: data.rocket_chat.username,
-        text: "você recebeu pontos por indicar a Impulso",
-        value: config.xprules.referral
-      });
-    }
-
-    if (data.opportunities_feed.length) {
-      let text, value;
-
-      switch (data.opportunities_feed.status) {
-        case "interview":
-          text =
-            "Você recebeu pontos por participar da entrevista de uma oportunidade";
-          value = config.xprules.team.interview;
-          break;
-        case "approved":
-          text = "Você recebeu pontos por ser aprovado para uma oportunidade";
-          value = config.xprules.team.approved;
-          break;
-        case "allocated":
-          text = "Você recebeu pontos por ser alocado em uma oportunidade";
-          value = config.xprules.team.allocated;
-          break;
-        default:
-          text = "Esta é uma interação sem pontos";
-          value = 0;
-          break;
-      }
-
-      await interactionController.manualInteractions({
-        type: "manual",
-        user: data.rocket_chat.username,
-        text: text,
-        value: value
-      });
-    }
-
-    if (user) {
-      user.rocketId = data.rocket_chat.id;
-      user.name = data.fullname;
-      user.email = data.network_email;
-      user.linkedinId = data.linkedin.uid;
-      user.username = data.rocket_chat.username;
-      user.uuid = data.uuid;
-
-      if (isEligibleToPro(user)) {
-        user.pro = true;
-      } else if (!isEligibleToPro(user) && user.pro) {
-        user.pro = false;
-      }
-
-      return await user.save();
-    }
-  } catch (err) {
-    console.error(err);
+  let user = await findBy({ rocketId: data.rocket_chat.id });
+  if (!user) {
     const userData = {
       rocketId: data.rocket_chat.id,
       name: data.fullname,
@@ -506,6 +436,77 @@ export const handleFromNext = async data => {
       uuid: data.uuid
     };
     return await save(userData);
+  } else {
+    try {
+      if (!user.linkedin) {
+        await interactionController.manualInteractions({
+          type: "manual",
+          user: data.rocket_chat.username,
+          text:
+            "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
+          value: config.xprules.linkedin
+        });
+      }
+
+      if (data.referrer) {
+        await interactionController.manualInteractions({
+          type: "manual",
+          user: data.rocket_chat.username,
+          text: "você recebeu pontos por indicar a Impulso",
+          value: config.xprules.referral
+        });
+      }
+
+      if (data.opportunities_feed.length) {
+        let text, value;
+
+        switch (data.opportunities_feed.status) {
+          case "interview":
+            text =
+              "Você recebeu pontos por participar da entrevista de uma oportunidade";
+            value = config.xprules.team.interview;
+            break;
+          case "approved":
+            text = "Você recebeu pontos por ser aprovado para uma oportunidade";
+            value = config.xprules.team.approved;
+            break;
+          case "allocated":
+            text = "Você recebeu pontos por ser alocado em uma oportunidade";
+            value = config.xprules.team.allocated;
+            break;
+          default:
+            text = "Esta é uma interação sem pontos";
+            value = 0;
+            break;
+        }
+
+        await interactionController.manualInteractions({
+          type: "manual",
+          user: data.rocket_chat.username,
+          text: text,
+          value: value
+        });
+      }
+
+      if (user) {
+        user.rocketId = data.rocket_chat.id;
+        user.name = data.fullname;
+        user.email = data.network_email;
+        user.linkedinId = data.linkedin.uid;
+        user.username = data.rocket_chat.username;
+        user.uuid = data.uuid;
+
+        if (isEligibleToPro(user)) {
+          user.pro = true;
+        } else if (!isEligibleToPro(user) && user.pro) {
+          user.pro = false;
+        }
+
+        return await user.save();
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 };
 
