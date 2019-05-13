@@ -406,13 +406,13 @@ export const commandScore = async message => {
   let user = {};
   let myPosition = 0;
   let response = {
-    text: "Ops! Você ainda não tem pontos registrados."
+    msg: "Ops! Você ainda não tem pontos registrados."
   };
   user = await findBy({ username: message.u.username });
   myPosition = await rankingPosition(user.rocketId);
 
   response = {
-    text: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${
+    msg: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${
       user.score
     } XP`,
     attachments: [
