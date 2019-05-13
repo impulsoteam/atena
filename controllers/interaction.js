@@ -29,7 +29,7 @@ let normalize = data => {
       origin: "sistema",
       type: data.type,
       user: data.user,
-      rocketUsername: data.user,
+      rocketUsername: data.username,
       value: data.value,
       thread: false,
       description: data.text,
