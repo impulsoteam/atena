@@ -26,12 +26,9 @@ const publisher = (conn, user) => {
 
 export const runPublisher = user => {
   if (url) {
-    require("amqplib/callback_api").connect(
-      url,
-      (err, conn) => {
-        if (err != null) bail(err);
-        publisher(conn, user);
-      }
-    );
+    require("amqplib/callback_api").connect(url, (err, conn) => {
+      if (err != null) bail(err);
+      publisher(conn, user);
+    });
   }
 };
