@@ -458,36 +458,42 @@ export const valid = async data => {
   return api
     .getUserInfo(data.u._id)
     .then(res => {
-      return userModel
-        .findOneAndUpdate(
-          {
-            rocketId: res._id
-          },
-          {
-            $set: {
-              name: res.name,
-              rocketId: res._id,
-              username: res.username
-            },
-            $setOnInsert: {
-              level: 1
-            }
-          },
-          { upsert: true, setDefaultsOnInsert: true },
-          (err, doc) => {
-            return doc;
-          }
-        )
-        .exec();
+      if (!res) {
+        return Promise.reject("usuário não encontrado na api do rocket");
+      }
+
+      return findAndUpdate(res);
     })
     .then(res => {
       return res;
     })
     .catch(() => {
-      return new Promise((resolve, reject) => {
-        reject("usuário não encontrado na api do rocket");
-      });
+      return Promise.reject("usuário não encontrado na api do rocket");
     });
+};
+
+const findAndUpdate = res => {
+  return userModel
+    .findOneAndUpdate(
+      {
+        rocketId: res._id
+      },
+      {
+        $set: {
+          name: res.name,
+          rocketId: res._id,
+          username: res.username
+        },
+        $setOnInsert: {
+          level: 1
+        }
+      },
+      { upsert: true, setDefaultsOnInsert: true },
+      (err, doc) => {
+        return doc;
+      }
+    )
+    .exec();
 };
 
 export const calculateLevel = score => {
