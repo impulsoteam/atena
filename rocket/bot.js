@@ -23,10 +23,10 @@ const runBot = async () => {
 
 const commands = async message => {
   const regex = {
-    ranking: /!ranking/g,
-    rankingGeral: /!rankinggeral/g,
-    meusPontos: /!meuspontos/g,
-    minhasConquistas: /!minhasconquistas/g
+    ranking: /^!ranking[ 1234567890]*$/g,
+    rankingGeral: /^!rankinggeral$/g,
+    meusPontos: /^!meuspontos$/g,
+    minhasConquistas: /^!minhasconquistas$/g
   };
 
   if (regex.ranking.test(message.msg)) {
