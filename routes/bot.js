@@ -70,11 +70,14 @@ router.post("/general-raking", urlencodedParser, async (req, res) => {
   let response = {};
 
   try {
-    response = await getRanking(req, isCoreTeam(req.body.user_id));
+    const coreTeam = await isCoreTeam(req.body.id);
+    response = await getRanking(req, coreTeam);
     analyticsSendBotCollect(req.body);
   } catch (e) {
     console.log(e);
   }
+
+  response.text = response.msg;
   res.json(response);
 });
 

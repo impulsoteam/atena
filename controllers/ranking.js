@@ -46,12 +46,13 @@ const commandGeneral = async message => {
   };
 
   try {
-    response = await getRanking(req, isCoreTeam(message.u._id));
+    const coreTeam = await isCoreTeam(message.u._id);
+    response = await getRanking(req, coreTeam);
   } catch (e) {
     console.log(e);
   }
 
-  await driver.sendDirectToUser(response.text, message.u.username);
+  await driver.sendDirectToUser(response, message.u.username);
 };
 
 const generalIndex = async (user_id, month) => {
