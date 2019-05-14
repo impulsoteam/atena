@@ -141,6 +141,7 @@ const bot_index = async (req, res) => {
     response.attachments.push({ text: msg_user });
   }
 
+  response.text = response.msg;
   res.json(response);
 };
 
