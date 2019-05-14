@@ -14,10 +14,23 @@ const myPosition = async (user_id, users) => {
 };
 
 const commandIndex = async message => {
-  let month = new Date(Date.now()).getMonth() + 1;
+  let month = getMonthFromMessage(message);
   const generalResponse = await generalIndex(message.u._id, month);
+  await driver.sendDirectToUser(generalResponse, message.u.username);
+};
 
-  await driver.sendDirectToUser(generalResponse.text, message.u.username);
+const getMonthFromMessage = message => {
+  let month = new Date(Date.now()).getMonth() + 1;
+  const monthFromMessage = message.msg.replace(/[^0-9]+/g, "");
+  if (
+    monthFromMessage.length &&
+    monthFromMessage > 0 &&
+    monthFromMessage < 13
+  ) {
+    month = monthFromMessage;
+  }
+
+  return month;
 };
 
 const commandGeneral = async message => {
@@ -43,24 +56,29 @@ const commandGeneral = async message => {
 
 const generalIndex = async (user_id, month) => {
   let response = {
-    text: "Veja as primeiras pessoas do ranking:",
+    msg: "Veja as primeiras pessoas do ranking:",
     attachments: []
   };
   const limit_ranking = 5;
 
   let allUsers = await userController.findAll(false, 0);
   const rankingMonthly = await monthly(month);
-  if (rankingMonthly.text) {
+  if (rankingMonthly.msg) {
     response = rankingMonthly;
-  } else if (!rankingMonthly.text && rankingMonthly.users.length === 0) {
-    response = { text: "Ops! Ainda ninguém pontuou. =/" };
+  } else if (!rankingMonthly.msg && rankingMonthly.users.length === 0) {
+    response = { msg: "Ops! Ainda ninguém pontuou. =/" };
   } else {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking);
-    response.attachments = await limit_users.map((user, index) => ({
-      text: `${index + 1}º lugar está ${
-        allUsers.find(u => u.rocketId === user.user).name
-      } com ${user.score} XP, no nível ${user.level}`
-    }));
+    response.attachments = await limit_users.map((user, index) => {
+      const userAtena = allUsers.find(u => u.rocketId === user.user);
+      if (!userAtena) return false;
+
+      return {
+        text: `${index + 1}º lugar está ${userAtena.name} com ${
+          user.score
+        } XP, no nível ${user.level}`
+      };
+    });
 
     let msg_user;
     const position = await myPosition(user_id, rankingMonthly.users);
@@ -77,7 +95,7 @@ const generalIndex = async (user_id, month) => {
 
 const bot_index = async (req, res) => {
   let response = {
-    text: "Veja as primeiras pessoas do ranking:",
+    msg: "Veja as primeiras pessoas do ranking:",
     attachments: []
   };
   let user_id;
@@ -95,17 +113,22 @@ const bot_index = async (req, res) => {
 
   let allUsers = await userController.findAll(false, 0);
   const rankingMonthly = await monthly(month);
-  if (rankingMonthly.text) {
+  if (rankingMonthly.msg) {
     response = rankingMonthly;
-  } else if (!rankingMonthly.text && rankingMonthly.users.length === 0) {
-    response = { text: "Ops! Ainda ninguém pontuou. =/" };
+  } else if (!rankingMonthly.msg && rankingMonthly.users.length === 0) {
+    response = { msg: "Ops! Ainda ninguém pontuou. =/" };
   } else {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking);
-    response.attachments = await limit_users.map((user, index) => ({
-      text: `${index + 1}º lugar está ${
-        allUsers.find(u => u.rocketId === user.user).name
-      } com ${user.score} XP, no nível ${user.level}`
-    }));
+    response.attachments = await limit_users.map((user, index) => {
+      const userAtena = allUsers.find(u => u.rocketId === user.user);
+      if (!userAtena) return false;
+
+      return {
+        text: `${index + 1}º lugar está ${userAtena.name} com ${
+          user.score
+        } XP, no nível ${user.level}`
+      };
+    });
 
     let msg_user;
     const position = await myPosition(user_id, rankingMonthly.users);
@@ -146,7 +169,7 @@ const monthly = async month => {
   let query_month = today.getMonth();
   if (month) {
     if (!(await valid_month(month)))
-      return { text: "Digite um mês válido Ex: /ranking 1" };
+      return { msg: "Digite um mês válido Ex: /ranking 1" };
     query_month = month - 1;
     query_date = new Date(today.getFullYear(), query_month);
   }
@@ -157,7 +180,7 @@ const monthly = async month => {
   });
   if (!ranking)
     return {
-      text: `Ranking do mês de ${
+      msg: `Ranking do mês de ${
         monthNames[query_month]
       } não gerado ou encontrado`
     };
@@ -248,17 +271,22 @@ const sendToChannel = async () => {
   };
   let allUsers = await userController.findAll(false, 0);
   const rankingMonthly = await monthly(today.getMonth() + 1);
-  if (rankingMonthly.text) {
+  if (rankingMonthly.msg) {
     response = rankingMonthly;
-  } else if (!rankingMonthly.text && rankingMonthly.users.length == 0) {
+  } else if (!rankingMonthly.msg && rankingMonthly.users.length == 0) {
     response = { text: "Ops! Ainda ninguém pontuou. =/" };
   } else {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking);
-    response.attachments = await limit_users.map((user, index) => ({
-      text: `${index + 1}º lugar está ${
-        allUsers.find(u => u.rocketId === user.user).name
-      } com ${user.score} XP, no nível ${user.level}`
-    }));
+    response.attachments = await limit_users.map((user, index) => {
+      const userAtena = allUsers.find(u => u.rocketId === user.user);
+      if (!userAtena) return false;
+
+      return {
+        text: `${index + 1}º lugar está ${userAtena.name} com ${
+          user.score
+        } XP, no nível ${user.level}`
+      };
+    });
   }
 
   await driver.sendToRoom(response, roomname);
@@ -341,11 +369,11 @@ const index = async (req, res) => {
   let last_users = [];
   let error = null;
   const rankingMonthly = await monthly(month);
-  if (!rankingMonthly.text && rankingMonthly.users.length === 0) {
+  if (!rankingMonthly.msg && rankingMonthly.users.length === 0) {
     error = "Ops! Ainda ninguem pontuou. =/";
-  } else if (rankingMonthly.text) {
-    error = rankingMonthly.text;
-  } else if (!rankingMonthly.text && rankingMonthly.users.length < 3) {
+  } else if (rankingMonthly.msg) {
+    error = rankingMonthly.msg;
+  } else if (!rankingMonthly.msg && rankingMonthly.users.length < 3) {
     error = "Ops! Ranking incompleto.";
   } else {
     let users = await group(rankingMonthly.users);
