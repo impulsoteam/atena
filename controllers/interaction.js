@@ -193,10 +193,7 @@ const validInteraction = async data => {
       return user;
     })
     .catch(err => {
-      // return Promise.reject(new Error(err));
-      return new Promise((resolve, reject) => {
-        reject(err);
-      });
+      return Promise.reject(err);
     });
 };
 
@@ -243,9 +240,8 @@ export const save = async data => {
     analyticsSendCollect(interaction);
     return instance.save();
   }
-  return new Promise((resolve, reject) => {
-    reject("add new interaction");
-  });
+
+  return Promise.reject("Error on save interaction");
 };
 
 export const find = async user => {
