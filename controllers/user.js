@@ -25,7 +25,7 @@ const updateParentUser = async interaction => {
   if (userInfo) {
     let user = await findByOrigin(interaction, true);
 
-    user.pro = handlePro(user) || false;
+    user.pro = await handlePro(user);
 
     if (user) {
       if (score > 0) {
@@ -59,7 +59,7 @@ const update = async interaction => {
     user = await UserModel.findOne({ rocketId: interaction.user }).exec();
   }
 
-  user.pro = handlePro(user) || false;
+  user.pro = await handlePro(user);
 
   if (user.score === 0) {
     sendToUser(
@@ -502,14 +502,13 @@ export const calculateLevel = score => {
   return level;
 };
 
-export const handlePro = user => {
-  if (isEligibleToPro(user) && isEligibleToPro(user) != user.pro) {
-    user.pro = isEligibleToPro(user);
+export const handlePro = async user => {
+  const isEligiblePro = await isEligibleToPro(user);
+  if (isEligiblePro != user.pro) {
     runPublisher(user);
-    return isEligibleToPro(user);
   }
 
-  return null;
+  return isEligiblePro;
 };
 
 const isCoreTeam = async obj => {
