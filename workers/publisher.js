@@ -10,7 +10,7 @@ const publisher = (conn, user) => {
   const on_open = (err, ch) => {
     if (err != null) bail(err);
 
-    ch.assertQueue(queue, { durable: false });
+    ch.assertQueue(queue, { durable: true });
     console.log("[*] Waiting for messages in %s.", queue);
     ch.publish(queue, user, res => {
       if (res) {
