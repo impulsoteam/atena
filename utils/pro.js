@@ -1,6 +1,6 @@
 import rocketApi from "../rocket/api";
 
-export const isEligibleToPro = async (user, data) =>
+export const isEligibleToPro = async (user, data = {}) =>
   (data.current_plan && data.current_plan.name) ||
   user.level > 2 ||
   (await hasAllowedRole(user));
