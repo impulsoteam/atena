@@ -61,7 +61,7 @@ const update = async interaction => {
 
   user.pro = handlePro(user) || false;
 
-  if (user && user.score === 0) {
+  if (user.score === 0) {
     sendToUser(
       `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
 
@@ -525,6 +525,7 @@ const isCoreTeam = async obj => {
       return false;
     });
 };
+
 
 export const defaultFunctions = {
   calculateLevel,
