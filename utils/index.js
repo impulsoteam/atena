@@ -5,6 +5,7 @@ import { calculateReceivedScore as calc } from "./calculateReceivedScore";
 import { calculateReactions as calcReactions } from "./calculateReactions";
 import { calculateAchievementsPosition as calcAchievements } from "./calculateAchievementsPosition";
 import userController from "../controllers/user";
+import rocketApi from "../rocket/api";
 import { sendCollect, sendBotCollect } from "./analytics";
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
@@ -79,11 +80,13 @@ export const calculateScore = interaction => {
   } else if (interaction.type === "comment") {
     score = config.xprules.disqus.comment;
   }
+  console.log("===== UTILS CALCULATE SCORE ======", score);
   return score;
 };
 
 export const calculateReceivedScore = calc;
 
+// deprected @todo remove it
 export const calculateLevel = score => {
   const level = config.levelrules.levels_range.findIndex(l => score < l) + 1;
   return level;
@@ -127,31 +130,30 @@ export const analyticsSendBotCollect = e => {
   sendBotCollect(e);
 };
 
-export const isCoreTeam = userId => {
-  const allCoreTeam = config.coreteam.members;
+export const isCoreTeam = async userId => {
+  const { roles } = await rocketApi.getUserInfo(userId);
 
-  return !!allCoreTeam.find(member => member === userId);
+  return !!roles.find(role => role === "core-team");
 };
 
 export const getRanking = async (req, isCoreTeamMember) => {
   let users = [];
   let myPosition = 0;
   let response = {
-    text: "Veja as primeiras pessoas do ranking:",
+    msg: "Veja as primeiras pessoas do ranking:",
     attachments: []
   };
 
   const user_id =
     req.headers.origin === "rocket" ? req.body.id : req.body.user_id;
-  console.log("USER ID ", user_id);
   try {
     users = await userController.findAll(isCoreTeamMember, 5);
     myPosition = await userController.rankingPosition(
       user_id,
       isCoreTeamMember
     );
-    response.text =
-      users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
+    response.msg =
+      users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.msg;
     response.attachments = users.map((user, index) => ({
       text: `${index + 1}º lugar está ${
         user.slackId === user_id

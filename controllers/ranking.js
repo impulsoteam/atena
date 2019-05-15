@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 import { driver } from "@rocket.chat/sdk";
 import userController from "./user";
 import interactionController from "./interaction";
-import { calculateLevel } from "../utils";
+import { calculateLevel, getRanking, isCoreTeam } from "../utils";
 import { renderScreen } from "../utils/ssr";
 import { isValidToken } from "../utils/teams";
+import minerController from "./miner";
 
 const myPosition = async (user_id, users) => {
   const user = await userController.getNetwork(user_id);
@@ -12,55 +13,73 @@ const myPosition = async (user_id, users) => {
   return users.map(e => e.user).indexOf(id) + 1;
 };
 
-/**
- * Devo ter funcoes que montam o response. e me retorna isso.. e a partir disso
- * de acordo com o proposito mando essa resposta
- */
 const commandIndex = async message => {
-  let month = new Date(Date.now()).getMonth() + 1;
+  let month = getMonthFromMessage(message);
   const generalResponse = await generalIndex(message.u._id, month);
-  const customResponse = {
-    msg: generalResponse.text,
-    attachments: generalResponse.attachments
-  };
-  await driver.sendDirectToUser(customResponse, message.u.username);
+  await driver.sendDirectToUser(generalResponse, message.u.username);
+};
+
+const getMonthFromMessage = message => {
+  let month = new Date(Date.now()).getMonth() + 1;
+  const monthFromMessage = message.msg.replace(/[^0-9]+/g, "");
+  if (
+    monthFromMessage.length &&
+    monthFromMessage > 0 &&
+    monthFromMessage < 13
+  ) {
+    month = monthFromMessage;
+  }
+
+  return month;
 };
 
 const commandGeneral = async message => {
-  const users = await findAll(false, null, 5);
-  const rankingUsers = users.map((x, y) => ({
-    text: `${++y}º lugar está ${x.name} com ${x.score} pontos, no nível ${
-      x.level
-    }`
-  }));
-  const customResponse = {
-    msg: "Veja as primeiras pessoas do ranking geral:",
-    attachments: rankingUsers
+  let response = {};
+
+  const req = {
+    headers: {
+      origin: "rocket"
+    },
+    body: {
+      id: message.u._id
+    }
   };
 
-  await driver.sendDirectToUser(customResponse, message.u.username);
+  try {
+    const coreTeam = await isCoreTeam(message.u._id);
+    response = await getRanking(req, coreTeam);
+  } catch (e) {
+    console.log(e);
+  }
+
+  await driver.sendDirectToUser(response, message.u.username);
 };
 
 const generalIndex = async (user_id, month) => {
   let response = {
-    text: "Veja as primeiras pessoas do ranking:",
+    msg: "Veja as primeiras pessoas do ranking:",
     attachments: []
   };
   const limit_ranking = 5;
 
   let allUsers = await userController.findAll(false, 0);
   const rankingMonthly = await monthly(month);
-  if (rankingMonthly.text) {
+  if (rankingMonthly.msg) {
     response = rankingMonthly;
-  } else if (!rankingMonthly.text && rankingMonthly.users.length === 0) {
-    response = { text: "Ops! Ainda ninguém pontuou. =/" };
+  } else if (!rankingMonthly.msg && rankingMonthly.users.length === 0) {
+    response = { msg: "Ops! Ainda ninguém pontuou. =/" };
   } else {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking);
-    response.attachments = await limit_users.map((user, index) => ({
-      text: `${index + 1}º lugar está ${
-        allUsers.find(u => u.rocketId === user.user).name
-      } com ${user.score} XP, no nível ${user.level}`
-    }));
+    response.attachments = await limit_users.map((user, index) => {
+      const userAtena = allUsers.find(u => u.rocketId === user.user);
+      if (!userAtena) return false;
+
+      return {
+        text: `${index + 1}º lugar está ${userAtena.name} com ${
+          user.score
+        } XP, no nível ${user.level}`
+      };
+    });
 
     let msg_user;
     const position = await myPosition(user_id, rankingMonthly.users);
@@ -77,7 +96,7 @@ const generalIndex = async (user_id, month) => {
 
 const bot_index = async (req, res) => {
   let response = {
-    text: "Veja as primeiras pessoas do ranking:",
+    msg: "Veja as primeiras pessoas do ranking:",
     attachments: []
   };
   let user_id;
@@ -95,17 +114,22 @@ const bot_index = async (req, res) => {
 
   let allUsers = await userController.findAll(false, 0);
   const rankingMonthly = await monthly(month);
-  if (rankingMonthly.text) {
+  if (rankingMonthly.msg) {
     response = rankingMonthly;
-  } else if (!rankingMonthly.text && rankingMonthly.users.length === 0) {
-    response = { text: "Ops! Ainda ninguém pontuou. =/" };
+  } else if (!rankingMonthly.msg && rankingMonthly.users.length === 0) {
+    response = { msg: "Ops! Ainda ninguém pontuou. =/" };
   } else {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking);
-    response.attachments = await limit_users.map((user, index) => ({
-      text: `${index + 1}º lugar está ${
-        allUsers.find(u => u.rocketId === user.user).name
-      } com ${user.score} XP, no nível ${user.level}`
-    }));
+    response.attachments = await limit_users.map((user, index) => {
+      const userAtena = allUsers.find(u => u.rocketId === user.user);
+      if (!userAtena) return false;
+
+      return {
+        text: `${index + 1}º lugar está ${userAtena.name} com ${
+          user.score
+        } XP, no nível ${user.level}`
+      };
+    });
 
     let msg_user;
     const position = await myPosition(user_id, rankingMonthly.users);
@@ -117,6 +141,7 @@ const bot_index = async (req, res) => {
     response.attachments.push({ text: msg_user });
   }
 
+  response.text = response.msg;
   res.json(response);
 };
 
@@ -146,7 +171,7 @@ const monthly = async month => {
   let query_month = today.getMonth();
   if (month) {
     if (!(await valid_month(month)))
-      return { text: "Digite um mês válido Ex: /ranking 1" };
+      return { msg: "Digite um mês válido Ex: /ranking 1" };
     query_month = month - 1;
     query_date = new Date(today.getFullYear(), query_month);
   }
@@ -157,7 +182,7 @@ const monthly = async month => {
   });
   if (!ranking)
     return {
-      text: `Ranking do mês de ${
+      msg: `Ranking do mês de ${
         monthNames[query_month]
       } não gerado ou encontrado`
     };
@@ -248,17 +273,22 @@ const sendToChannel = async () => {
   };
   let allUsers = await userController.findAll(false, 0);
   const rankingMonthly = await monthly(today.getMonth() + 1);
-  if (rankingMonthly.text) {
+  if (rankingMonthly.msg) {
     response = rankingMonthly;
-  } else if (!rankingMonthly.text && rankingMonthly.users.length == 0) {
+  } else if (!rankingMonthly.msg && rankingMonthly.users.length == 0) {
     response = { text: "Ops! Ainda ninguém pontuou. =/" };
   } else {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking);
-    response.attachments = await limit_users.map((user, index) => ({
-      text: `${index + 1}º lugar está ${
-        allUsers.find(u => u.rocketId === user.user).name
-      } com ${user.score} XP, no nível ${user.level}`
-    }));
+    response.attachments = await limit_users.map((user, index) => {
+      const userAtena = allUsers.find(u => u.rocketId === user.user);
+      if (!userAtena) return false;
+
+      return {
+        text: `${index + 1}º lugar está ${userAtena.name} com ${
+          user.score
+        } XP, no nível ${user.level}`
+      };
+    });
   }
 
   await driver.sendToRoom(response, roomname);
@@ -325,19 +355,8 @@ const group = async (users, isCoreTeam = false) => {
   return isCoreTeam ? listCoreTeam : listUsers;
 };
 
-const miner = async (req, res) => {
-  const miner = /miner/g;
-  const { team, token } = req.headers;
-  const isMiner = miner.test(req.originalUrl) || false;
-  if ((isMiner && !team) || (isMiner && !isValidToken(team, token))) {
-    res.sendStatus(401);
-    return;
-  }
-  return isMiner;
-};
-
 const index = async (req, res) => {
-  const isMiner = await miner(req, res);
+  const isMiner = await minerController.isMiner(req, res);
   const { team, token } = req.headers;
 
   let month = new Date(Date.now()).getMonth();
@@ -352,11 +371,11 @@ const index = async (req, res) => {
   let last_users = [];
   let error = null;
   const rankingMonthly = await monthly(month);
-  if (!rankingMonthly.text && rankingMonthly.users.length === 0) {
+  if (!rankingMonthly.msg && rankingMonthly.users.length === 0) {
     error = "Ops! Ainda ninguem pontuou. =/";
-  } else if (rankingMonthly.text) {
-    error = rankingMonthly.text;
-  } else if (!rankingMonthly.text && rankingMonthly.users.length < 3) {
+  } else if (rankingMonthly.msg) {
+    error = rankingMonthly.msg;
+  } else if (!rankingMonthly.msg && rankingMonthly.users.length < 3) {
     error = "Ops! Ranking incompleto.";
   } else {
     let users = await group(rankingMonthly.users);
@@ -383,7 +402,7 @@ const index = async (req, res) => {
 };
 
 const general = async (req, res) => {
-  const isMiner = await miner(req, res);
+  const isMiner = await minerController.isMiner(req, res);
   const { team, token } = req.headers;
   let first_users = [];
   let last_users = [];
@@ -413,7 +432,7 @@ const general = async (req, res) => {
   }
 };
 
-export default {
+const exportFunctions = {
   bot_index,
   index,
   monthly,
@@ -424,5 +443,8 @@ export default {
   sendToChannel,
   general,
   commandIndex,
-  commandGeneral
+  commandGeneral,
+  generalIndex
 };
+
+export default exportFunctions;

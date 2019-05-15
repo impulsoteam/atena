@@ -19,7 +19,7 @@ const StyledSocialLinks = styled.ul`
   }
 
   a:hover {
-    color: ${props => props.theme.color.secondary};
+    color: ${props => props.theme.color.primaryHover};
   }
 `;
 

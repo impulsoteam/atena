@@ -1,13 +1,13 @@
 import config from "config-yml";
 import { driver } from "@rocket.chat/sdk";
-import { _throw } from "../helpers";
 import AchievementModel from "../models/achievement";
 import { isPositiveReaction, isAtenaReaction } from "../utils/reactions";
 import {
   getInteractionType,
   calculateAchievementScoreToIncrease,
   getAchievementCurrentRating,
-  getAchievementNextRating
+  getAchievementNextRating,
+  saveScoreInteraction
 } from "../utils/achievements";
 import {
   generateAchievementsMessages,
@@ -20,7 +20,7 @@ import { sendEarnedAchievementMessage } from "../utils/achievementsMessages";
 import userController from "../controllers/user";
 
 const commandIndex = async message => {
-  let response = { text: "Ops! Você ainda não tem conquistas registradas. :(" };
+  let response = { msg: "Ops! Você ainda não tem conquistas registradas. :(" };
 
   try {
     let user = {};
@@ -64,7 +64,7 @@ const commandIndex = async message => {
 
       if (attachments.length) {
         response = {
-          text: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
+          msg: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
           attachments: attachments
         };
       }
@@ -79,21 +79,24 @@ const commandIndex = async message => {
 const findAllByUser = async userId => {
   const result = await AchievementModel.find({ user: userId }).exec();
 
-  return result || _throw("Error finding a specific achievement");
+  return result || console.log("Error finding a specific achievement");
+  // return result || _throw("Error finding a specific achievement");
 };
 
-const save = async interaction => {
+const save = async (interaction, user) => {
   try {
     if (isValidAction(interaction)) {
       const type = getInteractionType(interaction);
-      await saveUserAchievement(type, interaction);
+      await saveUserAchievement(type, interaction, user);
 
       if (interaction.parentUser) {
-        await saveUserAchievement("received", interaction, true);
+        const parentUser = await userController.findByOrigin(interaction, true);
+        await saveUserAchievement("received", interaction, parentUser);
       }
     }
   } catch (error) {
-    _throw("Error saving achievement");
+    console.log("Error achievement ", error);
+    // _throw("Error saving achievement");
   }
 };
 
@@ -127,13 +130,7 @@ const findMain = (category, action, type) => {
   return achievements;
 };
 
-const saveUserAchievement = async (type, interaction, isParent = false) => {
-  const user = await userController.findByOrigin(interaction, isParent);
-
-  if (!user) {
-    _throw("Error no user found to achievement");
-  }
-
+const saveUserAchievement = async (type, interaction, user) => {
   const query = {
     user: user._id,
     kind: `${interaction.category}.${interaction.action}.${type}`
@@ -159,6 +156,12 @@ const addScore = async (user, achievement) => {
 
   if (score > 0) {
     await userController.updateScore(user, score);
+    await saveScoreInteraction(
+      user,
+      achievement,
+      score,
+      "Conquista Permanente"
+    );
     await sendEarnedAchievementMessage(
       user,
       getAchievementNextRating(achievement)

@@ -15,13 +15,17 @@ const StyledApp = createGlobalStyle`
     font-family: "proxima-nova", sans-serif;
     font-size: ${props => props.theme.fontSize.default};
     background-color: ${props => props.theme.color.primary};
-    color: ${props => props.theme.color.white}
+    color: ${props => props.theme.color.white};
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
   .layout {
     display: block;
     min-height: calc(100vh - 320px);
     padding-top: 100px;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
   .container {

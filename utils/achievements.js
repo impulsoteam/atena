@@ -2,6 +2,8 @@ import moment from "moment-timezone";
 import config from "config-yml";
 
 import { isChatInteraction } from "./interactions";
+import interactionController from "../controllers/interaction";
+import InteractionModel from "../models/interaction";
 
 const today = moment(new Date())
   .utc()
@@ -9,7 +11,7 @@ const today = moment(new Date())
 
 export const getCurrentScoreToIncrease = achievement => {
   let score = 0;
-  const last = getLastAchievementRatingEarned(achievement);
+  const last = defaultFunctions.getLastAchievementRatingEarned(achievement);
   const ranges = last.rating.ranges;
   const range = ranges[ranges.length - 1];
 
@@ -54,12 +56,13 @@ export const getAchievementCurrentRating = achievement => {
   if (achievement.ratings.length) {
     for (let rating of achievement.ratings) {
       ranges = rating.ranges.filter(range => range.earnedDate);
-
-      if (ranges.length) {
-        const lastRange = ranges[ranges.length - 1];
-        currentRating = convertToRating(achievement, rating, lastRange);
-        break;
-      }
+      if (!ranges.length) break;
+      const lastRange = ranges[ranges.length - 1];
+      currentRating = defaultFunctions.convertToRating(
+        achievement,
+        rating,
+        lastRange
+      );
     }
   }
 
@@ -75,7 +78,11 @@ export const getAchievementNextRating = achievement => {
       ranges = rating.ranges.filter(range => !range.earnedDate);
 
       if (ranges.length) {
-        nextRating = convertToRating(achievement, rating, ranges[0]);
+        nextRating = defaultFunctions.convertToRating(
+          achievement,
+          rating,
+          ranges[0]
+        );
         break;
       }
     }
@@ -130,6 +137,22 @@ export const calculateAchievementScoreToIncrease = achievement => {
   return scoreToIncrease;
 };
 
+export const getLevelRecord = achievement => {
+  const lastRating = getLastAchievementRatingEarned(achievement);
+  let newRecord = convertToLevelRecord(lastRating, achievement);
+
+  if (
+    !achievement.record ||
+    !achievement.record.name ||
+    !achievement.record.level ||
+    newRecord.level > achievement.record.level
+  ) {
+    return newRecord;
+  }
+
+  return achievement.record;
+};
+
 export const getRecord = achievement => {
   const lastRating = getLastAchievementRatingEarned(achievement);
   let newRecord = convertToRecord(lastRating, achievement);
@@ -145,7 +168,7 @@ export const getRecord = achievement => {
 };
 
 export const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
-  if (!current.name) return true;
+  if (!current || !current.name) return true;
 
   const positionRatings = getPositionRatings();
   let newPosition = positionRatings.findIndex(
@@ -164,12 +187,24 @@ export const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
   }
 };
 
-const convertToRecord = (lastRating, achievement) => {
+export const convertToLevelRecord = (lastRating, achievement) => {
   if (lastRating.rating && lastRating.range) {
     return {
       name: lastRating.rating.name,
       range: lastRating.range.name,
       level: lastRating.range.value,
+      earnedDate: today
+    };
+  }
+
+  return achievement.record;
+};
+
+export const convertToRecord = (lastRating, achievement) => {
+  if (lastRating.rating && lastRating.range) {
+    return {
+      name: lastRating.rating.name,
+      range: lastRating.range.name,
       total: lastRating.range.value,
       earnedDate: today
     };
@@ -178,11 +213,11 @@ const convertToRecord = (lastRating, achievement) => {
   return achievement.record;
 };
 
-const getPositionRatings = () => {
+export const getPositionRatings = () => {
   return Object.keys(config.ratings).map(key => config.ratings[key]);
 };
 
-const convertToRating = (achievement, rating, range) => {
+export const convertToRating = (achievement, rating, range) => {
   return {
     name: achievement.name,
     rating: rating.name,
@@ -191,3 +226,34 @@ const convertToRating = (achievement, rating, range) => {
     total: range.value
   };
 };
+
+export const saveScoreInteraction = async (user, achievement, score, text) => {
+  const interactionData = interactionController.normalize({
+    type: "manual",
+    user: user.rocketId,
+    rocketUsername: user.username,
+    score: score,
+    value: achievement._id,
+    text: text
+  });
+
+  const interaction = new InteractionModel(interactionData);
+  await interaction.save();
+};
+
+const defaultFunctions = {
+  getCurrentScoreToIncrease,
+  getLastAchievementRatingEarned,
+  getScoreToIncrease,
+  getInteractionType,
+  getAchievementCurrentRating,
+  getAchievementNextRating,
+  calculateAchievementScoreToIncrease,
+  getLevelRecord,
+  getRecord,
+  newEarnedIsBiggerThenCurrent,
+  convertToRating,
+  saveScoreInteraction
+};
+
+export default defaultFunctions;

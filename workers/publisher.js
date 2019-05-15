@@ -1,5 +1,3 @@
-import userController from "../controllers/user";
-
 const url = process.env.CLOUDAMQP_URL;
 const queue = process.env.CLOUDMQP_QUEUE;
 
@@ -8,23 +6,17 @@ const bail = err => {
   process.exit(1);
 };
 
-const consumer = conn => {
+const publisher = (conn, user) => {
   const on_open = (err, ch) => {
     if (err != null) bail(err);
 
     ch.assertQueue(queue, { durable: true });
     console.log("[*] Waiting for messages in %s.", queue);
-    ch.consume(queue, async msg => {
-      if (msg !== null) {
-        console.log(msg.content.toString());
-        try {
-          await userController.handleFromNext(
-            JSON.parse(msg.content.toString())
-          );
-        } catch (err) {
-          console.error(err);
-        }
-        ch.ack(msg);
+    ch.publish(queue, user, res => {
+      if (res) {
+        console.log(res.content.toString());
+      } else {
+        console.error("[*] Error sending message", res.toString());
       }
     });
   };
@@ -32,13 +24,11 @@ const consumer = conn => {
   conn.createChannel(on_open);
 };
 
-const run = () => {
+export const runPublisher = user => {
   if (url) {
     require("amqplib/callback_api").connect(url, (err, conn) => {
       if (err != null) bail(err);
-      consumer(conn);
+      publisher(conn, user);
     });
   }
 };
-
-run();

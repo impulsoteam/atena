@@ -5,16 +5,18 @@ import {
   calculateScore,
   calculateReceivedScore,
   calculateReactions,
-  calculateLevel,
-  getUserInfo,
-  isCoreTeam
+  getUserInfo
 } from "../utils";
+import { isEligibleToPro } from "../utils/pro";
 import { sendToUser } from "../rocket/bot";
 import { _throw } from "../helpers";
 import axios from "axios";
 import { isValidToken } from "../utils/teams";
 import interactionController from "./interaction";
 import { getUserInfo as getRocketUserInfo } from "../rocket/api";
+import api from "../rocket/api";
+import userModel from "../models/user";
+import { runPublisher } from "../workers/publisher";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
@@ -22,6 +24,8 @@ const updateParentUser = async interaction => {
 
   if (userInfo) {
     let user = await findByOrigin(interaction, true);
+
+    user.pro = await handlePro(user);
 
     if (user) {
       if (score > 0) {
@@ -55,6 +59,8 @@ const update = async interaction => {
     user = await UserModel.findOne({ rocketId: interaction.user }).exec();
   }
 
+  user.pro = await handlePro(user);
+
   if (user.score === 0) {
     sendToUser(
       `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
@@ -85,6 +91,21 @@ const update = async interaction => {
   } else {
     return await createUserData(userInfo, score, interaction, UserModel);
   }
+};
+
+const customUpdate = async (user, interactionScore, interaction) => {
+  // TODO: Remove argument interaction.
+  // just added because function calculateReactions need that
+  return userModel.findOne({ rocketId: user }).then((doc, err) => {
+    if (err) {
+      console.log("erro ao fazer update no usuario ", user, interactionScore);
+    }
+    const newScore = doc.score + interactionScore;
+    doc.score = newScore;
+    doc.level = calculateLevel(newScore);
+    doc.reactions = calculateReactions(interaction, 0);
+    return doc.save();
+  });
 };
 
 const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
@@ -229,7 +250,7 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
       replies: interaction && interaction.type === "thread" ? 1 : 0,
       reactions: calculateReactions(interaction, 0) || 0,
       lastUpdate: new Date(),
-      isCoreTeam: isCoreTeam(interaction.user) || false
+      isCoreTeam: false
     };
   } else {
     obj = {
@@ -241,7 +262,7 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
       replies: interaction && interaction.type === "thread" ? 1 : 0,
       reactions: calculateReactions(interaction, 0) || 0,
       lastUpdate: new Date(),
-      isCoreTeam: isCoreTeam(interaction.user) || false
+      isCoreTeam: false
     };
   }
 
@@ -255,7 +276,7 @@ const updateUserData = async (user, interaction, score) => {
   const newScore = user.score + score;
   user.level = calculateLevel(newScore);
   user.score = newScore < 0 ? 0 : newScore;
-  user.isCoreTeam = isCoreTeam(interaction.user) || false;
+  user.isCoreTeam = false;
   if (interaction) {
     user.messages =
       interaction.type === "message" ? user.messages + 1 : user.messages;
@@ -377,97 +398,135 @@ const details = async (req, res) => {
 };
 
 export const save = async obj => {
-  const UserModel = mongoose.model("User");
-  const user = new UserModel(obj);
+  const user = userModel(obj);
   return await user.save();
 };
 
 export const commandScore = async message => {
-  const user = await find(message.u._id);
+  let user = {};
+  let myPosition = 0;
+  let response = {
+    msg: "Ops! Você ainda não tem pontos registrados."
+  };
+  user = await findBy({ username: message.u.username });
+  myPosition = await rankingPosition(user.rocketId);
 
-  const customResponse = {
-    msg: `você está no nível ${user.level}, com ${user.score} pontos.`
+  response = {
+    msg: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${
+      user.score
+    } XP`,
+    attachments: [
+      {
+        text: `Ah, e você está na posição ${myPosition} do ranking`
+      }
+    ]
   };
 
-  await driver.sendDirectToUser(customResponse, message.u.username);
+  await driver.sendDirectToUser(response, message.u.username);
 };
 
 export const handleFromNext = async data => {
-  let user = null;
-  const UserModel = mongoose.model("User");
-
   try {
-    user = await findBy({ rocketId: data.rocket_chat.id });
+    let user = await userModel
+      .findOne({ rocketId: data.rocket_chat.id })
+      .exec();
 
-    if (!user.linkedin) {
-      await interactionController.manualInteractions({
-        type: "manual",
-        user: data.rocket_chat.username,
-        text:
-          "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
-        value: config.xprules.linkedin
-      });
+    if (!user) {
+      const userData = {
+        rocketId: data.rocket_chat.id,
+        name: data.fullname,
+        username: data.rocket_chat.username,
+        uuid: data.uuid
+      };
+
+      user = await save(userData);
     }
 
-    if (data.referrer) {
-      await interactionController.manualInteractions({
-        type: "manual",
-        user: data.rocket_chat.username,
-        text: "você recebeu pontos por indicar a Impulso",
-        value: config.xprules.referral
-      });
-    }
-
-    if (data.oppotunities_feed.length) {
-      let text, value;
-
-      switch (data.oppotunities_feed.status) {
-        case "interview":
-          text =
-            "Você recebeu pontos por participar da entrevista de uma oportunidade";
-          value = config.xprules.team.interview;
-          break;
-        case "approved":
-          text = "Você recebeu pontos por ser aprovado para uma oportunidade";
-          value = config.xprules.team.approved;
-          break;
-        case "allocated":
-          text = "Você recebeu pontos por ser alocado em uma oportunidade";
-          value = config.xprules.team.allocated;
-          break;
-        default:
-          text = "";
-          value = 0;
-          break;
-      }
-
-      await interactionController.manualInteractions({
-        type: "manual",
-        user: data.rocket_chat.username,
-        text: text,
-        value: value
-      });
-    }
-
-    const userData = {
-      rocketId: data.rocket_chat.id,
-      name: data.fullname,
-      email: data.network_email,
-      linkedinId: data.linkedin.uid,
-      ...data
-    };
-
-    if (user.length) {
-      return await updateUserData(userData, {}, 0);
-    } else {
-      return await createUserData(userData, 0, {}, UserModel);
-    }
+    user.rocketId = data.rocket_chat.id;
+    user.name = data.fullname;
+    user.email = data.network_email;
+    user.linkedinId = data.linkedin.uid;
+    user.username = data.rocket_chat.username;
+    user.uuid = data.uuid;
+    user.pro = await isEligibleToPro(user, data);
+    return await user.save();
   } catch (err) {
     console.error(err);
   }
 };
 
-export default {
+export const valid = async data => {
+  return api
+    .getUserInfo(data.u._id)
+    .then(res => {
+      if (!res) {
+        return Promise.reject("usuário não encontrado na api do rocket");
+      }
+
+      return findAndUpdate(res);
+    })
+    .then(res => {
+      return res;
+    })
+    .catch(() => {
+      return Promise.reject("usuário não encontrado na api do rocket");
+    });
+};
+
+const findAndUpdate = res => {
+  return userModel
+    .findOneAndUpdate(
+      {
+        rocketId: res._id
+      },
+      {
+        $set: {
+          name: res.name,
+          rocketId: res._id,
+          username: res.username
+        },
+        $setOnInsert: {
+          level: 1
+        }
+      },
+      { upsert: true, setDefaultsOnInsert: true },
+      (err, doc) => {
+        return doc;
+      }
+    )
+    .exec();
+};
+
+export const calculateLevel = score => {
+  const level = config.levelrules.levels_range.findIndex(l => score < l) + 1;
+  return level;
+};
+
+export const handlePro = async user => {
+  const isEligiblePro = await isEligibleToPro(user);
+  if (isEligiblePro != user.pro) {
+    runPublisher(user);
+  }
+
+  return isEligiblePro;
+};
+
+const isCoreTeam = async obj => {
+  return userModel
+    .findOne(obj)
+    .then((doc, err) => {
+      if (err) {
+        return false;
+      }
+      return doc.isCoreTeam;
+    })
+    .catch(() => {
+      return false;
+    });
+};
+
+export const defaultFunctions = {
+  calculateLevel,
   find,
   findAll,
   update,
@@ -484,5 +543,11 @@ export default {
   details,
   save,
   commandScore,
-  handleFromNext
+  handleFromNext,
+  valid,
+  customUpdate,
+  handlePro,
+  isCoreTeam
 };
+
+export default defaultFunctions;
