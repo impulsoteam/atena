@@ -526,7 +526,6 @@ const isCoreTeam = async obj => {
     });
 };
 
-
 export const defaultFunctions = {
   calculateLevel,
   find,
