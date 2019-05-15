@@ -60,6 +60,7 @@ const update = async interaction => {
   }
 
   user.pro = handlePro(user) || false;
+
   if (user.score === 0) {
     sendToUser(
       `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
@@ -501,6 +502,16 @@ export const calculateLevel = score => {
   return level;
 };
 
+export const handlePro = user => {
+  if (isEligibleToPro(user) && isEligibleToPro(user) != user.pro) {
+    user.pro = isEligibleToPro(user);
+    runPublisher(user);
+    return isEligibleToPro(user);
+  }
+
+  return null;
+};
+
 const isCoreTeam = async obj => {
   return userModel
     .findOne(obj)
@@ -515,15 +526,6 @@ const isCoreTeam = async obj => {
     });
 };
 
-export const handlePro = user => {
-  if (isEligibleToPro(user) && isEligibleToPro(user) != user.pro) {
-    user.pro = isEligibleToPro(user);
-    runPublisher(user);
-    return isEligibleToPro(user);
-  }
-
-  return null;
-};
 
 export const defaultFunctions = {
   calculateLevel,
@@ -546,8 +548,8 @@ export const defaultFunctions = {
   handleFromNext,
   valid,
   customUpdate,
-  isCoreTeam,
-  handlePro
+  handlePro,
+  isCoreTeam
 };
 
 export default defaultFunctions;
