@@ -1,3 +1,4 @@
+"use strict";
 import config from "config-yml";
 import mongoose from "mongoose";
 import { driver } from "@rocket.chat/sdk";
