@@ -531,7 +531,16 @@ const isCoreTeam = async obj => {
     });
 };
 
-const pro = async (req, res) => {
+const sendPro = async (username, response, req, res) => {
+  response.text = response.msg;
+  if (res) {
+    res.json(response);
+  } else {
+    driver.sendDirectToUser(response, username);
+  }
+};
+
+const isPro = async (req, res) => {
   let response = {
     msg: "Ops! Você não tem plano pro"
   };
@@ -541,7 +550,8 @@ const pro = async (req, res) => {
   } else {
     username = req.u.username;
   }
-  findBy({ username: username, pro: true })
+  defaultFunctions
+    .findBy({ username: username, pro: true })
     .then(user => {
       response = {
         msg: `Olá ${user.name}, você tem um plano pro`,
@@ -559,13 +569,11 @@ const pro = async (req, res) => {
         ]
       };
     })
-    .finally(() => {
-      response.text = response.msg;
-      if (res) {
-        res.json(response);
-      } else {
-        driver.sendDirectToUser(response, req.u.username);
-      }
+    .catch(() => {
+      return Promise.resolve();
+    })
+    .then(() => {
+      sendPro(username, response, req, res);
     });
 };
 
@@ -592,7 +600,8 @@ export const defaultFunctions = {
   customUpdate,
   handlePro,
   isCoreTeam,
-  pro
+  isPro,
+  sendPro
 };
 
 export default defaultFunctions;

@@ -27,7 +27,7 @@ const commands = async message => {
     rankingGeral: /^!rankinggeral$/g,
     meusPontos: /^!meuspontos$/g,
     minhasConquistas: /^!minhasconquistas$/g,
-    pro: /^!pro$/g
+    isPro: /^!pro$/g
   };
 
   if (regex.meusPontos.test(message.msg)) {
@@ -38,8 +38,8 @@ const commands = async message => {
     await rankingController.commandIndex(message);
   } else if (regex.minhasConquistas.test(message.msg)) {
     await achievementController.commandIndex(message);
-  } else if (regex.pro.test(message.msg)) {
-    await userController.pro(message);
+  } else if (regex.isPro.test(message.msg)) {
+    userController.isPro(message);
   }
 
   return;

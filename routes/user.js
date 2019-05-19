@@ -21,6 +21,6 @@ router.put("/change-teams/:id", async (req, res) => {
 
 router.get("/:id", userController.details);
 
-router.post("/:id/current_plan", userController.pro);
+router.post("/:id/current_plan", userController.isPro);
 
 export default router;
