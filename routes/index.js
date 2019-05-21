@@ -15,6 +15,7 @@ import rdRoutes from "./rdstation";
 import resourcesRoutes from "./resources";
 import achievementsTemporyDataRoutes from "./achievementsTemporyData";
 import minerRoutes from "./miner";
+import blogRoutes from "./blog";
 import { renderScreen } from "../utils/ssr";
 
 const router = express.Router();
@@ -33,6 +34,7 @@ router.use("/integrations/rd", rdRoutes);
 router.use("/miner", minerRoutes);
 router.use("/achievements/temporary/data", achievementsTemporyDataRoutes);
 router.use("/auth", authRoutes);
+router.use("/blog", blogRoutes);
 
 router.get("/", (req, res) =>
   renderScreen(req, res, "HowItWorks", {
