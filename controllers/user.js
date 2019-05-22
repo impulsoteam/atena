@@ -26,8 +26,7 @@ const updateParentUser = async interaction => {
 
   if (userInfo) {
     let user = await findByOrigin(interaction, true);
-
-    user.pro = await handlePro(user);
+    user = await handlePro(user);
 
     if (user) {
       if (score > 0) {
@@ -61,7 +60,7 @@ const update = async interaction => {
     user = await UserModel.findOne({ rocketId: interaction.user }).exec();
   }
 
-  user.pro = await handlePro(user);
+  user = await handlePro(user);
 
   if (user.score === 0) {
     sendToUser(
@@ -98,16 +97,13 @@ const update = async interaction => {
 const customUpdate = async (user, interactionScore, interaction) => {
   // TODO: Remove argument interaction.
   // just added because function calculateReactions need that
-  return userModel.findOne({ rocketId: user }).then((doc, err) => {
-    if (err) {
-      console.log("erro ao fazer update no usuario ", user, interactionScore);
-    }
-    const newScore = doc.score + interactionScore;
-    doc.score = newScore;
-    doc.level = calculateLevel(newScore);
-    doc.reactions = calculateReactions(interaction, 0);
-    return doc.save();
-  });
+  let doc = await userModel.findOne({ rocketId: user });
+  const newScore = doc.score + interactionScore;
+  doc.score = newScore;
+  doc.level = calculateLevel(newScore);
+  doc.reactions = calculateReactions(interaction, 0);
+  doc = await handlePro(doc);
+  return doc.save();
 };
 
 const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
@@ -451,10 +447,12 @@ export const handleFromNext = async data => {
     user.username = data.rocket_chat.username;
     user.uuid = data.uuid;
     user.pro = await isEligibleToPro(user, data);
+
     if (user.pro && data.current_plan.begin_at && data.current_plan.finish_at) {
       user.proBeginAt = data.current_plan.begin_at;
       user.proFinishAt = data.current_plan.finish_at;
     }
+
     return await user.save();
   } catch (err) {
     console.error(err);
@@ -510,11 +508,22 @@ export const calculateLevel = score => {
 
 export const handlePro = async user => {
   const isEligiblePro = await isEligibleToPro(user);
+
+  if (isEligiblePro) {
+    const today = moment(new Date())
+      .utc()
+      .endOf("day");
+    user.proBeginAt = today.format();
+    user.proFinishAt = today.add(5, "years").format();
+  }
+
   if (isEligiblePro != user.pro) {
     runPublisher(user);
   }
 
-  return isEligiblePro;
+  user.pro = isEligiblePro;
+
+  return user;
 };
 
 const isCoreTeam = async obj => {
