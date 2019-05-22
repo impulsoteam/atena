@@ -1,5 +1,5 @@
 limits:
-  daily: 30
+  daily: 60
 messages:
   send: 2
 threads:
