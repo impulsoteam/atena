@@ -20,7 +20,7 @@ import { sendEarnedAchievementMessage } from "../utils/achievementsMessages";
 import userController from "../controllers/user";
 
 const commandIndex = async message => {
-  let response = { text: "Ops! Você ainda não tem conquistas registradas. :(" };
+  let response = { msg: "Ops! Você ainda não tem conquistas registradas. :(" };
 
   try {
     let user = {};
@@ -64,7 +64,7 @@ const commandIndex = async message => {
 
       if (attachments.length) {
         response = {
-          text: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
+          msg: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
           attachments: attachments
         };
       }

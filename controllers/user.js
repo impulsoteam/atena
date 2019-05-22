@@ -1,12 +1,15 @@
+"use strict";
 import config from "config-yml";
 import mongoose from "mongoose";
 import { driver } from "@rocket.chat/sdk";
+import moment from "moment";
 import {
   calculateScore,
   calculateReceivedScore,
   calculateReactions,
   getUserInfo
 } from "../utils";
+import { isEligibleToPro } from "../utils/pro";
 import { sendToUser } from "../rocket/bot";
 import { _throw } from "../helpers";
 import axios from "axios";
@@ -15,6 +18,7 @@ import interactionController from "./interaction";
 import { getUserInfo as getRocketUserInfo } from "../rocket/api";
 import api from "../rocket/api";
 import userModel from "../models/user";
+import { runPublisher } from "../workers/publisher";
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
@@ -22,6 +26,8 @@ const updateParentUser = async interaction => {
 
   if (userInfo) {
     let user = await findByOrigin(interaction, true);
+
+    user.pro = await handlePro(user);
 
     if (user) {
       if (score > 0) {
@@ -55,7 +61,9 @@ const update = async interaction => {
     user = await UserModel.findOne({ rocketId: interaction.user }).exec();
   }
 
-  if (user && user.score === 0) {
+  user.pro = await handlePro(user);
+
+  if (user.score === 0) {
     sendToUser(
       `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
 
@@ -400,13 +408,13 @@ export const commandScore = async message => {
   let user = {};
   let myPosition = 0;
   let response = {
-    text: "Ops! Você ainda não tem pontos registrados."
+    msg: "Ops! Você ainda não tem pontos registrados."
   };
   user = await findBy({ username: message.u.username });
   myPosition = await rankingPosition(user.rocketId);
 
   response = {
-    text: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${
+    msg: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${
       user.score
     } XP`,
     attachments: [
@@ -420,80 +428,36 @@ export const commandScore = async message => {
 };
 
 export const handleFromNext = async data => {
-  let user = null;
   try {
-    user = await findBy({ rocketId: data.rocket_chat.id });
+    let user = await userModel
+      .findOne({ rocketId: data.rocket_chat.id })
+      .exec();
 
-    if (!user.linkedin) {
-      await interactionController.manualInteractions({
-        type: "manual",
-        user: data.rocket_chat.username,
-        text:
-          "você recebeu pontos por dizer no LinkedIn que faz parte da Impulso",
-        value: config.xprules.linkedin
-      });
+    if (!user) {
+      const userData = {
+        rocketId: data.rocket_chat.id,
+        name: data.fullname,
+        username: data.rocket_chat.username,
+        uuid: data.uuid
+      };
+
+      user = await save(userData);
     }
 
-    if (data.referrer) {
-      await interactionController.manualInteractions({
-        type: "manual",
-        user: data.rocket_chat.username,
-        text: "você recebeu pontos por indicar a Impulso",
-        value: config.xprules.referral
-      });
+    user.rocketId = data.rocket_chat.id;
+    user.name = data.fullname;
+    user.email = data.network_email;
+    user.linkedinId = data.linkedin.uid;
+    user.username = data.rocket_chat.username;
+    user.uuid = data.uuid;
+    user.pro = await isEligibleToPro(user, data);
+    if (user.pro && data.current_plan.begin_at && data.current_plan.finish_at) {
+      user.proBeginAt = data.current_plan.begin_at;
+      user.proFinishAt = data.current_plan.finish_at;
     }
-
-    if (data.opportunities_feed.length) {
-      let text, value;
-
-      switch (data.opportunities_feed.status) {
-        case "interview":
-          text =
-            "Você recebeu pontos por participar da entrevista de uma oportunidade";
-          value = config.xprules.team.interview;
-          break;
-        case "approved":
-          text = "Você recebeu pontos por ser aprovado para uma oportunidade";
-          value = config.xprules.team.approved;
-          break;
-        case "allocated":
-          text = "Você recebeu pontos por ser alocado em uma oportunidade";
-          value = config.xprules.team.allocated;
-          break;
-        default:
-          text = "Esta é uma interação sem pontos";
-          value = 0;
-          break;
-      }
-
-      await interactionController.manualInteractions({
-        type: "manual",
-        user: data.rocket_chat.username,
-        text: text,
-        value: value
-      });
-    }
-
-    if (user) {
-      user.rocketId = data.rocket_chat.id;
-      user.name = data.fullname;
-      user.email = data.network_email;
-      user.linkedinId = data.linkedin.uid;
-      user.username = data.rocket_chat.username;
-      user.uuid = data.uuid;
-      return await user.save();
-    }
+    return await user.save();
   } catch (err) {
     console.error(err);
-    const userData = {
-      rocketId: data.rocket_chat.id,
-      name: data.fullname,
-      email: data.network_email,
-      linkedinId: data.linkedin.uid,
-      username: data.rocket_chat.username,
-      uuid: data.uuid
-    };
-    return await save(userData);
   }
 };
 
@@ -501,41 +465,56 @@ export const valid = async data => {
   return api
     .getUserInfo(data.u._id)
     .then(res => {
-      return userModel
-        .findOneAndUpdate(
-          {
-            rocketId: res._id
-          },
-          {
-            $set: {
-              name: res.name,
-              rocketId: res._id,
-              username: res.username
-            },
-            $setOnInsert: {
-              level: 1
-            }
-          },
-          { upsert: true, setDefaultsOnInsert: true },
-          (err, doc) => {
-            return doc;
-          }
-        )
-        .exec();
+      if (!res) {
+        return Promise.reject("usuário não encontrado na api do rocket");
+      }
+
+      return findAndUpdate(res);
     })
     .then(res => {
       return res;
     })
     .catch(() => {
-      return new Promise((resolve, reject) => {
-        reject("usuário não encontrado na api do rocket");
-      });
+      return Promise.reject("usuário não encontrado na api do rocket");
     });
+};
+
+const findAndUpdate = res => {
+  return userModel
+    .findOneAndUpdate(
+      {
+        rocketId: res._id
+      },
+      {
+        $set: {
+          name: res.name,
+          rocketId: res._id,
+          username: res.username
+        },
+        $setOnInsert: {
+          level: 1
+        }
+      },
+      { upsert: true, setDefaultsOnInsert: true },
+      (err, doc) => {
+        return doc;
+      }
+    )
+    .exec();
 };
 
 export const calculateLevel = score => {
   const level = config.levelrules.levels_range.findIndex(l => score < l) + 1;
   return level;
+};
+
+export const handlePro = async user => {
+  const isEligiblePro = await isEligibleToPro(user);
+  if (isEligiblePro != user.pro) {
+    runPublisher(user);
+  }
+
+  return isEligiblePro;
 };
 
 const isCoreTeam = async obj => {
@@ -549,6 +528,52 @@ const isCoreTeam = async obj => {
     })
     .catch(() => {
       return false;
+    });
+};
+
+const sendPro = async (username, response, req, res) => {
+  response.text = response.msg;
+  if (res) {
+    res.json(response);
+  } else {
+    driver.sendDirectToUser(response, username);
+  }
+};
+
+const isPro = async (req, res) => {
+  let response = {
+    msg: "Ops! Você não tem plano pro"
+  };
+  let username;
+  if (res) {
+    username = req.body.username;
+  } else {
+    username = req.u.username;
+  }
+  defaultFunctions
+    .findBy({ username: username, pro: true })
+    .then(user => {
+      response = {
+        msg: `Olá ${user.name}, você tem um plano pro`,
+        attachments: [
+          {
+            text: `Início do Plano: ${moment(user.proBeginAt).format(
+              "DD/MM/YYYY"
+            ) || "Sem data definida"}`
+          },
+          {
+            text: `Fim do Plano: ${moment(user.proFinishAt).format(
+              "DD/MM/YYYY"
+            ) || "Sem data definida"}`
+          }
+        ]
+      };
+    })
+    .catch(() => {
+      return Promise.resolve();
+    })
+    .then(() => {
+      sendPro(username, response, req, res);
     });
 };
 
@@ -573,7 +598,10 @@ export const defaultFunctions = {
   handleFromNext,
   valid,
   customUpdate,
-  isCoreTeam
+  handlePro,
+  isCoreTeam,
+  isPro,
+  sendPro
 };
 
 export default defaultFunctions;

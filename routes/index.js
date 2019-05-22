@@ -1,7 +1,9 @@
 import express from "express";
 import slackRoutes from "./slack";
+
 import rocketRoutes from "./rocket";
 import rankingRoutes from "./ranking";
+import checkpointsRoutes from "./checkpoints";
 import interactionsRoutes from "./interactions";
 import gameRoutes from "./game";
 import userRoutes from "./user";
@@ -19,6 +21,7 @@ const router = express.Router();
 router.use("/slack", slackRoutes);
 router.use("/rocket", rocketRoutes);
 router.use("/ranking", rankingRoutes);
+router.use("/checkpoints", checkpointsRoutes);
 router.use("/interactions", interactionsRoutes);
 router.use("/game", gameRoutes);
 router.use("/user", userRoutes);

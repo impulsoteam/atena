@@ -23,20 +23,23 @@ const runBot = async () => {
 
 const commands = async message => {
   const regex = {
-    ranking: /!ranking/g,
-    rankingGeral: /!rankinggeral/g,
-    meusPontos: /!meuspontos/g,
-    minhasConquistas: /!minhasconquistas/g
+    ranking: /^!ranking[ 1234567890]*$/g,
+    rankingGeral: /^!rankinggeral$/g,
+    meusPontos: /^!meuspontos$/g,
+    minhasConquistas: /^!minhasconquistas$/g,
+    isPro: /^!pro$/g
   };
 
-  if (regex.ranking.test(message.msg)) {
-    await rankingController.commandIndex(message);
-  } else if (regex.meusPontos.test(message.msg)) {
+  if (regex.meusPontos.test(message.msg)) {
     await userController.commandScore(message);
   } else if (regex.rankingGeral.test(message.msg)) {
     await rankingController.commandGeneral(message);
+  } else if (regex.ranking.test(message.msg)) {
+    await rankingController.commandIndex(message);
   } else if (regex.minhasConquistas.test(message.msg)) {
     await achievementController.commandIndex(message);
+  } else if (regex.isPro.test(message.msg)) {
+    userController.isPro(message);
   }
 
   return;
@@ -57,7 +60,9 @@ const processMessages = async (err, message, messageOptions) => {
         new Date(message.ts["$date"]).toLocaleDateString("en-US")
       );
     });
-    await commands(message);
+    if (!message.reactions) {
+      await commands(message);
+    }
   } else {
     console.log(err, messageOptions);
   }

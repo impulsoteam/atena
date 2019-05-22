@@ -70,11 +70,14 @@ router.post("/general-raking", urlencodedParser, async (req, res) => {
   let response = {};
 
   try {
-    response = await getRanking(req, isCoreTeam(req.body.user_id));
+    const coreTeam = await isCoreTeam(req.body.id);
+    response = await getRanking(req, coreTeam);
     analyticsSendBotCollect(req.body);
   } catch (e) {
     console.log(e);
   }
+
+  response.text = response.msg;
   res.json(response);
 });
 
@@ -156,7 +159,7 @@ router.post("/sendpoints", urlencodedParser, async (req, res) => {
 });
 
 router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
-  let response = { text: "Ops! Você ainda não tem conquistas registradas. :(" };
+  let response = { msg: "Ops! Você ainda não tem conquistas registradas. :(" };
 
   try {
     let user = {};
@@ -209,7 +212,7 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
 
       if (attachments.length) {
         response = {
-          text: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
+          msg: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
           attachments: attachments
         };
       }

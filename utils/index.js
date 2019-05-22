@@ -140,21 +140,20 @@ export const getRanking = async (req, isCoreTeamMember) => {
   let users = [];
   let myPosition = 0;
   let response = {
-    text: "Veja as primeiras pessoas do ranking:",
+    msg: "Veja as primeiras pessoas do ranking:",
     attachments: []
   };
 
   const user_id =
     req.headers.origin === "rocket" ? req.body.id : req.body.user_id;
-  console.log("USER ID ", user_id);
   try {
     users = await userController.findAll(isCoreTeamMember, 5);
     myPosition = await userController.rankingPosition(
       user_id,
       isCoreTeamMember
     );
-    response.text =
-      users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.text;
+    response.msg =
+      users.length === 0 ? "Ops! Ainda ninguém pontuou. =/" : response.msg;
     response.attachments = users.map((user, index) => ({
       text: `${index + 1}º lugar está ${
         user.slackId === user_id
