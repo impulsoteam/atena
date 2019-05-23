@@ -3,6 +3,7 @@ import interactionController from "../controllers/interaction";
 import rankingController from "../controllers/ranking";
 import userController from "../controllers/user";
 import achievementController from "../controllers/achievement";
+import * as customCommands from "../components/commands";
 
 var myuserid;
 const runBot = async () => {
@@ -27,7 +28,8 @@ const commands = async message => {
     rankingGeral: /^!rankinggeral$/g,
     meusPontos: /^!meuspontos$/g,
     minhasConquistas: /^!minhasconquistas$/g,
-    isPro: /^!pro$/g
+    isPro: /^!pro$/g,
+    commands: /^!comandos$/g
   };
 
   if (regex.meusPontos.test(message.msg)) {
@@ -40,6 +42,8 @@ const commands = async message => {
     await achievementController.commandIndex(message);
   } else if (regex.isPro.test(message.msg)) {
     userController.isPro(message);
+  } else if (regex.commands.test(message.msg)) {
+    customCommands.show(message);
   }
 
   return;
