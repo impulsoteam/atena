@@ -20,6 +20,10 @@ import api from "../rocket/api";
 import userModel from "../models/user";
 import { runPublisher } from "../workers/publisher";
 
+const today = moment(new Date())
+  .utc()
+  .endOf("day");
+
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction);
   const userInfo = await getRocketUserInfo(interaction.parentUser);
@@ -448,9 +452,16 @@ export const handleFromNext = async data => {
     user.uuid = data.uuid;
     user.pro = await isEligibleToPro(user, data);
 
-    if (user.pro && data.current_plan.begin_at && data.current_plan.finish_at) {
-      user.proBeginAt = data.current_plan.begin_at;
-      user.proFinishAt = data.current_plan.finish_at;
+    if (user.pro) {
+      if (data.current_plan.begin_at && data.current_plan.finish_at) {
+        user.proBeginAt = data.current_plan.begin_at;
+        user.proFinishAt = data.current_plan.finish_at;
+      } else {
+        user.proBeginAt = today.format();
+        user.proFinishAt = today.add(5, "years").format();
+      }
+    } else if (!user.pro && user.proFinishAt) {
+      user.proFinishAt = today.format();
     }
 
     return await user.save();
@@ -508,13 +519,18 @@ export const calculateLevel = score => {
 
 export const handlePro = async user => {
   const isEligiblePro = await isEligibleToPro(user);
-
   if (isEligiblePro) {
-    const today = moment(new Date())
-      .utc()
-      .endOf("day");
-    user.proBeginAt = today.format();
-    user.proFinishAt = today.add(5, "years").format();
+    if (
+      (!user.proBeginAt && !user.proFinishAt) ||
+      (user.proFinishAt && moment(user.proFinishAt).isSameOrBefore(today))
+    ) {
+      user.proBeginAt = today.format();
+      user.proFinishAt = today.add(5, "years").format();
+    }
+  } else {
+    if (user.proBeginAt && user.proFinishAt) {
+      user.proFinishAt = today.format();
+    }
   }
 
   if (isEligiblePro != user.pro) {
