@@ -45,6 +45,8 @@ const commands = async message => {
 const processMessages = async (err, message, messageOptions) => {
   if (!err) {
     message.origin = "rocket";
+    message.roomType = messageOptions.roomType;
+
     console.log("MESSAGE: ", message, messageOptions);
     if (message.u._id === myuserid || message.t) return;
     interactionController.save(message).catch(() => {

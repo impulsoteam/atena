@@ -194,9 +194,10 @@ const validInteraction = async data => {
 };
 
 export const save = async data => {
-  if (isBot(data)) {
-    return;
-  }
+  const isMessageToBot = await api.checkMessage(data);
+
+  if (isBot(data) || isMessageToBot) return;
+
   let valid = true;
   let interaction;
   let user;

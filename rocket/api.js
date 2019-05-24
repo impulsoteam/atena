@@ -59,6 +59,19 @@ const getChannels = async () => {
     return false;
   }
 };
+const checkMessage = async ({ roomType, rid }) => {
+  const bot = "atena";
+
+  if (roomType !== "d") return false;
+
+  try {
+    const { room } = await api.get("rooms.info", { roomId: rid });
+    return room.usernames.includes(bot);
+  } catch (e) {
+    console.log(e, "Verificação de mensagem enviada ao bot falhou");
+    return false;
+  }
+};
 
 if (process.env.NODE_ENV !== "test") {
   runAPI();
@@ -68,7 +81,8 @@ const exportFunctions = {
   getUserInfo,
   getUserInfoByUsername,
   getHistory,
-  getChannels
+  getChannels,
+  checkMessage
 };
 
 export default exportFunctions;
