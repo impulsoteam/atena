@@ -108,6 +108,14 @@ export const userSchema = new mongoose.Schema({
   pro: {
     type: Boolean,
     default: false
+  },
+  proBeginAt: {
+    type: Date,
+    required: false
+  },
+  proFinishAt: {
+    type: Date,
+    required: false
   }
 });
 

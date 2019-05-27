@@ -1,23 +1,23 @@
 limits:
-  daily: 30
+  daily: 60
 messages:
-  send: 2
+  send: 3
 threads:
   send: 2
   receive: 1
 reactions:
   atena: 0.1
-  send: 1
+  send: 2
   receive:
-    positive: 2
+    positive: 3
     negative: -1
 github:
   issue: 1
-  review: 1
-  pull_request: 1
-  merged_pull_request: 3
+  review: 3
+  pull_request: 5
+  merged_pull_request: 9
 disqus:
-  comment: 2
+  comment: 5
 inactive:
   mindays: 8
   value: -2

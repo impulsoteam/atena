@@ -1,6 +1,8 @@
+"use strict";
 import config from "config-yml";
 import mongoose from "mongoose";
 import { driver } from "@rocket.chat/sdk";
+import moment from "moment";
 import {
   calculateScore,
   calculateReceivedScore,
@@ -449,6 +451,10 @@ export const handleFromNext = async data => {
     user.username = data.rocket_chat.username;
     user.uuid = data.uuid;
     user.pro = await isEligibleToPro(user, data);
+    if (user.pro && data.current_plan.begin_at && data.current_plan.finish_at) {
+      user.proBeginAt = data.current_plan.begin_at;
+      user.proFinishAt = data.current_plan.finish_at;
+    }
     return await user.save();
   } catch (err) {
     console.error(err);
@@ -525,6 +531,52 @@ const isCoreTeam = async obj => {
     });
 };
 
+const sendPro = async (username, response, req, res) => {
+  response.text = response.msg;
+  if (res) {
+    res.json(response);
+  } else {
+    driver.sendDirectToUser(response, username);
+  }
+};
+
+const isPro = async (req, res) => {
+  let response = {
+    msg: "Ops! Você não tem plano pro"
+  };
+  let username;
+  if (res) {
+    username = req.body.username;
+  } else {
+    username = req.u.username;
+  }
+  defaultFunctions
+    .findBy({ username: username, pro: true })
+    .then(user => {
+      response = {
+        msg: `Olá ${user.name}, você tem um plano pro`,
+        attachments: [
+          {
+            text: `Início do Plano: ${moment(user.proBeginAt).format(
+              "DD/MM/YYYY"
+            ) || "Sem data definida"}`
+          },
+          {
+            text: `Fim do Plano: ${moment(user.proFinishAt).format(
+              "DD/MM/YYYY"
+            ) || "Sem data definida"}`
+          }
+        ]
+      };
+    })
+    .catch(() => {
+      return Promise.resolve();
+    })
+    .then(() => {
+      sendPro(username, response, req, res);
+    });
+};
+
 export const defaultFunctions = {
   calculateLevel,
   find,
@@ -547,7 +599,9 @@ export const defaultFunctions = {
   valid,
   customUpdate,
   handlePro,
-  isCoreTeam
+  isCoreTeam,
+  isPro,
+  sendPro
 };
 
 export default defaultFunctions;
