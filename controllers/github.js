@@ -103,19 +103,28 @@ const callback = async (req, res) => {
   renderScreen(req, res, "Github", inititalData);
 };
 
+const getType = data => {
+  let type = null;
+  if (data.issue) type = "issue";
+  if (data.review) type = "review";
+  if (data.pull_request && data.action === "opened") type = "pull_request";
+  if (data.pull_request && data.action === "closed")
+    type = "merged_pull_request";
+  return type;
+};
+
+const getId = data => {
+  return data.pull_request && data.pull_request.merged
+    ? data.pull_request.user.id
+    : data.sender.id;
+};
+
 const events = async (req, res) => {
   let data = req.body;
   let user = {};
   data.origin = "github";
-  if (data.issue) data.type = "issue";
-  if (data.review) data.type = "review";
-  if (data.pull_request && data.action === "opened") data.type = "pull_request";
-  if (data.pull_request && data.action === "closed")
-    data.type = "merged_pull_request";
-  const githubId =
-    data.pull_request && data.pull_request.merged
-      ? data.pull_request.user.id
-      : data.sender.id;
+  data.type = getType(data);
+  const githubId = getId(data);
   try {
     user = await userController.findByGithub({ githubId: githubId });
   } catch (e) {
@@ -140,6 +149,8 @@ const events = async (req, res) => {
       ) {
         valid = true;
       }
+      data.origin = "github";
+      // save
       if (valid) interactionController.save(data);
     } else {
       console.log(getStyleLog("yellow"), `\n-- event an type invalid`);
