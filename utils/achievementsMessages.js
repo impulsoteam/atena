@@ -6,7 +6,7 @@ import { getLastAchievementRatingEarned } from "./achievements";
 export const sendEarnedAchievementMessage = async (
   user,
   achievement,
-  showLevel = false
+  isAchievementLevel = false
 ) => {
   if (!user) {
     console.log("Error no user pass to send earned achievement messages");
@@ -17,19 +17,22 @@ export const sendEarnedAchievementMessage = async (
       "Error no achievement pass to send earned achievement messages"
     );
   }
-
   const name = achievement.name.split(" | ");
-  const level = showLevel ? ` ${user.level}` : "";
 
-  const privateMessage = `:medal: Você obteve a conquista [${
+  let privateMessage = `:medal: Você obteve a conquista [${
     achievement.rating
-  } ${achievement.range} | ${name[1]}${level}]!`;
+  } ${achievement.range} | ${name[1]}]!`;
 
-  // const publicMessage = `:medal: @${
-  //   rocketUser.username
-  // } obteve a conquista [${achievement.rating} ${achievement.range} | ${
-  //   name[1]
-  // }${level}]!`;
+  // let publicMessage = `:medal: @${rocketUser.username} obteve a conquista [${
+  //   achievement.rating
+  // } ${achievement.range} | ${name[1]}]!`;
+
+  if (isAchievementLevel) {
+    privateMessage = `:medal: Você obteve o *Nível ${user.level}*!`;
+    // publicMessage = `:medal: @${rocketUser.username} obteve o *Nível ${
+    //   user.level
+    // }*!`;
+  }
 
   await sendToUser(privateMessage, user.username);
   // await sendMessage(publicMessage, "impulso-network");
