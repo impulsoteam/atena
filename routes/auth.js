@@ -32,7 +32,7 @@ passport.use(
       clientID: process.env.LINKEDIN_KEY,
       clientSecret: process.env.LINKEDIN_SECRET,
       callbackURL: process.env.LINKEDIN_URL_CALLBACK,
-      scope: ["r_emailaddress", "r_basicprofile"]
+      scope: ["r_liteprofile", "r_emailaddress", "w_member_social"]
     },
     function(accessToken, refreshToken, profile, done) {
       process.nextTick(async function() {
