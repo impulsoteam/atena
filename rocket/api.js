@@ -62,11 +62,12 @@ const getChannels = async () => {
 const checkMessage = async ({ roomType, rid }) => {
   const bot = "atena";
 
-  if (roomType !== "d") return false;
+  if (roomType !== "p") return false;
 
   try {
     const { room } = await api.get("rooms.info", { roomId: rid });
-    return room.usernames.includes(bot);
+    const result = getOr(false, "usernames", room);
+    return result ? result.includes(bot) : false;
   } catch (e) {
     console.log(e, "Verificação de mensagem enviada ao bot falhou");
     return false;
