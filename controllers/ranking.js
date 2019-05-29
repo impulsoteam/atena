@@ -297,7 +297,7 @@ const sendToChannel = async () => {
 const position = async (users, first = 0, limit = 20) =>
   users.slice(first, limit).map((user, index) => ({
     name: user.name,
-    xp: user.score,
+    xp: user.score || user.xp,
     level: user.level,
     avatar: user.avatar,
     teams: user.teams || [],
