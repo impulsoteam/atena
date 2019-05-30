@@ -226,7 +226,9 @@ const findInactivities = async () => {
     today.getDate() - config.xprules.inactive.mindays
   );
   const result = await UserModel.find({
-    lastUpdate: { $lt: dateRange }
+    rocketId: { $exists: true },
+    lastUpdate: { $lt: dateRange },
+    score: { $gt: 1 }
   })
     .sort({
       score: -1
