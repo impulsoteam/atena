@@ -577,6 +577,115 @@ const isPro = async (req, res) => {
     });
 };
 
+const getSlackUsers = async (req, res) => {
+  try {
+    let slackUsers = await userModel
+      .find({
+        slackId: { $exists: true },
+        score: { $gt: 5 }
+      })
+      .sort({ score: -1 })
+      .limit(15);
+    return res.json(slackUsers);
+  } catch (err) {
+    const errorMessage = {
+      error: "Não foi possivel fazer a busca no banco de dados"
+    };
+    console.log(err);
+    return res.json(errorMessage);
+  }
+};
+
+const findByName = async (req, res) => {
+  try {
+    const users = await userModel
+      .find({
+        $text: {
+          $search: req.query.name,
+          $caseSensitive: false,
+          $diacriticSensitive: false
+        },
+        rocketId: { $exists: true }
+      })
+      .sort({ score: -1 });
+
+    return res.json(users);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const editScore = async (req, res) => {
+  const { type, score } = req.body;
+  const userId = req.params.id;
+
+  let updatedUser;
+
+  if (type === "slack") {
+    try {
+      updatedUser = await userModel.findByIdAndUpdate(
+        userId,
+        { score },
+        {
+          new: true
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  } else if (type === "rocket") {
+    let user;
+    try {
+      user = await userModel.findOne({ _id: userId });
+    } catch (error) {
+      console.log(error);
+    }
+
+    const oldLevel = user.level;
+    const newScore = user.score + score;
+    user.level = calculateLevel(newScore);
+    user.score = newScore;
+
+    try {
+      updatedUser = await userModel.findByIdAndUpdate(
+        userId,
+        { score: user.score, level: user.level },
+        {
+          new: true
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+
+    const message = {
+      msg: `Olá ${
+        user.name
+      }, sua pontuação do slack, *${score} pontos*, foi tranferida. Agora sua nova pontuação é de *${
+        user.score
+      } pontos!*`,
+      attachments: []
+    };
+
+    const attachments = {
+      text: `Ah, e você ainda subiu de nivel. Seu novo nivel é *${
+        user.level
+      }* .`
+    };
+
+    if (oldLevel !== user.level) {
+      message.attachments.push(attachments);
+    }
+    try {
+      await driver.sendDirectToUser(message, user.username);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  return res.json(updatedUser);
+};
 export const defaultFunctions = {
   calculateLevel,
   find,
@@ -588,8 +697,11 @@ export const defaultFunctions = {
   findInactivities,
   findBy,
   findByOrigin,
+  findByName,
   getNetwork,
+  getSlackUsers,
   updateScore,
+  editScore,
   changeTeams,
   fromRocket,
   details,
