@@ -4,7 +4,7 @@ import UserController from "../controllers/user";
 import { getStyleLog } from "../utils";
 
 export default async () => {
-  cron.schedule("0 3 * * *", async () => {
+  cron.schedule("* * * * *", async () => {
     let users;
     try {
       users = await UserController.findInactivities();
@@ -14,7 +14,9 @@ export default async () => {
     }
     users.forEach(user => {
       const score = config.xprules.inactive.value;
-      UserController.updateUserData(user, score);
+      const interaction = null;
+
+      UserController.updateUserData(user, interaction, score);
     });
 
     return true;

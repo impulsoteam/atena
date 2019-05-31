@@ -693,6 +693,7 @@ export const defaultFunctions = {
   find,
   findAll,
   update,
+  updateUserData,
   updateParentUser,
   rankingPosition,
   checkCoreTeam,
