@@ -1,87 +1,87 @@
-import { renderScreen } from "../utils/ssr";
-import checkPointModel from "../models/checkpoint";
+import { renderScreen } from "../utils/ssr"
+import checkPointModel from "../models/checkpoint"
 
 const index = async (req, res) => {
   if (req.user && req.user.isCoreTeam) {
-    const checkpoints = await checkPointModel.find();
+    const checkpoints = await checkPointModel.find()
     const initialData = {
       title: "CheckPoints",
       page: "checkpoint",
       data: checkpoints
-    };
-    renderScreen(req, res, "Checkpoint", initialData);
+    }
+    renderScreen(req, res, "Checkpoint", initialData)
   } else {
-    return res.send("Sem Permissão");
+    return res.send("Sem Permissão")
   }
-};
+}
 
 const new_record = async (req, res) => {
   if (req.user && req.user.isCoreTeam) {
     const initialData = {
       title: "CheckPoint",
       page: "checkpoint"
-    };
-    renderScreen(req, res, "NewCheckpoint", initialData);
+    }
+    renderScreen(req, res, "NewCheckpoint", initialData)
   } else {
-    return res.send("Sem Permissão");
+    return res.send("Sem Permissão")
   }
-};
+}
 
 const edit = async (req, res) => {
   if (req.user && req.user.isCoreTeam) {
-    const checkpoint = await checkPointModel.findOne({ _id: req.params.id });
+    const checkpoint = await checkPointModel.findOne({ _id: req.params.id })
     const initialData = {
       title: "Edit CheckPoint",
       page: "checkpoint",
       data: checkpoint
-    };
-    renderScreen(req, res, "EditCheckpoint", initialData);
+    }
+    renderScreen(req, res, "EditCheckpoint", initialData)
   } else {
-    return res.send("Sem Permissão");
+    return res.send("Sem Permissão")
   }
-};
+}
 
 const save = async (req, res) => {
   if (req.user && req.user.isCoreTeam) {
-    const { level, xp, rewards, totalEngagedUsers } = req.body;
+    const { level, xp, rewards, totalEngagedUsers } = req.body
     const instance = checkPointModel({
       level: level,
       xp: xp,
       rewards: rewards.filter(item => item.length > 0),
       totalEngagedUsers: totalEngagedUsers
-    });
+    })
     instance.save().then(() => {
-      res.redirect("/checkpoints");
-    });
+      res.redirect("/checkpoints")
+    })
   } else {
-    return res.send("Sem Permissão");
+    return res.send("Sem Permissão")
   }
-};
+}
 
 const update = async (req, res) => {
   if (req.user && req.user.isCoreTeam) {
-    const { level, xp, rewards, totalEngagedUsers } = req.body;
-    const checkpoint = await checkPointModel.findOne({ _id: req.params.id });
-    checkpoint.level = level;
-    checkpoint.xp = xp;
-    checkpoint.rewards = rewards.filter(item => item.length > 0);
-    checkpoint.totalEngagedUsers = totalEngagedUsers;
+    const { level, xp, rewards, totalEngagedUsers } = req.body
+    const checkpoint = await checkPointModel.findOne({ _id: req.params.id })
+    checkpoint.level = level
+    checkpoint.xp = xp
+    checkpoint.rewards = rewards.filter(item => item.length > 0)
+    checkpoint.totalEngagedUsers = totalEngagedUsers
     checkpoint.save().then(() => {
-      res.redirect("/checkpoints");
-    });
+      res.redirect("/checkpoints")
+    })
   } else {
-    return res.send("Sem Permissão");
+    return res.send("Sem Permissão")
   }
-};
+}
 
 const delete_record = async (req, res) => {
   if (req.user && req.user.isCoreTeam) {
-    await checkPointModel.deleteOne({ _id: req.params.id });
-    res.redirect("/checkpoints");
+    await checkPointModel.deleteOne({ _id: req.params.id })
+    res.redirect("/checkpoints")
   } else {
-    return res.send("Sem Permissão");
+    return res.send("Sem Permissão")
   }
-};
+}
 
 const exportFunctions = {
   index,
@@ -90,6 +90,6 @@ const exportFunctions = {
   edit,
   update,
   delete_record
-};
+}
 
-export default exportFunctions;
+export default exportFunctions

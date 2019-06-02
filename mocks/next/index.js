@@ -111,6 +111,6 @@ const rabbit = {
     }
   ],
   current_plan: null
-};
+}
 
-export default rabbit;
+export default rabbit

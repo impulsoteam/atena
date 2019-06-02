@@ -1,9 +1,9 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { Flex, Box } from "@rebass/grid";
-import Layout from "Layout";
-import FullPage from "../components/FullPage";
-import Title from "components/Title";
+import React, { Fragment } from "react"
+import PropTypes from "prop-types"
+import { Flex, Box } from "@rebass/grid"
+import Layout from "Layout"
+import FullPage from "../components/FullPage"
+import Title from "components/Title"
 
 const ScreenEditCheckpoint = ({ data = {} }) => (
   <Layout>
@@ -58,10 +58,10 @@ const ScreenEditCheckpoint = ({ data = {} }) => (
       </form>
     </div>
   </Layout>
-);
+)
 
 ScreenEditCheckpoint.propTypes = {
   data: PropTypes.array
-};
+}
 
-export default ScreenEditCheckpoint;
+export default ScreenEditCheckpoint

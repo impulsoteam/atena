@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 const StyledScreenHowItWorks = styled.section`
   .layout {
@@ -256,6 +256,6 @@ const StyledScreenHowItWorks = styled.section`
       }
     }
   }
-`;
+`
 
-export default StyledScreenHowItWorks;
+export default StyledScreenHowItWorks

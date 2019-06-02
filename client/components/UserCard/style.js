@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 export const StyledUserCard = styled.div`
   background-color: ${props => props.theme.color.white};
@@ -8,7 +8,7 @@ export const StyledUserCard = styled.div`
   box-shadow: 8px 8px 60px 0px rgba(0, 0, 0, 0.08);
   margin-top: ${props => !props.first && "70px"};
   border-radius: 10px;
-`;
+`
 
 export const StyledContainer = styled.div`
   background-color: #fff;
@@ -32,7 +32,7 @@ export const StyledContainer = styled.div`
     border-radius: 50%;
     padding: 0 5px 8px 5px;
   }
-`;
+`
 
 export const StyledPosition = styled.div`
   background-color: #fff;
@@ -51,7 +51,7 @@ export const StyledPosition = styled.div`
   position: relative;
   margin: -50px auto;
   z-index: 99999;
-`;
+`
 
 export const StyledInfo = styled.div`
   margin-top: 70px;
@@ -62,7 +62,7 @@ export const StyledInfo = styled.div`
     font-size: 20px;
     color: #595b98;
   }
-`;
+`
 
 export const StyledPoint = styled.div`
   flex: 1;
@@ -77,6 +77,6 @@ export const StyledPoint = styled.div`
     padding: 6px;
     margin: 0;
   }
-`;
+`
 
-export default StyledUserCard;
+export default StyledUserCard

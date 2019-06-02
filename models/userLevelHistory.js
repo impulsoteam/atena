@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const userLevelHistorySchema = new mongoose.Schema({
   user: {
@@ -19,10 +19,10 @@ const userLevelHistorySchema = new mongoose.Schema({
     type: Date,
     required: true
   }
-});
+})
 
 export default mongoose.model(
   "UserLevelHistory",
   userLevelHistorySchema,
   "usersLevelsHistory"
-);
+)

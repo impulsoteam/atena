@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 export const StyledFooter = styled.footer`
   background-color: ${props => props.theme.color.primary};
@@ -14,10 +14,10 @@ export const StyledFooter = styled.footer`
     display: flex;
     margin: 0 auto 40px;
   }
-`;
+`
 
 export const StyledCopyright = styled.p`
   text-align: center;
   color: ${props => props.theme.color.primaryLight};
   margin: 0;
-`;
+`

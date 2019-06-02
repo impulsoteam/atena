@@ -33,4 +33,4 @@ module.exports = {
       functions: 10
     }
   }
-};
+}

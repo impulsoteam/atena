@@ -1,5 +1,5 @@
-import React from "react";
-import StyledSocialLinks from "./SocialLinks.style";
+import React from "react"
+import StyledSocialLinks from "./SocialLinks.style"
 
 const links = [
   {
@@ -26,7 +26,7 @@ const links = [
     icon: "rocketchat",
     link: "https://chat.impulso.network"
   }
-];
+]
 
 const renderLinks = () =>
   links.map((item, index) => (
@@ -38,10 +38,8 @@ const renderLinks = () =>
         rel="noopener noreferrer"
       />
     </li>
-  ));
+  ))
 
-const SocialLinks = () => (
-  <StyledSocialLinks>{renderLinks()}</StyledSocialLinks>
-);
+const SocialLinks = () => <StyledSocialLinks>{renderLinks()}</StyledSocialLinks>
 
-export default SocialLinks;
+export default SocialLinks

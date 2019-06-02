@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 const StyledButton = styled.button`
   color: ${props => props.theme.color.primary};
@@ -32,6 +32,6 @@ const StyledButton = styled.button`
       color: white;
     }
   }
-`;
+`
 
-export default StyledButton;
+export default StyledButton

@@ -7,7 +7,7 @@ const message = {
   channel: "CCXCENQMP",
   event_ts: "1537480361.000100",
   channel_type: "channel"
-};
+}
 
 const thread = {
   type: "message",
@@ -20,7 +20,7 @@ const thread = {
   channel: "CCWSMJZ6U",
   event_ts: "1537480620.000100",
   channel_type: "channel"
-};
+}
 
 const reactionAdded = {
   type: "reaction_added",
@@ -33,7 +33,7 @@ const reactionAdded = {
   reaction: "grin",
   item_user: "UCX1DSFEV",
   event_ts: "1537480644.000100"
-};
+}
 
 const reactioRemoved = {
   type: "reaction_removed",
@@ -45,18 +45,18 @@ const reactioRemoved = {
   },
   reaction: "persevere",
   event_ts: "1537559720.000100"
-};
+}
 
 const manualPoints = {
   type: "manual",
   user: "UCX1DSFEV",
   value: 20
-};
+}
 
 const inactivity = {
   type: "inactivity",
   user: "UCX1DSFEV"
-};
+}
 
 export default {
   message,
@@ -65,4 +65,4 @@ export default {
   thread,
   manualPoints,
   inactivity
-};
+}

@@ -1,7 +1,7 @@
-import Interaction from "./interaction";
+import Interaction from "./interaction"
 
 describe("[Models] Interaction", () => {
-  let interaction;
+  let interaction
   beforeEach(() => {
     interaction = new Interaction({
       type: "message",
@@ -9,32 +9,32 @@ describe("[Models] Interaction", () => {
       description: "some description",
       user: "123456",
       thread: true
-    });
-  });
+    })
+  })
 
   describe("validations", () => {
     it("should be valid with valid attributes", () => {
-      expect(interaction.validate).toBeTruthy();
-    });
+      expect(interaction.validate).toBeTruthy()
+    })
 
     it("should be invalid if type is empty", () => {
-      interaction.type = null;
+      interaction.type = null
       interaction.validate(err => {
-        expect(err.errors.type).toBeTruthy();
-      });
-    });
+        expect(err.errors.type).toBeTruthy()
+      })
+    })
 
     it("should be invalid if channel is empty", () => {
-      interaction.channel = null;
+      interaction.channel = null
       interaction.validate(err => {
-        expect(err.errors.channel).toBeTruthy();
-      });
-    });
+        expect(err.errors.channel).toBeTruthy()
+      })
+    })
     it("should be invalid if description is empty", () => {
-      interaction.description = null;
+      interaction.description = null
       interaction.validate(err => {
-        expect(err.errors.description).toBeTruthy();
-      });
-    });
-  });
-});
+        expect(err.errors.description).toBeTruthy()
+      })
+    })
+  })
+})

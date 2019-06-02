@@ -1,8 +1,8 @@
-import React from "react";
-import StyledScreenGithub from "./Github.style";
-import Layout from "../Layout";
-import Card from "../components/Card";
-import Title from "../components/Title";
+import React from "react"
+import StyledScreenGithub from "./Github.style"
+import Layout from "../Layout"
+import Card from "../components/Card"
+import Title from "../components/Title"
 
 const ScreenGithub = () => {
   return (
@@ -34,7 +34,7 @@ const ScreenGithub = () => {
         </div>
       </Layout>
     </StyledScreenGithub>
-  );
-};
+  )
+}
 
-export default ScreenGithub;
+export default ScreenGithub

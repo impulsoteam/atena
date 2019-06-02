@@ -1,24 +1,24 @@
-import cron from "node-cron";
-import config from "config-yml";
-import UserController from "../controllers/user";
-import { getStyleLog } from "../utils";
+import cron from "node-cron"
+import config from "config-yml"
+import UserController from "../controllers/user"
+import { getStyleLog } from "../utils"
 
 export default async () => {
   cron.schedule("* * * * *", async () => {
-    let users;
+    let users
     try {
-      users = await UserController.findInactivities();
+      users = await UserController.findInactivities()
     } catch (e) {
-      console.log(getStyleLog("red"), `\n-- error updating inactivity users`);
-      return false;
+      console.log(getStyleLog("red"), `\n-- error updating inactivity users`)
+      return false
     }
     users.forEach(user => {
-      const score = config.xprules.inactive.value;
-      const interaction = null;
+      const score = config.xprules.inactive.value
+      const interaction = null
 
-      UserController.updateUserData(user, interaction, score);
-    });
+      UserController.updateUserData(user, interaction, score)
+    })
 
-    return true;
-  });
-};
+    return true
+  })
+}

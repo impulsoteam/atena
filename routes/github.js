@@ -1,12 +1,12 @@
-import express from "express";
-import bodyParser from "body-parser";
-import githubController from "../controllers/github";
-const router = express.Router();
+import express from "express"
+import bodyParser from "body-parser"
+import { events } from "../components/github"
+const router = express.Router()
 
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }));
-router.post("/events", githubController.events);
-router.get("/callback", githubController.callback);
-router.use("/", githubController.index);
+router.use(bodyParser.json())
+router.use(bodyParser.urlencoded({ extended: true }))
+router.post("/events", events)
+// router.get("/callback", githubController.callback);
+// router.use("/", githubController.index);
 
-export default router;
+export default router

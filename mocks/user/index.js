@@ -16,4 +16,4 @@ export const user = {
   lastUpdate: "2019-04-03T21:53:00.653Z",
   name: "John Doe",
   username: "john-doe"
-};
+}

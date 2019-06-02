@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Flex, Box } from "@rebass/grid";
-import Layout from "Layout";
-import FullPage from "../components/FullPage";
-import Title from "components/Title";
+import React from "react"
+import PropTypes from "prop-types"
+import { Flex, Box } from "@rebass/grid"
+import Layout from "Layout"
+import FullPage from "../components/FullPage"
+import Title from "components/Title"
 
 const ScreenNewCheckpoint = () => (
   <Layout>
@@ -59,10 +59,10 @@ const ScreenNewCheckpoint = () => (
       </form>
     </div>
   </Layout>
-);
+)
 
 ScreenNewCheckpoint.propTypes = {
   data: PropTypes.array
-};
+}
 
-export default ScreenNewCheckpoint;
+export default ScreenNewCheckpoint

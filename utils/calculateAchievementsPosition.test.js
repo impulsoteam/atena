@@ -1,4 +1,4 @@
-import { calculateAchievementsPosition as calc } from "./calculateAchievementsPosition";
+import { calculateAchievementsPosition as calc } from "./calculateAchievementsPosition"
 
 describe("Test CalculateAchievementsPosition", () => {
   const achievements = {
@@ -7,7 +7,7 @@ describe("Test CalculateAchievementsPosition", () => {
     user: "UEKPNV91C",
     total: 1,
     ratings: []
-  };
+  }
 
   const ratings = [
     {
@@ -42,20 +42,20 @@ describe("Test CalculateAchievementsPosition", () => {
         }
       ]
     }
-  ];
+  ]
 
   it("should not undefined", () => {
-    expect(calc).not.toBeUndefined();
-  });
+    expect(calc).not.toBeUndefined()
+  })
 
   describe("Test achievements positions", () => {
     it("should return an object with first rating.range if was no earnedDate", () => {
-      const ratingWithoutEarnedDate = JSON.parse(JSON.stringify(ratings));
-      achievements.ratings = ratingWithoutEarnedDate;
-      const achievementsWithoutEarnedDate = [achievements];
+      const ratingWithoutEarnedDate = JSON.parse(JSON.stringify(ratings))
+      achievements.ratings = ratingWithoutEarnedDate
+      const achievementsWithoutEarnedDate = [achievements]
 
-      const rating = achievementsWithoutEarnedDate[0].ratings[0];
-      const range = rating.ranges[0];
+      const rating = achievementsWithoutEarnedDate[0].ratings[0]
+      const range = rating.ranges[0]
 
       const achievementReturn = {
         name: achievements.name,
@@ -64,22 +64,22 @@ describe("Test CalculateAchievementsPosition", () => {
           name: `${rating.name} ${range.name}`,
           value: range.value
         }
-      };
+      }
 
       expect(calc(achievementsWithoutEarnedDate)).toEqual(
         expect.arrayContaining([achievementReturn])
-      );
-    });
+      )
+    })
 
     it("should return an object with rating.range first earnedDate is null", () => {
-      const ratingWithEarnedDate = JSON.parse(JSON.stringify(ratings));
-      ratingWithEarnedDate[0].ranges[0].earnedDate = Date.now();
-      ratingWithEarnedDate[0].ranges[1].earnedDate = Date.now();
-      achievements.ratings = ratingWithEarnedDate;
-      const achievementsWithEarnedDate = [achievements];
+      const ratingWithEarnedDate = JSON.parse(JSON.stringify(ratings))
+      ratingWithEarnedDate[0].ranges[0].earnedDate = Date.now()
+      ratingWithEarnedDate[0].ranges[1].earnedDate = Date.now()
+      achievements.ratings = ratingWithEarnedDate
+      const achievementsWithEarnedDate = [achievements]
 
-      const rating = achievementsWithEarnedDate[0].ratings[1];
-      const range = rating.ranges[0];
+      const rating = achievementsWithEarnedDate[0].ratings[1]
+      const range = rating.ranges[0]
 
       const achievement = {
         name: achievements.name,
@@ -88,29 +88,29 @@ describe("Test CalculateAchievementsPosition", () => {
           name: `${rating.name} ${range.name}`,
           value: range.value
         }
-      };
+      }
 
       expect(calc(achievementsWithEarnedDate)).toEqual(
         expect.arrayContaining([achievement])
-      );
-    });
+      )
+    })
 
     it("should return an object with last rating.range when all earnedDate filled", () => {
-      const ratingWithAllEarnedDate = JSON.parse(JSON.stringify(ratings));
+      const ratingWithAllEarnedDate = JSON.parse(JSON.stringify(ratings))
       const ratingsWithAllEarnedDate = ratingWithAllEarnedDate.map(rating => {
         rating.ranges = rating.ranges.map(range => {
-          range.earnedDate = Date.now();
-          return range;
-        });
+          range.earnedDate = Date.now()
+          return range
+        })
 
-        return rating;
-      });
+        return rating
+      })
 
-      achievements.ratings = ratingsWithAllEarnedDate;
-      const achievementsWithAllEarnedDate = [achievements];
+      achievements.ratings = ratingsWithAllEarnedDate
+      const achievementsWithAllEarnedDate = [achievements]
 
-      const rating = achievementsWithAllEarnedDate[0].ratings[1];
-      const range = rating.ranges[1];
+      const rating = achievementsWithAllEarnedDate[0].ratings[1]
+      const range = rating.ranges[1]
 
       const achievement = {
         name: achievements.name,
@@ -119,11 +119,11 @@ describe("Test CalculateAchievementsPosition", () => {
           name: `${rating.name} ${range.name}`,
           value: range.value
         }
-      };
+      }
 
       expect(calc(achievementsWithAllEarnedDate)).toEqual(
         expect.arrayContaining([achievement])
-      );
-    });
-  });
-});
+      )
+    })
+  })
+})

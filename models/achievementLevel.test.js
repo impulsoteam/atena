@@ -1,14 +1,14 @@
-import AchievementLevel from "./achievementLevel";
+import AchievementLevel from "./achievementLevel"
 
 describe("[Models] AchievementLevel", () => {
-  let achievement;
+  let achievement
   beforeEach(() => {
     let record = {
       name: "Bronze",
       range: "II",
       level: 2,
       earnedDate: Date.now()
-    };
+    }
 
     let ranges = [
       {
@@ -21,7 +21,7 @@ describe("[Models] AchievementLevel", () => {
         value: 2,
         earnedDate: null
       }
-    ];
+    ]
 
     let ratings = [
       {
@@ -34,25 +34,25 @@ describe("[Models] AchievementLevel", () => {
         xp: 5,
         ranges: ranges
       }
-    ];
+    ]
 
     achievement = new AchievementLevel({
       user: "F265CEB",
       record: record,
       ratings: ratings
-    });
-  });
+    })
+  })
 
   describe("validations", () => {
     it("should be valid with valid attributes", () => {
-      expect(achievement.validate).toBeTruthy();
-    });
+      expect(achievement.validate).toBeTruthy()
+    })
 
     it("should be invalid if user is empty", () => {
-      achievement.user = null;
+      achievement.user = null
       achievement.validate(err => {
-        expect(err.errors.user).toBeTruthy();
-      });
-    });
-  });
-});
+        expect(err.errors.user).toBeTruthy()
+      })
+    })
+  })
+})

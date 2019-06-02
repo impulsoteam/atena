@@ -190,4 +190,4 @@ export const newIssue = {
     type: "User",
     site_admin: false
   }
-};
+}

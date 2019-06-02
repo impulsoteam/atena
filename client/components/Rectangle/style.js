@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 export const StyledRectangle = styled.div`
   background: ${props =>
@@ -23,16 +23,16 @@ export const StyledRectangle = styled.div`
     position: relative;
     width: ${props => props.theme.spacing.unit * 3.75}px;
   }
-`;
+`
 
 export const LeftStyledRectangle = styled(StyledRectangle)`
   border-top-left-radius: 100px;
   border-bottom-left-radius: 100px;
-`;
+`
 
 export const RightStyleRectangle = styled(StyledRectangle)`
   border-top-right-radius: 100px;
   border-bottom-right-radius: 100px;
-`;
+`
 
-export default StyledRectangle;
+export default StyledRectangle

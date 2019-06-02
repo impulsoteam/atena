@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 const StyledTitle = styled.h1`
   font-size: ${props =>
@@ -32,6 +32,6 @@ const StyledTitle = styled.h1`
   @media (max-width: 760px) {
     font-size: 28px;
   }
-`;
+`
 
-export default StyledTitle;
+export default StyledTitle

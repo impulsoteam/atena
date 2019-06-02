@@ -1,10 +1,10 @@
-import express from "express";
-const router = express.Router();
+import express from "express"
+const router = express.Router()
 
 router.post("/messages", async (req, res) => {
-  console.log(req.body);
+  console.log(req.body)
 
-  res.json("rocket messages");
-});
+  res.json("rocket messages")
+})
 
-export default router;
+export default router

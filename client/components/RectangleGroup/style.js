@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 export const StyledRectangleGroup = styled.div`
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
@@ -9,6 +9,6 @@ export const StyledRectangleGroup = styled.div`
   border-bottom-left-radius: 100px;
   display: flex;
   flex: 1;
-`;
+`
 
-export default StyledRectangleGroup;
+export default StyledRectangleGroup

@@ -1,7 +1,7 @@
-import Achievement from "./achievement";
+import Achievement from "./achievement"
 
 describe("[Models] Achievement", () => {
-  let achievement;
+  let achievement
   beforeEach(() => {
     let ranges = [
       {
@@ -14,7 +14,7 @@ describe("[Models] Achievement", () => {
         value: 10,
         earnedDate: null
       }
-    ];
+    ]
 
     let ratings = [
       {
@@ -27,7 +27,7 @@ describe("[Models] Achievement", () => {
         xp: 10,
         ranges: ranges
       }
-    ];
+    ]
 
     achievement = new Achievement({
       name: "Network | Respostas Recebidas",
@@ -35,40 +35,40 @@ describe("[Models] Achievement", () => {
       user: "F265CEB",
       total: 0,
       ratings: ratings
-    });
-  });
+    })
+  })
 
   describe("validations", () => {
     it("should be valid with valid attributes", () => {
-      expect(achievement.validate).toBeTruthy();
-    });
+      expect(achievement.validate).toBeTruthy()
+    })
 
     it("should be invalid if name is empty", () => {
-      achievement.name = null;
+      achievement.name = null
       achievement.validate(err => {
-        expect(err.errors.name).toBeTruthy();
-      });
-    });
+        expect(err.errors.name).toBeTruthy()
+      })
+    })
 
     it("should be invalid if kind is empty", () => {
-      achievement.kind = null;
+      achievement.kind = null
       achievement.validate(err => {
-        expect(err.errors.kind).toBeTruthy();
-      });
-    });
+        expect(err.errors.kind).toBeTruthy()
+      })
+    })
 
     it("should be invalid if user is empty", () => {
-      achievement.user = null;
+      achievement.user = null
       achievement.validate(err => {
-        expect(err.errors.user).toBeTruthy();
-      });
-    });
+        expect(err.errors.user).toBeTruthy()
+      })
+    })
 
     it("should be invalid if total is string", () => {
-      achievement.total = "string";
+      achievement.total = "string"
       achievement.validate(err => {
-        expect(err.errors.total).toBeTruthy();
-      });
-    });
-  });
-});
+        expect(err.errors.total).toBeTruthy()
+      })
+    })
+  })
+})

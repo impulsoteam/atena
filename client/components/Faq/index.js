@@ -1,9 +1,9 @@
-import React from "react";
-import StyledFaq from "./style";
-import { Flex, Box } from "@rebass/grid";
-import Title from "../Title";
-import Accordion from "../Accordion";
-import Button from "../Button";
+import React from "react"
+import StyledFaq from "./style"
+import { Flex, Box } from "@rebass/grid"
+import Title from "../Title"
+import Accordion from "../Accordion"
+import Button from "../Button"
 
 const questions = [
   {
@@ -31,7 +31,7 @@ const questions = [
     awnser:
       "Qualquer pessoa pode ajudar Atena a crescer, basta entrar no canal #projeto-atena no nosso Rocket.chat ou acessar diretamente o nosso repositório no Github (http://github.com/impulsonetwork/atena). Ainda não faz parte da Impulso Network? Basta acessar o https://app.impulso.network/ e fazer o seu cadastro, é rapidinho."
   }
-];
+]
 
 const Faq = () => (
   <StyledFaq>
@@ -64,6 +64,6 @@ const Faq = () => (
       </Box>
     </Flex>
   </StyledFaq>
-);
+)
 
-export default Faq;
+export default Faq

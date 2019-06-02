@@ -9,7 +9,7 @@ export const apiGetInfoUserByUserId = {
     username: "ikki"
   },
   success: true
-};
+}
 
 export const apiGetChannels = {
   channels: [
@@ -141,7 +141,7 @@ export const apiGetChannels = {
   offset: 1,
   total: 10,
   success: true
-};
+}
 
 export const responseOpensourceSlash = {
   id: "2BQ3wWnRBh7vXGYdP",
@@ -162,7 +162,7 @@ export const responseOpensourceSlash = {
   createdAt: "2019-01-22T16:29:53.473Z",
   updatedAt: "2019-03-04T11:40:54.709Z",
   lastLoginAt: "2019-03-04T10:58:46.701Z"
-};
+}
 
 export const responseEngagedSlash = {
   id: "H9kcNkWwXF92XxtTF",
@@ -180,7 +180,7 @@ export const responseEngagedSlash = {
   lastLoginAt: "2019-04-12T12:27:01.872Z",
   begin: "10-10-2019",
   end: "20-10-2019"
-};
+}
 
 export const headerOpensourceSlash = {
   host: "atena.herokuapp.com",
@@ -189,7 +189,7 @@ export const headerOpensourceSlash = {
   "content-type": "application/json",
   origin: "rocket",
   "x-forwarded-for": "68.183.136.70"
-};
+}
 
 // prettier-ignore
 export const message = {
@@ -253,7 +253,7 @@ export const messageAttachmentFromHistory = {
       usernames: ["renato"]
     }
   }
-};
+}
 
 export const saveInteraction = {
   _id: "5c97bb78079546634e30a20",
@@ -266,6 +266,6 @@ export const saveInteraction = {
   lastUpdate: "2019-03-23T20:25:14.889Z",
   date: "2019-03-23T20:25:14.889Z",
   __v: 0
-};
+}
 
-export default message;
+export default message

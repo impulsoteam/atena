@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 const StyledMenu = styled.ul`
   margin: 0;
@@ -94,6 +94,6 @@ const StyledMenu = styled.ul`
       }
     }
   }
-`;
+`
 
-export default StyledMenu;
+export default StyledMenu

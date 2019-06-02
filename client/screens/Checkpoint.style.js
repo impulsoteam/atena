@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 const StyledScreenCheckpoint = styled.section`
   .layout {
@@ -44,6 +44,6 @@ const StyledScreenCheckpoint = styled.section`
       margin-top: 30px;
     }
   }
-`;
+`
 
-export default StyledScreenCheckpoint;
+export default StyledScreenCheckpoint

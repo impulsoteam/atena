@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from "react"
+import PropTypes from "prop-types"
 
 const Html = props => {
-  const { children, title, page } = props;
+  const { children, title, page } = props
 
   return (
     <html>
@@ -24,17 +24,17 @@ const Html = props => {
       </head>
       <body className={`page-${page}`}>{children}</body>
     </html>
-  );
-};
+  )
+}
 
 Html.propTypes = {
   children: PropTypes.element.isRequired,
   title: PropTypes.string,
   page: PropTypes.string
-};
+}
 
 Html.defaultProps = {
   title: "Atena | Gamificação da Impulso Network"
-};
+}
 
-export default Html;
+export default Html

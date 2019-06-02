@@ -1,8 +1,8 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import StyledApp from "./styles/global";
-import Header from "components/Header";
-import Footer from "components/Footer";
+import React, { Fragment } from "react"
+import PropTypes from "prop-types"
+import StyledApp from "./styles/global"
+import Header from "components/Header"
+import Footer from "components/Footer"
 
 const Layout = ({ user, children, page }) => (
   <Fragment>
@@ -11,12 +11,12 @@ const Layout = ({ user, children, page }) => (
     <main className="layout">{children}</main>
     <Footer />
   </Fragment>
-);
+)
 
 Layout.propTypes = {
   children: PropTypes.element.isRequired,
   page: PropTypes.string,
   user: PropTypes.object
-};
+}
 
-export default Layout;
+export default Layout

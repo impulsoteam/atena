@@ -1,13 +1,13 @@
-import React from "react";
-import StyledScreenHowItWorks from "./HowItWorks.style";
-import Layout from "../Layout";
-import { Flex, Box } from "@rebass/grid";
-import FullPage from "../components/FullPage";
-import Title from "../components/Title";
-import SubTitle from "../components/Title/SubTitle";
-import Card from "../components/Card";
-import Button from "../components/Button";
-import Faq from "../components/Faq";
+import React from "react"
+import StyledScreenHowItWorks from "./HowItWorks.style"
+import Layout from "../Layout"
+import { Flex, Box } from "@rebass/grid"
+import FullPage from "../components/FullPage"
+import Title from "../components/Title"
+import SubTitle from "../components/Title/SubTitle"
+import Card from "../components/Card"
+import Button from "../components/Button"
+import Faq from "../components/Faq"
 
 const ScreenHowItWorks = props => {
   return (
@@ -264,7 +264,7 @@ const ScreenHowItWorks = props => {
         </section>
       </Layout>
     </StyledScreenHowItWorks>
-  );
-};
+  )
+}
 
-export default ScreenHowItWorks;
+export default ScreenHowItWorks

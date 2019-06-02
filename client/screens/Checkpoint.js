@@ -1,10 +1,10 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { Flex, Box } from "@rebass/grid";
-import Layout from "Layout";
-import StyledScreenCheckpoint from "./Checkpoint.style";
-import FullPage from "../components/FullPage";
-import Title from "components/Title";
+import React, { Fragment } from "react"
+import PropTypes from "prop-types"
+import { Flex, Box } from "@rebass/grid"
+import Layout from "Layout"
+import StyledScreenCheckpoint from "./Checkpoint.style"
+import FullPage from "../components/FullPage"
+import Title from "components/Title"
 
 const rewards = ({ data = [] }) =>
   data.map((reward, index) => (
@@ -13,7 +13,7 @@ const rewards = ({ data = [] }) =>
       <br />
       <br />
     </Fragment>
-  ));
+  ))
 
 const ScreenCheckpoint = ({ data = [], ...props }) => (
   <StyledScreenCheckpoint>
@@ -43,10 +43,10 @@ const ScreenCheckpoint = ({ data = [], ...props }) => (
       </div>
     </Layout>
   </StyledScreenCheckpoint>
-);
+)
 
 ScreenCheckpoint.propTypes = {
   data: PropTypes.array
-};
+}
 
-export default ScreenCheckpoint;
+export default ScreenCheckpoint

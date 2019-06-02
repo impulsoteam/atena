@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 const StyledFullPage = styled.section`
   background: ${props => props.background || props.theme.color.primary};
@@ -34,6 +34,6 @@ const StyledFullPage = styled.section`
     height: 100%;
     z-index: 2;
   }
-`;
+`
 
-export default StyledFullPage;
+export default StyledFullPage

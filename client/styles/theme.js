@@ -26,6 +26,6 @@ const Theme = {
     secondary: "#DC3C2C",
     bg: "#FDFDFD"
   }
-};
+}
 
-export default Theme;
+export default Theme

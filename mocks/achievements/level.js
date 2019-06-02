@@ -1,4 +1,4 @@
-import { user } from "../user";
+import { user } from "../user"
 
 export const achievementLevel = {
   createdAt: "2019-04-12T18:33:36.321Z",
@@ -109,4 +109,4 @@ export const achievementLevel = {
     earnedDate: "2019-04-12T18:33:35.000Z"
   },
   __v: 0
-};
+}

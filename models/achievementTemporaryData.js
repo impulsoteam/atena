@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const rangeSchema = new mongoose.Schema({
   name: {
@@ -9,7 +9,7 @@ const rangeSchema = new mongoose.Schema({
     type: Number,
     required: true
   }
-});
+})
 
 const ratingSchema = new mongoose.Schema({
   name: {
@@ -26,7 +26,7 @@ const ratingSchema = new mongoose.Schema({
       require: true
     }
   ]
-});
+})
 
 const achievementTemporaryDataSchema = new mongoose.Schema({
   name: {
@@ -58,10 +58,10 @@ const achievementTemporaryDataSchema = new mongoose.Schema({
     default: Date.now()
   },
   ratings: [ratingSchema]
-});
+})
 
 export default mongoose.model(
   "AchievementTemporaryData",
   achievementTemporaryDataSchema,
   "achievementsTemporaryData"
-);
+)

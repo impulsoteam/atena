@@ -1,17 +1,17 @@
-import axios from "axios";
-import config from "config-yml";
-import InteractionModel from "../models/interaction";
-import interactionController from "../controllers/interaction";
-import userController from "../controllers/user";
+import axios from "axios"
+import config from "config-yml"
+import InteractionModel from "../models/interaction"
+import interactionController from "../controllers/interaction"
+import userController from "../controllers/user"
 
 const index = async data => {
-  const response = true;
+  const response = true
 
   try {
     if (isValidPost(data)) {
-      const hasInteraction = await findInteractionByPostId(data.post_id);
+      const hasInteraction = await findInteractionByPostId(data.post_id)
       if (!hasInteraction) {
-        const user = await findUser(data);
+        const user = await findUser(data)
         if (user) {
           const obj = {
             id: data.post_id,
@@ -19,57 +19,57 @@ const index = async data => {
             type: "article",
             title: data.post.post_title,
             user: user.rocketId
-          };
-          await interactionController.save(obj);
+          }
+          await interactionController.save(obj)
         } else {
-          console.log("Error user not found on blog to save interaction");
+          console.log("Error user not found on blog to save interaction")
         }
       }
     }
   } catch (error) {
-    console.log("error", error);
-    console.log("Error on save blog interaction");
+    console.log("error", error)
+    console.log("Error on save blog interaction")
   }
 
-  return response;
-};
+  return response
+}
 
 const isValidPost = data => {
   return (
     data.post &&
     data.post.post_type === "post" &&
     data.post.post_status === "publish"
-  );
-};
+  )
+}
 
 const findInteractionByPostId = async postId => {
   const post = await InteractionModel.findOne({
     messageIdentifier: postId
-  }).exec();
+  }).exec()
 
-  return post || false;
-};
+  return post || false
+}
 
 const getUserById = async userId => {
-  const url = `${process.env.BLOG_API_URL}/users/${userId}`;
+  const url = `${process.env.BLOG_API_URL}/users/${userId}`
   let res = await axios.get(url, {
     accept: "json"
-  });
-  return res ? res.data : false;
-};
+  })
+  return res ? res.data : false
+}
 
 const findUser = async data => {
-  let user;
+  let user
 
-  const blogUser = await getUserById(data.post.post_author);
+  const blogUser = await getUserById(data.post.post_author)
   if (blogUser) {
     user = await userController.findBy({
       email: blogUser.user_email
-    });
+    })
   }
 
-  return user;
-};
+  return user
+}
 
 const normalize = data => {
   if (data.type == "comment") {
@@ -83,7 +83,7 @@ const normalize = data => {
       category: config.categories.network.type,
       action: config.actions.blog.type,
       score: config.xprules.blog.comment
-    };
+    }
   } else if (data.type == "article") {
     return {
       origin: "blog",
@@ -98,11 +98,11 @@ const normalize = data => {
       category: config.categories.network.type,
       action: config.actions.blog.type,
       score: config.xprules.blog.post
-    };
+    }
   }
-};
+}
 
 export default {
   index,
   normalize
-};
+}
