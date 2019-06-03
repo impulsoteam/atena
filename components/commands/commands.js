@@ -4,6 +4,7 @@ import userController from "../../controllers/user";
 
 const show = async req => {
   const username = req.u.username;
+  const isCoreTeam = await userController.isCoreTeam({ username });
   const response = {
     msg: "*Eis a nossa lista de comandos!*",
     attachments: [
@@ -26,6 +27,18 @@ const show = async req => {
     ]
   };
 
+  const coreTeamAttachments = [
+    {
+      text: `Digite ${"`!darpontos`"} ${"`@nome-usuario`"} ${"`pontos`"} ${"`motivo`"} para dar pontos ao usuário. `
+    }
+  ];
+
+  if (isCoreTeam) {
+    coreTeamAttachments.map(attachment =>
+      response.attachments.push(attachment)
+    );
+  }
+
   driver.sendDirectToUser(response, username);
 };
 
@@ -33,7 +46,7 @@ const givePoints = async data => {
   const { msg, u } = data;
   const isCoreTeam = await userController.isCoreTeam({ username: u.username });
   // eslint-disable-next-line no-useless-escape
-  const checkFields = /(![a-z]+) (@[a-z\-]+) ([\d]+) (`.+`)/g;
+  const checkFields = /(@[a-z\-]+) ([\d]+) (`.+`)/g;
   const result = checkFields.exec(msg);
   let user;
   let errorMessage;
@@ -58,7 +71,7 @@ const givePoints = async data => {
 
   try {
     user = await userController.findBy({
-      username: result[2].replace("@", "")
+      username: result[1].replace("@", "")
     });
   } catch (error) {
     errorMessage = {
@@ -67,13 +80,13 @@ const givePoints = async data => {
     driver.sendDirectToUser(errorMessage, u.username);
     return;
   }
-
-  const score = parseInt(result[3]);
-  const messageToUser = result[4].replace("`", "").slice(0, -1);
+  const oldScore = user.score;
+  const score = parseInt(result[2]);
+  const messageToUser = result[3].replace("`", "").slice(0, -1);
 
   const sucess = await userController.updateScore(user, score);
 
-  if (sucess.score > user.score) {
+  if (sucess.score > oldScore) {
     const confirmMessage = {
       msg: `Sucesso! Enviaste *${score} pontos de experiencia* para ${
         user.name
@@ -82,11 +95,12 @@ const givePoints = async data => {
     const notificationMessage = {
       msg: `Acabaste de receber *${score} pontos* de experiência por *${messageToUser}*.`
     };
+
     driver.sendDirectToUser(confirmMessage, u.username);
     driver.sendDirectToUser(notificationMessage, user.username);
   } else {
     errorMessage = {
-      msg: "Opa, aconteceu algo inesperado. Sua pontuação não foi enviada!"
+      msg: "Opa, aconteceu algo inesperado. Tua pontuação não foi enviada!"
     };
     driver.sendDirectToUser(errorMessage, u.username);
   }
