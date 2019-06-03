@@ -38,7 +38,7 @@ const givePoints = async data => {
   let user;
   let errorMessage;
 
-  if (isCoreTeam) {
+  if (!isCoreTeam) {
     errorMessage = {
       msg: "Opa!! *Não tens acesso* a esta operação!"
     };
