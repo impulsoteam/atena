@@ -297,7 +297,7 @@ const sendToChannel = async () => {
 const position = async (users, first = 0, limit = 20) =>
   users.slice(first, limit).map((user, index) => ({
     name: user.name,
-    xp: user.score,
+    xp: user.score || user.xp,
     level: user.level,
     avatar: user.avatar,
     teams: user.teams || [],
@@ -394,7 +394,7 @@ const index = async (req, res) => {
     page: "ranking"
   };
 
-  if (isMiner && isValidToken(team, token)) {
+  if (req.query.format === "json" || (isMiner && isValidToken(team, token))) {
     res.json(initialData);
   } else {
     renderScreen(req, res, "Ranking", initialData);
