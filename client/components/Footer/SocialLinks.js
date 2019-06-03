@@ -1,30 +1,30 @@
-import React from "react"
-import StyledSocialLinks from "./SocialLinks.style"
+import React from 'react'
+import StyledSocialLinks from './SocialLinks.style'
 
 const links = [
   {
-    icon: "facebook-f",
-    link: "https://www.facebook.com/workimpulso"
+    icon: 'facebook-f',
+    link: 'https://www.facebook.com/workimpulso'
   },
   {
-    icon: "twitter",
-    link: "https://twitter.com/impulsonetwork"
+    icon: 'twitter',
+    link: 'https://twitter.com/impulsonetwork'
   },
   {
-    icon: "linkedin-in",
-    link: "https://www.linkedin.com/company/impulsowork/"
+    icon: 'linkedin-in',
+    link: 'https://www.linkedin.com/company/impulsowork/'
   },
   {
-    icon: "instagram",
-    link: "https://www.instagram.com/impulso.network/"
+    icon: 'instagram',
+    link: 'https://www.instagram.com/impulso.network/'
   },
   {
-    icon: "github",
-    link: "https://github.com/impulsonetwork"
+    icon: 'github',
+    link: 'https://github.com/impulsonetwork'
   },
   {
-    icon: "rocketchat",
-    link: "https://chat.impulso.network"
+    icon: 'rocketchat',
+    link: 'https://chat.impulso.network'
   }
 ]
 

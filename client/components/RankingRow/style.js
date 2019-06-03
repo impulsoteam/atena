@@ -1,5 +1,5 @@
-import styled from "styled-components"
-import StyledRankingHeader from "components/RankingHeader/style"
+import styled from 'styled-components'
+import StyledRankingHeader from 'components/RankingHeader/style'
 
 export const StyledRankingRow = styled(StyledRankingHeader)`
   background-color: ${props => props.theme.color.white};

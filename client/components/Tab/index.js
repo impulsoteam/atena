@@ -1,6 +1,6 @@
-import React, { Fragment } from "react"
-import PropTypes from "prop-types"
-import StyledTab from "./style"
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import StyledTab from './style'
 
 const renderItem = ({ title, content }, index) => (
   <a key={index} href="javascript:;" className="tab__item">

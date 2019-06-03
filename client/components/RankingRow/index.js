@@ -1,6 +1,6 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { StyledRankingRow } from "./style"
+import React from 'react'
+import PropTypes from 'prop-types'
+import { StyledRankingRow } from './style'
 
 const RankingRow = ({ position, name, avatar, level, xp }) => (
   <StyledRankingRow>

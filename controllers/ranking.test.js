@@ -1,22 +1,22 @@
-import { driver } from "@rocket.chat/sdk"
-import controller from "./ranking"
-import { message } from "../mocks/rocket"
+import { driver } from '@rocket.chat/sdk'
+import controller from './ranking'
+import { message } from '../mocks/rocket'
 
-jest.mock("@rocket.chat/sdk")
+jest.mock('@rocket.chat/sdk')
 
-describe("Ranking Controller", () => {
-  describe("Command Index", () => {
-    it("should return ranking to user", done => {
+describe('Ranking Controller', () => {
+  describe('Command Index', () => {
+    it('should return ranking to user', done => {
       controller.generalIndex = jest.fn().mockReturnValue({
-        text: "Ranking do mês de Março não gerado ou encontrado"
+        text: 'Ranking do mês de Março não gerado ou encontrado'
       })
-      driver.sendDirectToUser = jest.fn().mockReturnValue("mock value")
+      driver.sendDirectToUser = jest.fn().mockReturnValue('mock value')
       const rankingMessage = {
         ...message,
-        msg: "!ranking 1"
+        msg: '!ranking 1'
       }
       const mockCustomResponse = {
-        msg: "Ranking do mês de Março não gerado ou encontrado",
+        msg: 'Ranking do mês de Março não gerado ou encontrado',
         attachments: undefined
       }
       controller.commandIndex(rankingMessage).then(() => {

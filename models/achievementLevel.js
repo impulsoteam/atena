@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 const recordSchema = new mongoose.Schema({
   name: String,
@@ -42,7 +42,7 @@ const ratingSchema = new mongoose.Schema({
 const achievementLevelSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true
   },
   record: {
@@ -61,7 +61,7 @@ const achievementLevelSchema = new mongoose.Schema({
 })
 
 export default mongoose.model(
-  "AchievementLevel",
+  'AchievementLevel',
   achievementLevelSchema,
-  "achievementsLevel"
+  'achievementsLevel'
 )

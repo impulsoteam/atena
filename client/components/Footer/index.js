@@ -1,6 +1,6 @@
-import React from "react"
-import { StyledFooter, StyledCopyright } from "./style"
-import SocialLinks from "./SocialLinks"
+import React from 'react'
+import { StyledFooter, StyledCopyright } from './style'
+import SocialLinks from './SocialLinks'
 
 const Footer = () => (
   <StyledFooter>

@@ -1,10 +1,10 @@
-import moment from "moment-timezone"
-import AchievementTemporary from "../models/achievementTemporary"
+import moment from 'moment-timezone'
+import AchievementTemporary from '../models/achievementTemporary'
 
 export const generateKind = data => {
   let kind = null
 
-  if (data.channel.toLowerCase() === "rocket") {
+  if (data.channel.toLowerCase() === 'rocket') {
     kind = `${data.category.toLowerCase()}.${data.action.toLowerCase()}.${data.type.toLowerCase()}`
   } else {
     kind = `${data.category.toLowerCase()}.${data.channel.toLowerCase()}.${data.action.toLowerCase()}`
@@ -28,19 +28,19 @@ export const convertDataToAchievement = (achievementTemporaryData, user) => {
 export const generateDates = data => {
   const initialDate = moment(new Date(data.initialDate))
     .utc()
-    .startOf("day")
+    .startOf('day')
     .format()
 
   data.limitDate = data.limitDate || data.endDate
 
   const limitDate = moment(new Date(data.limitDate))
     .utc()
-    .endOf("day")
+    .endOf('day')
     .format()
 
   const endDate = moment(new Date(data.endDate))
     .utc()
-    .endOf("day")
+    .endOf('day')
     .format()
 
   return {
@@ -111,7 +111,7 @@ const convertNumberToRoman = num => {
     I: 1
   }
 
-  let str = ""
+  let str = ''
   for (let i of Object.keys(roman)) {
     const q = Math.floor(num / roman[i])
     num -= q * roman[i]

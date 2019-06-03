@@ -1,7 +1,7 @@
 // import { _throw } from "../helpers";
-import { sendToUser } from "../rocket/bot"
-import { calculateAchievementsPosition } from "./calculateAchievementsPosition"
-import { getLastAchievementRatingEarned } from "./achievements"
+import { sendToUser } from '../rocket/bot'
+import { calculateAchievementsPosition } from './calculateAchievementsPosition'
+import { getLastAchievementRatingEarned } from './achievements'
 
 export const sendEarnedAchievementMessage = async (
   user,
@@ -9,13 +9,13 @@ export const sendEarnedAchievementMessage = async (
   isAchievementLevel = false
 ) => {
   if (!user) {
-    console.log("Error no user pass to send earned achievement messages")
+    console.log('Error no user pass to send earned achievement messages')
   }
 
   if (!achievement) {
-    console.log("Error no achievement pass to send earned achievement messages")
+    console.log('Error no achievement pass to send earned achievement messages')
   }
-  const name = achievement.name.split(" | ")
+  const name = achievement.name.split(' | ')
 
   let privateMessage = `:medal: Você obteve a conquista [${
     achievement.rating
@@ -78,7 +78,7 @@ export const generateAchievementLevelMessage = achievement => {
   const lastRating = getLastAchievementRatingEarned(achievement)
   const recordRange = achievement.record.range
     ? ` ${achievement.record.range}`
-    : ""
+    : ''
 
   messages.push({
     text: `*Network | Nível*:

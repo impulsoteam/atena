@@ -1,21 +1,21 @@
-import config from "config-yml"
-import express from "express"
-import axios from "axios"
-import bodyParser from "body-parser"
-import { analyticsSendBotCollect, getRanking } from "../utils"
-import userController from "../controllers/user"
-import interactionController from "../controllers/interaction"
-import achievementController from "../controllers/achievement"
-import achievementTemporaryController from "../controllers/achievementTemporary"
-import achievementLevelController from "../controllers/achievementLevel"
-import rankingController from "../controllers/ranking"
-import { isCoreTeam } from "../utils"
-import { sendMessage } from "../rocket/bot"
+import config from 'config-yml'
+import express from 'express'
+import axios from 'axios'
+import bodyParser from 'body-parser'
+import { analyticsSendBotCollect, getRanking } from '../utils'
+import userController from '../controllers/user'
+import interactionController from '../controllers/interaction'
+import achievementController from '../controllers/achievement'
+import achievementTemporaryController from '../controllers/achievementTemporary'
+import achievementLevelController from '../controllers/achievementLevel'
+import rankingController from '../controllers/ranking'
+import { isCoreTeam } from '../utils'
+import { sendMessage } from '../rocket/bot'
 import {
   generateAchievementsMessages,
   generateAchievementsTemporaryMessages,
   generateAchievementLevelMessage
-} from "../utils/achievementsMessages"
+} from '../utils/achievementsMessages'
 
 const router = express.Router()
 
@@ -23,15 +23,15 @@ const urlencodedParser = bodyParser.urlencoded({ extended: true })
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: true }))
 
-router.post("/score", urlencodedParser, async (req, res) => {
+router.post('/score', urlencodedParser, async (req, res) => {
   let user = {}
   let query_user
   let myPosition = 0
   let response = {
-    text: "Ops! Você ainda não tem pontos registrados."
+    text: 'Ops! Você ainda não tem pontos registrados.'
   }
 
-  if (req.headers.origin === "rocket") {
+  if (req.headers.origin === 'rocket') {
     req.body.user_id = req.body.id
     query_user = { rocketId: req.body.user_id }
   } else {
@@ -53,20 +53,20 @@ router.post("/score", urlencodedParser, async (req, res) => {
     }
     analyticsSendBotCollect(req.body)
   } catch (e) {
-    console.log("Bot -> Score:", e)
+    console.log('Bot -> Score:', e)
   }
 
   res.json(response)
 })
 
-router.post("/ranking", rankingController.bot_index)
+router.post('/ranking', rankingController.bot_index)
 
-router.get("/ranking-save", async (req, res) => {
+router.get('/ranking-save', async (req, res) => {
   await rankingController.save()
-  res.send("save")
+  res.send('save')
 })
 
-router.post("/general-raking", urlencodedParser, async (req, res) => {
+router.post('/general-raking', urlencodedParser, async (req, res) => {
   let response = {}
 
   try {
@@ -81,7 +81,7 @@ router.post("/general-raking", urlencodedParser, async (req, res) => {
   res.json(response)
 })
 
-router.post("/coreteamranking", urlencodedParser, async (req, res) => {
+router.post('/coreteamranking', urlencodedParser, async (req, res) => {
   let response = {}
 
   if (isCoreTeam(req.body.user_id)) {
@@ -93,13 +93,13 @@ router.post("/coreteamranking", urlencodedParser, async (req, res) => {
     }
   } else {
     response.text =
-      "Você não faz parte do Core Team nem um cavaleiro de ouro, tente ver o seu ranking com o comando */ranking*"
+      'Você não faz parte do Core Team nem um cavaleiro de ouro, tente ver o seu ranking com o comando */ranking*'
   }
 
   res.json(response)
 })
 
-router.post("/feedback", urlencodedParser, async (req, res) => {
+router.post('/feedback', urlencodedParser, async (req, res) => {
   let user = {}
   let response = {}
   try {
@@ -118,27 +118,27 @@ router.post("/feedback", urlencodedParser, async (req, res) => {
 
   res.json({
     text:
-      "Super Obrigado pelo feedback, vou compartilhar isso com Seiya e os outros cavaleiros já! =D"
+      'Super Obrigado pelo feedback, vou compartilhar isso com Seiya e os outros cavaleiros já! =D'
   })
 
   return response
 })
 
-router.post("/sendpoints", urlencodedParser, async (req, res) => {
+router.post('/sendpoints', urlencodedParser, async (req, res) => {
   let response = {
-    text: "você tá tentando dar pontos prum coleguinha, né?!"
+    text: 'você tá tentando dar pontos prum coleguinha, né?!'
   }
-  const value = +req.body.text.split("> ")[1] || 0
-  const theUser = req.body.username || "ninguém"
+  const value = +req.body.text.split('> ')[1] || 0
+  const theUser = req.body.username || 'ninguém'
   const impulser =
     req.body.text
-      .split("|")[0]
-      .substring(2, req.body.text.split("|")[0].length) || "ninguém"
+      .split('|')[0]
+      .substring(2, req.body.text.split('|')[0].length) || 'ninguém'
 
   if (config.coreteam.admins.some(user => user === theUser)) {
     try {
       await interactionController.manualInteractions({
-        type: "manual",
+        type: 'manual',
         user: impulser,
         text: `você recebeu esses ${value} pontos de @${theUser}`,
         value: value
@@ -147,33 +147,33 @@ router.post("/sendpoints", urlencodedParser, async (req, res) => {
       response.text = `você tá dando ${value} pontos para @${impulser}`
     } catch (e) {
       response.text =
-        "Ocorreu um erro nessa sua tentativa legal de dar pontos para outro coleguinha"
+        'Ocorreu um erro nessa sua tentativa legal de dar pontos para outro coleguinha'
       console.log(e)
     }
   } else {
     response.text =
-      "Nobre cavaleiro(a) da casa de bronze, infelizmente sua armadura não dá permissão para tal façanha =/"
+      'Nobre cavaleiro(a) da casa de bronze, infelizmente sua armadura não dá permissão para tal façanha =/'
   }
 
   res.json(response)
 })
 
-router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
-  let response = { msg: "Ops! Você ainda não tem conquistas registradas. :(" }
+router.post('/minhasconquistas', urlencodedParser, async (req, res) => {
+  let response = { msg: 'Ops! Você ainda não tem conquistas registradas. :(' }
 
   try {
     let user = {}
     let attachments = []
     let interaction = {}
 
-    if (req.headers.origin === "rocket") {
+    if (req.headers.origin === 'rocket') {
       interaction = {
-        origin: "rocket",
+        origin: 'rocket',
         user: req.body.id
       }
     } else {
       interaction = {
-        origin: "slack",
+        origin: 'slack',
         user: req.body.user_id
       }
     }
@@ -218,13 +218,13 @@ router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
       }
     }
   } catch (e) {
-    console.log("Bot -> Minhas Conquistas:", e)
+    console.log('Bot -> Minhas Conquistas:', e)
   }
 
   res.json(response)
 })
 
-router.post("/enviarcomoatena", urlencodedParser, req => {
+router.post('/enviarcomoatena', urlencodedParser, req => {
   const message = req.body.text
 
   if (

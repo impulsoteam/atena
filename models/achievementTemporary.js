@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 const recordSchema = new mongoose.Schema({
   name: String,
@@ -55,17 +55,17 @@ const achievementTemporarySchema = new mongoose.Schema({
   },
   temporaryData: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "AchievementTemporaryData",
+    ref: 'AchievementTemporaryData',
     required: true
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true
   },
   rangeTime: {
     type: String,
-    enum: ["daily", "weekly", "monthly", "yearly"],
+    enum: ['daily', 'weekly', 'monthly', 'yearly'],
     required: true
   },
   startDate: {
@@ -89,7 +89,7 @@ const achievementTemporarySchema = new mongoose.Schema({
 })
 
 export default mongoose.model(
-  "AchievementTemporary",
+  'AchievementTemporary',
   achievementTemporarySchema,
-  "achievementsTemporary"
+  'achievementsTemporary'
 )

@@ -1,42 +1,42 @@
-import { calculateAchievementsPosition as calc } from "./calculateAchievementsPosition"
+import { calculateAchievementsPosition as calc } from './calculateAchievementsPosition'
 
-describe("Test CalculateAchievementsPosition", () => {
+describe('Test CalculateAchievementsPosition', () => {
   const achievements = {
-    name: "Network | Reações Recebidas",
-    kind: "network.reaction.received",
-    user: "UEKPNV91C",
+    name: 'Network | Reações Recebidas',
+    kind: 'network.reaction.received',
+    user: 'UEKPNV91C',
     total: 1,
     ratings: []
   }
 
   const ratings = [
     {
-      name: "Bronze",
+      name: 'Bronze',
       xp: 5,
       ranges: [
         {
-          name: "I",
+          name: 'I',
           value: 1,
           earnedDate: null
         },
         {
-          name: "II",
+          name: 'II',
           value: 2,
           earnedDate: null
         }
       ]
     },
     {
-      name: "Prata",
+      name: 'Prata',
       xp: 10,
       ranges: [
         {
-          name: "I",
+          name: 'I',
           value: 3,
           earnedDate: null
         },
         {
-          name: "II",
+          name: 'II',
           value: 4,
           earnedDate: null
         }
@@ -44,12 +44,12 @@ describe("Test CalculateAchievementsPosition", () => {
     }
   ]
 
-  it("should not undefined", () => {
+  it('should not undefined', () => {
     expect(calc).not.toBeUndefined()
   })
 
-  describe("Test achievements positions", () => {
-    it("should return an object with first rating.range if was no earnedDate", () => {
+  describe('Test achievements positions', () => {
+    it('should return an object with first rating.range if was no earnedDate', () => {
       const ratingWithoutEarnedDate = JSON.parse(JSON.stringify(ratings))
       achievements.ratings = ratingWithoutEarnedDate
       const achievementsWithoutEarnedDate = [achievements]
@@ -71,7 +71,7 @@ describe("Test CalculateAchievementsPosition", () => {
       )
     })
 
-    it("should return an object with rating.range first earnedDate is null", () => {
+    it('should return an object with rating.range first earnedDate is null', () => {
       const ratingWithEarnedDate = JSON.parse(JSON.stringify(ratings))
       ratingWithEarnedDate[0].ranges[0].earnedDate = Date.now()
       ratingWithEarnedDate[0].ranges[1].earnedDate = Date.now()
@@ -95,7 +95,7 @@ describe("Test CalculateAchievementsPosition", () => {
       )
     })
 
-    it("should return an object with last rating.range when all earnedDate filled", () => {
+    it('should return an object with last rating.range when all earnedDate filled', () => {
       const ratingWithAllEarnedDate = JSON.parse(JSON.stringify(ratings))
       const ratingsWithAllEarnedDate = ratingWithAllEarnedDate.map(rating => {
         rating.ranges = rating.ranges.map(range => {

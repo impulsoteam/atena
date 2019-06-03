@@ -1,13 +1,13 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
   StyledUserCard,
   StyledContainer,
   StyledPosition,
   StyledInfo,
   StyledPoint
-} from "./style"
-import { Flex } from "@rebass/grid"
+} from './style'
+import { Flex } from '@rebass/grid'
 
 const Position = ({ children }) => <StyledPosition>{children}</StyledPosition>
 
@@ -49,7 +49,7 @@ UserCard.propTypes = {
 }
 
 UserCard.defaultProps = {
-  width: "325px"
+  width: '325px'
 }
 
 Container.propTypes = {

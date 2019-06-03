@@ -1,14 +1,14 @@
-import moment from "moment"
+import moment from 'moment'
 import {
   getInteractionType,
   getRecord,
   getCurrentScoreToIncrease,
   getAchievementNextRating,
   saveScoreInteraction
-} from "./achievements"
-import { convertDataToAchievement } from "./achievementsTemporaryData"
-import { sendEarnedAchievementMessage } from "./achievementsMessages"
-import userController from "../controllers/user"
+} from './achievements'
+import { convertDataToAchievement } from './achievementsTemporaryData'
+import { sendEarnedAchievementMessage } from './achievementsMessages'
+import userController from '../controllers/user'
 
 const today = moment(new Date())
   .utc()
@@ -53,7 +53,7 @@ const addScore = async (user, temporaryAchievement) => {
     user,
     temporaryAchievement,
     score,
-    "Conquista Temporária"
+    'Conquista Temporária'
   )
   await sendEarnedAchievementMessage(
     user,
@@ -127,7 +127,7 @@ const isInDeadline = temporaryAchievement => {
       temporaryAchievement.rangeTime
     )
     const today = moment(new Date()).utc()
-    return !today.isSame(lastEarnedDate, "day") && today.isBefore(deadlineDate)
+    return !today.isSame(lastEarnedDate, 'day') && today.isBefore(deadlineDate)
   }
 
   return true
@@ -135,11 +135,11 @@ const isInDeadline = temporaryAchievement => {
 
 const generateDeadlineDate = (date, rangeTime) => {
   let deadlineDate = date
-  if (rangeTime == "daily") {
+  if (rangeTime == 'daily') {
     deadlineDate = moment(date)
-      .add(1, "days")
+      .add(1, 'days')
       .utc()
-      .endOf("day")
+      .endOf('day')
       .toISOString()
   }
 

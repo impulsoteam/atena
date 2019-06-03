@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 const channelCheckPointSchema = new mongoose.Schema({
   beginDate: {
@@ -37,4 +37,4 @@ const channelCheckPointSchema = new mongoose.Schema({
   }
 })
 
-export default mongoose.model("ChannelCheckpoint", channelCheckPointSchema)
+export default mongoose.model('ChannelCheckpoint', channelCheckPointSchema)

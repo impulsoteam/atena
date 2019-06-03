@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 const checkpointSchema = new mongoose.Schema({
   level: {
@@ -16,4 +16,4 @@ const checkpointSchema = new mongoose.Schema({
   rewards: []
 })
 
-export default mongoose.model("Checkpoint", checkpointSchema)
+export default mongoose.model('Checkpoint', checkpointSchema)

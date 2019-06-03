@@ -1,11 +1,11 @@
-import config from "config-yml"
+import config from 'config-yml'
 
 const normalize = data => {
   const dateMessage = data.history
-    ? new Date(data.ts).toLocaleString("en-US")
-    : new Date(data.ts["$date"])
+    ? new Date(data.ts).toLocaleString('en-US')
+    : new Date(data.ts['$date'])
   let response = {
-    origin: "rocket",
+    origin: 'rocket',
     category: config.categories.network.type,
     channel: data.rid,
     channelName: data.roomName || null,
@@ -25,7 +25,7 @@ const normalize = data => {
     }
   } else {
     if (data.attachments) {
-      data.msg = "attachment"
+      data.msg = 'attachment'
     }
 
     response = {
@@ -42,9 +42,9 @@ const normalize = data => {
 }
 
 const type = data => {
-  let type = "message"
+  let type = 'message'
   if (data.reactions) {
-    type = "reaction_added"
+    type = 'reaction_added'
   }
   return type
 }

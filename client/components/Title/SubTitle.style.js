@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const StyledSubTitle = styled.h2`
   font-size: 28px;

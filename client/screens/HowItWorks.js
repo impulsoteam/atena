@@ -1,13 +1,13 @@
-import React from "react"
-import StyledScreenHowItWorks from "./HowItWorks.style"
-import Layout from "../Layout"
-import { Flex, Box } from "@rebass/grid"
-import FullPage from "../components/FullPage"
-import Title from "../components/Title"
-import SubTitle from "../components/Title/SubTitle"
-import Card from "../components/Card"
-import Button from "../components/Button"
-import Faq from "../components/Faq"
+import React from 'react'
+import StyledScreenHowItWorks from './HowItWorks.style'
+import Layout from '../Layout'
+import { Flex, Box } from '@rebass/grid'
+import FullPage from '../components/FullPage'
+import Title from '../components/Title'
+import SubTitle from '../components/Title/SubTitle'
+import Card from '../components/Card'
+import Button from '../components/Button'
+import Faq from '../components/Faq'
 
 const ScreenHowItWorks = props => {
   return (
@@ -35,7 +35,7 @@ const ScreenHowItWorks = props => {
                 <br />o que é a <span className="red">Atena</span> ?
               </Title>
               <p className="super">
-                Inspirada na deusa grega da sabedoria, a <strong>Atena</strong>{" "}
+                Inspirada na deusa grega da sabedoria, a <strong>Atena</strong>{' '}
                 é uma iniciativa <strong>open source</strong> de gamificação da
                 Impulso, que tem como objetivos promover o engajamento e premiar
                 os esforços das pessoas que pertencem à Impulso Network.
@@ -44,7 +44,7 @@ const ScreenHowItWorks = props => {
               <p className="super ifdesktop">
                 Assim que você entra na comunidade, automaticamente se tornará
                 um(a) jogador(a) e poderá pontuar por meio da execução de
-                diversas <strong>atividades</strong>, alcançar{" "}
+                diversas <strong>atividades</strong>, alcançar{' '}
                 <strong>Níveis</strong> e obter <strong>conquistas</strong> como
                 reconhecimento pelos seus esforços.
               </p>
@@ -62,7 +62,7 @@ const ScreenHowItWorks = props => {
                 ganhar <span className="red">xp</span>?
               </Title>
               <p className="super">
-                Sua pontuação será medida em{" "}
+                Sua pontuação será medida em{' '}
                 <strong>Pontos de Experiência (XP)</strong>. Esse recurso é
                 muito utilizado nos jogos como uma representação numérica do
                 esforço e aprendizado obtido por um(a) personagem. Aqui na
@@ -93,7 +93,7 @@ const ScreenHowItWorks = props => {
           `
             }}
           />
-          <Flex css={{ margin: "0 -25px" }} className="rules ifdesktop">
+          <Flex css={{ margin: '0 -25px' }} className="rules ifdesktop">
             <Box width={1 / 3} px={0}>
               <a
                 href="javascript:;"
@@ -123,7 +123,7 @@ const ScreenHowItWorks = props => {
             </Box>
           </Flex>
           <Flex
-            css={{ margin: "0 -30px" }}
+            css={{ margin: '0 -30px' }}
             className="rules__inner rules__inner-1 selected"
             flexWrap="wrap"
           >
@@ -134,7 +134,7 @@ const ScreenHowItWorks = props => {
                 OBTENDO XP
               </Title>
               <p>
-                A obtenção de pontos é feita através da{" "}
+                A obtenção de pontos é feita através da{' '}
                 <strong>realização de atividades</strong> dentro da Impulso. Por
                 exemplo: participar de um curso da Impulso Academy, reagir à uma
                 mensagem no Rocket.chat e até criar uma postagem no nosso Blog.
@@ -167,7 +167,7 @@ const ScreenHowItWorks = props => {
             </Box>
           </Flex>
           <Flex
-            css={{ margin: "0 -30px" }}
+            css={{ margin: '0 -30px' }}
             className="rules__inner rules__inner-2"
             flexWrap="wrap"
           >
@@ -179,7 +179,7 @@ const ScreenHowItWorks = props => {
               </Title>
               <p>
                 Em oposição às atividades que promovem a obtenção de XP, a única
-                forma de perder pontos de experiência é através da{" "}
+                forma de perder pontos de experiência é através da{' '}
                 <strong>Inatividade Completa</strong> na comunidade Impulso. A
                 inatividade começa a contar no dia seguinte à sua última
                 participação e a perda de pontos a partir da quantidade de dias
@@ -188,7 +188,7 @@ const ScreenHowItWorks = props => {
             </Box>
           </Flex>
           <Flex
-            css={{ margin: "0 -30px" }}
+            css={{ margin: '0 -30px' }}
             className="rules__inner rules__inner-3"
             flexWrap="wrap"
           >
@@ -209,7 +209,7 @@ const ScreenHowItWorks = props => {
           </Flex>
         </section>
         <section className="container cards">
-          <Flex css={{ margin: "0 -25px" }} flexWrap="wrap">
+          <Flex css={{ margin: '0 -25px' }} flexWrap="wrap">
             <Box width={[1, 1 / 2]} px={25}>
               <Card>
                 <img src="/images/stars.svg" />
@@ -234,14 +234,14 @@ const ScreenHowItWorks = props => {
               width={[1, 1 / 2]}
               px={25}
               css={{
-                display: "flex",
-                flexDirection: "column"
+                display: 'flex',
+                flexDirection: 'column'
               }}
             >
               <Card>
                 <img src="/images/badge.svg" />
                 <Title>
-                  O QUE SÃO E <br /> COMO GANHAR <br />{" "}
+                  O QUE SÃO E <br /> COMO GANHAR <br />{' '}
                   <span className="red">CONQUISTAS</span>?
                 </Title>
                 <p className="super">

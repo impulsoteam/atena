@@ -1,6 +1,6 @@
-import React from "react"
-import Layout from "../Layout"
-import Title from "../components/Title"
+import React from 'react'
+import Layout from '../Layout'
+import Title from '../components/Title'
 
 const ScreenIndex = () => {
   return (

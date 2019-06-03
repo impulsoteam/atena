@@ -1,9 +1,10 @@
-import { driver } from "@rocket.chat/sdk"
-import interactionController from "../controllers/interaction"
-import rankingController from "../controllers/ranking"
-import userController from "../controllers/user"
-import achievementController from "../controllers/achievement"
-import * as customCommands from "../components/commands"
+import { driver } from '@rocket.chat/sdk'
+import interactionController from '../controllers/interaction'
+import rankingController from '../controllers/ranking'
+import userController from '../controllers/user'
+import achievementController from '../controllers/achievement'
+import * as customCommands from '../components/commands'
+import { auth as authGithub, addRepository } from '../components/github'
 
 var myuserid
 const runBot = async () => {
@@ -29,7 +30,10 @@ const commands = async message => {
     meusPontos: /^!meuspontos$/g,
     minhasConquistas: /^!minhasconquistas$/g,
     isPro: /^!pro$/g,
-    commands: /^!comandos$/g
+    commands: /^!comandos$/g,
+    openSource: /^!opensource$/g,
+    openSourceAddRepository: /^!addrepositorio[ \d\w]*$/g,
+    transfere: /^!transfere[ \d\w \dw]*$/g
   }
 
   if (regex.meusPontos.test(message.msg)) {
@@ -44,6 +48,10 @@ const commands = async message => {
     userController.isPro(message)
   } else if (regex.commands.test(message.msg)) {
     customCommands.show(message)
+  } else if (regex.openSource.test(message.msg)) {
+    authGithub(message)
+  } else if (regex.openSourceAddRepository.test(message.msg)) {
+    addRepository(message)
   }
 
   return
@@ -51,8 +59,8 @@ const commands = async message => {
 
 const processMessages = async (err, message, messageOptions) => {
   if (!err) {
-    message.origin = "rocket"
-    console.log("MESSAGE: ", message, messageOptions)
+    message.origin = 'rocket'
+    console.log('MESSAGE: ', message, messageOptions)
 
     if (!message.reactions) {
       await commands(message)
@@ -61,7 +69,7 @@ const processMessages = async (err, message, messageOptions) => {
     if (
       message.u._id === myuserid ||
       message.t ||
-      messageOptions.roomType === "d"
+      messageOptions.roomType === 'd'
     )
       return
 
@@ -72,12 +80,12 @@ const processMessages = async (err, message, messageOptions) => {
 
     interactionController.save(message).catch(() => {
       console.log(
-        "Erro ao salvar interação do usuário: id: ",
+        'Erro ao salvar interação do usuário: id: ',
         message.u._id,
-        " name: ",
+        ' name: ',
         message.u.name,
-        " em: ",
-        new Date(message.ts["$date"]).toLocaleDateString("en-US")
+        ' em: ',
+        new Date(message.ts['$date']).toLocaleDateString('en-US')
       )
     })
   } else {
@@ -96,7 +104,7 @@ export const sendToUser = async (message, user) => {
   }
 }
 
-export const sendMessage = async (message, room = "comunicados") => {
+export const sendMessage = async (message, room = 'comunicados') => {
   try {
     console.log(message, room)
     await driver.sendToRoom(message, room)

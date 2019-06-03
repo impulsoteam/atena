@@ -1,11 +1,11 @@
-import config from "config-yml"
-import AchievementLevelModel from "../models/achievementLevel"
-import { setRangesEarnedDates, isNewLevel } from "../utils/achievementsLevel"
-import { getLevelRecord } from "../utils/achievements"
+import config from 'config-yml'
+import AchievementLevelModel from '../models/achievementLevel'
+import { setRangesEarnedDates, isNewLevel } from '../utils/achievementsLevel'
+import { getLevelRecord } from '../utils/achievements'
 
 const findAll = async () => {
   const achievementsLevel = await AchievementLevelModel.find()
-    .populate("user")
+    .populate('user')
     .exec()
 
   return achievementsLevel
@@ -21,7 +21,7 @@ const findByUser = async userId => {
 
 const save = async (userId, currentLevel, newLevel) => {
   if (!userId) {
-    console.log("Error user found on save achievement level")
+    console.log('Error user found on save achievement level')
     return
   }
 
@@ -30,7 +30,7 @@ const save = async (userId, currentLevel, newLevel) => {
     try {
       return await defaultFunctions.createAchievement(userId, newLevel)
     } catch (error) {
-      console.log("Error on create level achievement")
+      console.log('Error on create level achievement')
     }
   } else if (isNewLevel(currentLevel, newLevel)) {
     try {
@@ -39,7 +39,7 @@ const save = async (userId, currentLevel, newLevel) => {
         newLevel
       )
     } catch (error) {
-      console.log("Error on update level achievement")
+      console.log('Error on update level achievement')
     }
   }
 }
@@ -69,7 +69,7 @@ const generateNewAchievement = async (userId, newLevel) => {
 }
 
 const generateRatings = () => {
-  const achievementsLevel = config["achievements-network"].level
+  const achievementsLevel = config['achievements-network'].level
 
   let ratings = []
   for (let item in achievementsLevel) {

@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const StyledHeader = styled.header`
   max-width: ${props => props.theme.gridSize};

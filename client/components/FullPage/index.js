@@ -1,8 +1,8 @@
-import React from "react"
-import PropTypes from "prop-types"
-import StyledFullPage from "./style"
+import React from 'react'
+import PropTypes from 'prop-types'
+import StyledFullPage from './style'
 
-const FullPage = ({ background, children, height = "100" }) => (
+const FullPage = ({ background, children, height = '100' }) => (
   <StyledFullPage background={background} height={height}>
     {children}
   </StyledFullPage>

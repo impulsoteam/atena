@@ -1,4 +1,4 @@
-import { isValidToken } from "../utils/teams"
+import { isValidToken } from '../utils/teams'
 
 const isMiner = async (req, res) => {
   const miner = /miner/g

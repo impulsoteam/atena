@@ -1,6 +1,6 @@
-import React from "react"
-import PropTypes from "prop-types"
-import StyledTitle from "./style"
+import React from 'react'
+import PropTypes from 'prop-types'
+import StyledTitle from './style'
 
 const Title = ({ children, extraLarge, width, align, ...others }) => (
   <StyledTitle extraLarge={extraLarge} width={width} align={align} {...others}>
@@ -17,8 +17,8 @@ Title.propTypes = {
 
 Title.defaultProps = {
   extraLarge: false,
-  width: "auto",
-  align: "left"
+  width: 'auto',
+  align: 'left'
 }
 
 export default Title

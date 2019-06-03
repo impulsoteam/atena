@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 export const StyledRectangle = styled.div`
   background: ${props =>
@@ -17,7 +17,7 @@ export const StyledRectangle = styled.div`
   }
   a:after {
     background: none repeat scroll 0 0 #fff;
-    content: "";
+    content: '';
     display: block;
     height: ${props => props.theme.spacing.unit * 0.25}px;
     position: relative;

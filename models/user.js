@@ -1,12 +1,12 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 import {
   getLevelScore,
   saveLevelHistoryChanges,
   sendLevelMessage
-} from "../utils/levels"
-import { isNewLevel } from "../utils/achievementsLevel"
-import achievementLevelController from "../controllers/achievementLevel"
-import { saveScoreInteraction } from "../utils/achievements"
+} from '../utils/levels'
+import { isNewLevel } from '../utils/achievementsLevel'
+import achievementLevelController from '../controllers/achievementLevel'
+import { saveScoreInteraction } from '../utils/achievements'
 
 export const userSchema = new mongoose.Schema({
   avatar: {
@@ -45,7 +45,8 @@ export const userSchema = new mongoose.Schema({
   },
   rocketId: {
     type: String,
-    required: false
+    required: false,
+    index: { unique: true }
   },
   email: {
     type: String,
@@ -98,7 +99,7 @@ export const userSchema = new mongoose.Schema({
   },
   teams: {
     type: Array,
-    default: ["network"],
+    default: ['network'],
     required: false
   },
   linkedinId: {
@@ -119,9 +120,9 @@ export const userSchema = new mongoose.Schema({
   }
 })
 
-userSchema.pre("save", async function(next) {
+userSchema.pre('save', async function(next) {
   this.lastUpdate = new Date()
-  if (this.isModified("level") && isNewLevel(this._previousLevel, this.level)) {
+  if (this.isModified('level') && isNewLevel(this._previousLevel, this.level)) {
     await saveLevelHistoryChanges(this._id, this._previousLevel, this.level)
     const achievement = await achievementLevelController.save(
       this._id,
@@ -132,7 +133,7 @@ userSchema.pre("save", async function(next) {
     const score = getLevelScore(achievement)
     if (score > 0) {
       this.score += score
-      await saveScoreInteraction(this, achievement, score, "Conquista de Nível")
+      await saveScoreInteraction(this, achievement, score, 'Conquista de Nível')
     }
 
     await sendLevelMessage(this, achievement)
@@ -143,4 +144,4 @@ userSchema.pre("save", async function(next) {
   }
 })
 
-export default mongoose.model("User", userSchema)
+export default mongoose.model('User', userSchema)

@@ -1,7 +1,7 @@
-import React from "react"
-import StyledHeader from "./style"
-import { Flex, Box } from "@rebass/grid"
-import Menu from "./Menu"
+import React from 'react'
+import StyledHeader from './style'
+import { Flex, Box } from '@rebass/grid'
+import Menu from './Menu'
 
 const Header = props => (
   <StyledHeader>

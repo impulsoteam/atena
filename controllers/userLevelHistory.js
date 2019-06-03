@@ -1,7 +1,7 @@
-import UserLevelHistoryModel from "../models/userLevelHistory"
+import UserLevelHistoryModel from '../models/userLevelHistory'
 
 export const save = async (userId, oldLevel, newLevel) => {
-  const kind = oldLevel < newLevel ? "added" : "subtracted"
+  const kind = oldLevel < newLevel ? 'added' : 'subtracted'
   const historyExistent = await UserLevelHistoryModel.findOne({
     user: userId,
     level: newLevel,

@@ -1,6 +1,6 @@
-import React, { Fragment } from "react"
-import PropTypes from "prop-types"
-import StyledAccordion from "./style"
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import StyledAccordion from './style'
 
 const renderItem = ({ content, awnser }, index) => (
   <a href="javascript:;" className="accordion__item" key={index}>

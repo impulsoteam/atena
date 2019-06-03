@@ -1,10 +1,10 @@
-import moment from "moment-timezone"
-import TemporaryAchievementDataModel from "../models/achievementTemporaryData"
+import moment from 'moment-timezone'
+import TemporaryAchievementDataModel from '../models/achievementTemporaryData'
 import {
   generateKind,
   generateRatingsRanges,
   generateDates
-} from "../utils/achievementsTemporaryData"
+} from '../utils/achievementsTemporaryData'
 
 export const save = async data => {
   try {
@@ -20,7 +20,7 @@ export const save = async data => {
 
     return await obj.save()
   } catch (error) {
-    console.log("Error saving temporary achievement data")
+    console.log('Error saving temporary achievement data')
   }
 }
 
@@ -32,7 +32,7 @@ export const update = async (data, id) => {
 
     if (!temporaryAchievementData) {
       console.log(
-        "Error not found temporaryAchievementData on update temporary achievement data"
+        'Error not found temporaryAchievementData on update temporary achievement data'
       )
     }
 
@@ -44,7 +44,7 @@ export const update = async (data, id) => {
 
     temporaryAchievementData.save()
   } catch (error) {
-    console.log("Error update temporary achievement data")
+    console.log('Error update temporary achievement data')
   }
 }
 
@@ -56,13 +56,13 @@ export const disable = async id => {
 
     if (!temporaryAchievementData) {
       console.log(
-        "Error not found temporaryAchievementData on update temporary achievement data"
+        'Error not found temporaryAchievementData on update temporary achievement data'
       )
     }
 
     const today = moment(new Date())
       .utc()
-      .endOf("day")
+      .endOf('day')
       .format()
 
     temporaryAchievementData.limitDate = today
@@ -70,7 +70,7 @@ export const disable = async id => {
 
     temporaryAchievementData.save()
   } catch (error) {
-    console.log("Error delete temporary achievement data")
+    console.log('Error delete temporary achievement data')
   }
 }
 
@@ -81,7 +81,7 @@ export const getById = async id => {
     )
     return achivementTemporyData
   } catch (error) {
-    console.log("Error delete temporary achievement data")
+    console.log('Error delete temporary achievement data')
   }
 }
 
@@ -90,7 +90,7 @@ export const getAll = async () => {
     const achivementsTemporyData = await TemporaryAchievementDataModel.find()
     return achivementsTemporyData
   } catch (error) {
-    console.log("Error delete temporary achievement data")
+    console.log('Error delete temporary achievement data')
   }
 }
 

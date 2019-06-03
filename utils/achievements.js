@@ -1,9 +1,9 @@
-import moment from "moment-timezone"
-import config from "config-yml"
+import moment from 'moment-timezone'
+import config from 'config-yml'
 
-import { isChatInteraction } from "./interactions"
-import interactionController from "../controllers/interaction"
-import InteractionModel from "../models/interaction"
+import { isChatInteraction } from './interactions'
+import interactionController from '../controllers/interaction'
+import InteractionModel from '../models/interaction'
 
 const today = moment(new Date())
   .utc()
@@ -43,7 +43,7 @@ export const getInteractionType = interaction => {
   let type = interaction.type
 
   if (isChatInteraction(interaction)) {
-    type = "sended"
+    type = 'sended'
   }
 
   return type
@@ -127,7 +127,7 @@ export const calculateAchievementScoreToIncrease = achievement => {
 
     if (
       lastEarnedDate != null &&
-      moment(lastEarnedDate).isSame(today, "day") &&
+      moment(lastEarnedDate).isSame(today, 'day') &&
       (!achievement.total || achievement.total == lastRange.value)
     ) {
       scoreToIncrease = rating.xp
@@ -180,7 +180,7 @@ export const newEarnedIsBiggerThenCurrent = (newEarned, current) => {
   )
 
   if (newPosition == currentPosition) {
-    const type = current.level && newEarned.level ? "level" : "total"
+    const type = current.level && newEarned.level ? 'level' : 'total'
     return newEarned[type] >= current[type]
   } else {
     return newPosition > currentPosition
@@ -229,7 +229,7 @@ export const convertToRating = (achievement, rating, range) => {
 
 export const saveScoreInteraction = async (user, achievement, score, text) => {
   const interactionData = interactionController.normalize({
-    type: "manual",
+    type: 'manual',
     user: user.rocketId,
     rocketUsername: user.username,
     score: score,

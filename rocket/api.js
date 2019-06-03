@@ -1,6 +1,6 @@
-import { api } from "@rocket.chat/sdk"
-import { getStyleLog } from "../utils"
-import { getOr } from "lodash/fp"
+import { api } from '@rocket.chat/sdk'
+import { getStyleLog } from '../utils'
+import { getOr } from 'lodash/fp'
 
 var loginData
 const runAPI = async () => {
@@ -12,14 +12,14 @@ const runAPI = async () => {
       password: process.env.ROCKET_BOT_PASS
     })
   } catch (error) {
-    console.log(getStyleLog("red"), `\n-- [ROCKET API] Error on login`)
+    console.log(getStyleLog('red'), `\n-- [ROCKET API] Error on login`)
   }
 }
 
 const getUserInfo = async userId => {
   try {
-    const result = await api.get("users.info", { userId: userId })
-    return getOr(false, "user", result)
+    const result = await api.get('users.info', { userId: userId })
+    return getOr(false, 'user', result)
   } catch (e) {
     console.log(e)
     return false
@@ -28,8 +28,8 @@ const getUserInfo = async userId => {
 
 const getUserInfoByUsername = async username => {
   try {
-    const result = await api.get("users.info", { username: username })
-    return getOr(false, "user", result)
+    const result = await api.get('users.info', { username: username })
+    return getOr(false, 'user', result)
   } catch (e) {
     console.log(e)
     return false
@@ -38,7 +38,7 @@ const getUserInfoByUsername = async username => {
 
 const getHistory = async roomId => {
   try {
-    const result = await api.get("channels.history", {
+    const result = await api.get('channels.history', {
       roomId: roomId,
       count: 8000
     })
@@ -52,7 +52,7 @@ const getHistory = async roomId => {
 
 const getChannels = async () => {
   try {
-    const result = await api.get("channels.list", { count: 400 })
+    const result = await api.get('channels.list', { count: 400 })
     return result.channels
   } catch (e) {
     console.log(e)
@@ -60,7 +60,7 @@ const getChannels = async () => {
   }
 }
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.NODE_ENV !== 'test') {
   runAPI()
 }
 

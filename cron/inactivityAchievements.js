@@ -1,10 +1,10 @@
-import cron from "node-cron"
-import AchievementsTemporaryController from "../controllers/achievementTemporary"
-import { getStyleLog } from "../utils"
-import { resetEarnedAchievements } from "../utils/achievementsTemporary"
+import cron from 'node-cron'
+import AchievementsTemporaryController from '../controllers/achievementTemporary'
+import { getStyleLog } from '../utils'
+import { resetEarnedAchievements } from '../utils/achievementsTemporary'
 
 export default async () => {
-  cron.schedule("0 0 0 * * *", async () => {
+  cron.schedule('0 0 0 * * *', async () => {
     let achievements = []
 
     try {
@@ -16,7 +16,7 @@ export default async () => {
       })
     } catch (e) {
       console.log(
-        getStyleLog("red"),
+        getStyleLog('red'),
         `\n-- error updating inactivity temporary achievements`
       )
       return false

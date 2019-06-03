@@ -1,18 +1,18 @@
-import controller from "./achievementLevel"
-import model from "../models/achievementLevel"
-import * as utils from "../utils/achievements"
-import * as utilsLevel from "../utils/achievementsLevel"
-import { achievementLevel } from "../mocks/achievements/level"
-import { user } from "../mocks/user"
+import controller from './achievementLevel'
+import model from '../models/achievementLevel'
+import * as utils from '../utils/achievements'
+import * as utilsLevel from '../utils/achievementsLevel'
+import { achievementLevel } from '../mocks/achievements/level'
+import { user } from '../mocks/user'
 
-jest.mock("@rocket.chat/sdk")
-jest.mock("../rocket/api")
-jest.mock("../rocket/bot", () => jest.fn())
+jest.mock('@rocket.chat/sdk')
+jest.mock('../rocket/api')
+jest.mock('../rocket/bot', () => jest.fn())
 
-describe("Achievement Level Controller", () => {
+describe('Achievement Level Controller', () => {
   afterEach(() => jest.restoreAllMocks())
-  describe("Find All", () => {
-    it("should return all achievements", done => {
+  describe('Find All', () => {
+    it('should return all achievements', done => {
       const mockAchievements = [achievementLevel, achievementLevel]
       const exec = jest.fn(() => Promise.resolve(mockAchievements))
       const populate = jest.fn(() => {
@@ -20,7 +20,7 @@ describe("Achievement Level Controller", () => {
           exec
         }
       })
-      const spy = jest.spyOn(model, "find").mockImplementationOnce(() => {
+      const spy = jest.spyOn(model, 'find').mockImplementationOnce(() => {
         return {
           populate
         }
@@ -35,14 +35,14 @@ describe("Achievement Level Controller", () => {
     })
   })
 
-  describe("Find By User", () => {
-    it("should return all achievements for an user", done => {
+  describe('Find By User', () => {
+    it('should return all achievements for an user', done => {
       const achievementLevelWithoutUser = JSON.parse(
         JSON.stringify(achievementLevel)
       )
       delete achievementLevelWithoutUser.user
       const exec = jest.fn(() => Promise.resolve(achievementLevelWithoutUser))
-      const spy = jest.spyOn(model, "findOne").mockImplementationOnce(() => {
+      const spy = jest.spyOn(model, 'findOne').mockImplementationOnce(() => {
         return {
           exec
         }
@@ -50,22 +50,22 @@ describe("Achievement Level Controller", () => {
 
       controller.findByUser(user._id).then(res => {
         expect(spy).toHaveBeenCalled()
-        expect(typeof res).toBe("object")
+        expect(typeof res).toBe('object')
         expect(res).toEqual(achievementLevelWithoutUser)
         done()
       })
     })
   })
 
-  describe("Save", () => {
-    it("should return undefined for not supplying userId", done => {
+  describe('Save', () => {
+    it('should return undefined for not supplying userId', done => {
       controller.save(null, null, null).then(res => {
-        expect(typeof res).toBe("undefined")
+        expect(typeof res).toBe('undefined')
         done()
       })
     })
 
-    it("should return a new achievement create", done => {
+    it('should return a new achievement create', done => {
       controller.generateNewAchievement = jest
         .fn()
         .mockImplementationOnce(() => Promise.resolve(achievementLevel))
@@ -87,7 +87,7 @@ describe("Achievement Level Controller", () => {
       })
     })
 
-    it("should return a new achievement on update", done => {
+    it('should return a new achievement on update', done => {
       utilsLevel.setRangesEarnedDates = jest
         .fn()
         .mockImplementationOnce(() => achievementLevel)
@@ -109,9 +109,9 @@ describe("Achievement Level Controller", () => {
       })
     })
 
-    it("should return a new achievement on save (create)", done => {
+    it('should return a new achievement on save (create)', done => {
       const exec = jest.fn(() => Promise.resolve(undefined))
-      const spy = jest.spyOn(model, "findOne").mockImplementationOnce(() => {
+      const spy = jest.spyOn(model, 'findOne').mockImplementationOnce(() => {
         return {
           exec
         }
@@ -129,9 +129,9 @@ describe("Achievement Level Controller", () => {
       })
     })
 
-    it("should return a achievement on save (update)", done => {
+    it('should return a achievement on save (update)', done => {
       const exec = jest.fn(() => Promise.resolve(achievementLevel))
-      const spy = jest.spyOn(model, "findOne").mockImplementationOnce(() => {
+      const spy = jest.spyOn(model, 'findOne').mockImplementationOnce(() => {
         return {
           exec
         }

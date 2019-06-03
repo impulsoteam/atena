@@ -11,12 +11,12 @@ const publisher = (conn, user) => {
     if (err != null) bail(err)
 
     ch.assertQueue(queue, { durable: true })
-    console.log("[*] Waiting for messages in %s.", queue)
+    console.log('[*] Waiting for messages in %s.', queue)
     ch.publish(queue, user, res => {
       if (res) {
         console.log(res.content.toString())
       } else {
-        console.error("[*] Error sending message", res.toString())
+        console.error('[*] Error sending message', res.toString())
       }
     })
   }
@@ -26,7 +26,7 @@ const publisher = (conn, user) => {
 
 export const runPublisher = user => {
   if (url) {
-    require("amqplib/callback_api").connect(url, (err, conn) => {
+    require('amqplib/callback_api').connect(url, (err, conn) => {
       if (err != null) bail(err)
       publisher(conn, user)
     })

@@ -1,8 +1,8 @@
-import moment from "moment-timezone"
+import moment from 'moment-timezone'
 
-import userLevelHistoryController from "../controllers/userLevelHistory"
-import { getScoreToIncrease, getCurrentScoreToIncrease } from "./achievements"
-import { sendEarnedAchievementMessage } from "./achievementsMessages"
+import userLevelHistoryController from '../controllers/userLevelHistory'
+import { getScoreToIncrease, getCurrentScoreToIncrease } from './achievements'
+import { sendEarnedAchievementMessage } from './achievementsMessages'
 
 export const saveLevelHistoryChanges = async (userId, oldLevel, newLevel) => {
   await userLevelHistoryController.save(userId, oldLevel, newLevel)
@@ -10,7 +10,7 @@ export const saveLevelHistoryChanges = async (userId, oldLevel, newLevel) => {
 
 export const sendLevelMessage = async (user, achievement) => {
   let rating = {
-    name: "Network | Nível",
+    name: 'Network | Nível',
     rating: achievement.record.name,
     range: achievement.record.range
   }
@@ -30,5 +30,5 @@ export const getLevelScore = achievement => {
 }
 
 const isNewAchievement = achievement => {
-  return moment(achievement.createdAt).isSame(moment(new Date()), "day")
+  return moment(achievement.createdAt).isSame(moment(new Date()), 'day')
 }

@@ -1,24 +1,24 @@
-"use strict"
-import config from "config-yml"
-import mongoose from "mongoose"
-import { driver } from "@rocket.chat/sdk"
-import moment from "moment"
+'use strict'
+import config from 'config-yml'
+import mongoose from 'mongoose'
+import { driver } from '@rocket.chat/sdk'
+import moment from 'moment'
 import {
   calculateScore,
   calculateReceivedScore,
   calculateReactions,
   getUserInfo
-} from "../utils"
-import { isEligibleToPro } from "../utils/pro"
-import { sendToUser } from "../rocket/bot"
-import { _throw } from "../helpers"
-import axios from "axios"
-import { isValidToken } from "../utils/teams"
-import interactionController from "./interaction"
-import { getUserInfo as getRocketUserInfo } from "../rocket/api"
-import api from "../rocket/api"
-import userModel from "../models/user"
-import { runPublisher } from "../workers/publisher"
+} from '../utils'
+import { isEligibleToPro } from '../utils/pro'
+import { sendToUser } from '../rocket/bot'
+import { _throw } from '../helpers'
+import axios from 'axios'
+import { isValidToken } from '../utils/teams'
+import interactionController from './interaction'
+import { getUserInfo as getRocketUserInfo } from '../rocket/api'
+import api from '../rocket/api'
+import userModel from '../models/user'
+import { runPublisher } from '../workers/publisher'
 
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction)
@@ -38,7 +38,7 @@ const updateParentUser = async interaction => {
         return await user.save()
       }
     } else {
-      const UserModel = mongoose.model("User")
+      const UserModel = mongoose.model('User')
       return await createUserData(false, score, interaction, UserModel)
     }
   } else {
@@ -49,14 +49,14 @@ const updateParentUser = async interaction => {
 const update = async interaction => {
   const score = calculateScore(interaction)
 
-  const UserModel = mongoose.model("User")
+  const UserModel = mongoose.model('User')
   let user = {}
   let userInfo
 
-  if (interaction.origin === "slack" || !interaction.origin) {
+  if (interaction.origin === 'slack' || !interaction.origin) {
     userInfo = await getUserInfo(interaction.user)
     user = await UserModel.findOne({ slackId: interaction.user }).exec()
-  } else if (interaction.origin === "rocket") {
+  } else if (interaction.origin === 'rocket') {
     userInfo = false
     user = await UserModel.findOne({ rocketId: interaction.user }).exec()
   }
@@ -95,9 +95,9 @@ const update = async interaction => {
   }
 }
 
-const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
+const find = async (userId, isCoreTeam = false, selectOptions = '-email') => {
   // change find by slackId and release to rocketId too
-  const UserModel = mongoose.model("User")
+  const UserModel = mongoose.model('User')
   const result = await UserModel.findOne({
     slackId: userId,
     isCoreTeam: isCoreTeam
@@ -106,22 +106,22 @@ const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
     .exec()
   if (result) result.score = result.score.toFixed(0)
 
-  return result || _throw("Error finding a specific user")
+  return result || _throw('Error finding a specific user')
 }
 
 const findByOrigin = async (interaction, isParent = false) => {
   let query = {}
   let userId = isParent ? interaction.parentUser : interaction.user
 
-  if (interaction.origin === "sistema") {
+  if (interaction.origin === 'sistema') {
     query = { _id: userId }
-  } else if (interaction.origin === "blog" || interaction.origin === "github") {
+  } else if (interaction.origin === 'blog' || interaction.origin === 'github') {
     query = { rocketId: userId }
   } else {
     query[`${interaction.origin}Id`] = userId
   }
 
-  const UserModel = mongoose.model("User")
+  const UserModel = mongoose.model('User')
   const user = await UserModel.findOne(query).exec()
 
   if (user) user.network = interaction.origin
@@ -130,18 +130,18 @@ const findByOrigin = async (interaction, isParent = false) => {
 }
 
 export const findBy = async args => {
-  const UserModel = mongoose.model("User")
+  const UserModel = mongoose.model('User')
   const result = await UserModel.findOne(args).exec()
-  return result
+  return result || Promise.reject('Usuário não encontrado')
 }
 
 const findAll = async (
   isCoreTeam = false,
   limit = 20,
-  selectOptions = "-email -teams -_id -lastUpdate",
+  selectOptions = '-email -teams -_id -lastUpdate',
   team = null
 ) => {
-  const UserModel = mongoose.model("User")
+  const UserModel = mongoose.model('User')
   const base_query = {
     score: { $gt: 0 },
     isCoreTeam: isCoreTeam
@@ -169,14 +169,14 @@ const findAll = async (
     user.score = parseInt(user.score)
   })
 
-  return result || _throw("Error finding all users")
+  return result || _throw('Error finding all users')
 }
 
 const rankingPosition = async (userId, isCoreTeam = false) => {
   let position
   const allUsers = await findAll(isCoreTeam, 0)
   const user = await getNetwork(userId)
-  if (user.network === "rocket") {
+  if (user.network === 'rocket') {
     position = (await allUsers.map(e => e.rocketId).indexOf(user.rocketId)) + 1
   } else {
     position = (await allUsers.map(e => e.rocketId).indexOf(user.slackId)) + 1
@@ -185,7 +185,7 @@ const rankingPosition = async (userId, isCoreTeam = false) => {
 }
 
 const checkCoreTeam = async () => {
-  const UserModel = mongoose.model("User")
+  const UserModel = mongoose.model('User')
   const UsersBulk = UserModel.bulkWrite([
     {
       updateMany: {
@@ -207,7 +207,7 @@ const checkCoreTeam = async () => {
 }
 
 const findInactivities = async () => {
-  const UserModel = mongoose.model("User")
+  const UserModel = mongoose.model('User')
   const today = new Date()
   const dateRange = today.setDate(
     today.getDate() - config.xprules.inactive.mindays
@@ -222,7 +222,7 @@ const findInactivities = async () => {
     })
     .exec()
 
-  return result || _throw("Error finding inactivity users")
+  return result || _throw('Error finding inactivity users')
 }
 
 const createUserData = async (userInfo, score, interaction, UserModel) => {
@@ -237,8 +237,8 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
       level: level,
       score: score,
       slackId: interaction && interaction.user,
-      messages: interaction && interaction.type === "message" ? 1 : 0,
-      replies: interaction && interaction.type === "thread" ? 1 : 0,
+      messages: interaction && interaction.type === 'message' ? 1 : 0,
+      replies: interaction && interaction.type === 'thread' ? 1 : 0,
       reactions: calculateReactions(interaction, 0) || 0,
       lastUpdate: new Date(),
       isCoreTeam: false
@@ -249,8 +249,8 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
       level: level,
       score: score,
       rocketId: interaction && interaction.user,
-      messages: interaction && interaction.type === "message" ? 1 : 0,
-      replies: interaction && interaction.type === "thread" ? 1 : 0,
+      messages: interaction && interaction.type === 'message' ? 1 : 0,
+      replies: interaction && interaction.type === 'thread' ? 1 : 0,
       reactions: calculateReactions(interaction, 0) || 0,
       lastUpdate: new Date(),
       isCoreTeam: false
@@ -262,7 +262,7 @@ const createUserData = async (userInfo, score, interaction, UserModel) => {
 }
 
 const updateUserData = async (user, interaction, score) => {
-  if (!user) _throw("Error updating user")
+  if (!user) _throw('Error updating user')
 
   const newScore = user.score + score
   user.level = calculateLevel(newScore)
@@ -270,9 +270,9 @@ const updateUserData = async (user, interaction, score) => {
   user.isCoreTeam = false
   if (interaction) {
     user.messages =
-      interaction.type === "message" ? user.messages + 1 : user.messages
+      interaction.type === 'message' ? user.messages + 1 : user.messages
     user.replies =
-      interaction.type === "thread" ? user.replies + 1 : user.replies
+      interaction.type === 'thread' ? user.replies + 1 : user.replies
     user.reactions = calculateReactions(interaction, user.reactions)
   }
   return await user.save()
@@ -280,15 +280,15 @@ const updateUserData = async (user, interaction, score) => {
 
 const getNetwork = async user_id => {
   let user = {}
-  const UserModel = mongoose.model("User")
+  const UserModel = mongoose.model('User')
   const slack_user = await UserModel.findOne({ slackId: user_id })
   const rocket_user = await UserModel.findOne({ rocketId: user_id })
   if (slack_user) {
     user = slack_user
-    user.network = "slack"
+    user.network = 'slack'
   } else if (rocket_user) {
     user = rocket_user
-    user.network = "rocket"
+    user.network = 'rocket'
   }
 
   return user
@@ -306,7 +306,7 @@ const updateScore = async (user, score) => {
 }
 
 const changeTeams = async (userId, teams) => {
-  const UserModel = mongoose.model("User")
+  const UserModel = mongoose.model('User')
   const user = await getNetwork(userId)
 
   let result = {}
@@ -314,7 +314,7 @@ const changeTeams = async (userId, teams) => {
     result = await UserModel.findByIdAndUpdate(
       user._id,
       {
-        teams: teams.split(",") || ""
+        teams: teams.split(',') || ''
       },
       (err, doc) => {
         if (err) return false
@@ -338,8 +338,8 @@ const rocketInfo = async user_id => {
       userId: user_id
     },
     headers: {
-      "X-Auth-Token": process.env.ROCKET_USER_TOKEN,
-      "X-User-Id": process.env.ROCKET_USER_ID
+      'X-Auth-Token': process.env.ROCKET_USER_TOKEN,
+      'X-User-Id': process.env.ROCKET_USER_ID
     }
   })
 }
@@ -352,10 +352,10 @@ const fromRocket = async usersAtena => {
     if (user.rocketId) {
       let response = await rocketInfo(user.rocketId)
       name = response.data.user.name
-      network = "rocket"
+      network = 'rocket'
     } else {
       name = user.name
-      network = "slack"
+      network = 'slack'
     }
     users.push({
       name: name,
@@ -397,7 +397,7 @@ export const commandScore = async message => {
   let user = {}
   let myPosition = 0
   let response = {
-    msg: "Ops! Você ainda não tem pontos registrados."
+    msg: 'Ops! Você ainda não tem pontos registrados.'
   }
   user = await findBy({ username: message.u.username })
   myPosition = await rankingPosition(user.rocketId)
@@ -453,7 +453,7 @@ export const getUserByRocket = async rocketId => {
     .getUserInfo(rocketId)
     .then(res => {
       if (!res) {
-        return Promise.reject("usuário não encontrado na api do rocket")
+        return Promise.reject('usuário não encontrado na api do rocket')
       }
 
       return findAndUpdate(res)
@@ -462,7 +462,7 @@ export const getUserByRocket = async rocketId => {
       return res
     })
     .catch(() => {
-      return Promise.reject("usuário não encontrado na api do rocket")
+      return Promise.reject('usuário não encontrado na api do rocket')
     })
 }
 
@@ -530,7 +530,7 @@ const sendPro = async (username, response, req, res) => {
 
 const isPro = async (req, res) => {
   let response = {
-    msg: "Ops! Você não tem plano pro"
+    msg: 'Ops! Você não tem plano pro'
   }
   let username
   if (res) {
@@ -546,13 +546,13 @@ const isPro = async (req, res) => {
         attachments: [
           {
             text: `Início do Plano: ${moment(user.proBeginAt).format(
-              "DD/MM/YYYY"
-            ) || "Sem data definida"}`
+              'DD/MM/YYYY'
+            ) || 'Sem data definida'}`
           },
           {
             text: `Fim do Plano: ${moment(user.proFinishAt).format(
-              "DD/MM/YYYY"
-            ) || "Sem data definida"}`
+              'DD/MM/YYYY'
+            ) || 'Sem data definida'}`
           }
         ]
       }
@@ -600,7 +600,7 @@ const getSlackUsers = async (req, res) => {
     return res.json(slackUsers)
   } catch (err) {
     const errorMessage = {
-      error: "Não foi possivel fazer a busca no banco de dados"
+      error: 'Não foi possivel fazer a busca no banco de dados'
     }
     console.log(err)
     return res.json(errorMessage)
@@ -632,7 +632,7 @@ const editScore = async (req, res) => {
 
   let updatedUser
 
-  if (type === "slack") {
+  if (type === 'slack') {
     try {
       updatedUser = await userModel.findByIdAndUpdate(
         userId,
@@ -645,7 +645,7 @@ const editScore = async (req, res) => {
       console.log(error)
       return
     }
-  } else if (type === "rocket") {
+  } else if (type === 'rocket') {
     let user
     try {
       user = await userModel.findOne({ _id: userId })

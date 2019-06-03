@@ -1,4 +1,4 @@
-import userController from "../controllers/user"
+import userController from '../controllers/user'
 
 const url = process.env.CLOUDAMQP_URL
 const queue = process.env.CLOUDMQP_QUEUE
@@ -13,7 +13,7 @@ const consumer = conn => {
     if (err != null) bail(err)
 
     ch.assertQueue(queue, { durable: true })
-    console.log("[*] Waiting for messages in %s.", queue)
+    console.log('[*] Waiting for messages in %s.', queue)
     ch.consume(queue, async msg => {
       if (msg !== null) {
         console.log(msg.content.toString())
@@ -34,7 +34,7 @@ const consumer = conn => {
 
 const run = () => {
   if (url) {
-    require("amqplib/callback_api").connect(url, (err, conn) => {
+    require('amqplib/callback_api').connect(url, (err, conn) => {
       if (err != null) bail(err)
       consumer(conn)
     })

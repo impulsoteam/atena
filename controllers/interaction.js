@@ -1,59 +1,59 @@
-import config from "config-yml"
-import { driver } from "@rocket.chat/sdk"
-import mongoose from "mongoose"
-import moment from "moment"
-import batch from "batchflow"
-import userController from "./user"
-import rocketController from "./rocket"
-import achievementController from "./achievement"
-import achievementTemporaryController from "./achievementTemporary"
-import { calculateScore, analyticsSendCollect } from "../utils"
-import { lastMessageTime } from "../utils/interactions"
-import { _throw, _today } from "../helpers"
-import { isBot } from "../utils/bot"
-import interactionModel from "../models/interaction"
-import channelCheckPointModel from "../models/channelCheckPoint"
-import checkPointModel from "../models/checkpoint"
-import api from "../rocket/api"
-import log4js from "log4js"
-import minerController from "./miner"
-import blogController from "./blog"
-import githubController from "./github"
-import { isValidToken } from "../utils/teams"
+import config from 'config-yml'
+import { driver } from '@rocket.chat/sdk'
+import mongoose from 'mongoose'
+import moment from 'moment'
+import batch from 'batchflow'
+import userController from './user'
+import rocketController from './rocket'
+import achievementController from './achievement'
+import achievementTemporaryController from './achievementTemporary'
+import { calculateScore, analyticsSendCollect } from '../utils'
+import { lastMessageTime } from '../utils/interactions'
+import { _throw, _today } from '../helpers'
+import { isBot } from '../utils/bot'
+import interactionModel from '../models/interaction'
+import channelCheckPointModel from '../models/channelCheckPoint'
+import checkPointModel from '../models/checkpoint'
+import api from '../rocket/api'
+import log4js from 'log4js'
+import minerController from './miner'
+import blogController from './blog'
+import githubController from './github'
+import { isValidToken } from '../utils/teams'
 
-moment.locale("pt-br")
+moment.locale('pt-br')
 
 const normalize = data => {
-  if (data.type === "manual") {
+  if (data.type === 'manual') {
     return {
-      origin: "sistema",
+      origin: 'sistema',
       type: data.type,
       user: data.user,
       rocketUsername: data.username,
       value: data.value,
       thread: false,
       description: data.text,
-      channel: "mundão",
+      channel: 'mundão',
       category: config.categories.network.type,
-      action: "manual",
+      action: 'manual',
       score: data.score || 0
     }
-  } else if (data.type === "inactivity") {
+  } else if (data.type === 'inactivity') {
     return {
-      origin: "sistema",
+      origin: 'sistema',
       type: data.type,
       user: data.user,
       thread: false,
-      description: "ação do sistema",
-      channel: "matrix",
+      description: 'ação do sistema',
+      channel: 'matrix',
       category: config.categories.network.type,
-      action: "inactivity"
+      action: 'inactivity'
     }
-  } else if (data.origin === "rocket") {
+  } else if (data.origin === 'rocket') {
     return rocketController.normalize(data)
-  } else if (data.origin === "blog") {
+  } else if (data.origin === 'blog') {
     return blogController.normalize(data)
-  } else if (data.origin === "github") {
+  } else if (data.origin === 'github') {
     return githubController.normalize(data)
   }
 }
@@ -68,8 +68,8 @@ const flood = async data => {
       }
       const maxSeconds = config.xprules.limits.flood
       const isFlood =
-        data.type === "message" &&
-        moment(data.date).diff(lastDate, "seconds") < maxSeconds
+        data.type === 'message' &&
+        moment(data.date).diff(lastDate, 'seconds') < maxSeconds
       return Promise.resolve(isFlood)
     })
     .catch(err => {
@@ -81,7 +81,7 @@ export const save = async data => {
   if (isBot(data)) return
 
   const interaction = exportFunctions.normalize(data)
-  if (interaction.type !== "reaction_added") {
+  if (interaction.type !== 'reaction_added') {
     const user = await userController.getUserByRocket(interaction.user)
     if (user) {
       if (user.score === 0)
@@ -103,7 +103,7 @@ export const save = async data => {
       return instance.save()
     }
 
-    return Promise.reject("Error on save interaction")
+    return Promise.reject('Error on save interaction')
   }
 }
 
@@ -115,7 +115,7 @@ export const isOnDailyLimit = async interaction => {
 }
 
 export const find = async user => {
-  const InteractionModel = mongoose.model("Interaction")
+  const InteractionModel = mongoose.model('Interaction')
   const result = await InteractionModel.find({
     $or: [{ user: user }, { parentUser: user }]
   })
@@ -124,7 +124,7 @@ export const find = async user => {
     })
     .exec()
 
-  return result || _throw("Error finding interactions")
+  return result || _throw('Error finding interactions')
 }
 
 export const todayScore = async user => {
@@ -148,7 +148,7 @@ export const todayScore = async user => {
 }
 
 export const remove = async data => {
-  const InteractionModel = mongoose.model("Interaction")
+  const InteractionModel = mongoose.model('Interaction')
   const interaction = normalize(data)
   const reactionAdded = await InteractionModel.findOne({
     description: interaction.description,
@@ -165,20 +165,20 @@ export const remove = async data => {
     interaction.parentUser !== interaction.user &&
       userController.updateParentUser(interaction)
 
-    return result || _throw("Error removing interactions")
+    return result || _throw('Error removing interactions')
   }
 
-  return _throw("Error removing interactions")
+  return _throw('Error removing interactions')
 }
 
 const lastMessage = async userId => {
-  return interactionModel.findOne({ user: userId, type: "message" }, "date", {
+  return interactionModel.findOne({ user: userId, type: 'message' }, 'date', {
     sort: { _id: -1 }
   })
 }
 
 const manualInteractions = async data => {
-  const InteractionModel = mongoose.model("Interaction")
+  const InteractionModel = mongoose.model('Interaction')
   const interaction = exportFunctions.normalize(data)
   const instance = new InteractionModel(interaction)
   const score = await exportFunctions.todayScore(interaction.user)
@@ -188,12 +188,12 @@ const manualInteractions = async data => {
     const response = await instance.save()
     userController.update(interaction)
 
-    return response || _throw("Error adding new manual interaction")
+    return response || _throw('Error adding new manual interaction')
   }
 }
 
 const findAll = async () => {
-  const InterActionModel = mongoose.model("Interaction")
+  const InterActionModel = mongoose.model('Interaction')
   const result = await InterActionModel.find()
     .sort()
     .exec()
@@ -201,7 +201,7 @@ const findAll = async () => {
 }
 
 const findBy = async args => {
-  const InterActionModel = mongoose.model("Interaction")
+  const InterActionModel = mongoose.model('Interaction')
   const result = await InterActionModel.find(args).exec()
   return result || null
 }
@@ -212,13 +212,13 @@ const calculate = async interaction => {
   const scoreDay = await dayScore(interaction)
   const todayLimitStatus = todayLimitScore - scoreDay
   if (
-    interaction.type === "message" &&
+    interaction.type === 'message' &&
     moment(interaction.date).diff(
       await lastMessageTime(interaction),
-      "seconds"
+      'seconds'
     ) < 5
   ) {
-    return _throw("User makes flood")
+    return _throw('User makes flood')
   }
   if (todayLimitStatus > 0 || !todayLimitStatus) {
     return scoreDay
@@ -255,7 +255,7 @@ const normalizeScore = async (req, res) => {
     .sequential()
     .each(async (i, item, done) => {
       const data = item
-      data.origin = "slack"
+      data.origin = 'slack'
       calculate(data).then(res => {
         if (res) {
           item.score = res
@@ -265,9 +265,9 @@ const normalizeScore = async (req, res) => {
       done()
     })
     .end(results => {
-      console.log("results ", results)
+      console.log('results ', results)
     })
-  res.send("Interações normalizadas")
+  res.send('Interações normalizadas')
 }
 
 const aggregateBy = async args => {
@@ -285,8 +285,8 @@ const byDate = async (year, month) => {
     },
     {
       $group: {
-        _id: { user: "$user" },
-        totalScore: { $sum: "$score" }
+        _id: { user: '$user' },
+        totalScore: { $sum: '$score' }
       }
     },
     {
@@ -328,14 +328,14 @@ const mostActives = async (
   return await aggregateBy([
     {
       $lookup: {
-        from: "users",
-        localField: "user",
-        foreignField: "rocketId",
-        as: "userObject"
+        from: 'users',
+        localField: 'user',
+        foreignField: 'rocketId',
+        as: 'userObject'
       }
     },
     {
-      $unwind: "$userObject"
+      $unwind: '$userObject'
     },
     {
       $match: queryMatch
@@ -343,14 +343,14 @@ const mostActives = async (
     {
       $group: {
         _id: {
-          _id: "$userObject._id",
-          name: "$userObject.name",
-          rocketId: "$userObject.rocketId",
-          username: "$userObject.username",
-          channel: "$channel"
+          _id: '$userObject._id',
+          name: '$userObject.name',
+          rocketId: '$userObject.rocketId',
+          username: '$userObject.username',
+          channel: '$channel'
         },
         count: { $sum: 1 },
-        date: { $first: "$date" }
+        date: { $first: '$date' }
       }
     },
     {
@@ -365,29 +365,29 @@ const mostActives = async (
 }
 
 const history = async (req, res) => {
-  const logger = log4js.getLogger("history")
+  const logger = log4js.getLogger('history')
   const channels = await api.getChannels()
   console.log(channels)
   for (let channel of channels) {
-    console.log("======= CHANNEL", channel._id)
+    console.log('======= CHANNEL', channel._id)
     const messages = await api.getHistory(channel._id)
     // const messages = await api.getHistory("Aa6fSXib23WpHjof7");
     batch(messages.reverse())
       .sequential()
       .each(async (i, item, done) => {
-        item.origin = "rocket"
+        item.origin = 'rocket'
         item.history = true
         if (!item.t) {
-          console.log("MSG", i)
+          console.log('MSG', i)
           exportFunctions.save(item).catch(err => {
             console.log(
-              "Erro ao salvar interação do usuário: id: ",
+              'Erro ao salvar interação do usuário: id: ',
               item.u._id,
-              " name: ",
+              ' name: ',
               item.u.name,
-              " em: ",
+              ' em: ',
               item.ts,
-              " ===> ",
+              ' ===> ',
               err
             )
             logger.error(item, err)
@@ -396,25 +396,25 @@ const history = async (req, res) => {
         done()
       })
       .end(() => {
-        console.log("finish")
+        console.log('finish')
       })
     console.log(
-      "quantidade de mensagens ",
+      'quantidade de mensagens ',
       messages.length,
-      " para o channel: ",
+      ' para o channel: ',
       channel._id
     )
   }
-  res.json("success")
+  res.json('success')
 }
 
 const validDate = date => {
-  return moment(date, "DD-MM-YYYY", true).isValid()
+  return moment(date, 'DD-MM-YYYY', true).isValid()
 }
 
 const validInterval = (begin, end) => {
-  const momentBegin = moment(begin, "DD-MM-YYYY", true)
-  const momentEnd = moment(end, "DD-MM-YYYY", true)
+  const momentBegin = moment(begin, 'DD-MM-YYYY', true)
+  const momentEnd = moment(end, 'DD-MM-YYYY', true)
   return momentEnd.diff(momentBegin) >= 0
 }
 
@@ -428,7 +428,7 @@ const engaged = async (req, res) => {
     end = req.headers.end
   }
   let response = {
-    text: "",
+    text: '',
     attachments: []
   }
   const rocketId = req.body.id
@@ -441,11 +441,11 @@ const engaged = async (req, res) => {
   const validFunctions = validDates && validIntervals
   if ((isCoreTeam && validFunctions) || (isMiner && validFunctions)) {
     const users = await exportFunctions.mostActives(
-      moment(beginDate, "DD-MM-YYYY")
-        .startOf("day")
+      moment(beginDate, 'DD-MM-YYYY')
+        .startOf('day')
         .toDate(),
-      moment(endDate, "DD-MM-YYYY")
-        .endOf("day")
+      moment(endDate, 'DD-MM-YYYY')
+        .endOf('day')
         .toDate()
     )
     response.text = `Total de ${users.length} usuário engajados`
@@ -469,41 +469,41 @@ const engaged = async (req, res) => {
       })
     })
   } else if (isCoreTeam && validDates && !validIntervals) {
-    response.text = "Data de ínicio não pode ser maior que data final"
+    response.text = 'Data de ínicio não pode ser maior que data final'
   } else if (!validDates && isCoreTeam) {
     response.text =
-      "Datas em formatos inválidos por favor use datas com o formato ex: 10-10-2019"
+      'Datas em formatos inválidos por favor use datas com o formato ex: 10-10-2019'
   } else {
     response.text =
-      "Você não tem uma armadura de ouro, e não pode entrar nessa casa!"
+      'Você não tem uma armadura de ouro, e não pode entrar nessa casa!'
   }
 
   if (isMiner && !isValidToken(team, token)) {
-    response.text = "Invalid Token"
+    response.text = 'Invalid Token'
     response.attachments = []
   }
 
   res.json(response)
 }
 
-const checkpoints = async (type = "week") => {
+const checkpoints = async (type = 'week') => {
   // quarterly
   const channels = (await api.getChannels()) || []
   const today = moment()
   const beginQuarter = moment()
     .quarter(moment().quarter())
-    .startOf("quarter")
+    .startOf('quarter')
   const endQuarter = moment()
     .quarter(moment().quarter())
-    .endOf("quarter")
-  if (type === "week") {
+    .endOf('quarter')
+  if (type === 'week') {
     if (today.weekday() === 1) {
-      const lastMonday = today.clone().subtract(7, "days")
-      const lastSunday = today.clone().subtract(1, "day")
+      const lastMonday = today.clone().subtract(7, 'days')
+      const lastSunday = today.clone().subtract(1, 'day')
       channels.map(async channel => {
         const users = await exportFunctions.mostActives(
-          lastMonday.startOf("day").toDate(),
-          lastSunday.endOf("day").toDate(),
+          lastMonday.startOf('day').toDate(),
+          lastSunday.endOf('day').toDate(),
           channel._id
         )
 
@@ -526,20 +526,20 @@ const checkpoints = async (type = "week") => {
       })
     } else {
       return Promise.reject(
-        "O checkpoint por semana deve ser feito em uma segunda feira"
+        'O checkpoint por semana deve ser feito em uma segunda feira'
       )
     }
   } else {
     if (today.isSame(beginQuarter)) {
       // close before quarter
-      const beforeQuarter = today.clone().subtract(1, "quarter")
+      const beforeQuarter = today.clone().subtract(1, 'quarter')
       const beginBeforeQuarter = moment()
         .quarter(beforeQuarter.quarter())
-        .startOf("quarter")
+        .startOf('quarter')
 
       const endBeforeQuarter = moment()
         .quarter(beforeQuarter.quarter())
-        .startOf("quarter")
+        .startOf('quarter')
 
       channels.forEach(async channel => {
         const { _id, name } = channel
@@ -564,25 +564,25 @@ const checkpoints = async (type = "week") => {
         channelCheckPoint.channel = _id
         if (checkpoint) {
           channelCheckPoint.level = checkpoint.level
-          channelCheckPoint.status = "winner"
+          channelCheckPoint.status = 'winner'
           channelCheckPoint.minEngagedUsers = checkpoint.totalEngagedUsers
           channelCheckPoint.qtdInteractions = checkpoint.xp
-          let msg = ""
-          if (checkpoint.level === "bronze") {
+          let msg = ''
+          if (checkpoint.level === 'bronze') {
             msg = `Residentes de #${name}], hoje chamaram a atenção da tua deusa por todo teu trabalho em conjunto e crescimento! Por isso, a partir de agora recebem o status de Povoado! <br>
               E como forma de comemorar este feito vocês receberão uma recompensa a altura!`
-          } else if (checkpoint.level === "prata") {
+          } else if (checkpoint.level === 'prata') {
             msg = `
 							Povoado de #${name}, muito me alegra ver o quão rápido continuam a crescer e desta forma a alcunha de Povoado precisa ser revogado! A partir de hoje, passam ao status de Aldeia!<br>
 							E para de comemorar tal feito receberão uma recompensa!<Paste>
             `
-          } else if (checkpoint.level === "ouro") {
+          } else if (checkpoint.level === 'ouro') {
             msg = `Aldeia de #${name}, vejo o quanto vocês cresceram e que muitos são os que povoam estas terras, desta forma teu status de Aldeia não faz mais juz a teu tamanho! A partir de hoje, passam ao status de Vila!<br>
             E isto merece uma comemoração! Esta é a recompensa que merecem por sua ascenção!`
-          } else if (checkpoint.level === "platina") {
+          } else if (checkpoint.level === 'platina') {
             msg = `Vila de #${name}! Não param de me impressionar! Entre os muitos de meu reino vocês alcançaram uma proporção digna de destaque! A partir de hoje, passam ao status de Cidade!
               <br>Hoje é dia de festa e toda ela merece uma recompensa!"`
-          } else if (checkpoint.level === "diamante") {
+          } else if (checkpoint.level === 'diamante') {
             msg = `Cidade de #${name}! Jamais imaginei que chegariam tão longe, tão grande é tua extensão e tantos são os teus que não consigo estimar! Por alcançar tamanha notoriedade a partir de hoje, o status de apena Cidade não é o bastante para ti! E passam ao status de Cidade-Estado!<br>
 Por alcançarem tamanho feito irei conferir a recompensa máxima que um dos meus reinos pode receber!`
           }
@@ -599,7 +599,7 @@ Por alcançarem tamanho feito irei conferir a recompensa máxima que um dos meus
           })
           driver.sendToRoomId(response, _id)
         } else {
-          channelCheckPoint.status = "loser"
+          channelCheckPoint.status = 'loser'
         }
       })
     }

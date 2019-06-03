@@ -2,7 +2,7 @@ import {
   isPositiveReaction,
   isNegativeReaction,
   isAtenaReaction
-} from "./reactions"
+} from './reactions'
 
 export const calculateReactions = (interaction, reactions = {}) => {
   // FIXME: Remove after all users are updated
@@ -30,8 +30,8 @@ export const calculateReactions = (interaction, reactions = {}) => {
 
 const convertToPositiveAndNegative = reactions => {
   if (
-    typeof reactions.positives === "undefined" &&
-    typeof reactions.negatives === "undefined"
+    typeof reactions.positives === 'undefined' &&
+    typeof reactions.negatives === 'undefined'
   ) {
     let newReactions = {}
     newReactions.positives = 0
@@ -45,9 +45,9 @@ const convertToPositiveAndNegative = reactions => {
 }
 
 const calculateNewReactionsValues = (interactionType, reactions) => {
-  if (interactionType === "reaction_added") {
+  if (interactionType === 'reaction_added') {
     reactions += 1
-  } else if (interactionType === "reaction_removed") {
+  } else if (interactionType === 'reaction_removed') {
     reactions -= 1
     reactions = reactions > 0 ? reactions : 0
   }

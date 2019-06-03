@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 export const StyledUserCard = styled.div`
   background-color: ${props => props.theme.color.white};
@@ -6,7 +6,7 @@ export const StyledUserCard = styled.div`
   width: ${props => props.width};
   margin-right: 8px;
   box-shadow: 8px 8px 60px 0px rgba(0, 0, 0, 0.08);
-  margin-top: ${props => !props.first && "70px"};
+  margin-top: ${props => !props.first && '70px'};
   border-radius: 10px;
 `
 
@@ -68,7 +68,7 @@ export const StyledPoint = styled.div`
   flex: 1;
   flex-direction: column;
   text-align: center;
-  border-right: ${props => (props.border ? "solid 1px #e2e2e2" : "none")};
+  border-right: ${props => (props.border ? 'solid 1px #e2e2e2' : 'none')};
   p {
     text-transform: uppercase;
     font-size: 16px;

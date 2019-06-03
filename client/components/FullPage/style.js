@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const StyledFullPage = styled.section`
   background: ${props => props.background || props.theme.color.primary};

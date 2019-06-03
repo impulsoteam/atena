@@ -1,20 +1,20 @@
-import React, { Fragment } from "react"
-import PropTypes from "prop-types"
-import StyledMenu from "./Menu.style"
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import StyledMenu from './Menu.style'
 
 const links = user => {
   const whithoutAuth = [
     {
-      class: "login",
-      title: "login",
-      link: "/auth/linkedin"
+      class: 'login',
+      title: 'login',
+      link: '/auth/linkedin'
     }
   ]
   const withAuth = [
     {
-      class: "logout",
-      title: "Sair",
-      link: "/auth/logout"
+      class: 'logout',
+      title: 'Sair',
+      link: '/auth/logout'
     }
   ]
 
@@ -22,14 +22,14 @@ const links = user => {
 
   return [
     {
-      class: "index",
-      title: "como funciona",
-      link: "/"
+      class: 'index',
+      title: 'como funciona',
+      link: '/'
     },
     {
-      class: "ranking",
-      title: "ranking",
-      link: "/ranking"
+      class: 'ranking',
+      title: 'ranking',
+      link: '/ranking'
     },
     ...options
   ]

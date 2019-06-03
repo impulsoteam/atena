@@ -1,11 +1,11 @@
-import express from "express"
-import bodyParser from "body-parser"
-import axios from "axios"
-import userController from "../controllers/user"
-import interactionController from "../controllers/interaction"
-import disqusController from "../controllers/disqus"
-import querystring from "querystring"
-import { getStyleLog } from "../utils"
+import express from 'express'
+import bodyParser from 'body-parser'
+import axios from 'axios'
+import userController from '../controllers/user'
+import interactionController from '../controllers/interaction'
+import disqusController from '../controllers/disqus'
+import querystring from 'querystring'
+import { getStyleLog } from '../utils'
 // var querystring = require("querystring");
 
 const router = express.Router()
@@ -29,10 +29,10 @@ export const getUser = async user_id => {
   return user
 }
 
-router.post("/events", async (req, res) => {
+router.post('/events', async (req, res) => {
   let data = req.body
   let user = {}
-  data.type = "comment"
+  data.type = 'comment'
   try {
     user = await userController.findBy({ disqusUsername: data.disqusUsername })
   } catch (e) {
@@ -45,12 +45,12 @@ router.post("/events", async (req, res) => {
     interactionController.save(data)
   } else {
     // bot send message to user
-    console.log(getStyleLog("yellow"), `\n-- user not yet in the game`)
+    console.log(getStyleLog('yellow'), `\n-- user not yet in the game`)
   }
   res.json(req.body)
 })
 
-router.get("/callback", async (req, res) => {
+router.get('/callback', async (req, res) => {
   const code = req.query.code
   let user = {}
   let response
@@ -66,7 +66,7 @@ router.get("/callback", async (req, res) => {
       .post(
         url,
         querystring.stringify({
-          grant_type: "authorization_code",
+          grant_type: 'authorization_code',
           client_id: process.env.DISQUS_PUBLIC_KEY,
           client_secret: process.env.DISQUS_SECRET_KEY,
           redirect_uri: process.env.DISQUS_CALLBACK_URL,
@@ -80,19 +80,19 @@ router.get("/callback", async (req, res) => {
     if (disqusUsername) disqusController.updateUserData(slackId, disqusUsername)
   }
 
-  res.render("disqus", {
-    title: "Batalha dos comentários | Impulso Network",
+  res.render('disqus', {
+    title: 'Batalha dos comentários | Impulso Network',
     response
   })
 })
 
-router.use("/", async (req, res) => {
+router.use('/', async (req, res) => {
   let user = {}
   user = await getUser(req.body.user_id)
   if (!user) {
     const data = {
       channel: req.body.channel_id,
-      text: "first on disqus integration +1",
+      text: 'first on disqus integration +1',
       ts: null,
       user: req.body.user_id
     }

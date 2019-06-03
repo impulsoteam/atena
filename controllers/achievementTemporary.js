@@ -1,6 +1,6 @@
-import moment from "moment-timezone"
-import TemporaryAchievementModel from "../models/achievementTemporary"
-import TemporaryAchievementDataModel from "../models/achievementTemporaryData"
+import moment from 'moment-timezone'
+import TemporaryAchievementModel from '../models/achievementTemporary'
+import TemporaryAchievementDataModel from '../models/achievementTemporaryData'
 import {
   getQueryToFindCurrent,
   isBeforeLimitDate,
@@ -8,15 +8,15 @@ import {
   resetEarnedAchievements,
   createAchievementTemporary,
   updateAchievementTemporary
-} from "../utils/achievementsTemporary"
-import userController from "../controllers/user"
+} from '../utils/achievementsTemporary'
+import userController from '../controllers/user'
 
 export const save = async interaction => {
   try {
     const user = await userController.findByOrigin(interaction)
 
     if (!user) {
-      console.log("Error on find user to saving temporary achievement")
+      console.log('Error on find user to saving temporary achievement')
     }
 
     const query = getQueryToFindCurrent(interaction)
@@ -54,7 +54,7 @@ export const save = async interaction => {
       }
     }
   } catch (error) {
-    console.log("Error saving temporary achievement")
+    console.log('Error saving temporary achievement')
   }
 }
 
@@ -63,8 +63,8 @@ export const findAllByUser = async userId => {
     user: userId
   })
     .populate({
-      path: "temporaryData",
-      match: { endDate: { $gte: moment(new Date()).format("YYYY-MM-DD") } }
+      path: 'temporaryData',
+      match: { endDate: { $gte: moment(new Date()).format('YYYY-MM-DD') } }
     })
     .exec()
 }
@@ -77,9 +77,9 @@ const getAllInactivitiesDaily = async () => {
   const achievements = await TemporaryAchievementModel.find({
     lastEarnedDate: {
       $gte: moment(new Date())
-        .subtract(1, "days")
-        .format("YYYY-MM-DD"),
-      $lte: moment(new Date()).format("YYYY-MM-DD")
+        .subtract(1, 'days')
+        .format('YYYY-MM-DD'),
+      $lte: moment(new Date()).format('YYYY-MM-DD')
     }
   }).exec()
 

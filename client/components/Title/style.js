@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const StyledTitle = styled.h1`
   font-size: ${props =>
@@ -7,7 +7,7 @@ const StyledTitle = styled.h1`
       : props.extralarge
       ? props.theme.fontSize.super
       : props.theme.fontSize.large};
-  color: ${props => props.theme.color[props.color || "primary"]};
+  color: ${props => props.theme.color[props.color || 'primary']};
 
   ${props =>
     (props.large || props.extralarge) &&

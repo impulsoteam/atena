@@ -1,15 +1,15 @@
-import React, { Fragment } from "react"
-import PropTypes from "prop-types"
-import { Flex, Box } from "@rebass/grid"
-import StyledScreenRanking from "./Ranking.style"
-import Layout from "Layout"
-import Rectangle from "components/Rectangle"
-import RectangleGroup from "components/RectangleGroup"
-import RankingHeader from "components/RankingHeader"
-import RankingRow from "components/RankingRow"
-import Title from "components/Title"
-import UserCard from "components/UserCard"
-import FullPage from "../components/FullPage"
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import { Flex, Box } from '@rebass/grid'
+import StyledScreenRanking from './Ranking.style'
+import Layout from 'Layout'
+import Rectangle from 'components/Rectangle'
+import RectangleGroup from 'components/RectangleGroup'
+import RankingHeader from 'components/RankingHeader'
+import RankingRow from 'components/RankingRow'
+import Title from 'components/Title'
+import UserCard from 'components/UserCard'
+import FullPage from '../components/FullPage'
 
 const generalTitle = () => (
   <Fragment>
@@ -25,7 +25,7 @@ const monthlyTitle = monthName => (
   </Fragment>
 )
 const ScreenRanking = ({
-  page = "ranking",
+  page = 'ranking',
   monthName,
   first_users,
   last_users,
@@ -52,17 +52,17 @@ const ScreenRanking = ({
         </p>
         <Flex justifyContent="center" alignItems="center" mt={100} mb={100}>
           <RectangleGroup>
-            <Rectangle active={page === "ranking"} left>
+            <Rectangle active={page === 'ranking'} left>
               <a href="/ranking">Ranking Mensal</a>
             </Rectangle>
-            <Rectangle active={page === "geral"} right>
+            <Rectangle active={page === 'geral'} right>
               <a href="/ranking/geral">Ranking Geral</a>
             </Rectangle>
           </RectangleGroup>
         </Flex>
         <Flex justifyContent="center">
-          <Title align={"center"} extraLarge>
-            {page === "general" ? generalTitle() : monthlyTitle(monthName)}
+          <Title align={'center'} extraLarge>
+            {page === 'general' ? generalTitle() : monthlyTitle(monthName)}
           </Title>
         </Flex>
         {error && (

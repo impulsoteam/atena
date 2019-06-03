@@ -1,32 +1,32 @@
-import config from "config-yml"
-import { driver } from "@rocket.chat/sdk"
-import AchievementModel from "../models/achievement"
-import { isPositiveReaction, isAtenaReaction } from "../utils/reactions"
+import config from 'config-yml'
+import { driver } from '@rocket.chat/sdk'
+import AchievementModel from '../models/achievement'
+import { isPositiveReaction, isAtenaReaction } from '../utils/reactions'
 import {
   getInteractionType,
   calculateAchievementScoreToIncrease,
   getAchievementCurrentRating,
   getAchievementNextRating,
   saveScoreInteraction
-} from "../utils/achievements"
+} from '../utils/achievements'
 import {
   generateAchievementsMessages,
   generateAchievementsTemporaryMessages,
   generateAchievementLevelMessage
-} from "../utils/achievementsMessages"
-import achievementTemporaryController from "../controllers/achievementTemporary"
-import achievementLevelController from "../controllers/achievementLevel"
-import { sendEarnedAchievementMessage } from "../utils/achievementsMessages"
-import userController from "../controllers/user"
+} from '../utils/achievementsMessages'
+import achievementTemporaryController from '../controllers/achievementTemporary'
+import achievementLevelController from '../controllers/achievementLevel'
+import { sendEarnedAchievementMessage } from '../utils/achievementsMessages'
+import userController from '../controllers/user'
 
 const commandIndex = async message => {
-  let response = { msg: "Ops! Você ainda não tem conquistas registradas. :(" }
+  let response = { msg: 'Ops! Você ainda não tem conquistas registradas. :(' }
 
   try {
     let user = {}
     let attachments = []
     let interaction = {
-      origin: "rocket",
+      origin: 'rocket',
       user: message.u._id
     }
 
@@ -72,14 +72,14 @@ const commandIndex = async message => {
 
     await driver.sendDirectToUser(response, message.u.username)
   } catch (e) {
-    console.log("Minhas Conquistas:", e)
+    console.log('Minhas Conquistas:', e)
   }
 }
 
 const findAllByUser = async userId => {
   const result = await AchievementModel.find({ user: userId }).exec()
 
-  return result || console.log("Error finding a specific achievement")
+  return result || console.log('Error finding a specific achievement')
   // return result || _throw("Error finding a specific achievement");
 }
 
@@ -91,11 +91,11 @@ const save = async (interaction, user) => {
 
       if (interaction.parentUser) {
         const parentUser = await userController.findByOrigin(interaction, true)
-        await saveUserAchievement("received", interaction, parentUser)
+        await saveUserAchievement('received', interaction, parentUser)
       }
     }
   } catch (error) {
-    console.log("Error achievement ", error)
+    console.log('Error achievement ', error)
     // _throw("Error saving achievement");
   }
 }
@@ -156,7 +156,7 @@ const addScore = async (user, achievement) => {
 
   if (score > 0) {
     await userController.updateScore(user, score)
-    await saveScoreInteraction(user, achievement, score, "Conquista Permanente")
+    await saveScoreInteraction(user, achievement, score, 'Conquista Permanente')
     await sendEarnedAchievementMessage(
       user,
       getAchievementNextRating(achievement)

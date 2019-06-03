@@ -1,5 +1,5 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const Html = props => {
   const { children, title, page } = props
@@ -34,7 +34,7 @@ Html.propTypes = {
 }
 
 Html.defaultProps = {
-  title: "Atena | Gamificação da Impulso Network"
+  title: 'Atena | Gamificação da Impulso Network'
 }
 
 export default Html

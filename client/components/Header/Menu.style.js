@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const StyledMenu = styled.ul`
   margin: 0;
@@ -9,7 +9,7 @@ const StyledMenu = styled.ul`
   margin: 0 auto;
 
   li + li::before {
-    content: "";
+    content: '';
     display: inline-block;
     width: 4px;
     height: 4px;
@@ -46,7 +46,7 @@ const StyledMenu = styled.ul`
     font-weight: 600;
 
     &::after {
-      content: "";
+      content: '';
       display: block;
       width: 0px;
       height: 3px;

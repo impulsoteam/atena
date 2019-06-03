@@ -1,29 +1,29 @@
-import request from "supertest"
-import mongoose from "mongoose"
-import sinon from "sinon"
-import factory from "factory-girl"
-import crypto from "crypto"
-import qs from "qs"
-import app from "../index"
-import User from "../models/user"
-import config from "config-yml"
-require("sinon-mongoose")
+import request from 'supertest'
+import mongoose from 'mongoose'
+import sinon from 'sinon'
+import factory from 'factory-girl'
+import crypto from 'crypto'
+import qs from 'qs'
+import app from '../index'
+import User from '../models/user'
+import config from 'config-yml'
+require('sinon-mongoose')
 
-describe("[Controllers] User", () => {
-  describe("## Routes", () => {
+describe('[Controllers] User', () => {
+  describe('## Routes', () => {
     let MOCK_BODY = {
-      token: "4l0c3fKgSeeDGqniR30aQf1O",
-      team_id: "TCXCXJC5S",
-      team_domain: "impulso-sandbox",
-      channel_id: "CCWSMJZ6U",
-      channel_name: "general",
-      user_id: "UCZCQH7CG",
-      user_name: "goldblade",
-      command: "/meuspontos-goldblade",
-      text: "",
+      token: '4l0c3fKgSeeDGqniR30aQf1O',
+      team_id: 'TCXCXJC5S',
+      team_domain: 'impulso-sandbox',
+      channel_id: 'CCWSMJZ6U',
+      channel_name: 'general',
+      user_id: 'UCZCQH7CG',
+      user_name: 'goldblade',
+      command: '/meuspontos-goldblade',
+      text: '',
       response_url:
-        "https://hooks.slack.com/commands/TCXCXJC5S/495910309186/CqLIVC5j2Q8f6zVYwkbjRQ14",
-      trigger_id: "495742047108.439439624196.324159fbe295cb6754006b3afb523a1c"
+        'https://hooks.slack.com/commands/TCXCXJC5S/495910309186/CqLIVC5j2Q8f6zVYwkbjRQ14',
+      trigger_id: '495742047108.439439624196.324159fbe295cb6754006b3afb523a1c'
     }
 
     let time
@@ -31,60 +31,60 @@ describe("[Controllers] User", () => {
 
     beforeEach(() => {
       time = Math.floor(new Date().getTime() / 1000)
-      const requestBody = qs.stringify(MOCK_BODY, { format: "RFC1738" })
+      const requestBody = qs.stringify(MOCK_BODY, { format: 'RFC1738' })
       const sigBaseString = `v0:${time}:${requestBody}`
       const slackSecret = process.env.SLACK_SIGNIN_EVENTS
       const hmac = crypto
-        .createHmac("sha256", slackSecret)
-        .update(sigBaseString, "utf8")
-        .digest("hex")
+        .createHmac('sha256', slackSecret)
+        .update(sigBaseString, 'utf8')
+        .digest('hex')
       slackSignature = `v0=${hmac}`
     })
 
-    describe("### Bot", () => {
+    describe('### Bot', () => {
       var user = {
-        name: "Seya",
+        name: 'Seya',
         level: 1,
         score: 1,
-        slackId: "UCZCQH7CG",
-        avatar: ""
+        slackId: 'UCZCQH7CG',
+        avatar: ''
       }
-      factory.define("User", User, user)
+      factory.define('User', User, user)
 
-      describe("#### POST Score", () => {
-        it("should return the message user has not scored points yet", done => {
+      describe('#### POST Score', () => {
+        it('should return the message user has not scored points yet', done => {
           request(app)
-            .post("/bot/commands/score")
-            .set("x-slack-request-timestamp", time)
-            .set("x-slack-signature", slackSignature)
-            .set("Content-Type", "application/x-www-form-urlencoded")
+            .post('/bot/commands/score')
+            .set('x-slack-request-timestamp', time)
+            .set('x-slack-signature', slackSignature)
+            .set('Content-Type', 'application/x-www-form-urlencoded')
             .send(MOCK_BODY)
             .then(res => {
               expect(res.body.text).toEqual(
-                "Ops! Você ainda não tem pontos registrados."
+                'Ops! Você ainda não tem pontos registrados.'
               )
               expect(res.statusCode).toBe(200)
               done()
             })
         })
 
-        it("should return the message with user position and total points", done => {
-          const UserModel = mongoose.model("User")
-          factory.build("User", user).then(userDocument => {
+        it('should return the message with user position and total points', done => {
+          const UserModel = mongoose.model('User')
+          factory.build('User', user).then(userDocument => {
             user = userDocument
             // var userMock = sinon.mock(user);
             // userMock.expects("save").resolves(user);
             sinon
               .mock(UserModel)
-              .expects("findOne")
-              .chain("exec")
+              .expects('findOne')
+              .chain('exec')
               .resolves(user)
 
             request(app)
-              .post("/bot/commands/score")
-              .set("x-slack-request-timestamp", time)
-              .set("x-slack-signature", slackSignature)
-              .set("Content-Type", "application/x-www-form-urlencoded")
+              .post('/bot/commands/score')
+              .set('x-slack-request-timestamp', time)
+              .set('x-slack-signature', slackSignature)
+              .set('Content-Type', 'application/x-www-form-urlencoded')
               .send(MOCK_BODY)
               .then(res => {
                 expect(res.body.text).toEqual(
@@ -100,41 +100,41 @@ describe("[Controllers] User", () => {
         })
       })
 
-      describe("#### POST Ranking", () => {
-        it("should return the ranking successfully empty", done => {
+      describe('#### POST Ranking', () => {
+        it('should return the ranking successfully empty', done => {
           request(app)
-            .post("/bot/commands/rankinggeral")
-            .set("x-slack-request-timestamp", time)
-            .set("x-slack-signature", slackSignature)
-            .set("Content-Type", "application/x-www-form-urlencoded")
+            .post('/bot/commands/rankinggeral')
+            .set('x-slack-request-timestamp', time)
+            .set('x-slack-signature', slackSignature)
+            .set('Content-Type', 'application/x-www-form-urlencoded')
             .send(MOCK_BODY)
             .then(res => {
-              expect(res.body.text).toEqual("Ops! Ainda ninguém pontuou. =/")
+              expect(res.body.text).toEqual('Ops! Ainda ninguém pontuou. =/')
               expect(res.statusCode).toBe(200)
               done()
             })
         })
 
-        it("should return the ranking sucessfully", done => {
-          const UserModel = mongoose.model("User")
-          factory.build("User", user).then(userDocument => {
+        it('should return the ranking sucessfully', done => {
+          const UserModel = mongoose.model('User')
+          factory.build('User', user).then(userDocument => {
             user = userDocument
             sinon
               .mock(UserModel)
-              .expects("find")
-              .chain("exec")
+              .expects('find')
+              .chain('exec')
               .twice()
               .resolves([user])
 
             request(app)
-              .post("/bot/commands/rankinggeral")
-              .set("x-slack-request-timestamp", time)
-              .set("x-slack-signature", slackSignature)
-              .set("Content-Type", "application/x-www-form-urlencoded")
+              .post('/bot/commands/rankinggeral')
+              .set('x-slack-request-timestamp', time)
+              .set('x-slack-signature', slackSignature)
+              .set('Content-Type', 'application/x-www-form-urlencoded')
               .send(MOCK_BODY)
               .then(res => {
                 expect(res.body.text).toEqual(
-                  "Veja as primeiras pessoas do ranking:"
+                  'Veja as primeiras pessoas do ranking:'
                 )
                 expect(res.statusCode).toBe(200)
                 done()
@@ -143,51 +143,51 @@ describe("[Controllers] User", () => {
           })
         })
 
-        describe("### POST CoreTeamRanking", () => {
+        describe('### POST CoreTeamRanking', () => {
           var userCoreTeam = {
-            name: "Pegasus",
+            name: 'Pegasus',
             level: 1,
             score: 1,
-            slackId: "UCZCQH7CG",
-            avatar: "",
+            slackId: 'UCZCQH7CG',
+            avatar: '',
             isCoreTeam: true
           }
-          factory.define("UserCoreTeam", User, userCoreTeam)
+          factory.define('UserCoreTeam', User, userCoreTeam)
 
-          it("should return is not core team message", done => {
+          it('should return is not core team message', done => {
             request(app)
-              .post("/bot/commands/coreteamranking")
-              .set("x-slack-request-timestamp", time)
-              .set("x-slack-signature", slackSignature)
-              .set("Content-Type", "application/x-www-form-urlencoded")
+              .post('/bot/commands/coreteamranking')
+              .set('x-slack-request-timestamp', time)
+              .set('x-slack-signature', slackSignature)
+              .set('Content-Type', 'application/x-www-form-urlencoded')
               .send(MOCK_BODY)
               .then(res => {
                 expect(res.body.text).toEqual(
-                  "Você não faz parte do Core Team nem um cavaleiro de ouro, tente ver o seu ranking com o comando */ranking*"
+                  'Você não faz parte do Core Team nem um cavaleiro de ouro, tente ver o seu ranking com o comando */ranking*'
                 )
                 expect(res.statusCode).toBe(200)
                 done()
               })
           })
 
-          it("should return the ranking sucessfully", done => {
-            config.coreteam.members = ["UCZCQH7CG"]
-            const UserModel = mongoose.model("User")
+          it('should return the ranking sucessfully', done => {
+            config.coreteam.members = ['UCZCQH7CG']
+            const UserModel = mongoose.model('User')
             sinon
               .mock(UserModel)
-              .expects("find")
-              .chain("exec")
+              .expects('find')
+              .chain('exec')
               .resolves(userCoreTeam)
 
             request(app)
-              .post("/bot/commands/coreteamranking")
-              .set("x-slack-request-timestamp", time)
-              .set("x-slack-signature", slackSignature)
-              .set("Content-Type", "application/x-www-form-urlencoded")
+              .post('/bot/commands/coreteamranking')
+              .set('x-slack-request-timestamp', time)
+              .set('x-slack-signature', slackSignature)
+              .set('Content-Type', 'application/x-www-form-urlencoded')
               .send(MOCK_BODY)
               .then(res => {
                 expect(res.body.text).toEqual(
-                  "Veja as primeiras pessoas do ranking:"
+                  'Veja as primeiras pessoas do ranking:'
                 )
                 expect(res.statusCode).toBe(200)
                 done()

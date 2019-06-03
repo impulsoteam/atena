@@ -1,57 +1,57 @@
-import MockDate from "mockdate"
-import { driver } from "@rocket.chat/sdk"
+import MockDate from 'mockdate'
+import { driver } from '@rocket.chat/sdk'
 // import mockingoose from 'mockingoose';
-import interaction from "./interaction"
-import interactionModel from "../models/interaction"
-import channelCheckPointModel from "../models/channelCheckPoint"
+import interaction from './interaction'
+import interactionModel from '../models/interaction'
+import channelCheckPointModel from '../models/channelCheckPoint'
 import {
   saveInteraction,
   message,
   responseEngagedSlash,
   apiGetChannels
-} from "../mocks/rocket"
-import api from "../rocket/api"
-import userController from "./user"
-import minerController from "./miner"
-import config from "config-yml"
-import achievementController from "./achievement"
-import achievementTemporaryController from "./achievementTemporary"
+} from '../mocks/rocket'
+import api from '../rocket/api'
+import userController from './user'
+import minerController from './miner'
+import config from 'config-yml'
+import achievementController from './achievement'
+import achievementTemporaryController from './achievementTemporary'
 
-jest.mock("../rocket/api")
-jest.mock("../rocket/bot", () => jest.fn())
-jest.mock("../utils")
-jest.mock("./user")
-jest.mock("./achievement")
-jest.mock("./achievementTemporary")
-jest.mock("@rocket.chat/sdk")
+jest.mock('../rocket/api')
+jest.mock('../rocket/bot', () => jest.fn())
+jest.mock('../utils')
+jest.mock('./user')
+jest.mock('./achievement')
+jest.mock('./achievementTemporary')
+jest.mock('@rocket.chat/sdk')
 
-describe("Interaction Controller", () => {
+describe('Interaction Controller', () => {
   afterEach(() => {
     jest.restoreAllMocks()
     jest.clearAllMocks()
   })
   const mockFullUser = {
-    username: "ikki",
+    username: 'ikki',
     reactions: { positives: 0, negatives: 0, others: 0 },
     level: 0,
     score: 0,
     messages: 0,
     replies: 0,
     isCoreTeam: false,
-    teams: ["network"],
-    _id: "5c9d08cd4d5cb631a30741e3",
-    rocketId: "2BQ3wWnRBh7vXGYdP",
+    teams: ['network'],
+    _id: '5c9d08cd4d5cb631a30741e3',
+    rocketId: '2BQ3wWnRBh7vXGYdP',
     __v: 0,
-    lastUpdate: "2019-03-28T17:47:57.760Z",
-    name: "Ikki de Fênix"
+    lastUpdate: '2019-03-28T17:47:57.760Z',
+    name: 'Ikki de Fênix'
   }
 
-  describe("todayScore", () => {
-    it("should return score equal 0", async done => {
+  describe('todayScore', () => {
+    it('should return score equal 0', async done => {
       const mockInteractions = [{ score: 0 }]
-      const user = "123456"
+      const user = '123456'
       const spy = jest
-        .spyOn(interactionModel, "find")
+        .spyOn(interactionModel, 'find')
         .mockImplementationOnce(() => Promise.resolve(mockInteractions))
       interaction.todayScore(user).then(res => {
         expect(spy).toHaveBeenCalled()
@@ -60,12 +60,12 @@ describe("Interaction Controller", () => {
       })
     })
 
-    it("should return score not equal zero", async done => {
+    it('should return score not equal zero', async done => {
       const mockInteractions = [{ score: 2 }]
       const score = config.xprules.messages.send
-      const user = "123456"
+      const user = '123456'
       const spy = jest
-        .spyOn(interactionModel, "find")
+        .spyOn(interactionModel, 'find')
         .mockImplementationOnce(() => Promise.resolve(mockInteractions))
       interaction.todayScore(user).then(res => {
         expect(spy).toHaveBeenCalled()
@@ -75,13 +75,13 @@ describe("Interaction Controller", () => {
     })
   })
 
-  describe("validInteraction", () => {
+  describe('validInteraction', () => {
     const mockLastMessage = {
-      _id: "5c9bfa0fac7f535bc808da67",
-      date: "2019-03-27T22:32:46.000Z"
+      _id: '5c9bfa0fac7f535bc808da67',
+      date: '2019-03-27T22:32:46.000Z'
     }
 
-    it("should return rocket user", async done => {
+    it('should return rocket user', async done => {
       const data = message
       interaction.lastMessage = jest
         .fn()
@@ -95,25 +95,25 @@ describe("Interaction Controller", () => {
       })
     })
 
-    it("should return user makes flood", async done => {
+    it('should return user makes flood', async done => {
       const data = message
       interaction.lastMessage = jest.fn().mockReturnValue(
         new Promise((resolve, reject) => {
-          reject("usuario fez flood")
+          reject('usuario fez flood')
         })
       )
       userController.valid = jest
         .fn()
         .mockReturnValue(new Promise(resolve => resolve(mockFullUser)))
       interaction.validInteraction(data).catch(err => {
-        expect(err).toEqual("usuario fez flood")
+        expect(err).toEqual('usuario fez flood')
         done()
       })
     })
   })
 
-  describe("save", () => {
-    describe("rocket origin", () => {
+  describe('save', () => {
+    describe('rocket origin', () => {
       beforeEach(() => {
         achievementTemporaryController.save = jest
           .fn()
@@ -125,18 +125,18 @@ describe("Interaction Controller", () => {
         achievementController.save = jest.fn().mockReturnValue(true)
       })
 
-      it("should return reject promise when user not in rocket database", async done => {
+      it('should return reject promise when user not in rocket database', async done => {
         const data = message
-        data.origin = "rocket"
-        expect(interaction.save(message)).rejects.toEqual("add new interaction")
+        data.origin = 'rocket'
+        expect(interaction.save(message)).rejects.toEqual('add new interaction')
         done()
       })
 
-      it("should return successfully when user is on rocket database", async done => {
+      it('should return successfully when user is on rocket database', async done => {
         const data = message
-        data.origin = "rocket"
+        data.origin = 'rocket'
         jest
-          .spyOn(interactionModel.prototype, "save")
+          .spyOn(interactionModel.prototype, 'save')
           .mockImplementationOnce(() => Promise.resolve(saveInteraction))
         interaction.validInteraction = jest
           .fn()
@@ -147,12 +147,12 @@ describe("Interaction Controller", () => {
         })
       })
 
-      it("should return interaction whitout update score", async done => {
+      it('should return interaction whitout update score', async done => {
         const data = message
         const score = 0
-        data.origin = "rocket"
+        data.origin = 'rocket'
         const spy = jest
-          .spyOn(interactionModel.prototype, "save")
+          .spyOn(interactionModel.prototype, 'save')
           .mockImplementationOnce(() => Promise.resolve(saveInteraction))
 
         interaction.validInteraction = jest
@@ -165,16 +165,16 @@ describe("Interaction Controller", () => {
         })
       })
 
-      it("should return interaction whith update score", async done => {
+      it('should return interaction whith update score', async done => {
         const data = message
         const score = config.xprules.messages.send
-        data.origin = "rocket"
+        data.origin = 'rocket'
         const customSaveInteraction = {
           ...saveInteraction,
           score: 2
         }
         jest
-          .spyOn(interactionModel.prototype, "save")
+          .spyOn(interactionModel.prototype, 'save')
           .mockImplementationOnce(() => Promise.resolve(customSaveInteraction))
         interaction.validInteraction = jest
           .fn()
@@ -185,30 +185,30 @@ describe("Interaction Controller", () => {
         })
       })
 
-      it("should return interaction with channel general saved", async done => {
+      it('should return interaction with channel general saved', async done => {
         const data = message
-        data.origin = "rocket"
+        data.origin = 'rocket'
         const customSaveInteraction = {
           ...saveInteraction,
-          description: "msg in general",
-          channel: "GENERAL"
+          description: 'msg in general',
+          channel: 'GENERAL'
         }
         jest
-          .spyOn(interactionModel.prototype, "save")
+          .spyOn(interactionModel.prototype, 'save')
           .mockImplementationOnce(() => Promise.resolve(customSaveInteraction))
         interaction.validInteraction = jest
           .fn()
           .mockReturnValue(new Promise(resolve => resolve(mockFullUser)))
         interaction.save(data).then(res => {
-          expect(res.channel).toEqual("GENERAL")
+          expect(res.channel).toEqual('GENERAL')
           done()
         })
       })
     })
   })
 
-  describe("engaged", () => {
-    it("should return is not core team", async done => {
+  describe('engaged', () => {
+    it('should return is not core team', async done => {
       const mockReq = {
         body: responseEngagedSlash
       }
@@ -217,7 +217,7 @@ describe("Interaction Controller", () => {
       }
       const mockResponse = {
         text:
-          "Você não tem uma armadura de ouro, e não pode entrar nessa casa!",
+          'Você não tem uma armadura de ouro, e não pode entrar nessa casa!',
         attachments: []
       }
 
@@ -233,12 +233,12 @@ describe("Interaction Controller", () => {
       done()
     })
 
-    it("should return wrong invalid dates", async done => {
+    it('should return wrong invalid dates', async done => {
       const mockReq = {
         body: {
           ...responseEngagedSlash,
-          begin: "10/10/2019",
-          end: "10/10/2019"
+          begin: '10/10/2019',
+          end: '10/10/2019'
         }
       }
       const mockRes = {
@@ -246,7 +246,7 @@ describe("Interaction Controller", () => {
       }
       const mockResponse = {
         text:
-          "Datas em formatos inválidos por favor use datas com o formato ex: 10-10-2019",
+          'Datas em formatos inválidos por favor use datas com o formato ex: 10-10-2019',
         attachments: []
       }
       userController.isCoreTeam = jest
@@ -262,12 +262,12 @@ describe("Interaction Controller", () => {
       done()
     })
 
-    it("should return date begin more than date end", async done => {
+    it('should return date begin more than date end', async done => {
       const mockReq = {
         body: {
           ...responseEngagedSlash,
-          begin: "01-02-2019",
-          end: "01-01-2019"
+          begin: '01-02-2019',
+          end: '01-01-2019'
         }
       }
 
@@ -276,7 +276,7 @@ describe("Interaction Controller", () => {
       }
 
       const mockResponse = {
-        text: "Data de ínicio não pode ser maior que data final",
+        text: 'Data de ínicio não pode ser maior que data final',
         attachments: []
       }
 
@@ -294,17 +294,17 @@ describe("Interaction Controller", () => {
       done()
     })
 
-    it("should return a list users engaged", async done => {
+    it('should return a list users engaged', async done => {
       const mockUsers = [
         {
           _id: {
             _id: 123456,
-            name: "Ikki",
-            rocketId: "H9kcNkWwXF92XxtTF",
-            username: "ikki"
+            name: 'Ikki',
+            rocketId: 'H9kcNkWwXF92XxtTF',
+            username: 'ikki'
           },
           count: 6,
-          date: "2019-04-13T13:00:12.000Z"
+          date: '2019-04-13T13:00:12.000Z'
         }
       ]
       const mockReq = {
@@ -314,11 +314,11 @@ describe("Interaction Controller", () => {
         json: jest.fn()
       }
       const mockResponse = {
-        text: "Total de 1 usuário engajados",
+        text: 'Total de 1 usuário engajados',
         attachments: [
           {
             text:
-              "Username: @ikki | Name: Ikki | Rocket ID: H9kcNkWwXF92XxtTF | Qtd. interações: 6"
+              'Username: @ikki | Name: Ikki | Rocket ID: H9kcNkWwXF92XxtTF | Qtd. interações: 6'
           }
         ]
       }
@@ -344,7 +344,7 @@ describe("Interaction Controller", () => {
     })
   })
 
-  describe("checkpoints", () => {
+  describe('checkpoints', () => {
     beforeEach(() => {
       api.getChannels = jest
         .fn()
@@ -352,32 +352,32 @@ describe("Interaction Controller", () => {
           new Promise(resolve => resolve(apiGetChannels.channels))
         )
     })
-    describe("week", () => {
-      it("should return a reject promise when not called from an monday", async done => {
-        MockDate.set("04-27-2019")
+    describe('week', () => {
+      it('should return a reject promise when not called from an monday', async done => {
+        MockDate.set('04-27-2019')
 
         interaction.checkpoints().catch(err => {
           expect(err).toEqual(
-            "O checkpoint por semana deve ser feito em uma segunda feira"
+            'O checkpoint por semana deve ser feito em uma segunda feira'
           )
           MockDate.reset()
           done()
         })
       })
 
-      it("should return a week engaged users to quarterly", async done => {
-        MockDate.set("04-29-2019")
+      it('should return a week engaged users to quarterly', async done => {
+        MockDate.set('04-29-2019')
         const mockUsers = [
-          { id: "1", name: "Fulano" },
-          { id: "2", name: "Ciclano" },
-          { id: "3", name: "Beltrano" }
+          { id: '1', name: 'Fulano' },
+          { id: '2', name: 'Ciclano' },
+          { id: '3', name: 'Beltrano' }
         ]
 
         interaction.mostActives = jest
           .fn()
           .mockReturnValue(new Promise(resolve => resolve(mockUsers)))
         const spy = jest
-          .spyOn(channelCheckPointModel, "findOneAndUpdate")
+          .spyOn(channelCheckPointModel, 'findOneAndUpdate')
           .mockImplementationOnce(() => Promise.resolve({}))
 
         interaction.checkpoints().then(() => {
@@ -392,12 +392,12 @@ describe("Interaction Controller", () => {
       })
     })
 
-    describe("quarter", () => {
-      it("should close checkpoint on begin of new quarter", async done => {
-        MockDate.set("04-01-2019")
+    describe('quarter', () => {
+      it('should close checkpoint on begin of new quarter', async done => {
+        MockDate.set('04-01-2019')
         let interactions = []
         for (let i = 1; i <= 10; i++) {
-          interactions.push({ _id: i, score: 1, channel: "GENERAL" })
+          interactions.push({ _id: i, score: 1, channel: 'GENERAL' })
         }
 
         interaction.byChannel = jest
@@ -406,10 +406,10 @@ describe("Interaction Controller", () => {
 
         channelCheckPointModel.findOne = jest
           .fn()
-          .mockResolvedValue({ channel: "GENERAL" })
+          .mockResolvedValue({ channel: 'GENERAL' })
         driver.sendToRoomId = jest.fn().mockResolvedValue({})
 
-        interaction.checkpoints("quarter").then(() => {
+        interaction.checkpoints('quarter').then(() => {
           expect(api.getChannels).toHaveBeenCalled()
           expect(interaction.byChannel).toHaveBeenCalledTimes(4)
           expect(channelCheckPointModel.findOne).toHaveBeenCalledTimes(4)

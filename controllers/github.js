@@ -1,41 +1,12 @@
-import axios from "axios"
-import config from "config-yml"
-import queryString from "querystring"
-import userController from "./user"
-import { renderScreen } from "../utils/ssr"
+import axios from 'axios'
+import config from 'config-yml'
+import queryString from 'querystring'
+import userController from './user'
+import { renderScreen } from '../utils/ssr'
 
 const link_auth = `${
   process.env.GITHUB_OAUTH_URL
 }authorize?scope=user:email&client_id=${process.env.GITHUB_CLIENT_ID}`
-
-const index = async (req, res) => {
-  let response = {}
-  let user
-  let rocketId = req.body.id
-  let name = req.body.name
-  try {
-    user = await userController.findBy({ rocketId: rocketId })
-  } catch (e) {
-    const obj = {
-      rocketId: rocketId,
-      name: name
-    }
-    user = await userController.save(obj)
-  }
-  if (user && user.githubId) {
-    response.text = `Olá! Leal, ${
-      user.name
-    }, você já pode participar dos meus trabalhos open-source! Go coding!`
-  } else {
-    response.text = `Olá! Parece que você ainda não pertence as nossas fileiras, Impulser! Mas você não viria tão longe se não quisesse participar dos trabalhos com open-source, certo?!
-Portanto, tens o que é preciso para estar entre nós, ${
-      user.name
-    }! Mas para participar dos trabalhos com open-source, preciso que vá até o seguinte local: ${link_auth}&state=${
-      user.rocketId
-    }. Uma vez que conclua essa missão voltaremos a conversar!`
-  }
-  res.json(response)
-}
 
 const accessToken = async code => {
   const url = `${process.env.GITHUB_OAUTH_URL}access_token`
@@ -43,7 +14,7 @@ const accessToken = async code => {
     client_id: process.env.GITHUB_CLIENT_ID,
     client_secret: process.env.GITHUB_CLIENT_SECRET,
     code: code,
-    accept: "json"
+    accept: 'json'
   })
   return await queryString.parse(res.data)
 }
@@ -63,7 +34,7 @@ const info = async (access_token, user) => {
       }
     })
     .catch(e => {
-      console.log("Error: ", e)
+      console.log('Error: ', e)
     })
 }
 
@@ -89,61 +60,61 @@ const callback = async (req, res) => {
     response = `Ops! parece que você entrou na caverna errada. Que falta faz um GPS, não é? Siga esse caminho e não vai errar: <a href="${link_auth}&state=${rocketId}">${link_auth}&state=${rocketId}</a> para tentar novamente.`
   } else {
     response =
-      "Não conseguimos localizar seu e-mail público ou privado na API do GITHUB, Seu esse recurso sua armadura de cavaleiro não está pronta para ganhar bonificações na contribuição do projeto Atena!"
+      'Não conseguimos localizar seu e-mail público ou privado na API do GITHUB, Seu esse recurso sua armadura de cavaleiro não está pronta para ganhar bonificações na contribuição do projeto Atena!'
   }
 
   const inititalData = {
-    title: "Batalha do Open Source | Impulso Network",
+    title: 'Batalha do Open Source | Impulso Network',
     response
   }
 
-  renderScreen(req, res, "Github", inititalData)
+  renderScreen(req, res, 'Github', inititalData)
 }
 
 const normalize = data => {
-  if (data.type === "issue") {
+  if (data.type === 'issue') {
     return {
-      origin: "github",
+      origin: 'github',
       type: data.type,
       user: data.user,
       thread: false,
-      description: "new github issue",
+      description: 'new github issue',
       channel: data.repository.id,
       category: config.categories.network.type,
       action: config.actions.github.type,
       score: config.xprules.github.issue
     }
-  } else if (data.type === "review") {
+  } else if (data.type === 'review') {
     return {
-      origin: "github",
+      origin: 'github',
       type: data.type,
       user: data.user,
       thread: false,
-      description: "review",
+      description: 'review',
       channel: data.review.id,
       category: config.categories.network.type,
       action: config.actions.github.type,
       score: config.xprules.github.review
     }
-  } else if (data.type === "pull_request") {
+  } else if (data.type === 'pull_request') {
     return {
-      origin: "github",
+      origin: 'github',
       type: data.type,
       user: data.user,
       thread: false,
-      description: "review",
+      description: 'review',
       channel: data.pull_request.id,
       category: config.categories.network.type,
       action: config.actions.github.type,
       score: config.xprules.github.pull_request
     }
-  } else if (data.type === "merged_pull_request") {
+  } else if (data.type === 'merged_pull_request') {
     return {
-      origin: "github",
+      origin: 'github',
       type: data.type,
       user: data.user,
       thread: false,
-      description: "merged pull request",
+      description: 'merged pull request',
       channel: data.pull_request.id,
       category: config.categories.network.type,
       action: config.actions.github.type,
@@ -153,7 +124,6 @@ const normalize = data => {
 }
 
 export default {
-  index,
   normalize,
   callback
 }

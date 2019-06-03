@@ -1,15 +1,15 @@
-import mongoose from "mongoose"
-import { driver } from "@rocket.chat/sdk"
-import userController from "./user"
-import interactionController from "./interaction"
-import { calculateLevel, getRanking, isCoreTeam } from "../utils"
-import { renderScreen } from "../utils/ssr"
-import { isValidToken } from "../utils/teams"
-import minerController from "./miner"
+import mongoose from 'mongoose'
+import { driver } from '@rocket.chat/sdk'
+import userController from './user'
+import interactionController from './interaction'
+import { calculateLevel, getRanking, isCoreTeam } from '../utils'
+import { renderScreen } from '../utils/ssr'
+import { isValidToken } from '../utils/teams'
+import minerController from './miner'
 
 const myPosition = async (user_id, users) => {
   const user = await userController.getNetwork(user_id)
-  const id = user.network === "rocket" ? user.rocketId : user.slackId
+  const id = user.network === 'rocket' ? user.rocketId : user.slackId
   return users.map(e => e.user).indexOf(id) + 1
 }
 
@@ -21,7 +21,7 @@ const commandIndex = async message => {
 
 const getMonthFromMessage = message => {
   let month = new Date(Date.now()).getMonth() + 1
-  const monthFromMessage = message.msg.replace(/[^0-9]+/g, "")
+  const monthFromMessage = message.msg.replace(/[^0-9]+/g, '')
   if (
     monthFromMessage.length &&
     monthFromMessage > 0 &&
@@ -38,7 +38,7 @@ const commandGeneral = async message => {
 
   const req = {
     headers: {
-      origin: "rocket"
+      origin: 'rocket'
     },
     body: {
       id: message.u._id
@@ -57,7 +57,7 @@ const commandGeneral = async message => {
 
 const generalIndex = async (user_id, month) => {
   let response = {
-    msg: "Veja as primeiras pessoas do ranking:",
+    msg: 'Veja as primeiras pessoas do ranking:',
     attachments: []
   }
   const limit_ranking = 5
@@ -67,7 +67,7 @@ const generalIndex = async (user_id, month) => {
   if (rankingMonthly.msg) {
     response = rankingMonthly
   } else if (!rankingMonthly.msg && rankingMonthly.users.length === 0) {
-    response = { msg: "Ops! Ainda ninguém pontuou. =/" }
+    response = { msg: 'Ops! Ainda ninguém pontuou. =/' }
   } else {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking)
     response.attachments = await limit_users.map((user, index) => {
@@ -96,14 +96,14 @@ const generalIndex = async (user_id, month) => {
 
 const bot_index = async (req, res) => {
   let response = {
-    msg: "Veja as primeiras pessoas do ranking:",
+    msg: 'Veja as primeiras pessoas do ranking:',
     attachments: []
   }
   let user_id
   let month
   const limit_ranking = 5
 
-  if (req.headers.origin === "rocket") {
+  if (req.headers.origin === 'rocket') {
     user_id = req.body.id
     req.body.user_id = user_id
     month = req.body.month
@@ -117,7 +117,7 @@ const bot_index = async (req, res) => {
   if (rankingMonthly.msg) {
     response = rankingMonthly
   } else if (!rankingMonthly.msg && rankingMonthly.users.length === 0) {
-    response = { msg: "Ops! Ainda ninguém pontuou. =/" }
+    response = { msg: 'Ops! Ainda ninguém pontuou. =/' }
   } else {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking)
     response.attachments = await limit_users.map((user, index) => {
@@ -151,18 +151,18 @@ const valid_month = async month => {
 }
 
 const monthNames = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro"
+  'Janeiro',
+  'Fevereiro',
+  'Março',
+  'Abril',
+  'Maio',
+  'Junho',
+  'Julho',
+  'Agosto',
+  'Setembro',
+  'Outubro',
+  'Novembro',
+  'Dezembro'
 ]
 
 const monthly = async month => {
@@ -171,7 +171,7 @@ const monthly = async month => {
   let query_month = today.getMonth()
   if (month) {
     if (!(await valid_month(month)))
-      return { msg: "Digite um mês válido Ex: /ranking 1" }
+      return { msg: 'Digite um mês válido Ex: /ranking 1' }
     query_month = month - 1
     query_date = new Date(today.getFullYear(), query_month)
   }
@@ -191,13 +191,13 @@ const monthly = async month => {
 }
 
 const findBy = async args => {
-  const RankingModel = mongoose.model("Ranking")
+  const RankingModel = mongoose.model('Ranking')
   const result = await RankingModel.findOne(args).exec()
   return result || null
 }
 
 const findAll = async (isCoreTeam = false, month = Date.now, limit = 20) => {
-  const RankingModel = mongoose.model("Ranking")
+  const RankingModel = mongoose.model('Ranking')
   const result = await RankingModel.find({
     isCoreTeam: isCoreTeam,
     date: month
@@ -211,7 +211,7 @@ const findAll = async (isCoreTeam = false, month = Date.now, limit = 20) => {
 }
 
 const closeRanking = async date => {
-  const RankingModel = mongoose.model("Ranking")
+  const RankingModel = mongoose.model('Ranking')
   let year = date.getFullYear()
   let month = date.getMonth()
   if (month == 0) {
@@ -241,7 +241,7 @@ const save = async (isCoreTeam = false, today = new Date(Date.now())) => {
     level: calculateLevel(interaction.totalScore)
   }))
 
-  const RankingModel = mongoose.model("Ranking")
+  const RankingModel = mongoose.model('Ranking')
   const ranking = await RankingModel.findOne({
     date: {
       $gte: new Date(today.getFullYear(), today.getMonth())
@@ -268,7 +268,7 @@ const sendToChannel = async () => {
   const roomname = process.env.ROCKET_DEFAULT_CHANNEL
   const limit_ranking = 5
   let response = {
-    msg: "Veja as primeiras pessoas do ranking:",
+    msg: 'Veja as primeiras pessoas do ranking:',
     attachments: []
   }
   let allUsers = await userController.findAll(false, 0)
@@ -276,7 +276,7 @@ const sendToChannel = async () => {
   if (rankingMonthly.msg) {
     response = rankingMonthly
   } else if (!rankingMonthly.msg && rankingMonthly.users.length == 0) {
-    response = { text: "Ops! Ainda ninguém pontuou. =/" }
+    response = { text: 'Ops! Ainda ninguém pontuou. =/' }
   } else {
     const limit_users = rankingMonthly.users.slice(0, limit_ranking)
     response.attachments = await limit_users.map((user, index) => {
@@ -336,7 +336,7 @@ const group = async (users, isCoreTeam = false) => {
     let avatar = `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${
       user.user
     }`
-    if (u.network === "slack") avatar = u.avatar
+    if (u.network === 'slack') avatar = u.avatar
     const data = {
       name: u.name,
       xp: user.score,
@@ -372,11 +372,11 @@ const index = async (req, res) => {
   let error = null
   const rankingMonthly = await monthly(month)
   if (!rankingMonthly.msg && rankingMonthly.users.length === 0) {
-    error = "Ops! Ainda ninguem pontuou. =/"
+    error = 'Ops! Ainda ninguem pontuou. =/'
   } else if (rankingMonthly.msg) {
     error = rankingMonthly.msg
   } else if (!rankingMonthly.msg && rankingMonthly.users.length < 3) {
-    error = "Ops! Ranking incompleto."
+    error = 'Ops! Ranking incompleto.'
   } else {
     let users = await group(rankingMonthly.users)
     users = await position(users)
@@ -386,18 +386,18 @@ const index = async (req, res) => {
   }
 
   const initialData = {
-    title: "Ranking",
+    title: 'Ranking',
     first_users: first_users,
     last_users: last_users,
     monthName: monthName,
     error: error,
-    page: "ranking"
+    page: 'ranking'
   }
 
   if (isMiner && isValidToken(team, token)) {
     res.json(initialData)
   } else {
-    renderScreen(req, res, "Ranking", initialData)
+    renderScreen(req, res, 'Ranking', initialData)
   }
 }
 
@@ -411,24 +411,24 @@ const general = async (req, res) => {
   let users = await userController.findAll(
     false,
     limit,
-    "-email -_id -lastUpdate"
+    '-email -_id -lastUpdate'
   )
   users = await position(users)
   if (isMiner) users = await byTeam(users, team)
   first_users = await firstUsers(users)
   last_users = await lastUsers(users)
   const initialData = {
-    title: "Ranking Geral",
+    title: 'Ranking Geral',
     first_users: first_users,
     last_users: last_users,
-    monthName: "GERAL",
-    page: "geral"
+    monthName: 'GERAL',
+    page: 'geral'
   }
 
-  if (req.query.format === "json" || (isMiner && isValidToken(team, token))) {
+  if (req.query.format === 'json' || (isMiner && isValidToken(team, token))) {
     res.json(initialData)
   } else {
-    renderScreen(req, res, "Ranking", initialData)
+    renderScreen(req, res, 'Ranking', initialData)
   }
 }
 

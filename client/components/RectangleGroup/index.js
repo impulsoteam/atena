@@ -1,6 +1,6 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { StyledRectangleGroup } from "./style"
+import React from 'react'
+import PropTypes from 'prop-types'
+import { StyledRectangleGroup } from './style'
 
 const RectangleGroup = ({ children }) => (
   <StyledRectangleGroup>{children}</StyledRectangleGroup>

@@ -1,8 +1,8 @@
-import axios from "axios"
-import config from "config-yml"
-import InteractionModel from "../models/interaction"
-import interactionController from "../controllers/interaction"
-import userController from "../controllers/user"
+import axios from 'axios'
+import config from 'config-yml'
+import InteractionModel from '../models/interaction'
+import interactionController from '../controllers/interaction'
+import userController from '../controllers/user'
 
 const index = async data => {
   const response = true
@@ -15,20 +15,20 @@ const index = async data => {
         if (user) {
           const obj = {
             id: data.post_id,
-            origin: "blog",
-            type: "article",
+            origin: 'blog',
+            type: 'article',
             title: data.post.post_title,
             user: user.rocketId
           }
           await interactionController.save(obj)
         } else {
-          console.log("Error user not found on blog to save interaction")
+          console.log('Error user not found on blog to save interaction')
         }
       }
     }
   } catch (error) {
-    console.log("error", error)
-    console.log("Error on save blog interaction")
+    console.log('error', error)
+    console.log('Error on save blog interaction')
   }
 
   return response
@@ -37,8 +37,8 @@ const index = async data => {
 const isValidPost = data => {
   return (
     data.post &&
-    data.post.post_type === "post" &&
-    data.post.post_status === "publish"
+    data.post.post_type === 'post' &&
+    data.post.post_status === 'publish'
   )
 }
 
@@ -53,7 +53,7 @@ const findInteractionByPostId = async postId => {
 const getUserById = async userId => {
   const url = `${process.env.BLOG_API_URL}/users/${userId}`
   let res = await axios.get(url, {
-    accept: "json"
+    accept: 'json'
   })
   return res ? res.data : false
 }
@@ -72,22 +72,22 @@ const findUser = async data => {
 }
 
 const normalize = data => {
-  if (data.type == "comment") {
+  if (data.type == 'comment') {
     return {
-      origin: "blog",
+      origin: 'blog',
       type: data.type,
       user: data.user,
       thread: false,
-      description: "comment on blog",
+      description: 'comment on blog',
       channel: data.id,
       category: config.categories.network.type,
       action: config.actions.blog.type,
       score: config.xprules.blog.comment
     }
-  } else if (data.type == "article") {
+  } else if (data.type == 'article') {
     return {
-      origin: "blog",
-      type: "article",
+      origin: 'blog',
+      type: 'article',
       channel: data.id,
       date: new Date(),
       description: data.title,

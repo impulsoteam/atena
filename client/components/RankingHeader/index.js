@@ -1,5 +1,5 @@
-import React from "react"
-import { StyledRankingHeader } from "./style"
+import React from 'react'
+import { StyledRankingHeader } from './style'
 
 const RankingHeader = () => (
   <StyledRankingHeader>

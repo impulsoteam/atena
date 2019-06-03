@@ -1,29 +1,29 @@
-import { renderScreen } from "../utils/ssr"
-import checkPointModel from "../models/checkpoint"
+import { renderScreen } from '../utils/ssr'
+import checkPointModel from '../models/checkpoint'
 
 const index = async (req, res) => {
   if (req.user && req.user.isCoreTeam) {
     const checkpoints = await checkPointModel.find()
     const initialData = {
-      title: "CheckPoints",
-      page: "checkpoint",
+      title: 'CheckPoints',
+      page: 'checkpoint',
       data: checkpoints
     }
-    renderScreen(req, res, "Checkpoint", initialData)
+    renderScreen(req, res, 'Checkpoint', initialData)
   } else {
-    return res.send("Sem Permissão")
+    return res.send('Sem Permissão')
   }
 }
 
 const new_record = async (req, res) => {
   if (req.user && req.user.isCoreTeam) {
     const initialData = {
-      title: "CheckPoint",
-      page: "checkpoint"
+      title: 'CheckPoint',
+      page: 'checkpoint'
     }
-    renderScreen(req, res, "NewCheckpoint", initialData)
+    renderScreen(req, res, 'NewCheckpoint', initialData)
   } else {
-    return res.send("Sem Permissão")
+    return res.send('Sem Permissão')
   }
 }
 
@@ -31,13 +31,13 @@ const edit = async (req, res) => {
   if (req.user && req.user.isCoreTeam) {
     const checkpoint = await checkPointModel.findOne({ _id: req.params.id })
     const initialData = {
-      title: "Edit CheckPoint",
-      page: "checkpoint",
+      title: 'Edit CheckPoint',
+      page: 'checkpoint',
       data: checkpoint
     }
-    renderScreen(req, res, "EditCheckpoint", initialData)
+    renderScreen(req, res, 'EditCheckpoint', initialData)
   } else {
-    return res.send("Sem Permissão")
+    return res.send('Sem Permissão')
   }
 }
 
@@ -51,10 +51,10 @@ const save = async (req, res) => {
       totalEngagedUsers: totalEngagedUsers
     })
     instance.save().then(() => {
-      res.redirect("/checkpoints")
+      res.redirect('/checkpoints')
     })
   } else {
-    return res.send("Sem Permissão")
+    return res.send('Sem Permissão')
   }
 }
 
@@ -67,19 +67,19 @@ const update = async (req, res) => {
     checkpoint.rewards = rewards.filter(item => item.length > 0)
     checkpoint.totalEngagedUsers = totalEngagedUsers
     checkpoint.save().then(() => {
-      res.redirect("/checkpoints")
+      res.redirect('/checkpoints')
     })
   } else {
-    return res.send("Sem Permissão")
+    return res.send('Sem Permissão')
   }
 }
 
 const delete_record = async (req, res) => {
   if (req.user && req.user.isCoreTeam) {
     await checkPointModel.deleteOne({ _id: req.params.id })
-    res.redirect("/checkpoints")
+    res.redirect('/checkpoints')
   } else {
-    return res.send("Sem Permissão")
+    return res.send('Sem Permissão')
   }
 }
 

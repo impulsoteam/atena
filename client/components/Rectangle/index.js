@@ -1,10 +1,10 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
   StyledRectangle,
   LeftStyledRectangle,
   RightStyleRectangle
-} from "./style"
+} from './style'
 
 const Rectangle = ({ children, active, left, right, padding }) => {
   if (right)
