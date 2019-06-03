@@ -38,12 +38,8 @@ router.use("/integrations/rd", rdRoutes);
 router.use("/miner", minerRoutes);
 router.use("/achievements/temporary/data", achievementsTemporyDataRoutes);
 router.use("/auth", authRoutes);
-
 router.use("/blog", blogRoutes);
-
 router.use("/api/v1", apiRoutes);
-
-
 router.get("/", (req, res) =>
   renderScreen(req, res, "HowItWorks", {
     page: "index"
