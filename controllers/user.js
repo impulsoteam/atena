@@ -30,7 +30,6 @@ const updateParentUser = async interaction => {
 
   if (userInfo) {
     let user = await findByOrigin(interaction, true);
-    user = await handlePro(user);
 
     if (user) {
       if (score > 0) {
@@ -38,6 +37,7 @@ const updateParentUser = async interaction => {
         user.level = calculateLevel(newScore);
         user.score = newScore < 0 ? 0 : newScore;
         user.lastUpdate = Date.now();
+        user = await handlePro(user);
         return await user.save();
       }
     } else {
@@ -302,6 +302,7 @@ const updateScore = async (user, score) => {
     const newScore = user.score + score;
     user.level = calculateLevel(newScore);
     user.score = newScore;
+    user = await handlePro(user);
     return await user.save();
   }
 
