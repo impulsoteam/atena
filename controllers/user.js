@@ -9,7 +9,7 @@ import {
   calculateReactions,
   getUserInfo
 } from "../utils";
-import { isEligibleToPro } from "../utils/pro";
+import { isEligibleToPro, hasProPlan, isFinishDateBigger } from "../utils/pro";
 import { sendToUser } from "../rocket/bot";
 import { _throw } from "../helpers";
 import axios from "axios";
@@ -450,18 +450,14 @@ export const handleFromNext = async data => {
     user.linkedinId = data.linkedin.uid;
     user.username = data.rocket_chat.username;
     user.uuid = data.uuid;
-    user.pro = await isEligibleToPro(user, data);
+    const isPro = await hasProPlan(data);
 
-    if (user.pro) {
-      if (data.current_plan.begin_at && data.current_plan.finish_at) {
-        user.proBeginAt = data.current_plan.begin_at;
-        user.proFinishAt = data.current_plan.finish_at;
-      } else {
-        user.proBeginAt = today.format();
-        user.proFinishAt = today.add(5, "years").format();
-      }
-    } else if (!user.pro && user.proFinishAt) {
-      user.proFinishAt = today.format();
+    if (isPro) {
+      user.pro = true;
+      user.proBeginAt = user.proBeginAt || data.current_plan.begin_at;
+      user.proFinishAt = isFinishDateBigger(user, data)
+        ? data.current_plan.finish_at
+        : user.proFinishAt;
     }
 
     return await user.save();
@@ -520,11 +516,13 @@ export const calculateLevel = score => {
 export const handlePro = async user => {
   const isEligiblePro = await isEligibleToPro(user);
   if (isEligiblePro) {
-    if (
-      (!user.proBeginAt && !user.proFinishAt) ||
-      (user.proFinishAt && moment(user.proFinishAt).isSameOrBefore(today))
-    ) {
+    if (!user.proBeginAt && !user.proFinishAt) {
       user.proBeginAt = today.format();
+      user.proFinishAt = today.add(5, "years").format();
+    } else if (
+      user.proFinishAt &&
+      moment(user.proFinishAt).isSameOrBefore(today)
+    ) {
       user.proFinishAt = today.add(5, "years").format();
     }
   } else {
@@ -534,7 +532,14 @@ export const handlePro = async user => {
   }
 
   if (isEligiblePro != user.pro) {
-    runPublisher(user);
+    runPublisher({
+      uuid: user.uuid,
+      current_plan: {
+        name: user.level > 2 ? "Atena - Level" : "Atena - Cargo",
+        begin_at: user.proBeginAt,
+        finish_at: user.proFinishAt
+      }
+    });
   }
 
   user.pro = isEligiblePro;
