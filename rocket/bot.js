@@ -29,7 +29,8 @@ const commands = async message => {
     meusPontos: /^!meuspontos$/g,
     minhasConquistas: /^!minhasconquistas$/g,
     isPro: /^!pro$/g,
-    commands: /^!comandos$/g
+    commands: /^!comandos$/g,
+    darpontos: /^!darpontos/g
   };
 
   if (regex.meusPontos.test(message.msg)) {
@@ -44,6 +45,8 @@ const commands = async message => {
     userController.isPro(message);
   } else if (regex.commands.test(message.msg)) {
     customCommands.show(message);
+  } else if (regex.darpontos.test(message.msg)) {
+    customCommands.givePoints(message);
   }
 
   return;
