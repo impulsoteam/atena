@@ -98,18 +98,6 @@ const update = async interaction => {
   }
 };
 
-const customUpdate = async (user, interactionScore, interaction) => {
-  // TODO: Remove argument interaction.
-  // just added because function calculateReactions need that
-  let doc = await userModel.findOne({ rocketId: user });
-  const newScore = doc.score + interactionScore;
-  doc.score = newScore;
-  doc.level = calculateLevel(newScore);
-  doc.reactions = calculateReactions(interaction, 0);
-  doc = await handlePro(doc);
-  return doc.save();
-};
-
 const find = async (userId, isCoreTeam = false, selectOptions = "-email") => {
   // change find by slackId and release to rocketId too
   const UserModel = mongoose.model("User");
@@ -128,10 +116,12 @@ const findByOrigin = async (interaction, isParent = false) => {
   let query = {};
   let userId = isParent ? interaction.parentUser : interaction.user;
 
-  if (interaction.origin != "sistema") {
-    query[`${interaction.origin}Id`] = userId;
-  } else {
+  if (interaction.origin === "sistema") {
     query = { _id: userId };
+  } else if (interaction.origin === "blog" || interaction.origin === "github") {
+    query = { rocketId: userId };
+  } else {
+    query[`${interaction.origin}Id`] = userId;
   }
 
   const UserModel = mongoose.model("User");
@@ -226,7 +216,9 @@ const findInactivities = async () => {
     today.getDate() - config.xprules.inactive.mindays
   );
   const result = await UserModel.find({
-    lastUpdate: { $lt: dateRange }
+    rocketId: { $exists: true },
+    lastUpdate: { $lt: dateRange },
+    score: { $gt: 1 }
   })
     .sort({
       score: -1
@@ -466,9 +458,9 @@ export const handleFromNext = async data => {
   }
 };
 
-export const valid = async data => {
+export const getUserByRocket = async rocketId => {
   return api
-    .getUserInfo(data.u._id)
+    .getUserInfo(rocketId)
     .then(res => {
       if (!res) {
         return Promise.reject("usuário não encontrado na api do rocket");
@@ -497,7 +489,8 @@ const findAndUpdate = res => {
           username: res.username
         },
         $setOnInsert: {
-          level: 1
+          level: 1,
+          score: 0
         }
       },
       { upsert: true, setDefaultsOnInsert: true },
@@ -607,31 +600,168 @@ const isPro = async (req, res) => {
     });
 };
 
+const sendWelcomeMessage = async username => {
+  const message = `Olá, Impulser! Eu sou *Atena*, deusa da sabedoria e guardiã deste reino! Se chegaste até aqui suponho que queiras juntar-se a nós, estou certa?! Vejo que tens potencial, mas terás que me provar que és capaz!
+  Em meus domínios terás que realizar tarefas para mim, teus feitos irão render-te *Pontos de Experiência* que, além de fortalecer-te, permitirão que obtenhas medalhas de *Conquistas* em forma de reconhecimento! Sou uma deusa amorosa, por isso saibas que, eventualmente, irei premiar-te de maneira especial!
+
+  Com o tempo, sentirás a necessidade de acompanhar o teu progresso. Por isso, podes consultar os livros de nossa biblioteca que contém tudo o que fizestes até então, são eles:
+
+  - Pergaminhos de *Pontos de Experiência: !meuspontos*;
+  - e os Tomos de *Conquistas: !minhasconquistas*.
+
+  Ah! Claro que não estás só na realização destas tarefas. Os nomes dos(as) Impulsers estão dispostos nos murais no exterior de meu templo, esta é uma forma de reconhecer o teu valor e os teusesforços. Lá, tu encontrarás dois murais:
+
+  - O *!ranking* ou *!ranking _nº do mês_* onde estão os nomes dos(das) que mais se esforçaram neste mês. Aquele(a) que estiver em primeiro lugar receberá uma recompensa especial;
+  - e o *!rankinggeral* onde os nomes ficam dispostos, indicando toda a sua contribuição realizada até o presente momento.
+
+  Uma última e importante informação, caso possuas acesso *a maior honraria* entre nós, o *Impulser PRO*, podes conferir o estado dele através do comando *!pro*.
+
+  Sei que são muitas informações, mas caso te esqueças de algum dos comandos podes utilizar do *!comandos*. Também podes recorrer a este papiro, nele encontrarás *tudo o que precisa* saber em caso de dúvidas: *atena.impulso.network.*
+
+  Espero que aproveite ao máximo *tua jornada* por aqui!`;
+
+  return await sendToUser(message, username);
+};
+
+const getSlackUsers = async (req, res) => {
+  try {
+    let slackUsers = await userModel
+      .find({
+        slackId: { $exists: true },
+        score: { $gt: 5 }
+      })
+      .sort({ score: -1 })
+      .limit(15);
+    return res.json(slackUsers);
+  } catch (err) {
+    const errorMessage = {
+      error: "Não foi possivel fazer a busca no banco de dados"
+    };
+    console.log(err);
+    return res.json(errorMessage);
+  }
+};
+
+const findByName = async (req, res) => {
+  try {
+    const users = await userModel
+      .find({
+        $text: {
+          $search: req.query.name,
+          $caseSensitive: false,
+          $diacriticSensitive: false
+        },
+        rocketId: { $exists: true }
+      })
+      .sort({ score: -1 });
+
+    return res.json(users);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const editScore = async (req, res) => {
+  const { type, score } = req.body;
+  const userId = req.params.id;
+
+  let updatedUser;
+
+  if (type === "slack") {
+    try {
+      updatedUser = await userModel.findByIdAndUpdate(
+        userId,
+        { score },
+        {
+          new: true
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  } else if (type === "rocket") {
+    let user;
+    try {
+      user = await userModel.findOne({ _id: userId });
+    } catch (error) {
+      console.log(error);
+    }
+
+    const oldLevel = user.level;
+    const newScore = user.score + score;
+    user.level = calculateLevel(newScore);
+    user.score = newScore;
+
+    try {
+      updatedUser = await userModel.findByIdAndUpdate(
+        userId,
+        { score: user.score, level: user.level },
+        {
+          new: true
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+
+    const message = {
+      msg: `Olá ${
+        user.name
+      }, sua pontuação do slack, *${score} pontos*, foi tranferida. Agora sua nova pontuação é de *${
+        user.score
+      } pontos!*`,
+      attachments: []
+    };
+
+    const attachments = {
+      text: `Ah, e você ainda subiu de nivel. Seu novo nivel é *${
+        user.level
+      }* .`
+    };
+
+    if (oldLevel !== user.level) {
+      message.attachments.push(attachments);
+    }
+    try {
+      await driver.sendDirectToUser(message, user.username);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  return res.json(updatedUser);
+};
+
 export const defaultFunctions = {
   calculateLevel,
   find,
   findAll,
   update,
+  updateUserData,
   updateParentUser,
   rankingPosition,
   checkCoreTeam,
   findInactivities,
   findBy,
   findByOrigin,
+  findByName,
   getNetwork,
+  getSlackUsers,
   updateScore,
+  editScore,
   changeTeams,
   fromRocket,
   details,
   save,
   commandScore,
   handleFromNext,
-  valid,
-  customUpdate,
   handlePro,
   isCoreTeam,
   isPro,
-  sendPro
+  sendPro,
+  getUserByRocket,
+  sendWelcomeMessage
 };
 
 export default defaultFunctions;
