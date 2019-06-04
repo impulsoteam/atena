@@ -3,14 +3,16 @@ import config from "config-yml";
 const normalize = data => {
   const dateMessage = data.history
     ? new Date(data.ts).toLocaleString("en-US")
-    : new Date(data.ts["$date"]).toLocaleString("en-US");
+    : new Date(data.ts["$date"]);
   let response = {
     origin: "rocket",
     category: config.categories.network.type,
     channel: data.rid,
+    channelName: data.roomName || null,
     date: dateMessage,
     type: exportFunctions.type(data)
   };
+
   if (data.reactions) {
     const reactions = data.reactions;
     response = {
@@ -25,6 +27,7 @@ const normalize = data => {
     if (data.attachments) {
       data.msg = "attachment";
     }
+
     response = {
       ...response,
       description: data.msg,

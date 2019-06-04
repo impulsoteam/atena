@@ -59,7 +59,23 @@ const processMessages = async (err, message, messageOptions) => {
   if (!err) {
     message.origin = "rocket";
     console.log("MESSAGE: ", message, messageOptions);
-    if (message.u._id === myuserid || message.t) return;
+
+    if (!message.reactions) {
+      await commands(message);
+    }
+
+    if (
+      message.u._id === myuserid ||
+      message.t ||
+      messageOptions.roomType === "d"
+    )
+      return;
+
+    message = {
+      ...message,
+      ...messageOptions
+    };
+
     interactionController.save(message).catch(() => {
       console.log(
         "Erro ao salvar interação do usuário: id: ",
@@ -70,9 +86,6 @@ const processMessages = async (err, message, messageOptions) => {
         new Date(message.ts["$date"]).toLocaleDateString("en-US")
       );
     });
-    if (!message.reactions) {
-      await commands(message);
-    }
   } else {
     console.log(err, messageOptions);
   }
