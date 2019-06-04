@@ -37,7 +37,7 @@ const show = async req => {
     }
   ];
 
-  if (!isCoreTeam) {
+  if (isCoreTeam) {
     coreTeamAttachments.map(attachment =>
       response.attachments.push(attachment)
     );
