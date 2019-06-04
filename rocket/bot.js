@@ -30,7 +30,8 @@ const commands = async message => {
     minhasConquistas: /^!minhasconquistas$/g,
     isPro: /^!pro$/g,
     commands: /^!comandos$/g,
-    darpontos: /^!darpontos/g
+    darpontos: /^!darpontos/g,
+    checkPro: /^!checkpro/g
   };
 
   if (regex.meusPontos.test(message.msg)) {
@@ -47,6 +48,8 @@ const commands = async message => {
     customCommands.show(message);
   } else if (regex.darpontos.test(message.msg)) {
     customCommands.givePoints(message);
+  } else if (regex.checkPro.test(message.msg)) {
+    customCommands.checkPro(message);
   }
 
   return;
