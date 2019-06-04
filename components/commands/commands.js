@@ -38,9 +38,7 @@ const show = async req => {
   ];
 
   if (isCoreTeam) {
-    coreTeamAttachments.map(attachment =>
-      response.attachments.push(attachment)
-    );
+    response.attachments.push(...coreTeamAttachments);
   }
 
   driver.sendDirectToUser(response, username);
