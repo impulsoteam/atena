@@ -2,7 +2,8 @@ import { driver } from '@rocket.chat/sdk'
 import interactionController from '../controllers/interaction'
 import rankingController from '../controllers/ranking'
 import userController from '../controllers/user'
-import achievementsController from '../components/achievements'
+import achievementController from '../controllers/achievement'
+import * as customCommands from '../components/commands'
 
 var myuserid
 const runBot = async () => {
@@ -27,7 +28,8 @@ const commands = async message => {
     rankingGeral: /^!rankinggeral$/g,
     meusPontos: /^!meuspontos$/g,
     minhasConquistas: /^!minhasconquistas$/g,
-    isPro: /^!pro$/g
+    isPro: /^!pro$/g,
+    commands: /^!comandos$/g
   }
 
   if (regex.meusPontos.test(message.msg)) {
@@ -40,6 +42,8 @@ const commands = async message => {
     await achievementsController.commandIndex(message)
   } else if (regex.isPro.test(message.msg)) {
     userController.isPro(message)
+  } else if (regex.commands.test(message.msg)) {
+    customCommands.show(message)
   }
 
   return
@@ -49,7 +53,23 @@ const processMessages = async (err, message, messageOptions) => {
   if (!err) {
     message.origin = 'rocket'
     console.log('MESSAGE: ', message, messageOptions)
-    if (message.u._id === myuserid || message.t) return
+
+    if (!message.reactions) {
+      await commands(message)
+    }
+
+    if (
+      message.u._id === myuserid ||
+      message.t ||
+      messageOptions.roomType === 'd'
+    )
+      return
+
+    message = {
+      ...message,
+      ...messageOptions
+    }
+
     interactionController.save(message).catch(() => {
       console.log(
         'Erro ao salvar interação do usuário: id: ',
@@ -60,9 +80,6 @@ const processMessages = async (err, message, messageOptions) => {
         new Date(message.ts['$date']).toLocaleDateString('en-US')
       )
     })
-    if (!message.reactions) {
-      await commands(message)
-    }
   } else {
     console.log(err, messageOptions)
   }

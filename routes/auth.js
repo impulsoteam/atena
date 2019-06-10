@@ -4,7 +4,7 @@ import { sendMessage } from '../rocket/bot'
 import userController from '../controllers/user'
 import authController from '../controllers/auth'
 const router = express.Router()
-const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy
+const LinkedInStrategy = require('@sokratis/passport-linkedin-oauth2').Strategy
 
 passport.serializeUser(function(user, done) {
   done(null, user.id)
@@ -14,7 +14,9 @@ passport.deserializeUser(async function(id, done) {
   let user = await userController.findBy({ _id: id })
   let avatar = user.avatar
   if (!user.avatar) {
-    avatar = `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${user.rocketId}`
+    avatar = `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${
+      user.rocketId
+    }`
   }
   user = {
     name: user.name,
@@ -30,7 +32,7 @@ passport.use(
       clientID: process.env.LINKEDIN_KEY,
       clientSecret: process.env.LINKEDIN_SECRET,
       callbackURL: process.env.LINKEDIN_URL_CALLBACK,
-      scope: ['r_emailaddress', 'r_basicprofile']
+      scope: ['r_liteprofile', 'r_emailaddress']
     },
     function(accessToken, refreshToken, profile, done) {
       process.nextTick(async function() {
@@ -41,7 +43,11 @@ passport.use(
         } catch (error) {
           console.log('error', error)
           await sendMessage(
-            `Esse nobre cavaleiro não conseguiu logar no santuário: \nID: ${profile.id} \nDISPLAYNAME: ${profile.displayName} \nEMAIL: ${profile._json.emailAddress} \n FOTO: ${profile._json.pictureUrl} \n PROFILE: ${profile._json.publicProfileUrl} `,
+            `Esse nobre cavaleiro não conseguiu logar no santuário: \nID: ${
+              profile.id
+            } \nDISPLAYNAME: ${profile.displayName} \nEMAIL: ${
+              profile.emails[0].value
+            } \n FOTO: ${profile.photos[0].value} \n`,
             'projeto-atena'
           )
         }

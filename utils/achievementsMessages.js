@@ -6,7 +6,7 @@ import { getLastAchievementRatingEarned } from './achievements'
 export const sendEarnedAchievementMessage = async (
   user,
   achievement,
-  showLevel = false
+  isAchievementLevel = false
 ) => {
   if (!user) {
     console.log('Error no user pass to send earned achievement messages')
@@ -15,19 +15,22 @@ export const sendEarnedAchievementMessage = async (
   if (!achievement) {
     console.log('Error no achievement pass to send earned achievement messages')
   }
-
   const name = achievement.name.split(' | ')
-  const level = showLevel ? ` ${user.level}` : ''
 
-  const privateMessage = `:medal: Você obteve a conquista [${
+  let privateMessage = `:medal: Você obteve a conquista [${
     achievement.rating
-  } ${achievement.range} | ${name[1]}${level}]!`
+  } ${achievement.range} | ${name[1]}]!`
 
-  // const publicMessage = `:medal: @${
-  //   rocketUser.username
-  // } obteve a conquista [${achievement.rating} ${achievement.range} | ${
-  //   name[1]
-  // }${level}]!`;
+  // let publicMessage = `:medal: @${rocketUser.username} obteve a conquista [${
+  //   achievement.rating
+  // } ${achievement.range} | ${name[1]}]!`;
+
+  if (isAchievementLevel) {
+    privateMessage = `:medal: Você obteve o *Nível ${user.level}*!`
+    // publicMessage = `:medal: @${rocketUser.username} obteve o *Nível ${
+    //   user.level
+    // }*!`;
+  }
 
   await sendToUser(privateMessage, user.username)
   // await sendMessage(publicMessage, "impulso-network");
@@ -41,7 +44,9 @@ export const generateAchievementsMessages = achievements => {
     achievements.map(achievement => {
       messages.push({
         text: `*${achievement.name}*:
-        \n Você é ${achievement.rating.name} com ${achievement.total}/${achievement.rating.value}.`
+        \n Você é ${achievement.rating.name} com ${achievement.total}/${
+          achievement.rating.value
+        }.`
       })
     })
   }
@@ -56,8 +61,12 @@ export const generateAchievementsTemporaryMessages = achievements => {
     const currentAchievement = getLastAchievementRatingEarned(achievement)
     messages.push({
       text: `*${achievement.name}*:
-      \n Você é ${currentAchievement.rating.name} ${currentAchievement.range.name} com total de ${currentAchievement.rating.total}.
-      \n :trophy: Seu record é ${achievement.record.name} ${achievement.record.range} com total de ${achievement.record.total}.`
+      \n Você é ${currentAchievement.rating.name} ${
+        currentAchievement.range.name
+      } com total de ${currentAchievement.rating.total}.
+      \n :trophy: Seu record é ${achievement.record.name} ${
+        achievement.record.range
+      } com total de ${achievement.record.total}.`
     })
   })
 
@@ -73,8 +82,12 @@ export const generateAchievementLevelMessage = achievement => {
 
   messages.push({
     text: `*Network | Nível*:
-    \n Você é ${lastRating.rating.name} ${lastRating.range.name} com nível ${lastRating.range.value}.
-    \n :trophy: Seu record é ${achievement.record.name}${recordRange} com nível ${achievement.record.level}.`
+    \n Você é ${lastRating.rating.name} ${lastRating.range.name} com nível ${
+      lastRating.range.value
+    }.
+    \n :trophy: Seu record é ${
+      achievement.record.name
+    }${recordRange} com nível ${achievement.record.level}.`
   })
 
   return messages

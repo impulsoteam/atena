@@ -182,7 +182,9 @@ const monthly = async month => {
   })
   if (!ranking)
     return {
-      msg: `Ranking do mês de ${monthNames[query_month]} não gerado ou encontrado`
+      msg: `Ranking do mês de ${
+        monthNames[query_month]
+      } não gerado ou encontrado`
     }
 
   return ranking
@@ -295,7 +297,7 @@ const sendToChannel = async () => {
 const position = async (users, first = 0, limit = 20) =>
   users.slice(first, limit).map((user, index) => ({
     name: user.name,
-    xp: user.score,
+    xp: user.score || user.xp,
     level: user.level,
     avatar: user.avatar,
     teams: user.teams || [],
@@ -331,7 +333,9 @@ const group = async (users, isCoreTeam = false) => {
   let listUsers = []
   for (let user of users) {
     const u = await userController.getNetwork(user.user)
-    let avatar = `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${user.user}`
+    let avatar = `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${
+      user.user
+    }`
     if (u.network === 'slack') avatar = u.avatar
     const data = {
       name: u.name,
@@ -390,7 +394,7 @@ const index = async (req, res) => {
     page: 'ranking'
   }
 
-  if (isMiner && isValidToken(team, token)) {
+  if (req.query.format === 'json' || (isMiner && isValidToken(team, token))) {
     res.json(initialData)
   } else {
     renderScreen(req, res, 'Ranking', initialData)
