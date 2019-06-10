@@ -593,9 +593,7 @@ const engaged = async (req, res) => {
         rocketIdText = `Rocket ID: ${user._id.rocketId} |`
       }
       response.attachments.push({
-        text: `${usernameText} ${nameText} ${rocketIdText} Qtd. interações: ${
-          user.count
-        }`
+        text: `${usernameText} ${nameText} ${rocketIdText} Qtd. interações: ${user.count}`
       })
     })
   } else if (isCoreTeam && validDates && !validIntervals) {

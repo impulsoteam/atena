@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const rangeSchema = new mongoose.Schema({
   name: {
@@ -13,7 +13,7 @@ const rangeSchema = new mongoose.Schema({
     type: Date,
     required: false
   }
-});
+})
 
 const ratingSchema = new mongoose.Schema({
   name: {
@@ -30,7 +30,7 @@ const ratingSchema = new mongoose.Schema({
       require: true
     }
   ]
-});
+})
 
 const achievementSchema = new mongoose.Schema({
   name: {
@@ -43,7 +43,7 @@ const achievementSchema = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true
   },
   total: {
@@ -56,6 +56,6 @@ const achievementSchema = new mongoose.Schema({
       require: true
     }
   ]
-});
+})
 
-export default mongoose.model("Achievement", achievementSchema);
+export default mongoose.model('Achievement', achievementSchema)
