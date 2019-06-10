@@ -2,7 +2,7 @@ import { driver } from '@rocket.chat/sdk'
 import interactionController from '../controllers/interaction'
 import rankingController from '../controllers/ranking'
 import userController from '../controllers/user'
-import achievementController from '../controllers/achievement'
+import achievementsController from '../components/achievements'
 import * as customCommands from '../components/commands'
 
 var myuserid

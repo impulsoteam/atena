@@ -5,8 +5,8 @@ import moment from 'moment'
 import batch from 'batchflow'
 import userController from './user'
 import rocketController from './rocket'
-import achievementController from './achievement'
-import achievementTemporaryController from './achievementTemporary'
+import achievementsController from '../components/achievements'
+import achievementsTemporaryController from '../components/achievementsTemporary'
 import { calculateScore, analyticsSendCollect } from '../utils'
 import { lastMessageTime } from '../utils/interactions'
 import { _throw, _today } from '../helpers'
@@ -93,8 +93,8 @@ export const save = async data => {
 
       if (isInLimit && !isFlood) {
         await userController.updateScore(user, interaction.score)
-        await achievementController.save(interaction, user)
-        await achievementTemporaryController.save(interaction)
+        await achievementsController.save(interaction, user)
+        await achievementsTemporaryController.save(interaction, user)
       } else {
         instance.score = 0
       }
