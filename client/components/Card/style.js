@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const StyledCard = styled.div`
   background-color: ${props => props.theme.color.white};
@@ -61,11 +61,11 @@ const StyledCard = styled.div`
       height: 69px;
     }
   }
-`;
+`
 
 export const StyledUserCard = styled.div`
   background-color: ${props => props.theme.color.white};
   min-height: 413px;
-`;
+`
 
-export default StyledCard;
+export default StyledCard
