@@ -1,5 +1,5 @@
-import commands from "./commands";
+import commands from './commands'
 
 module.exports = {
   show: commands.show
-};
+}
