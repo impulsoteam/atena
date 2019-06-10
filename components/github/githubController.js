@@ -1,7 +1,12 @@
 'use strict'
 import { driver } from '@rocket.chat/sdk'
 import service from './githubService'
-import { isValidRepository, save } from './githubDAL'
+import {
+  isValidRepository,
+  save,
+  isExcludedUser,
+  getRepository
+} from './githubDAL'
 import userController from '../../controllers/user'
 // import interactionController from "../../controllers/interaction"
 
@@ -40,6 +45,44 @@ Portanto, tens o que é preciso para estar entre nós, ${
     })
 }
 
+const addExcludedUser = async req => {
+  let response = { msg: 'Não foi possível adicionar o usuário ao repositório.' }
+  const username = req.u.username
+  const rocketId = req.u._id
+  const excludedUsername = req.msg.split(' ')[1].split('@')[1]
+  const repositoryId = req.msg.split(' ')[2]
+  let repository = null
+  userController
+    .findBy({ rocketId: rocketId })
+    .then(user => {
+      if (!user.isCoreTeam) {
+        return Promise.reject('Você não é do coreteam.')
+      }
+      return !isValidRepository(repositoryId)
+    })
+    .then(() => {
+      return getRepository(repositoryId)
+    })
+    .then(res => {
+      repository = res
+      return userController.findBy({ username: excludedUsername })
+    })
+    .then(user => {
+      repository.excludedUsers.push({ userId: user._id })
+      return repository.save()
+    })
+    .then(() => {
+      response.msg = `Usuário @${excludedUsername} adicionado com sucesso`
+      return response.msg
+    })
+    .catch(err => {
+      response.msg = err
+    })
+    .then(() => {
+      driver.sendDirectToUser(response, username)
+    })
+}
+
 const add = async req => {
   let response = { msg: 'Não foi possível adicionar esse repositório.' }
   const username = req.u.username
@@ -71,18 +114,51 @@ const add = async req => {
 const events = async (req, res) => {
   // @todo - add secret on github webhook
   let data = req.body
+  let userModel = {}
   const repositoryId = req.body.repository.id.toString()
   data.origin = 'github'
   data.type = service.getType(data)
   const githubId = service.getId(data)
-  userController
-    .findBy({ githubId: githubId })
-    .then(user => {
-      data.user = user.rocketId
-      return isValidRepository(repositoryId)
+  isValidRepository(repositoryId)
+    .then(valid => {
+      if (!valid) {
+        return Promise.reject('Repositório Inválido')
+      }
+      return valid
     })
-    .then(response => {
-      return response
+    .then(() => {
+      return userController.findBy({ githubId: githubId })
+    })
+    .then(user => {
+      // @todo change it to user.id in next version.
+      userModel = user
+      data.user = user.rocketId
+      return isExcludedUser(repositoryId, user._id)
+    })
+    .then(isExcludedUser => {
+      if (isExcludedUser) {
+        return Promise.reject(
+          'Esse usuário faz parte do time, não pode pontuar'
+        )
+      }
+      return isExcludedUser
+    })
+    .then(() => {
+      if (!data.type) {
+        return Promise.reject('Tipo incorreto de interação')
+      }
+      data = service.normalize(data)
+      return data
+    })
+    .then(data => {
+      return service.interactionSave(data)
+    })
+    .then(interaction => {
+      data.interaction = interaction
+      if (interaction.score > 0) {
+        service.sendMessage(userModel)
+      }
+      return interaction
     })
     .catch(error => {
       data.error = error
@@ -90,23 +166,13 @@ const events = async (req, res) => {
     .then(() => {
       res.json(data)
     })
-  /*
-  if (
-    isValidRepository(repository) &&
-    !config.atenateam.members.includes(user.rocketId) &&
-    valid(data)
-  ) {
-    interactionController.save(data);
-  } else {
-    console.log(`\n-- event into an invalid repository ${repository}`);
-  }
-  */
 }
 
 const defaultFunctions = {
   events,
   auth,
-  add
+  add,
+  addExcludedUser
 }
 
 export default defaultFunctions

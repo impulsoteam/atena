@@ -4,5 +4,6 @@ import controller from './githubController'
 module.exports = {
   events: controller.events,
   auth: controller.auth,
-  addRepository: controller.add
+  addRepository: controller.add,
+  addRepositoryExcludedUser: controller.addExcludedUser
 }

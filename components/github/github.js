@@ -3,8 +3,9 @@ import mongoose from 'mongoose'
 const githubSchema = new mongoose.Schema({
   excludedUsers: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      userId: {
+        type: String
+      }
     }
   ],
   repositoryId: {

@@ -4,7 +4,11 @@ import rankingController from '../controllers/ranking'
 import userController from '../controllers/user'
 import achievementController from '../controllers/achievement'
 import * as customCommands from '../components/commands'
-import { auth as authGithub, addRepository } from '../components/github'
+import {
+  auth as authGithub,
+  addRepository,
+  addRepositoryExcludedUser
+} from '../components/github'
 
 var myuserid
 const runBot = async () => {
@@ -33,6 +37,7 @@ const commands = async message => {
     commands: /^!comandos$/g,
     openSource: /^!opensource$/g,
     openSourceAddRepository: /^!addrepositorio[ \d\w]*$/g,
+    openSourceAddRepositoryUser: /^!addusuarioexcluidonorepositorio [@a-z-A-Z]* [\d]*$/,
     transfere: /^!transfere[ \d\w \dw]*$/g
   }
 
@@ -52,6 +57,8 @@ const commands = async message => {
     authGithub(message)
   } else if (regex.openSourceAddRepository.test(message.msg)) {
     addRepository(message)
+  } else if (regex.openSourceAddRepositoryUser.test(message.msg)) {
+    addRepositoryExcludedUser(message)
   }
 
   return

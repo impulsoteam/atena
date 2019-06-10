@@ -1,5 +1,4 @@
 import axios from 'axios'
-import config from 'config-yml'
 import queryString from 'querystring'
 import userController from './user'
 import { renderScreen } from '../utils/ssr'
@@ -71,59 +70,6 @@ const callback = async (req, res) => {
   renderScreen(req, res, 'Github', inititalData)
 }
 
-const normalize = data => {
-  if (data.type === 'issue') {
-    return {
-      origin: 'github',
-      type: data.type,
-      user: data.user,
-      thread: false,
-      description: 'new github issue',
-      channel: data.repository.id,
-      category: config.categories.network.type,
-      action: config.actions.github.type,
-      score: config.xprules.github.issue
-    }
-  } else if (data.type === 'review') {
-    return {
-      origin: 'github',
-      type: data.type,
-      user: data.user,
-      thread: false,
-      description: 'review',
-      channel: data.review.id,
-      category: config.categories.network.type,
-      action: config.actions.github.type,
-      score: config.xprules.github.review
-    }
-  } else if (data.type === 'pull_request') {
-    return {
-      origin: 'github',
-      type: data.type,
-      user: data.user,
-      thread: false,
-      description: 'review',
-      channel: data.pull_request.id,
-      category: config.categories.network.type,
-      action: config.actions.github.type,
-      score: config.xprules.github.pull_request
-    }
-  } else if (data.type === 'merged_pull_request') {
-    return {
-      origin: 'github',
-      type: data.type,
-      user: data.user,
-      thread: false,
-      description: 'merged pull request',
-      channel: data.pull_request.id,
-      category: config.categories.network.type,
-      action: config.actions.github.type,
-      score: config.xprules.github.merged_pull_request
-    }
-  }
-}
-
 export default {
-  normalize,
   callback
 }

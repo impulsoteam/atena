@@ -15,6 +15,7 @@ require('./models/ranking')
 require('./models/checkpoint')
 require('./models/channelCheckPoint')
 require('./components/github')
+require('./components/interactions')
 require('./workers/receive')
 
 if (process.env.NODE_ENV !== 'test') {

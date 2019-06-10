@@ -127,6 +127,7 @@ export const find = async user => {
   return result || _throw('Error finding interactions')
 }
 
+// moved to component interaction
 export const todayScore = async user => {
   return interactionModel
     .find({
