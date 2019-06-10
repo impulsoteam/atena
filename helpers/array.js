@@ -3,16 +3,16 @@ export const groupBy = (collection, property) => {
     val,
     index,
     values = [],
-    result = [];
+    result = []
 
   for (; i < collection.length; i++) {
-    val = collection[i][property];
-    index = values.indexOf(val);
-    if (index > -1) result[index].push(collection[i]);
+    val = collection[i][property]
+    index = values.indexOf(val)
+    if (index > -1) result[index].push(collection[i])
     else {
-      values.push(val);
-      result.push([collection[i]]);
+      values.push(val)
+      result.push([collection[i]])
     }
   }
-  return result;
-};
+  return result
+}
