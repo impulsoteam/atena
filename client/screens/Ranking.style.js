@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 /*
  *
  background: ${props => props.background || props.theme.color.primary};
@@ -54,6 +54,6 @@ const StyledScreenRanking = styled.section`
       margin-top: 30px;
     }
   }
-`;
+`
 
-export default StyledScreenRanking;
+export default StyledScreenRanking

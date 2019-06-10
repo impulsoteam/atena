@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const StyledTab = styled.div`
   display: flex;
@@ -15,6 +15,6 @@ const StyledTab = styled.div`
     opacity: 1;
     visibility: visible;
   }
-`;
+`
 
-export default StyledTab;
+export default StyledTab
