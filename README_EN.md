@@ -4,11 +4,11 @@
 [![Build Status](https://dev.azure.com/impulsonetwork/Atena/_apis/build/status/impulsonetwork.atena)](https://dev.azure.com/impulsonetwork/Atena/_build/latest?definitionId=3)
 [![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=about)](http://impulso.network)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Twitter Follow](https://img.shields.io/twitter/follow/universoimpulso.svg?style=social&label=Follow)](https://twitter.com/universoimpulso)
+[![Twitter Follow](https://img.shields.io/twitter/follow/universoimpulso.svg?style=social&label=Follow)](https://twitter.com/UniversoImpulso)
 
 ## Atena v.0.1
 
-### [version pt-br](https://github.com/universoimpulso/atena/blob/master/README.md)
+### [version pt-br](https://github.com/UniversoImpulso/atena/blob/master/README.md)
 
 Atena is an initiative of the impulse in collaboration with several Impulsers, with the objective to promote the engagement and to reward the activities and efforts of each person in the Impulse. In it you will be able to acquire Experience Points (XP) through the execution of several activities and based on these two factors the Impulsers will receive levels and achievements recognizing the effort expended in the activities.
 
@@ -50,7 +50,7 @@ A step-by-step of the minimal setup you need to get a Atena running.
 - Add remote reference
 
 ```sh
-> git remote add upstream https://github.com/universoimpulso/atena
+> git remote add upstream https://github.com/UniversoImpulso/atena
 ```
 
 - Create your .env file using .env.example model

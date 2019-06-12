@@ -29,7 +29,7 @@ const questions = [
   {
     content: "Como faço para participar do projeto?",
     awnser:
-      "Qualquer pessoa pode ajudar Atena a crescer, basta entrar no canal #projeto-atena no nosso Rocket.chat ou acessar diretamente o nosso repositório no Github (http://github.com/universoimpulso/atena). Ainda não faz parte da Impulso Network? Basta acessar o https://app.impulso.network/ e fazer o seu cadastro, é rapidinho."
+      "Qualquer pessoa pode ajudar Atena a crescer, basta entrar no canal #projeto-atena no nosso Rocket.chat ou acessar diretamente o nosso repositório no Github (http://github.com/UniversoImpulso/atena). Ainda não faz parte da Impulso Network? Basta acessar o https://app.impulso.network/ e fazer o seu cadastro, é rapidinho."
   }
 ];
 

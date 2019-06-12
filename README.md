@@ -4,11 +4,11 @@
 [![Build Status](https://dev.azure.com/impulsonetwork/Atena/_apis/build/status/impulsonetwork.atena)](https://dev.azure.com/impulsonetwork/Atena/_build/latest?definitionId=3)
 [![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=about)](http://impulso.network)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Twitter Follow](https://img.shields.io/twitter/follow/universoimpulso.svg?style=social&label=Follow)](https://twitter.com/universoimpulso)
+[![Twitter Follow](https://img.shields.io/twitter/follow/universoimpulso.svg?style=social&label=Follow)](https://twitter.com/UniversoImpulso)
 
 ## Atena v.0.2
 
-### [en](https://github.com/universoimpulso/atena/blob/master/README_EN.md)
+### [en](https://github.com/UniversoImpulso/atena/blob/master/README_EN.md)
 
 A Atena é uma iniciativa da Impulso Network em colaboração com vários Impulsers, com o objetivo de promover o engajamento e recompensar as atividades e esforços de cada pessoa na Impulso. Nele você poderá adquirir Pontos de Experiência (XP) através da execução de diversas atividades e com base nesses dois fatores os Impulsers receberão níveis e conquistas, reconhecendo o esforço despendido nas atividades.
 
@@ -18,7 +18,7 @@ Um passo-a-passo da configuração mínima que você precisa para obter o Atena 
 
 ### Configuração inicial
 
-  - Instalar o mongodb [Mongodb](https://docs.mongodb.com/manual/installation/)
+- Instalar o mongodb [Mongodb](https://docs.mongodb.com/manual/installation/)
 
 ### Configuração Slack
 
@@ -57,7 +57,7 @@ Para usar o Rocket Chat você precisa de um usuário com os níveis de usuário 
 - Adicionar referências remotas
 
 ```sh
-> git remote add upstream https://github.com/universoimpulso/atena
+> git remote add upstream https://github.com/UniversoImpulso/atena
 ```
 
 - Criar o arquivo `.env` com as suas configurações utilizando o `.env.example` presente no projeto
