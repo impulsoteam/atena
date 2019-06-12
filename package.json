@@ -4,13 +4,13 @@
   "description": "app to integrate slack with analytics",
   "main": "index.js",
   "license": "MIT",
-  "homepage": "https://github.com/impulsonetwork/atena#readme",
+  "homepage": "https://github.com/universoimpulso/atena#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/impulsonetwork/atena"
+    "url": "https://github.com/universoimpulso/atena"
   },
   "bugs": {
-    "url": "https://github.com/impulsonetwork/atena/issues"
+    "url": "https://github.com/universoimpulso/atena/issues"
   },
   "keywords": [
     "Atena",
