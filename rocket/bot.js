@@ -64,7 +64,7 @@ const processMessages = async (err, message, messageOptions) => {
         new Date(message.ts["$date"]).toLocaleDateString("en-US")
       );
     });
-    if (!message.reactions) {
+    if (!message.reactions && !message.tmid) {
       await commands(message);
     }
   } else {
