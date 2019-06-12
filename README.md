@@ -18,7 +18,7 @@ Um passo-a-passo da configuração mínima que você precisa para obter o Atena 
 
 ### Configuração inicial
 
-- Instalar o mongodb [Mongodb](https://docs.mongodb.com/manual/installation/)
+  - Instalar o mongodb [Mongodb](https://docs.mongodb.com/manual/installation/)
 
 ### Configuração Slack
 
