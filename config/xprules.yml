@@ -1,5 +1,6 @@
 limits:
   daily: 60
+  flood: 5
 messages:
   send: 3
 threads:
@@ -17,6 +18,9 @@ github:
   pull_request: 5
   merged_pull_request: 9
 disqus:
+  comment: 5
+blog:
+  post: 25
   comment: 5
 inactive:
   mindays: 8
