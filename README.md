@@ -4,12 +4,11 @@
 [![Build Status](https://dev.azure.com/impulsonetwork/Atena/_apis/build/status/impulsonetwork.atena)](https://dev.azure.com/impulsonetwork/Atena/_build/latest?definitionId=3)
 [![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=about)](http://impulso.network)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Twitter Follow](https://img.shields.io/twitter/follow/impulsonetwork.svg?style=social&label=Follow)](https://twitter.com/impulsonetwork)
-
+[![Twitter Follow](https://img.shields.io/twitter/follow/universoimpulso.svg?style=social&label=Follow)](https://twitter.com/UniversoImpulso)
 
 ## Atena v.0.2
 
-### [en](https://github.com/impulsonetwork/atena/blob/master/README_EN.md)
+### [en](https://github.com/UniversoImpulso/atena/blob/master/README_EN.md)
 
 A Atena é uma iniciativa da Impulso Network em colaboração com vários Impulsers, com o objetivo de promover o engajamento e recompensar as atividades e esforços de cada pessoa na Impulso. Nele você poderá adquirir Pontos de Experiência (XP) através da execução de diversas atividades e com base nesses dois fatores os Impulsers receberão níveis e conquistas, reconhecendo o esforço despendido nas atividades.
 
@@ -19,10 +18,11 @@ Um passo-a-passo da configuração mínima que você precisa para obter o Atena 
 
 ### Configuração inicial
 
--   Instalar o mongodb [Mongodb](https://docs.mongodb.com/manual/installation/)
+-  Instalar o mongodb [Mongodb](https://docs.mongodb.com/manual/installation/)
 
 ### Configuração Slack
--   Criar um aplicativo Slack utilizando ngrok - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
+
+-  Criar um aplicativo Slack utilizando ngrok - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
 
 ### Configuração Rocket Chat
 
@@ -30,31 +30,38 @@ Para usar o Rocket Chat você precisa de um usuário com os níveis de usuário 
 
 ### Desenvolvimento
 
--   Faça um  `fork` do projeto para a tua conta, e então faça o `clone`
+-  Faça um `fork` do projeto para a tua conta, e então faça o `clone`
+
 ```sh
 > git clone https://github.com/[your account]/atena
 ```
 
--   Navegue até a pasta de destino onde fez o clone do projeto
+-  Navegue até a pasta de destino onde fez o clone do projeto
+
 ```sh
 > cd atena/
 ```
 
--   Instale o `yarn` a partir do `npm` (ser global é opcional)
+-  Instale o `yarn` a partir do `npm` (ser global é opcional)
+
 ```sh
 > npm i yarn -g
 ```
 
--   instalar os repositorios utilizando o `yarn`
+-  instalar os repositorios utilizando o `yarn`
+
 ```sh
 > yarn -i
 ```
 
--   Adicionar referências remotas
+-  Adicionar referências remotas
+
 ```sh
-> git remote add upstream https://github.com/impulsonetwork/atena
+> git remote add upstream https://github.com/UniversoImpulso/atena
 ```
--   Criar o arquivo `.env` com as suas configurações utilizando o `.env.example` presente no projeto
+
+-  Criar o arquivo `.env` com as suas configurações utilizando o `.env.example` presente no projeto
+
 ```sh
 PORT=4390
 SLACK_SIGNIN_EVENTS=
@@ -69,7 +76,7 @@ ROCKET_BOT_PASS=mybotpassword
 
 ### Executando
 
--   Inicie o servidor utilizando o seguinte comando:
+-  Inicie o servidor utilizando o seguinte comando:
 
 ```sh
 > yarn start:dev
@@ -92,7 +99,6 @@ Rode o node inspect em outra janela de terminal
 ### [Integração com o Github](GITHUB.md)
 
 O Atena possui integração com o Github, onde o usuário ganha pontos ao criar pull requests, efetuar reviews, e ter seu pull request aprovado.
-
 
 ## Contribuindo
 
