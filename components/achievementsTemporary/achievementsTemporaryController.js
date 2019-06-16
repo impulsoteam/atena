@@ -1,13 +1,5 @@
 import service from './achievementsTemporaryService'
 import dal from './achievementsTemporaryDAL'
-import {
-  isBeforeLimitDate,
-  isBeforeEndDate,
-  resetEarnedAchievements,
-  createAchievementTemporary,
-  updateAchievementTemporary
-} from '../utils/achievementsTemporary'
-import userController from '../controllers/user'
 import achievementsTemporaryDataController from '../achievementsTemporaryData'
 
 const save = async (interaction, user) => {
@@ -17,34 +9,24 @@ const save = async (interaction, user) => {
     )
 
     for (let temporaryAchievementData of data) {
-      let temporaryAchievementExistent = await dal.findOne({
-        temporaryData: temporaryAchievementData._id,
-        user: user._id
-      })
+      let temporaryAchievement = await service.getOrCreate(
+        temporaryAchievementData,
+        user
+      )
 
-      if (
-        !temporaryAchievementExistent &&
-        isBeforeLimitDate(temporaryAchievementData)
-      ) {
-        temporaryAchievementExistent = await createAchievementTemporary(
-          temporaryAchievementData,
-          user
-        )
-      }
-
-      if (temporaryAchievementExistent) {
-        if (isBeforeEndDate(temporaryAchievementData)) {
-          await updateAchievementTemporary(temporaryAchievementExistent, user)
+      if (temporaryAchievement) {
+        if (service.isBeforeEndDate(temporaryAchievementData)) {
+          await updateAchievementTemporary(temporaryAchievement, user)
         } else {
           let temporaryAchievement = resetEarnedAchievements(
-            temporaryAchievementExistent
+            temporaryAchievement
           )
           await temporaryAchievement.save()
         }
       }
     }
   } catch (error) {
-    console.log('Error saving temporary achievement')
+    console.log('[CONTROLLER] Error saving temporary achievement')
   }
 }
 

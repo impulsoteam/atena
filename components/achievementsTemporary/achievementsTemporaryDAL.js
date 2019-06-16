@@ -1,8 +1,8 @@
 import moment from 'moment-timezone'
 import model from './achievementTemporary'
 
-const findByUser = async userId => {
-  return await model
+const findByUser = userId => {
+  return model
     .findOne({ user: userId })
     .populate({
       path: 'temporaryData',
@@ -11,8 +11,8 @@ const findByUser = async userId => {
     .exec()
 }
 
-const findAllByUser = async userId => {
-  return await model
+const findAllByUser = userId => {
+  return model
     .find({ user: userId })
     .populate({
       path: 'temporaryData',
@@ -21,12 +21,12 @@ const findAllByUser = async userId => {
     .exec()
 }
 
-const findOne = async query => {
-  return await model.findOne(query).exec()
+const findOne = query => {
+  return model.findOne(query).exec()
 }
 
-const getAllInactivitiesDaily = async () => {
-  const achievements = await model
+const getAllInactivitiesDaily = () => {
+  return model
     .find({
       lastEarnedDate: {
         $gte: moment(new Date())
@@ -36,13 +36,17 @@ const getAllInactivitiesDaily = async () => {
       }
     })
     .exec()
+}
 
-  return achievements
+const create = async achievement => {
+  const newAchievement = new model(achievement)
+  return await newAchievement.save()
 }
 
 export default {
   findAllByUser,
   findByUser,
   findOne,
-  getAllInactivitiesDaily
+  getAllInactivitiesDaily,
+  create
 }
