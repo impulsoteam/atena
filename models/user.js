@@ -45,7 +45,8 @@ export const userSchema = new mongoose.Schema({
   },
   rocketId: {
     type: String,
-    required: false
+    required: false,
+    index: { unique: true }
   },
   email: {
     type: String,

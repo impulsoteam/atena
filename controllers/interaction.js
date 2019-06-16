@@ -127,6 +127,7 @@ export const find = async user => {
   return result || _throw('Error finding interactions')
 }
 
+// moved to component interaction
 export const todayScore = async user => {
   return interactionModel
     .find({
@@ -463,9 +464,7 @@ const engaged = async (req, res) => {
         rocketIdText = `Rocket ID: ${user._id.rocketId} |`
       }
       response.attachments.push({
-        text: `${usernameText} ${nameText} ${rocketIdText} Qtd. interações: ${
-          user.count
-        }`
+        text: `${usernameText} ${nameText} ${rocketIdText} Qtd. interações: ${user.count}`
       })
     })
   } else if (isCoreTeam && validDates && !validIntervals) {

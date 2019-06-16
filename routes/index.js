@@ -1,6 +1,5 @@
 import express from 'express'
 import slackRoutes from './slack'
-
 import rocketRoutes from './rocket'
 import rankingRoutes from './ranking'
 import checkpointsRoutes from './checkpoints'
@@ -15,11 +14,8 @@ import rdRoutes from './rdstation'
 import resourcesRoutes from './resources'
 import achievementsTemporyDataRoutes from './achievementsTemporyData'
 import minerRoutes from './miner'
-
 import blogRoutes from './blog'
-
 import apiRoutes from './api'
-
 import { renderScreen } from '../utils/ssr'
 
 const router = express.Router()
@@ -40,6 +36,7 @@ router.use('/achievements/temporary/data', achievementsTemporyDataRoutes)
 router.use('/auth', authRoutes)
 router.use('/blog', blogRoutes)
 router.use('/api/v1', apiRoutes)
+
 router.get('/', (req, res) =>
   renderScreen(req, res, 'HowItWorks', {
     page: 'index'

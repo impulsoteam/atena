@@ -10,9 +10,13 @@ import bodyParser from 'body-parser'
 import log4js from 'log4js'
 require('./models/interaction')
 require('./models/user')
+require('./models/achievement')
 require('./models/ranking')
 require('./models/checkpoint')
 require('./models/channelCheckPoint')
+require('./components/github')
+require('./components/interactions')
+require('./components/achievements')
 require('./workers/receive')
 
 if (process.env.NODE_ENV !== 'test') {

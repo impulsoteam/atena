@@ -4,6 +4,11 @@ import rankingController from '../controllers/ranking'
 import userController from '../controllers/user'
 import achievementsController from '../components/achievements'
 import * as customCommands from '../components/commands'
+import {
+  auth as authGithub,
+  addRepository,
+  addRepositoryExcludedUser
+} from '../components/github'
 
 var myuserid
 const runBot = async () => {
@@ -29,7 +34,13 @@ const commands = async message => {
     meusPontos: /^!meuspontos$/g,
     minhasConquistas: /^!minhasconquistas$/g,
     isPro: /^!pro$/g,
-    commands: /^!comandos$/g
+    commands: /^!comandos$/g,
+    darpontos: /^!darpontos/g,
+    checkPro: /^!checkpro/g,
+    openSource: /^!opensource$/g,
+    openSourceAddRepository: /^!addrepositorio[ \d\w]*$/g,
+    openSourceAddRepositoryUser: /^!addusuarioexcluidonorepositorio [@a-z-A-Z]* [\d]*$/,
+    transfere: /^!transfere[ \d\w \dw]*$/g
   }
 
   if (regex.meusPontos.test(message.msg)) {
@@ -44,6 +55,17 @@ const commands = async message => {
     userController.isPro(message)
   } else if (regex.commands.test(message.msg)) {
     customCommands.show(message)
+  } else if (regex.darpontos.test(message.msg)) {
+    customCommands.givePoints(message)
+  } else if (regex.checkPro.test(message.msg)) {
+    customCommands.checkPro(message)
+    customCommands.show(message)
+  } else if (regex.openSource.test(message.msg)) {
+    authGithub(message)
+  } else if (regex.openSourceAddRepository.test(message.msg)) {
+    addRepository(message)
+  } else if (regex.openSourceAddRepositoryUser.test(message.msg)) {
+    addRepositoryExcludedUser(message)
   }
 
   return

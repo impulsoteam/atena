@@ -1,36 +1,9 @@
 import axios from 'axios'
-import config from 'config-yml'
 import queryString from 'querystring'
 import userController from './user'
 import { renderScreen } from '../utils/ssr'
-import { isValidRepository } from '../utils/github'
-import interactionController from './interaction'
-import { getStyleLog } from '../utils'
 
 const link_auth = `${process.env.GITHUB_OAUTH_URL}authorize?scope=user:email&client_id=${process.env.GITHUB_CLIENT_ID}`
-
-const index = async (req, res) => {
-  let response = {}
-  let user
-  let rocketId = req.body.id
-  let name = req.body.name
-  try {
-    user = await userController.findBy({ rocketId: rocketId })
-  } catch (e) {
-    const obj = {
-      rocketId: rocketId,
-      name: name
-    }
-    user = await userController.save(obj)
-  }
-  if (user && user.githubId) {
-    response.text = `Olá! Leal, ${user.name}, você já pode participar dos meus trabalhos open-source! Go coding!`
-  } else {
-    response.text = `Olá! Parece que você ainda não pertence as nossas fileiras, Impulser! Mas você não viria tão longe se não quisesse participar dos trabalhos com open-source, certo?!
-Portanto, tens o que é preciso para estar entre nós, ${user.name}! Mas para participar dos trabalhos com open-source, preciso que vá até o seguinte local: ${link_auth}&state=${user.rocketId}. Uma vez que conclua essa missão voltaremos a conversar!`
-  }
-  res.json(response)
-}
 
 const accessToken = async code => {
   const url = `${process.env.GITHUB_OAUTH_URL}access_token`
@@ -93,110 +66,6 @@ const callback = async (req, res) => {
   renderScreen(req, res, 'Github', inititalData)
 }
 
-const events = async (req, res) => {
-  let data = req.body
-  let user = {}
-  data.origin = 'github'
-  if (data.issue) data.type = 'issue'
-  if (data.review) data.type = 'review'
-  if (data.pull_request && data.action === 'opened') data.type = 'pull_request'
-  if (data.pull_request && data.action === 'closed')
-    data.type = 'merged_pull_request'
-  const githubId =
-    data.pull_request && data.pull_request.merged
-      ? data.pull_request.user.id
-      : data.sender.id
-  try {
-    user = await userController.findByGithub({ githubId: githubId })
-  } catch (e) {
-    /* istanbul ignore next */
-  }
-  data.user = user.rocketId
-  const repository = req.body.repository.id.toString()
-  if (
-    isValidRepository(repository) &&
-    !config.atenateam.members.includes(user.rocketId)
-  ) {
-    if (data.type) {
-      let valid = false
-      if (data.type === 'issue' && data.action === 'opened') valid = true
-      if (data.type === 'review' && data.action === 'submitted') valid = true
-      if (data.type === 'pull_request' && data.action === 'opened') valid = true
-      if (
-        data.type === 'merged_pull_request' &&
-        data.action === 'closed' &&
-        data.pull_request.merged
-      ) {
-        valid = true
-      }
-      if (valid) interactionController.save(data)
-    } else {
-      console.log(getStyleLog('yellow'), `\n-- event an type invalid`)
-    }
-  } else {
-    console.log(
-      getStyleLog('yellow'),
-      `\n-- event into an invalid repository ${repository}`
-    )
-  }
-  res.json(req.body)
-}
-
-const normalize = data => {
-  if (data.type === 'issue') {
-    return {
-      origin: 'github',
-      type: data.type,
-      user: data.user,
-      thread: false,
-      description: 'new github issue',
-      channel: data.repository.id,
-      category: config.categories.network.type,
-      action: config.actions.github.type,
-      score: config.xprules.github.issue
-    }
-  } else if (data.type === 'review') {
-    return {
-      origin: 'github',
-      type: data.type,
-      user: data.user,
-      thread: false,
-      description: 'review',
-      channel: data.review.id,
-      category: config.categories.network.type,
-      action: config.actions.github.type,
-      score: config.xprules.github.review
-    }
-  } else if (data.type === 'pull_request') {
-    return {
-      origin: 'github',
-      type: data.type,
-      user: data.user,
-      thread: false,
-      description: 'review',
-      channel: data.pull_request.id,
-      category: config.categories.network.type,
-      action: config.actions.github.type,
-      score: config.xprules.github.pull_request
-    }
-  } else if (data.type === 'merged_pull_request') {
-    return {
-      origin: 'github',
-      type: data.type,
-      user: data.user,
-      thread: false,
-      description: 'merged pull request',
-      channel: data.pull_request.id,
-      category: config.categories.network.type,
-      action: config.actions.github.type,
-      score: config.xprules.github.merged_pull_request
-    }
-  }
-}
-
 export default {
-  index,
-  normalize,
-  callback,
-  events
+  callback
 }
