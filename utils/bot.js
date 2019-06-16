@@ -1,3 +1,3 @@
 export const isBot = data => {
-  return data.bot != undefined;
-};
+  return data.bot != undefined
+}

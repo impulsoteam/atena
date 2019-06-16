@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const StyledHeader = styled.header`
   max-width: ${props => props.theme.gridSize};
@@ -19,6 +19,6 @@ const StyledHeader = styled.header`
       margin: auto;
     }
   }
-`;
+`
 
-export default StyledHeader;
+export default StyledHeader

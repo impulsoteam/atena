@@ -1,49 +1,49 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import StyledMenu from "./Menu.style";
+import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
+import StyledMenu from './Menu.style'
 
 const links = user => {
   const whithoutAuth = [
     {
-      class: "login",
-      title: "login",
-      link: "/auth/linkedin"
+      class: 'login',
+      title: 'login',
+      link: '/auth/linkedin'
     }
-  ];
+  ]
   const withAuth = [
     {
-      class: "logout",
-      title: "Sair",
-      link: "/auth/logout"
+      class: 'logout',
+      title: 'Sair',
+      link: '/auth/logout'
     }
-  ];
+  ]
 
-  const options = user ? withAuth : whithoutAuth;
+  const options = user ? withAuth : whithoutAuth
 
   return [
     {
-      class: "index",
-      title: "como funciona",
-      link: "/"
+      class: 'index',
+      title: 'como funciona',
+      link: '/'
     },
     {
-      class: "ranking",
-      title: "ranking",
-      link: "/ranking"
+      class: 'ranking',
+      title: 'ranking',
+      link: '/ranking'
     },
     ...options
-  ];
-};
+  ]
+}
 
 const ProfileUser = ({ avatar }) => (
   <a className="profile" href="javascript;">
     <img src={avatar} className="avatar" />
   </a>
-);
+)
 
 ProfileUser.propTypes = {
   avatar: PropTypes.string.isRequired
-};
+}
 
 const renderLinks = ({ user }) => (
   <Fragment>
@@ -60,12 +60,12 @@ const renderLinks = ({ user }) => (
       </li>
     )}
   </Fragment>
-);
+)
 
 renderLinks.propTypes = {
   user: PropTypes.object
-};
+}
 
-const Menu = props => <StyledMenu>{renderLinks(props)}</StyledMenu>;
+const Menu = props => <StyledMenu>{renderLinks(props)}</StyledMenu>
 
-export default Menu;
+export default Menu

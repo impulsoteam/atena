@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const StyledAccordion = styled.div`
   & > a {
@@ -52,6 +52,6 @@ const StyledAccordion = styled.div`
       color: ${props => props.theme.color.primary};
     }
   }
-`;
+`
 
-export default StyledAccordion;
+export default StyledAccordion

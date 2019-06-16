@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const interactionSchema = new mongoose.Schema({
   type: {
@@ -56,6 +56,6 @@ const interactionSchema = new mongoose.Schema({
     type: Number,
     default: 0
   }
-});
+})
 
-export default mongoose.model("Interaction", interactionSchema);
+export default mongoose.model('Interaction', interactionSchema)

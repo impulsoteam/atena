@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const recordSchema = new mongoose.Schema({
   name: String,
   range: String,
   level: Number,
   earnedDate: Date
-});
+})
 
 const rangeSchema = new mongoose.Schema({
   name: {
@@ -20,7 +20,7 @@ const rangeSchema = new mongoose.Schema({
     type: Date,
     required: false
   }
-});
+})
 
 const ratingSchema = new mongoose.Schema({
   name: {
@@ -37,12 +37,12 @@ const ratingSchema = new mongoose.Schema({
       require: true
     }
   ]
-});
+})
 
 const achievementLevelSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true
   },
   record: {
@@ -58,10 +58,10 @@ const achievementLevelSchema = new mongoose.Schema({
     type: Date,
     default: Date.now()
   }
-});
+})
 
 export default mongoose.model(
-  "AchievementLevel",
+  'AchievementLevel',
   achievementLevelSchema,
-  "achievementsLevel"
-);
+  'achievementsLevel'
+)

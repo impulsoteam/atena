@@ -1,14 +1,14 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const userLevelHistorySchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true
   },
   kind: {
     type: String,
-    enum: ["added", "subtracted"],
+    enum: ['added', 'subtracted'],
     required: true
   },
   level: {
@@ -19,10 +19,10 @@ const userLevelHistorySchema = new mongoose.Schema({
     type: Date,
     required: true
   }
-});
+})
 
 export default mongoose.model(
-  "UserLevelHistory",
+  'UserLevelHistory',
   userLevelHistorySchema,
-  "usersLevelsHistory"
-);
+  'usersLevelsHistory'
+)

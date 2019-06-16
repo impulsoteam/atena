@@ -1,20 +1,20 @@
-import config from "config-yml";
+import config from 'config-yml'
 
 const normalize = data => {
   const dateMessage = data.history
-    ? new Date(data.ts).toLocaleString("en-US")
-    : new Date(data.ts["$date"]);
+    ? new Date(data.ts).toLocaleString('en-US')
+    : new Date(data.ts['$date'])
   let response = {
-    origin: "rocket",
+    origin: 'rocket',
     category: config.categories.network.type,
     channel: data.rid,
     channelName: data.roomName || null,
     date: dateMessage,
     type: exportFunctions.type(data)
-  };
+  }
 
   if (data.reactions) {
-    const reactions = data.reactions;
+    const reactions = data.reactions
     response = {
       ...response,
       description: Object.keys(reactions).pop(),
@@ -22,10 +22,10 @@ const normalize = data => {
       user: null,
       action: config.actions.reaction.type,
       score: config.xprules.reactions.send
-    };
+    }
   } else {
     if (data.attachments) {
-      data.msg = "attachment";
+      data.msg = 'attachment'
     }
 
     response = {
@@ -36,22 +36,22 @@ const normalize = data => {
       rocketUsername: data.u.username,
       action: config.actions.message.type,
       score: config.xprules.messages.send
-    };
+    }
   }
-  return response;
-};
+  return response
+}
 
 const type = data => {
-  let type = "message";
+  let type = 'message'
   if (data.reactions) {
-    type = "reaction_added";
+    type = 'reaction_added'
   }
-  return type;
-};
+  return type
+}
 
 const exportFunctions = {
   normalize,
   type
-};
+}
 
-export default exportFunctions;
+export default exportFunctions

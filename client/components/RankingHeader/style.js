@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const StyledRankingHeader = styled.div`
   width: 100%;
@@ -23,6 +23,6 @@ export const StyledRankingHeader = styled.div`
   .userInfo {
     flex: 2;
   }
-`;
+`
 
-export default StyledRankingHeader;
+export default StyledRankingHeader

@@ -1,43 +1,43 @@
-import React from "react";
-import StyledFaq from "./style";
-import { Flex, Box } from "@rebass/grid";
-import Title from "../Title";
-import Accordion from "../Accordion";
-import Button from "../Button";
+import React from 'react'
+import StyledFaq from './style'
+import { Flex, Box } from '@rebass/grid'
+import Title from '../Title'
+import Accordion from '../Accordion'
+import Button from '../Button'
 
 const questions = [
   {
-    content: "Como me comunico com a Atena?",
+    content: 'Como me comunico com a Atena?',
     awnser:
-      "Para centralizar as informações a respeito da sua Experiência, Níveis e Conquistas criamos a bot ATENA. Através de comandos é possível pedir à Atena para exibir seu XP (/meuspontos), Ranking Geral de XP (/ranking) e Conquistas (/minhasconquistas)."
+      'Para centralizar as informações a respeito da sua Experiência, Níveis e Conquistas criamos a bot ATENA. Através de comandos é possível pedir à Atena para exibir seu XP (/meuspontos), Ranking Geral de XP (/ranking) e Conquistas (/minhasconquistas).'
   },
   {
-    content: "Existirão atualizações?",
+    content: 'Existirão atualizações?',
     awnser:
-      "Sim! A Impulso Network é muito dinâmica e não para de crescer. O surgimento de novos canais, atividades e práticas corriqueiras e positivas na comunidade serão mapeadas para que novas features sejam criadas."
+      'Sim! A Impulso Network é muito dinâmica e não para de crescer. O surgimento de novos canais, atividades e práticas corriqueiras e positivas na comunidade serão mapeadas para que novas features sejam criadas.'
   },
   {
-    content: "Existe alguma premiação?",
+    content: 'Existe alguma premiação?',
     awnser:
-      "Claro! Além da Reputação obtida através da sua participação na comunidade (representada por XP e Níveis), Atena poderá te premiar com acesso a atividades especiais da comunidade, cupons de desconto para serviços, além de produtos e brindes exclusivos."
+      'Claro! Além da Reputação obtida através da sua participação na comunidade (representada por XP e Níveis), Atena poderá te premiar com acesso a atividades especiais da comunidade, cupons de desconto para serviços, além de produtos e brindes exclusivos.'
   },
   {
-    content: "Qual a diferença entre ranking mensal e geral?",
+    content: 'Qual a diferença entre ranking mensal e geral?',
     awnser:
-      "Enquanto o Ranking Geral valoriza o esforço durante todo o seu percurso com a Atena e mostra o acumulado de XP e seu Nível, o Ranking Mensal foca no que foi realizado e recompensa o primeiro colocado naquele mês."
+      'Enquanto o Ranking Geral valoriza o esforço durante todo o seu percurso com a Atena e mostra o acumulado de XP e seu Nível, o Ranking Mensal foca no que foi realizado e recompensa o primeiro colocado naquele mês.'
   },
   {
-    content: "Como faço para participar do projeto?",
+    content: 'Como faço para participar do projeto?',
     awnser:
-      "Qualquer pessoa pode ajudar Atena a crescer, basta entrar no canal #projeto-atena no nosso Rocket.chat ou acessar diretamente o nosso repositório no Github (http://github.com/impulsonetwork/atena). Ainda não faz parte da Impulso Network? Basta acessar o https://app.impulso.network/ e fazer o seu cadastro, é rapidinho."
+      'Qualquer pessoa pode ajudar Atena a crescer, basta entrar no canal #projeto-atena no nosso Rocket.chat ou acessar diretamente o nosso repositório no Github (http://github.com/impulsonetwork/atena). Ainda não faz parte da Impulso Network? Basta acessar o https://app.impulso.network/ e fazer o seu cadastro, é rapidinho.'
   }
-];
+]
 
 const Faq = () => (
   <StyledFaq>
     <Flex
       justifyContent="space-between"
-      css={{ margin: "0 -25px" }}
+      css={{ margin: '0 -25px' }}
       flexWrap="wrap"
     >
       <Box width={[1, 2 / 5]} px={25}>
@@ -64,6 +64,6 @@ const Faq = () => (
       </Box>
     </Flex>
   </StyledFaq>
-);
+)
 
-export default Faq;
+export default Faq
