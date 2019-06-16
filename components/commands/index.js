@@ -1,7 +1,8 @@
-import commands from './commands'
+import controller from './commandsController'
 
 module.exports = {
-  show: commands.show,
-  givePoints: commands.givePoints,
-  checkPro: commands.checkPro
+  show: controller.show,
+  givePoints: controller.givePoints,
+  checkPro: controller.checkPro,
+  handle: controller.handle
 }

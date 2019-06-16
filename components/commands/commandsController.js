@@ -1,52 +1,31 @@
-'use strict'
-import { driver } from '@rocket.chat/sdk'
-import userController from '../../controllers/user'
 import moment from 'moment'
+import service from './commandsService'
+import utils from './commandsUtils'
+import users from '../../controllers/user'
+import messages from '../messages'
+
+const handle = async message => {
+  const response = await service.getCommandMessage(message)
+  if (response) {
+    await messages.sendToUser(response, message.u.username)
+  }
+}
 
 const show = async req => {
   const username = req.u.username
-  const isCoreTeam = await userController.isCoreTeam({ username })
+  const commandsText = utils.getCommandsText()
+  const coreTeamCommandsText = await utils.getCoreTeamCommandsText(username)
   const response = {
     msg: '*Eis a nossa lista de comandos!*',
-    attachments: [
-      {
-        text:
-          'Digite *!meuspontos* para verificar teus pontos de experiência e nível!'
-      },
-      { text: 'Digite *!minhasconquistas* para verificar tuas conquistas!' },
-      {
-        text: 'Digite *!pro* para verificar o status do teu plano Impulser Pro!'
-      },
-      {
-        text:
-          'Digite *!rankinggeral* e veja o ranking geral e a tua posição nele!'
-      },
-      {
-        text:
-          'Digite *!ranking* e veja o ranking do mês atual e tua posição nele! Além disso, podes escolher um mês específico ao adicionar um número de 1 à 12 após o comando! Ex: !ranking 2 para o mês de Fevereiro.'
-      }
-    ]
+    attachments: [...commandsText, ...coreTeamCommandsText]
   }
 
-  const coreTeamAttachments = [
-    {
-      text: `Digite ${'`!darpontos`'} ${'`@nome-usuario`'} ${'`pontos`'} ${'`motivo`'} para dar pontos ao usuário. `
-    },
-    {
-      text: `Digite ${'`!checkpro`'} ${'`@nome-usuario`'} para checar se o usuario é Pro e a duração do beneficio. `
-    }
-  ]
-
-  if (isCoreTeam) {
-    response.attachments.push(...coreTeamAttachments)
-  }
-
-  driver.sendDirectToUser(response, username)
+  await messages.sendToUser(response, username)
 }
 
 const givePoints = async data => {
   const { msg, u } = data
-  const isCoreTeam = await userController.isCoreTeam({ username: u.username })
+  const isCoreTeam = await users.isCoreTeam({ username: u.username })
   // eslint-disable-next-line no-useless-escape
   const checkFields = /(@[a-z\-]+) ([\d]+) (`.+`)/g
   const result = checkFields.exec(msg)
@@ -72,7 +51,7 @@ const givePoints = async data => {
   }
 
   try {
-    user = await userController.findBy({
+    user = await users.findBy({
       username: result[1].replace('@', '')
     })
   } catch (error) {
@@ -86,7 +65,7 @@ const givePoints = async data => {
   const score = parseInt(result[2])
   const messageToUser = result[3].replace('`', '').slice(0, -1)
 
-  const sucess = await userController.updateScore(user, score)
+  const sucess = await users.updateScore(user, score)
 
   if (sucess.score > oldScore) {
     const confirmMessage = {
@@ -108,7 +87,7 @@ const givePoints = async data => {
 
 const checkPro = async data => {
   const { msg, u } = data
-  const isCoreTeam = await userController.isCoreTeam({ username: u.username })
+  const isCoreTeam = await users.isCoreTeam({ username: u.username })
   // eslint-disable-next-line no-useless-escape
   const checkFields = /(@[a-z\-]+)/g
   const result = checkFields.exec(msg)
@@ -151,10 +130,9 @@ const checkPro = async data => {
   driver.sendDirectToUser(response, u.username)
 }
 
-const exportFunctions = {
+export default {
   show,
   givePoints,
-  checkPro
+  checkPro,
+  handle
 }
-
-export default exportFunctions
