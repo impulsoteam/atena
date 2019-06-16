@@ -1,4 +1,5 @@
 import service from './rankingsService'
+import utils from './rankingsUtils'
 import users from '../users'
 
 const calculatePositionByUser = async (userId, isCoreTeam) => {
@@ -6,19 +7,17 @@ const calculatePositionByUser = async (userId, isCoreTeam) => {
 }
 
 const commandGeneral = async message => {
-  let response = {}
+  const coreTeam = await users.isCoreTeam(message.u._id)
+  return service.getGeneralRanking(message.u._id, coreTeam)
+}
 
-  try {
-    const coreTeam = await users.isCoreTeam(message.u._id)
-    response = await service.getGeneralRanking(message.u._id, coreTeam)
-  } catch (e) {
-    console.log(e)
-  }
-
-  return response
+const commandByMonth = async message => {
+  const month = utils.getMonthFromMessage(message)
+  return await service.getRankingByMonth(message.u._id, month)
 }
 
 export default {
   calculatePositionByUser,
-  commandGeneral
+  commandGeneral,
+  commandByMonth
 }

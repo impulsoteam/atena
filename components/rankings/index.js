@@ -2,5 +2,6 @@ import controller from './rankingsController'
 
 export default {
   calculatePositionByUser: controller.calculatePositionByUser,
-  commandGeneral: controller.commandGeneral
+  commandGeneral: controller.commandGeneral,
+  commandByMonth: controller.commandByMonth
 }
