@@ -5,13 +5,13 @@ const findAllByUser = async userId => {
   return await model.find({ user: userId }).exec()
 }
 
-const findOne = async query => {
-  return await model.findOne(query).exec()
+const findOne = query => {
+  return model.findOne(query).exec()
 }
 
-const create = async achievement => {
+const create = achievement => {
   const newAchievement = new model(achievement)
-  return await newAchievement.save()
+  return newAchievement.save()
 }
 
 // TODO: export to settings

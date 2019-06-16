@@ -1,16 +1,12 @@
 import config from 'config-yml'
 import { driver } from '@rocket.chat/sdk'
-import {
-  getInteractionType,
-  calculateAchievementScoreToIncrease,
-  getAchievementNextRating,
-  saveScoreInteraction
-} from '../../utils/achievements'
-import { sendEarnedAchievementMessage } from '../../utils/achievementsMessages'
 import userController from '../../controllers/user'
 import dal from './achievementsDAL'
 import utils from './achievementsUtils'
 import service from './achievementsService'
+import { _throw } from '../error'
+
+const file = 'AchievementController'
 
 const commandIndex = async message => {
   try {
@@ -22,150 +18,59 @@ const commandIndex = async message => {
     const response = await service.getAllMessages(user)
     await driver.sendDirectToUser(response, message.u.username)
   } catch (e) {
-    console.log('[ACHIEVEMENTS] Commands error: ', e)
+    _throw(file, 'commandIndex', e)
   }
 }
 
-const save = async (interaction, user) => {
+const handle = async (interaction, user) => {
   try {
     if (utils.isValidAction(interaction)) {
-      const type = getInteractionType(interaction)
-      await saveUserAchievement(type, interaction, user)
+      const type = utils.getInteractionType(interaction)
+      await save(type, interaction, user)
 
       if (interaction.parentUser) {
         const parentUser = await userController.findByOrigin(interaction, true)
-        await saveUserAchievement('received', interaction, parentUser)
+        await save('received', interaction, parentUser)
       }
     }
-  } catch (error) {
-    console.log('[ACHIEVEMENTS] Save error: ', error)
+  } catch (e) {
+    _throw(file, 'handle', e)
   }
 }
 
-const saveUserAchievement = async (type, interaction, user) => {
+const save = async (type, interaction, user) => {
+  const achievement = await findOrCreate(user, interaction, type)
+  achievement.total += 1
+  achievement.ratings = utils.setEarned(achievement)
+  await utils.addScore(user, achievement)
+  return achievement.save()
+}
+
+const findOrCreate = async (user, interaction, type) => {
   const query = {
     user: user._id,
     kind: `${interaction.category}.${interaction.action}.${type}`
   }
 
   let achievement = await dal.findOne(query)
-  if (achievement) {
-    achievement.total += 1
-    achievement.ratings = updateRangeEarnedDate(achievement)
-    await addScore(user, achievement)
-    return achievement.save()
-  } else {
-    achievement = createAchievement(interaction, type, user)
-    if (achievement) {
-      return dal.create(achievement)
-    }
-  }
-}
-
-const addScore = async (user, achievement) => {
-  const score = calculateAchievementScoreToIncrease(achievement)
-
-  if (score > 0) {
-    await userController.updateScore(user, score)
-    await saveScoreInteraction(user, achievement, score, 'Conquista Permanente')
-    await sendEarnedAchievementMessage(
-      user,
-      getAchievementNextRating(achievement)
-    )
-  }
-}
-
-const updateRangeEarnedDate = achievement => {
-  return achievement.ratings.map(rating => {
-    let ranges = rating.ranges.map(range => {
-      if (!range.earnedDate && range.value === achievement.total) {
-        range.earnedDate = Date.now()
-      }
-
-      return generateRange(range)
-    })
-
-    return generateRating(rating, ranges)
-  })
-}
-
-const generateRating = (rating, ranges) => {
-  return {
-    name: rating.name,
-    xp: rating.xp,
-    ranges: ranges
-  }
-}
-
-const generateRange = doc => {
-  return {
-    name: doc.name,
-    value: doc.value,
-    earnedDate: doc.earnedDate
-  }
-}
-
-const createAchievement = (interaction, type, user) => {
-  const achievements = dal.findMain(
-    interaction.category,
-    interaction.action,
-    type
-  )
-  let achievement = null
-
-  if (achievements) {
-    achievement = generateNewAchievement(interaction, type, user)
-
-    let currentRating = 0
-    for (let item in achievements) {
-      achievement.ratings.push(generateNewRating(achievements, item))
-
-      for (let range in achievements[item].ranges) {
-        achievement.ratings[currentRating].ranges.push(
-          generateNewRange(achievements, item, range)
-        )
-      }
-
-      currentRating++
-    }
-
-    achievement = service.addFirstNewEarnedDate(achievement)
-    service.sendEarnedMessages(user, achievement)
+  if (!achievement) {
+    achievement = await create(interaction, type, user)
   }
 
   return achievement
 }
 
-const generateNewAchievement = (interaction, type, user) => {
-  const category = config.categories[interaction.category]
-  const action = config.actions[interaction.action]
+const create = (interaction, type, user) => {
+  const achievements = dal.findMain(
+    interaction.category,
+    interaction.action,
+    type
+  )
 
-  return {
-    name: `${category.name} | ${action.name} ${action[type]}`,
-    kind: `${category.type}.${action.type}.${type}`,
-    user: user._id,
-    total: 1,
-    ratings: []
-  }
-}
-
-const generateNewRating = (achievements, item) => {
-  return {
-    name: achievements[item].name,
-    xp: achievements[item].xp,
-    ranges: []
-  }
-}
-
-const generateNewRange = (achievements, item, range) => {
-  return {
-    name: range,
-    value: achievements[item].ranges[range],
-    earnedDate: null
-  }
+  return utils.generateNewAchievement(achievements, interaction, type, user)
 }
 
 export default {
-  save,
+  handle,
   commandIndex
 }

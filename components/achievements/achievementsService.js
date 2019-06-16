@@ -1,10 +1,9 @@
-import achievementsDAL from './achievementsDAL'
-import achievementsUtils from './achievementsUtils'
-import { sendEarnedAchievementMessage } from '../../utils/achievementsMessages'
-import { getAchievementCurrentRating } from '../../utils/achievements'
+import dal from './achievementsDAL'
+import utils from './achievementsUtils'
 import userController from '../../controllers/user'
 import achievementsLevel from '../achievementsLevel'
 import achievementsTemporary from '../achievementsTemporary'
+import { sendToUser } from '../../rocket/bot'
 
 const getAllMessages = async user => {
   let response = { msg: 'Ops! Você ainda não tem conquistas registradas. :(' }
@@ -36,29 +35,60 @@ const getAllMessages = async user => {
 }
 
 const getMessages = async userId => {
-  let achievements = await achievementsDAL.findAllByUser(userId)
-  return achievementsUtils.generateAchievementsMessages(achievements)
+  let achievements = await dal.findAllByUser(userId)
+  return utils.generateAchievementsMessages(achievements)
 }
 
-const sendEarnedMessages = async (userId, achievement) => {
+const sendNewEarnedMessages = async (userId, achievement) => {
   const user = await userController.findBy({ _id: userId })
-  await sendEarnedAchievementMessage(
-    user,
-    getAchievementCurrentRating(achievement)
-  )
+  await sendEarnedMessage(user, utils.getCurrentRating(achievement))
 }
 
-const addFirstNewEarnedDate = achievement => {
-  if (achievement.ratings[0].ranges[0].value === 1) {
-    achievement.ratings[0].ranges[0].earnedDate = Date.now()
+const sendEarnedMessage = async (
+  user,
+  achievement,
+  isAchievementLevel = false
+) => {
+  const name = achievement.name.split(' | ')
+
+  let privateMessage = `:medal: Você obteve a conquista [${
+    achievement.rating
+  } ${achievement.range} | ${name[1]}]!`
+
+  // let publicMessage = `:medal: @${rocketUser.username} obteve a conquista [${
+  //   achievement.rating
+  // } ${achievement.range} | ${name[1]}]!`;
+
+  if (isAchievementLevel) {
+    privateMessage = `:medal: Você obteve o *Nível ${user.level}*!`
+    // publicMessage = `:medal: @${rocketUser.username} obteve o *Nível ${
+    //   user.level
+    // }*!`;
   }
 
-  return achievement
+  await sendToUser(privateMessage, user.username)
+  // await sendMessage(publicMessage, "impulso-network");
+}
+
+const addScore = async (user, achievement) => {
+  const score = utils.calculateScoreToIncrease(achievement)
+
+  if (score > 0) {
+    await userController.updateScore(user, score)
+    await utils.saveScoreInteraction(
+      user,
+      achievement,
+      score,
+      'Conquista Permanente'
+    )
+    await sendEarnedMessage(user, utils.getCurrentRating(achievement))
+  }
 }
 
 export default {
   getAllMessages,
   getMessages,
-  addFirstNewEarnedDate,
-  sendEarnedMessages
+  sendNewEarnedMessages,
+  sendEarnedMessage,
+  addScore
 }
