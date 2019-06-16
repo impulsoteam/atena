@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const StyledFaq = styled.section`
   button {
@@ -16,6 +16,6 @@ const StyledFaq = styled.section`
       padding-left: 20px;
     }
   }
-`;
+`
 
-export default StyledFaq;
+export default StyledFaq

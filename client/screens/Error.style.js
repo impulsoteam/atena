@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const StyledScreenError = styled.section`
   main {
@@ -43,6 +43,6 @@ const StyledScreenError = styled.section`
       margin-top: 30px;
     }
   }
-`;
+`
 
-export default StyledScreenError;
+export default StyledScreenError

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const StyledScreenHowItWorks = styled.section`
   .layout {
@@ -23,7 +23,7 @@ const StyledScreenHowItWorks = styled.section`
     }
 
     &::before {
-      content: url("./images/lines.png");
+      content: url('./images/lines.png');
       display: block;
       position: absolute;
       top: 0;
@@ -48,7 +48,7 @@ const StyledScreenHowItWorks = styled.section`
     z-index: 10;
 
     &::before {
-      content: url("./images/img-bg.svg");
+      content: url('./images/img-bg.svg');
       display: block;
       position: absolute;
       z-index: -1;
@@ -77,7 +77,7 @@ const StyledScreenHowItWorks = styled.section`
         color: #595b98;
 
         span::after {
-          content: "";
+          content: '';
           display: block;
           width: 0px;
           height: 3px;
@@ -158,7 +158,7 @@ const StyledScreenHowItWorks = styled.section`
       text-decoration: none;
 
       & + a::before {
-        content: "";
+        content: '';
         display: inline-block;
         width: 4px;
         height: 4px;
@@ -170,7 +170,7 @@ const StyledScreenHowItWorks = styled.section`
       }
 
       &::after {
-        content: "";
+        content: '';
         display: block;
         width: 0px;
         height: 3px;
@@ -207,7 +207,7 @@ const StyledScreenHowItWorks = styled.section`
 
     &::before {
       display: block;
-      content: url("./images/circulos.png");
+      content: url('./images/circulos.png');
       position: absolute;
       z-index: 0;
       left: 0;
@@ -256,6 +256,6 @@ const StyledScreenHowItWorks = styled.section`
       }
     }
   }
-`;
+`
 
-export default StyledScreenHowItWorks;
+export default StyledScreenHowItWorks

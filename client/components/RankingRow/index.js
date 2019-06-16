@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { StyledRankingRow } from "./style";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { StyledRankingRow } from './style'
 
 const RankingRow = ({ position, name, avatar, level, xp }) => (
   <StyledRankingRow>
@@ -12,7 +12,7 @@ const RankingRow = ({ position, name, avatar, level, xp }) => (
     <div className="level">{level}</div>
     <div className="xp">{xp}</div>
   </StyledRankingRow>
-);
+)
 
 RankingRow.propTypes = {
   position: PropTypes.string.isRequired,
@@ -20,6 +20,6 @@ RankingRow.propTypes = {
   avatar: PropTypes.string.isRequired,
   level: PropTypes.string.isRequired,
   xp: PropTypes.string.isRequired
-};
+}
 
-export default RankingRow;
+export default RankingRow

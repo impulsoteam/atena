@@ -1,5 +1,5 @@
-import { createGlobalStyle } from "styled-components";
-import styledNormalize from "styled-normalize";
+import { createGlobalStyle } from 'styled-components'
+import styledNormalize from 'styled-normalize'
 
 const StyledApp = createGlobalStyle`
   ${styledNormalize}
@@ -74,6 +74,6 @@ const StyledApp = createGlobalStyle`
       display: none !important;
     }
   }
-`;
+`
 
-export default StyledApp;
+export default StyledApp
