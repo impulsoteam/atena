@@ -1,5 +1,5 @@
 import moment from 'moment-timezone'
-import model from './achievementTemporary'
+import model from './achievementTemporaryData'
 import interactionUtils from '../interactions/interactionsUtils'
 
 export const generateKind = data => {
@@ -12,18 +12,6 @@ export const generateKind = data => {
   }
 
   return kind
-}
-
-export const convertDataToAchievement = (achievementTemporaryData, user) => {
-  let achievementTemporary = {}
-  if (achievementTemporaryData) {
-    achievementTemporary = generateNewTemporaryAchievement(
-      achievementTemporaryData,
-      user
-    )
-    achievementTemporary.ratings = generateNewRatings(achievementTemporaryData)
-  }
-  return achievementTemporary
 }
 
 export const generateDates = data => {
@@ -60,19 +48,6 @@ const generateNewRatings = achievementTemporaryData => {
       ranges: rating.ranges
     }
   })
-}
-
-// TODO: ver onde usa
-const generateNewTemporaryAchievement = (achievementTemporaryData, user) => {
-  let achievementTemporary = new model()
-  achievementTemporary.name = achievementTemporaryData.name
-  achievementTemporary.kind = achievementTemporaryData.kind
-  achievementTemporary.rangeTime = achievementTemporaryData.rangeTime
-  achievementTemporary.startDate = Date.now()
-  achievementTemporary.temporaryData = achievementTemporaryData._id
-  achievementTemporary.user = user
-  achievementTemporary.ratings = []
-  return achievementTemporary
 }
 
 export const generateRatingsRanges = ratings => {
