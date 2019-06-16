@@ -8,29 +8,28 @@ import session from 'express-session'
 import passport from 'passport'
 import bodyParser from 'body-parser'
 import log4js from 'log4js'
-require('./models/interaction')
-require('./models/user')
-require('./models/achievement')
-require('./models/ranking')
-require('./models/checkpoint')
-require('./models/channelCheckPoint')
-require('./components/github')
-require('./components/interactions')
-require('./components/achievements')
-require('./workers/receive')
+import bots from './components/bots'
+
+// require('./models/interaction')
+// require('./models/user')
+// require('./models/achievement')
+// require('./models/ranking')
+// require('./models/checkpoint')
+// require('./models/channelCheckPoint')
+// require('./components/github')
+// require('./components/interactions')
+// require('./components/achievements')
+// require('./workers/receive')
 
 if (process.env.NODE_ENV !== 'test') {
-  require('./rocket/bot')
-  require('./rocket/api')
+  bots.exec()
 }
 
-runCrons()
+// runCrons()
 
 process.env.NODE_ENV !== 'production' && dotenv.config()
 
-const mongooseConnectUri = process.env.MONGODB_URI
-
-mongoose.connect(mongooseConnectUri)
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
 mongoose.set('useCreateIndexes', true)
 
 log4js.configure({
