@@ -83,8 +83,10 @@ const runBot = async handle => {
 
 const findOrCreateUser = async rocketUser => {
   if (!rocketUser) return false
-  const email = rocketUser.emails.length ? rocketUser.emails[0].address : ''
-  const query = { rocketId: rocketUser._id }
+  const email = rocketUser.emails[0].address
+  const query = {
+    $or: [{ rocketId: rocketUser._id }, { email: email }]
+  }
 
   const args = {
     $set: {
