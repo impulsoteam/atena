@@ -1,7 +1,6 @@
 import config from 'config-yml'
 import moment from 'moment-timezone'
 import interactionsUtils from '../interactions/interactionsUtils'
-import interactionController from '../interactions'
 
 const generateAchievementsMessages = achievements => {
   let messages = []
@@ -27,7 +26,7 @@ const isValidAction = interaction => {
 
 const isValidReaction = interaction => {
   return (
-    interaction.action === config.actions.reaction.type &&
+    interaction.action !== config.actions.reaction.type ||
     (isPositiveReaction(interaction) || isAtenaReaction(interaction))
   )
 }
@@ -93,19 +92,6 @@ const getInteractionType = interaction =>
 
 const isChatInteraction = interaction =>
   interactionsUtils.isChatInteraction(interaction)
-
-const saveScoreInteraction = async (user, achievement, score, text) => {
-  const interaction = interactionController.convert({
-    type: 'manual',
-    user: user.rocketId,
-    rocketUsername: user.username,
-    score: score,
-    value: achievement._id,
-    text: text
-  })
-
-  return interactionController.save(interaction)
-}
 
 const calculateScoreToIncrease = achievement => {
   let scoreToIncrease = 0
@@ -299,7 +285,6 @@ export default {
   getInteractionType,
   setEarned,
   getCurrentRating,
-  saveScoreInteraction,
   calculateScoreToIncrease,
   generateNewAchievement
 }

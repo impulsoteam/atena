@@ -1,9 +1,10 @@
 import dal from './achievementsDAL'
 import utils from './achievementsUtils'
-import userController from '../../controllers/user'
 import achievementsLevel from '../achievementsLevel'
 import achievementsTemporary from '../achievementsTemporary'
-import { sendToUser } from '../../rocket/bot'
+import messages from '../messages'
+import interactions from '../interactions'
+import users from '../users'
 
 const getAllMessages = async user => {
   let response = { msg: 'Ops! Você ainda não tem conquistas registradas. :(' }
@@ -40,7 +41,7 @@ const getMessages = async userId => {
 }
 
 const sendNewEarnedMessages = async (userId, achievement) => {
-  const user = await userController.findBy({ _id: userId })
+  const user = await users.findOne({ _id: userId })
   await sendEarnedMessage(user, utils.getCurrentRating(achievement))
 }
 
@@ -66,23 +67,58 @@ const sendEarnedMessage = async (
     // }*!`;
   }
 
-  await sendToUser(privateMessage, user.username)
-  // await sendMessage(publicMessage, "impulso-network");
+  await messages.sendToUser(privateMessage, user.username)
+  // await messages.sendToRoom(publicMessage, "impulso-network");
 }
 
 const addScore = async (user, achievement) => {
   const score = utils.calculateScoreToIncrease(achievement)
 
   if (score > 0) {
-    await userController.updateScore(user, score)
-    await utils.saveScoreInteraction(
-      user,
-      achievement,
-      score,
-      'Conquista Permanente'
-    )
+    await users.updateScore(user, score)
+    await saveScoreInteraction(user, achievement, score, 'Conquista Permanente')
     await sendEarnedMessage(user, utils.getCurrentRating(achievement))
   }
+}
+
+const saveScoreInteraction = async (user, achievement, score, text) => {
+  return interactions.saveManual({
+    user: user.rocketId,
+    rocketUsername: user.username,
+    score: score,
+    value: achievement._id,
+    text: text
+  })
+}
+
+const findOrCreate = async (user, interaction, type) => {
+  const query = {
+    user: user._id,
+    kind: `${interaction.category}.${interaction.action}.${type}`
+  }
+
+  let achievement = await dal.findOne(query)
+  if (!achievement) achievement = await create(interaction, type, user)
+
+  return achievement
+}
+
+const create = async (interaction, type, user) => {
+  const achievements = dal.findMain(
+    interaction.category,
+    interaction.action,
+    type
+  )
+
+  const newAchievement = utils.generateNewAchievement(
+    achievements,
+    interaction,
+    type,
+    user
+  )
+  const achievement = await dal.save(newAchievement)
+  await sendNewEarnedMessages(user, achievement)
+  return achievement
 }
 
 export default {
@@ -90,5 +126,7 @@ export default {
   getMessages,
   sendNewEarnedMessages,
   sendEarnedMessage,
+  findOrCreate,
+  create,
   addScore
 }

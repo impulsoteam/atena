@@ -9,9 +9,8 @@ const findOne = query => {
   return model.findOne(query).exec()
 }
 
-const create = achievement => {
-  const newAchievement = new model(achievement)
-  return newAchievement.save()
+const save = achievement => {
+  return model(achievement).save()
 }
 
 // TODO: export to settings
@@ -32,5 +31,5 @@ export default {
   findAllByUser,
   findMain,
   findOne,
-  create
+  save
 }
