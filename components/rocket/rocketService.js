@@ -5,7 +5,12 @@ import users from '../users'
 import interactions from '../interactions'
 
 const isValidMessage = (botId, message, messageOptions) => {
-  return message.u._id === botId || message.t || messageOptions.roomType === 'd'
+  return !(
+    message.u._id === botId ||
+    message.t ||
+    messageOptions.roomType === 'd' ||
+    message.bot != undefined
+  )
 }
 
 const convertToInteraction = data => {
