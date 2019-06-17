@@ -18,8 +18,11 @@ const handle = async data => {
   if (!countingScore) interaction.score = 0
 
   const user = await moduleController.findOrCreateUser(interaction)
+  interaction.user = user._id
+
   if (user.score === 0 && user.username)
     await users.sendWelcomeMessage(user.username)
+
   await service.onSaveInteraction(interaction, user)
   return dal.save(interaction)
 }
@@ -28,8 +31,13 @@ const getLastMessage = userId => {
   return dal.findLastMessageByUser(userId)
 }
 
+const findOne = query => {
+  return dal.findOne(query)
+}
+
 export default {
   getLastMessage,
   saveManual,
-  handle
+  handle,
+  findOne
 }

@@ -12,9 +12,13 @@ const isNegativeReaction = interaction =>
 const isAtenaReaction = interaction =>
   interaction.description === 'atena' || interaction.description === ':atena:'
 
+const isGithubInteraction = interaction =>
+  interaction.category === 'network' && interaction.action === 'github'
+
 export default {
   isChatInteraction,
   isPositiveReaction,
   isNegativeReaction,
-  isAtenaReaction
+  isAtenaReaction,
+  isGithubInteraction
 }

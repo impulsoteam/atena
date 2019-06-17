@@ -5,6 +5,10 @@ const save = interaction => {
   return model(interaction).save()
 }
 
+const findOne = query => {
+  return model.findOne(query).exec()
+}
+
 const findBy = query => {
   return model.find(query).exec()
 }
@@ -35,6 +39,7 @@ const findLastMessageByUser = userId => {
 
 export default {
   findBy,
+  findOne,
   findAllFromToday,
   findLastMessageByUser,
   save

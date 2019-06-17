@@ -48,7 +48,7 @@ const getModuleController = data => {
     blog: blog
   }
 
-  return controllers[data.origin]
+  return controllers[data.origin] || {}
 }
 
 const hasScore = async (moduleController, interaction) => {
@@ -84,6 +84,7 @@ const getTodayScore = async rocketId => {
 const onSaveInteraction = async (interaction, user) => {
   await users.updateScore(user, interaction.score)
   await achievements.handle(interaction, user)
+
   // await achievementsTemporary.save(interaction, user)
 }
 
