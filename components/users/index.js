@@ -7,5 +7,6 @@ export default {
   isCoreTeam: controller.isCoreTeam,
   updateScore: controller.updateScore,
   commandScore: controller.commandScore,
-  commandPro: controller.commandPro
+  commandPro: controller.commandPro,
+  commandUserIsPro: controller.commandUserIsPro
 }

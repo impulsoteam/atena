@@ -127,6 +127,36 @@ const commandPro = async message => {
   return response
 }
 
+const commandUserIsPro = async message => {
+  const coreTeam = await isCoreTeam(message.u._id)
+  if (!coreTeam) return { msg: 'Ops! *Não tens acesso* a esta operação!' }
+
+  const username = utils.getUsernameByMessage(message.msg)
+  if (!username) return { msg: 'Ops! Você não nos mandou o *usuário*.' }
+
+  const user = await dal.findOne({ username: username })
+  if (!user) return { msg: 'Usuário *não* encontrado.' }
+
+  if (!user.pro) return { msg: 'Usuário *não possui* plano pro!' }
+
+  const beginDate = user.proBeginAt
+    ? moment(user.proBeginAt).format('L')
+    : 'Sem data definida'
+
+  const finishDate = user.proFinishAt
+    ? moment(user.proFinishAt).format('L')
+    : 'Sem data definida'
+
+  return {
+    msg: 'Usuário *possui* plano pro!',
+    attachments: [
+      {
+        text: `Plano iniciou em ${beginDate} e terminará em ${finishDate}`
+      }
+    ]
+  }
+}
+
 export default {
   findBy,
   findOne,
@@ -134,5 +164,6 @@ export default {
   commandScore,
   commandPro,
   findAllToRanking,
-  isCoreTeam
+  isCoreTeam,
+  commandUserIsPro
 }
