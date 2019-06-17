@@ -7,6 +7,10 @@ const findBy = query => {
   return dal.findBy(query)
 }
 
+const findOne = query => {
+  return dal.findOne(query)
+}
+
 const updateScore = async (user, score) => {
   if (!user) return
 
@@ -125,6 +129,7 @@ const commandPro = async message => {
 
 export default {
   findBy,
+  findOne,
   updateScore,
   commandScore,
   commandPro,

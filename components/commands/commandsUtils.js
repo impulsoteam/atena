@@ -47,8 +47,15 @@ const getCommandsRegex = () => {
   }
 }
 
+const getUsernameByMessage = message => {
+  const checkFields = /(@[a-z-]+)/g
+  const result = checkFields.exec(message)
+  return result ? result[1].replace('@', '') : false
+}
+
 export default {
   getCommandsText,
   getCoreTeamCommandsText,
-  getCommandsRegex
+  getCommandsRegex,
+  getUsernameByMessage
 }

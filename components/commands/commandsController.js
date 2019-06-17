@@ -85,54 +85,8 @@ const givePoints = async data => {
   }
 }
 
-const checkPro = async data => {
-  const { msg, u } = data
-  const isCoreTeam = await users.isCoreTeam({ username: u.username })
-  // eslint-disable-next-line no-useless-escape
-  const checkFields = /(@[a-z\-]+)/g
-  const result = checkFields.exec(msg)
-  let response
-
-  if (!isCoreTeam) {
-    response = {
-      msg: 'Opa!! *Não tens acesso* a esta operação!'
-    }
-    driver.sendDirectToUser(response, u.username)
-    return
-  }
-
-  try {
-    const { pro, proBeginAt, proFinishAt } = await userController.findBy({
-      username: result[1].replace('@', '')
-    })
-    if (!pro) {
-      response = {
-        msg: 'Usuário *não possui* plano pro!'
-      }
-    } else {
-      response = {
-        msg: 'Usuário *possui* plano pro!',
-        attachments: [
-          {
-            text: `Plano iniciou em ${moment(proBeginAt).format(
-              'L'
-            )} e terminará em ${moment(proFinishAt).format('L')}`
-          }
-        ]
-      }
-    }
-  } catch (error) {
-    response = {
-      msg: 'Usuário *não* encontrado!'
-    }
-  }
-
-  driver.sendDirectToUser(response, u.username)
-}
-
 export default {
   show,
   givePoints,
-  checkPro,
   handle
 }
