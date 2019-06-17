@@ -1,5 +1,9 @@
 import model from './user'
 
+const save = user => {
+  return model(user).save()
+}
+
 const findBy = query => {
   return model.find(query).exec()
 }
@@ -17,8 +21,14 @@ const findAll = (query, select, limit, sort) => {
     .exec()
 }
 
+const findOneAndUpdate = async (query, args, options) => {
+  return model.findOneAndUpdate(query, args, options).exec()
+}
+
 export default {
   findBy,
   findOne,
-  findAll
+  findAll,
+  findOneAndUpdate,
+  save
 }

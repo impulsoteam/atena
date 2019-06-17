@@ -2,6 +2,7 @@ import moment from 'moment-timezone'
 import utils from './usersUtils'
 import dal from './usersDAL'
 import rankings from '../rankings'
+import messages from '../messages'
 
 const findBy = query => {
   return dal.findBy(query)
@@ -9,6 +10,10 @@ const findBy = query => {
 
 const findOne = query => {
   return dal.findOne(query)
+}
+
+const findOneAndUpdate = (query, args, options) => {
+  return dal.findOneAndUpdate(query, args, options)
 }
 
 const updateScore = async (user, score) => {
@@ -157,13 +162,20 @@ const commandUserIsPro = async message => {
   }
 }
 
+const sendWelcomeMessage = user => {
+  const message = utils.getWelcomeMessage()
+  return messages.sendToUser(message, user)
+}
+
 export default {
   findBy,
   findOne,
+  findOneAndUpdate,
   updateScore,
   commandScore,
   commandPro,
   findAllToRanking,
   isCoreTeam,
-  commandUserIsPro
+  commandUserIsPro,
+  sendWelcomeMessage
 }

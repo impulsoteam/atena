@@ -20,11 +20,7 @@ const userSchema = new mongoose.Schema({
   level: {
     type: Number,
     required: true,
-    default: 0,
-    set: function(name) {
-      this.previousLevel = this.level
-      return name
-    }
+    default: 0
   },
   score: {
     type: Number,
@@ -72,7 +68,6 @@ const userSchema = new mongoose.Schema({
   },
   lastUpdate: {
     type: Date,
-    required: true,
     default: Date.now
   },
   isCoreTeam: {
@@ -109,6 +104,11 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: false
   }
+})
+
+userSchema.pre('save', function(next) {
+  this.lastUpdate = Date.Now
+  next()
 })
 
 export default mongoose.model('User', userSchema)
