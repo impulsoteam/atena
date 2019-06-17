@@ -371,7 +371,7 @@ github:
         V: 156
       xp: 11
 blog:
-  message:
+  article:
     bronze:
       name: 'Bronze'
       ranges:

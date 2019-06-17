@@ -23,6 +23,5 @@ github:
 blog:
   name: 'Blog'
   type: 'blog'
-  message: 'Postagens'
+  article: 'Postagens'
   comment: 'Comentários'
-
