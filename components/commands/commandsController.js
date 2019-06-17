@@ -11,18 +11,6 @@ const handle = async message => {
   }
 }
 
-const show = async req => {
-  const username = req.u.username
-  const commandsText = utils.getCommandsText()
-  const coreTeamCommandsText = await utils.getCoreTeamCommandsText(username)
-  const response = {
-    msg: '*Eis a nossa lista de comandos!*',
-    attachments: [...commandsText, ...coreTeamCommandsText]
-  }
-
-  await messages.sendToUser(response, username)
-}
-
 const givePoints = async data => {
   const { msg, u } = data
   const isCoreTeam = await users.isCoreTeam({ username: u.username })
@@ -86,7 +74,6 @@ const givePoints = async data => {
 }
 
 export default {
-  show,
   givePoints,
   handle
 }

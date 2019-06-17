@@ -29,8 +29,8 @@ const getCommandMessage = async message => {
     //   await achievementsController.commandIndex(message)
   } else if (regex.isPro.test(message.msg)) {
     response = await users.commandPro(message)
-    // } else if (regex.commands.test(message.msg)) {
-    // response = await commandsList(message)
+  } else if (regex.commands.test(message.msg)) {
+    response = await commandsList(message)
     // } else if (regex.darpontos.test(message.msg)) {
     //   customCommands.givePoints(message)
   } else if (regex.checkPro.test(message.msg)) {
@@ -46,19 +46,19 @@ const getCommandMessage = async message => {
   return response
 }
 
-const getCommandsText = () => {
-  return utils.getCommandsText()
-}
+const commandsList = async message => {
+  let coreTeamCommandsText = []
+  const commandsText = utils.getCommandsText()
 
-const getCoreTeamCommandsText = async username => {
-  const isCoreTeam = await users.isCoreTeam({ username })
-  let commands = []
-  if (isCoreTeam) commands = utils.getCoreTeamCommandsText()
-  return commands
+  const isCoreTeam = await users.isCoreTeam(message.u._id)
+  if (isCoreTeam) coreTeamCommandsText = utils.getCoreTeamCommandsText()
+
+  return {
+    msg: '*Eis a nossa lista de comandos!*',
+    attachments: [...commandsText, ...coreTeamCommandsText]
+  }
 }
 
 export default {
-  getCommandsText,
-  getCoreTeamCommandsText,
   getCommandMessage
 }
