@@ -1,8 +1,7 @@
 import model from './achievementTemporaryData'
 
-const create = achievement => {
-  const achievementTemporaryData = new model(achievement)
-  return achievementTemporaryData.save()
+const save = achievement => {
+  return model(achievement).save()
 }
 
 const findById = id => {
@@ -18,7 +17,7 @@ const findAllByQuery = query => {
 }
 
 export default {
-  create,
+  save,
   findById,
   findAll,
   findAllByQuery

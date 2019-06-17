@@ -1,8 +1,7 @@
 import moment from 'moment-timezone'
-import model from './achievementTemporaryData'
 import interactionUtils from '../interactions/interactionsUtils'
 
-export const generateKind = data => {
+const generateKind = data => {
   let kind = null
 
   if (data.channel.toLowerCase() === 'rocket') {
@@ -14,7 +13,7 @@ export const generateKind = data => {
   return kind
 }
 
-export const generateDates = data => {
+const generateDates = data => {
   const initialDate = moment(new Date(data.initialDate))
     .utc()
     .startOf('day')
@@ -50,7 +49,7 @@ const generateNewRatings = achievementTemporaryData => {
   })
 }
 
-export const generateRatingsRanges = ratings => {
+const generateRatings = ratings => {
   return ratings.map(rating => {
     if (rating.ranges && rating.ranges > 0) {
       rating.ranges = generateRanges(rating.ranges)
@@ -109,5 +108,8 @@ const getQueryToFindCurrent = interaction => {
 }
 
 export default {
-  getQueryToFindCurrent
+  getQueryToFindCurrent,
+  generateDates,
+  generateKind,
+  generateRatings
 }

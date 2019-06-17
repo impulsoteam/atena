@@ -1,8 +1,11 @@
 import dal from './achievementsTemporaryDataDAL'
 import service from './achievementsTemporaryDataService'
 import utils from './achievementsTemporaryDataUtils'
+import errors from '../errors'
 
-export const save = async data => {
+const file = 'Achievements Temporary Data | Controller'
+
+const save = data => {
   try {
     const dates = utils.generateDates(data)
     let achievement = {
@@ -12,22 +15,21 @@ export const save = async data => {
       initialDate: dates.initialDate,
       limitDate: dates.limitDate,
       endDate: dates.endDate,
-      ratings: utils.generateRatingsRanges(data.ratings)
+      ratings: utils.generateRatings(data.ratings)
     }
 
-    return await dal.create(achievement)
-  } catch (error) {
-    console.log('Error saving achievement temporary data')
+    return dal.save(achievement)
+  } catch (e) {
+    errors._throw(file, 'save', e)
   }
 }
 
-export const update = async (data, id) => {
+const update = async (id, data) => {
   try {
     let temporaryAchievementData = await dal.findById(id)
     if (!temporaryAchievementData) {
-      console.log(
-        'Error not found temporaryAchievementData on update achievement temporary data'
-      )
+      errors._throw(file, 'update', 'Achievement Temporary Data not found')
+      return
     }
 
     const dates = utils.generateDates(data)
@@ -36,40 +38,39 @@ export const update = async (data, id) => {
     temporaryAchievementData.limitDate = dates.limitDate
     temporaryAchievementData.endDate = dates.endDate
 
-    temporaryAchievementData.save()
-  } catch (error) {
-    console.log('Error update achievement temporary data')
+    return temporaryAchievementData.save()
+  } catch (e) {
+    errors._throw(file, 'update', e)
   }
 }
 
-export const disable = async id => {
+const disable = async id => {
   try {
     let achievement = await dal.findById(id)
     if (!achievement) {
-      console.log(
-        'Error not found achievement on update achievement temporary data'
-      )
+      errors._throw(file, 'disable', 'Achievement Temporary Data not found')
+      return
     }
 
-    return await service.disable(achievement)
-  } catch (error) {
-    console.log('Error on disable achievement temporary data')
+    return service.disable(achievement)
+  } catch (e) {
+    errors._throw(file, 'disable', e)
   }
 }
 
-export const getById = id => {
+const getById = id => {
   try {
     return dal.findById(id)
-  } catch (error) {
-    console.log('Error getById achievement temporary data')
+  } catch (e) {
+    errors._throw(file, 'getById', e)
   }
 }
 
-export const getAll = () => {
+const getAll = () => {
   try {
     return dal.findAll()
-  } catch (error) {
-    console.log('Error getAll achievement temporary data')
+  } catch (e) {
+    errors._throw(file, 'getAll', e)
   }
 }
 
