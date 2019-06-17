@@ -30,7 +30,7 @@ const save = async (type, interaction, user) => {
   const achievement = await service.findOrCreate(user, interaction, type)
   achievement.total += 1
   achievement.ratings = utils.setEarned(achievement)
-  await service.addScore(user, achievement)
+  await service.addScore(user, achievement, interaction)
   return dal.save(achievement)
 }
 

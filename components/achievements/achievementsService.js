@@ -40,50 +40,60 @@ const getMessages = async userId => {
   return utils.generateAchievementsMessages(achievements)
 }
 
-const sendNewEarnedMessages = async (userId, achievement) => {
+const sendNewEarnedMessages = async (userId, achievement, interaction) => {
   const user = await users.findOne({ _id: userId })
-  await sendEarnedMessage(user, utils.getCurrentRating(achievement))
+  await sendEarnedMessage(
+    user,
+    utils.getCurrentRating(achievement),
+    interaction
+  )
 }
 
 const sendEarnedMessage = async (
   user,
   achievement,
+  interaction,
   isAchievementLevel = false
 ) => {
+  if (!user.username) return
+
   const name = achievement.name.split(' | ')
 
   let privateMessage = `:medal: Você obteve a conquista [${
     achievement.rating
   } ${achievement.range} | ${name[1]}]!`
 
-  // let publicMessage = `:medal: @${rocketUser.username} obteve a conquista [${
-  //   achievement.rating
-  // } ${achievement.range} | ${name[1]}]!`;
+  let publicMessage = `:medal: @${user.username} obteve a conquista [${
+    achievement.rating
+  } ${achievement.range} | ${name[1]}]!`
 
   if (isAchievementLevel) {
     privateMessage = `:medal: Você obteve o *Nível ${user.level}*!`
-    // publicMessage = `:medal: @${rocketUser.username} obteve o *Nível ${
-    //   user.level
-    // }*!`;
+    publicMessage = `:medal: @${user.username} obteve o *Nível ${user.level}*!`
   }
 
+  const room = utils.getRoomToSendMessage(interaction)
   await messages.sendToUser(privateMessage, user.username)
-  // await messages.sendToRoom(publicMessage, "impulso-network");
+  await messages.sendToRoom(publicMessage, room)
 }
 
-const addScore = async (user, achievement) => {
+const addScore = async (user, achievement, interaction) => {
   const score = utils.calculateScoreToIncrease(achievement)
-
+  console.log('score', score)
   if (score > 0) {
     await users.updateScore(user, score)
     await saveScoreInteraction(user, achievement, score, 'Conquista Permanente')
-    await sendEarnedMessage(user, utils.getCurrentRating(achievement))
+    await sendEarnedMessage(
+      user,
+      utils.getCurrentRating(achievement),
+      interaction
+    )
   }
 }
 
 const saveScoreInteraction = async (user, achievement, score, text) => {
   return interactions.saveManual({
-    user: user.rocketId,
+    user: user._id,
     rocketUsername: user.username,
     score: score,
     value: achievement._id,
@@ -117,7 +127,7 @@ const create = async (interaction, type, user) => {
     user
   )
   const achievement = await dal.save(newAchievement)
-  await sendNewEarnedMessages(user, achievement)
+  await sendNewEarnedMessages(user, achievement, interaction)
   return achievement
 }
 

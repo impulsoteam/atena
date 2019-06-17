@@ -275,6 +275,21 @@ const generateNewRange = (achievements, item, range) => {
   }
 }
 
+const getRoomToSendMessage = interaction => {
+  let room = interaction.channelName
+  if (!room) room = getRoomByInteraction(interaction)
+  console.log('room', room)
+  return room
+}
+
+const getRoomByInteraction = interaction => {
+  let room = 'impulso-network'
+  if (interactionsUtils.isGithubInteraction(interaction)) {
+    room = 'open-source'
+  }
+  return room
+}
+
 export default {
   isValidAction,
   isValidReaction,
@@ -286,5 +301,6 @@ export default {
   setEarned,
   getCurrentRating,
   calculateScoreToIncrease,
-  generateNewAchievement
+  generateNewAchievement,
+  getRoomToSendMessage
 }
