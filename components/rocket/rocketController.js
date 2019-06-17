@@ -25,13 +25,14 @@ const handle = async (error, message, messageOptions) => {
   message.origin = 'rocket'
 
   try {
-    if (!message.reactions) await commands.handle(message)
     if (!service.isValidMessage(BOT_ID, message, messageOptions)) return
 
     await interactions.handle({
       ...message,
       ...messageOptions
     })
+
+    if (!message.reactions && !message.replies) await commands.handle(message)
   } catch (e) {
     errors._throw(file, 'handle', e)
     const data = new Date(message.ts['$date']).toLocaleDateString('en-US')
@@ -110,8 +111,7 @@ const normalize = data => {
 }
 
 const getDailyLimit = async () => {
-  const setting = await settings.getValue('rocket_daily_limit')
-  return setting.value || false
+  return settings.getValue('rocket_daily_limit')
 }
 
 const findOrCreateUser = async interaction => {
