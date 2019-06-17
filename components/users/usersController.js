@@ -1,3 +1,4 @@
+import moment from 'moment-timezone'
 import utils from './usersUtils'
 import dal from './usersDAL'
 import rankings from '../rankings'
@@ -91,10 +92,42 @@ const isCoreTeam = async rocketId => {
   return user.isCoreTeam || false
 }
 
+const commandPro = async message => {
+  let response = {
+    msg: 'Ops! Você não tem plano pro.'
+  }
+
+  const user = await dal.findOne({ rocketId: message.u._id })
+  if (user.pro) {
+    const beginDate = user.proBeginAt
+      ? moment(user.proBeginAt).format('DD/MM/YYYY')
+      : 'Sem data definida'
+
+    const finishDate = user.proFinishAt
+      ? moment(user.proFinishAt).format('DD/MM/YYYY')
+      : 'Sem data definida'
+
+    response = {
+      msg: `Olá ${user.name}, você tem um plano pro.`,
+      attachments: [
+        {
+          text: `Início do Plano: ${beginDate}`
+        },
+        {
+          text: `Fim do Plano: ${finishDate}`
+        }
+      ]
+    }
+  }
+
+  return response
+}
+
 export default {
   findBy,
   updateScore,
   commandScore,
+  commandPro,
   findAllToRanking,
   isCoreTeam
 }

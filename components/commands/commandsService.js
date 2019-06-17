@@ -26,8 +26,8 @@ const getCommandMessage = async message => {
     response = await rankings.commandByMonth(message)
     // } else if (regex.minhasConquistas.test(message.msg)) {
     //   await achievementsController.commandIndex(message)
-    // } else if (regex.isPro.test(message.msg)) {
-    //   users.isPro(message)
+  } else if (regex.isPro.test(message.msg)) {
+    response = await users.commandPro(message)
     // } else if (regex.commands.test(message.msg)) {
     //   customCommands.show(message)
     // } else if (regex.darpontos.test(message.msg)) {

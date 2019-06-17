@@ -5,5 +5,6 @@ export default {
   findBy: controller.findBy,
   isCoreTeam: controller.isCoreTeam,
   updateScore: controller.updateScore,
-  commandScore: controller.commandScore
+  commandScore: controller.commandScore,
+  commandPro: controller.commandPro
 }
