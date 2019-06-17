@@ -3,6 +3,7 @@ import utils from './usersUtils'
 import dal from './usersDAL'
 import rankings from '../rankings'
 import messages from '../messages'
+import usersLevelsHistory from '../usersLevelsHistory'
 
 const findBy = query => {
   return dal.findBy(query)
@@ -19,8 +20,8 @@ const findOneAndUpdate = (query, args, options) => {
 const updateScore = async (user, score) => {
   if (!user) return
 
+  user.previousLevel = user.score === 0 ? 0 : user.level
   user.score += score
-  user.previousLevel = user.level
   user.level = utils.calculateLevel(user.score)
   await onChangeLevel(user)
   return user.save()
@@ -28,7 +29,7 @@ const updateScore = async (user, score) => {
 
 const onChangeLevel = async user => {
   if (user.level !== user.previousLevel) {
-    // await saveLevelHistoryChanges(this._id, this._previousLevel, this.level)
+    await usersLevelsHistory.save(user._id, user.previousLevel, user.level)
     // const achievement = await achievementLevelController.save(
     //   this._id,
     //   this._previousLevel,
@@ -42,7 +43,6 @@ const onChangeLevel = async user => {
     // }
 
     // await sendLevelMessage(this, achievement)
-    // TODO: save historico
     // TODO: save achievement
     // TODO: valida pro
     console.log('Entrou em onChangeLevel')
