@@ -1,47 +1,35 @@
-import config from 'config-yml'
 import dal from './interactionsDAL'
+import service from './interactionsService'
+import users from '../users'
 
-const convert = data => {
-  if (data.type === 'manual') {
-    return {
-      origin: 'sistema',
-      type: data.type,
-      user: data.user,
-      rocketUsername: data.username,
-      value: data.value,
-      thread: false,
-      description: data.text,
-      channel: 'mundão',
-      category: config.categories.network.type,
-      action: 'manual',
-      score: data.score || 0
-    }
-  } else if (data.type === 'inactivity') {
-    return {
-      origin: 'sistema',
-      type: data.type,
-      user: data.user,
-      thread: false,
-      description: 'ação do sistema',
-      channel: 'matrix',
-      category: config.categories.network.type,
-      action: 'inactivity'
-    }
-    // TODO: add normalizes
-    // } else if (data.origin === 'rocket') {
-    //   return rocketController.normalize(data)
-    // } else if (data.origin === 'blog') {
-    //   return blogController.normalize(data)
-    // } else if (data.origin === 'github') {
-    //   return githubController.normalize(data)
-  }
-}
+let moduleController
 
-const save = interaction => {
+const saveManual = data => {
+  data.type = 'manual'
+  const interaction = service.normalize(data)
   return dal.save(interaction)
 }
 
+const handle = async data => {
+  moduleController = service.getModuleController(data)
+  const interaction = service.normalize(data, moduleController)
+
+  const countingScore = await service.hasScore(moduleController, interaction)
+  if (!countingScore) interaction.score = 0
+
+  const user = await moduleController.findOrCreateUser(interaction)
+  if (user.score === 0 && user.username)
+    await users.sendWelcomeMessage(user.username)
+  await service.onSaveInteraction(interaction, user)
+  return dal.save(interaction)
+}
+
+const getLastMessage = userId => {
+  return dal.findLastMessageByUser(userId)
+}
+
 export default {
-  convert,
-  save
+  getLastMessage,
+  saveManual,
+  handle
 }

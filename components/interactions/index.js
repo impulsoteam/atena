@@ -1,8 +1,8 @@
 import controller from './interactionsController'
-import * as dal from './interactionDAL'
 
 export default {
-  save: controller.save,
+  saveManual: controller.saveManual,
   normalize: controller.normalize,
-  dal: dal
+  handle: controller.handle,
+  getLastMessage: controller.getLastMessage
 }

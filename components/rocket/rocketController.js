@@ -1,25 +1,18 @@
-import { driver } from '@rocket.chat/sdk'
+import { driver, api } from '@rocket.chat/sdk'
+import { getOr } from 'lodash/fp'
+import service from './rocketService'
 import errors from '../errors'
 import commands from '../commands'
+import settings from '../settings'
 import interactions from '../interactions'
-import service from './rocketService'
 
 const file = 'Rocket | Controller'
 let BOT_ID
+let API_ID
+
 const exec = async () => {
-  await driver.connect({
-    host: process.env.ROCKET_HOST,
-    useSsl:
-      process.env.ROCKET_SSL === true || /true/i.test(process.env.ROCKET_SSL)
-  })
-
-  BOT_ID = await driver.login({
-    username: process.env.ROCKET_BOT_USER,
-    password: process.env.ROCKET_BOT_PASS
-  })
-
-  await driver.subscribeToMessages()
-  await driver.reactToMessages(handle)
+  BOT_ID = await service.runBot(handle)
+  API_ID = await service.runAPI()
 }
 
 const handle = async (error, message, messageOptions) => {
@@ -35,18 +28,62 @@ const handle = async (error, message, messageOptions) => {
     if (!message.reactions) await commands.handle(message)
     if (!service.isValidMessage(BOT_ID, message, messageOptions)) return
 
-    //   await interactions.process({
-    //     ...message,
-    //     ...messageOptions
-    //   })
+    await interactions.handle({
+      ...message,
+      ...messageOptions
+    })
   } catch (e) {
     errors._throw(file, 'handle', e)
     const data = new Date(message.ts['$date']).toLocaleDateString('en-US')
     errors._log(
       file,
       'handle',
-      `ID ${message.u._id} - NAME ${message.u.name} - ${data}`
+      `${message.u.name} (${message.u._id}) - ${data}`
     )
+  }
+}
+
+const getUserInfo = async userId => {
+  try {
+    const result = await api.get('users.info', { userId: userId })
+    return getOr(false, 'user', result)
+  } catch (e) {
+    errors._throw(file, 'getUserInfo', e)
+    return false
+  }
+}
+
+const getUserInfoByUsername = async username => {
+  try {
+    const result = await api.get('users.info', { username: username })
+    return getOr(false, 'user', result)
+  } catch (e) {
+    errors._throw(file, 'getUserInfoByUsername', e)
+    return false
+  }
+}
+
+const getHistory = async roomId => {
+  try {
+    const result = await api.get('channels.history', {
+      roomId: roomId,
+      count: 8000
+    })
+
+    return result.messages
+  } catch (e) {
+    errors._throw(file, 'getHistory', e)
+  }
+  return false
+}
+
+const getChannels = async () => {
+  try {
+    const result = await api.get('channels.list', { count: 400 })
+    return result.channels
+  } catch (e) {
+    errors._throw(file, 'getChannels', e)
+    return false
   }
 }
 
@@ -68,8 +105,34 @@ const sendMessageToUser = (message, user) => {
   }
 }
 
+const normalize = data => {
+  return service.convertToInteraction(data)
+}
+
+const getDailyLimit = async () => {
+  const setting = await settings.getValue('rocket_daily_limit')
+  return setting.value || false
+}
+
+const findOrCreateUser = async interaction => {
+  const rocketUser = await getUserInfo(interaction.user)
+  return await service.findOrCreateUser(rocketUser)
+}
+
+const isFlood = interaction => {
+  return service.isFlood(interaction)
+}
+
 export default {
   sendMessageToUser,
   sendMessageToRoom,
+  getUserInfo,
+  getUserInfoByUsername,
+  getHistory,
+  getChannels,
+  findOrCreateUser,
+  normalize,
+  getDailyLimit,
+  isFlood,
   exec
 }
