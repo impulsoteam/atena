@@ -18,7 +18,7 @@ const findOneAndUpdate = (query, args, options) => {
 }
 
 const updateScore = async (user, score) => {
-  if (!user) return
+  if (!user || score === 0) return
 
   user.previousLevel = user.score === 0 ? 0 : user.level
   user.score += score
