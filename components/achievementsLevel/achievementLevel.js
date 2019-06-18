@@ -56,8 +56,17 @@ const achievementLevelSchema = new mongoose.Schema({
   ],
   createdAt: {
     type: Date,
-    default: Date.now()
+    default: Date.now
+  },
+  lastUpdate: {
+    type: Date,
+    default: Date.now
   }
+})
+
+achievementLevelSchema.pre('save', function(next) {
+  this.lastUpdate = Date.Now
+  next()
 })
 
 export default mongoose.model(

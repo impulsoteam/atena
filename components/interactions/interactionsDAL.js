@@ -30,7 +30,7 @@ const findLastMessageByUser = userId => {
       user: userId,
       type: 'message'
     },
-    'date',
+    {},
     {
       sort: { _id: -1 }
     }

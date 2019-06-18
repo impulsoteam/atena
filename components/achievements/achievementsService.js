@@ -5,6 +5,7 @@ import achievementsTemporary from '../achievementsTemporary'
 import messages from '../messages'
 import interactions from '../interactions'
 import users from '../users'
+import interactionsUtils from '../interactions/interactionsUtils'
 
 const getAllMessages = async user => {
   let response = { msg: 'Ops! Você ainda não tem conquistas registradas. :(' }
@@ -49,37 +50,29 @@ const sendNewEarnedMessages = async (userId, achievement, interaction) => {
   )
 }
 
-const sendEarnedMessage = async (
-  user,
-  achievement,
-  interaction,
-  isAchievementLevel = false
-) => {
+const sendEarnedMessage = async (user, achievement, interaction) => {
   if (!user.username) return
 
   const name = achievement.name.split(' | ')
+  await sendMessageToUser(user, achievement, name[1])
+  await sendMessageToRoom(user, achievement, name[1], interaction)
+}
 
-  let privateMessage = `:medal: Você obteve a conquista [${
-    achievement.rating
-  } ${achievement.range} | ${name[1]}]!`
+const sendMessageToUser = async (user, achievement, name) => {
+  let message = `:medal: Você obteve a conquista [${achievement.rating} ${achievement.range} | ${name}]!`
+  return messages.sendToUser(message, user.username)
+}
 
-  let publicMessage = `:medal: @${user.username} obteve a conquista [${
-    achievement.rating
-  } ${achievement.range} | ${name[1]}]!`
+const sendMessageToRoom = async (user, achievement, name, interaction) => {
+  let publicMessage = `:medal: @${user.username} obteve a conquista [${achievement.rating} ${achievement.range} | ${name}]!`
 
-  if (isAchievementLevel) {
-    privateMessage = `:medal: Você obteve o *Nível ${user.level}*!`
-    publicMessage = `:medal: @${user.username} obteve o *Nível ${user.level}*!`
-  }
-
-  const room = utils.getRoomToSendMessage(interaction)
-  await messages.sendToUser(privateMessage, user.username)
+  const room = interactionsUtils.getRoomToSendMessage(interaction)
   await messages.sendToRoom(publicMessage, room)
 }
 
 const addScore = async (user, achievement, interaction) => {
   const score = utils.calculateScoreToIncrease(achievement)
-  console.log('score', score)
+
   if (score > 0) {
     await users.updateScore(user, score)
     await saveScoreInteraction(user, achievement, score, 'Conquista Permanente')

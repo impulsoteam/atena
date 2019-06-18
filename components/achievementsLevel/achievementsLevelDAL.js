@@ -1,26 +1,37 @@
+import config from 'config-yml'
 import model from './achievementLevel'
 
-const findAll = async () => {
-  return await model
+const findAll = () => {
+  return model
     .find()
     .populate('user')
     .exec()
 }
 
-const findAllByUser = async userId => {
-  return await model.find({ user: userId }).exec()
+const findAllByUser = userId => {
+  return model.find({ user: userId }).exec()
 }
 
-const findByUser = async userId => {
-  return await model
+const findByUser = userId => {
+  return model
     .findOne({
       user: userId
     })
     .exec()
 }
 
+const findMain = () => {
+  return config['achievements-network'].level
+}
+
+const save = achievement => {
+  return model(achievement).save()
+}
+
 export default {
   findAll,
   findAllByUser,
-  findByUser
+  findByUser,
+  findMain,
+  save
 }

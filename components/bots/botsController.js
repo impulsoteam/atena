@@ -2,7 +2,6 @@ import rocket from '../rocket'
 import errors from '../errors'
 
 const exec = async () => {
-  console.log('Entrou no bot')
   try {
     await rocket.exec()
   } catch (e) {

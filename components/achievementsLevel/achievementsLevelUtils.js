@@ -1,9 +1,62 @@
 import moment from 'moment-timezone'
 import achievementsUtils from '../achievements/achievementsUtils'
+import dal from './achievementsLevelDAL'
 
 const today = moment(new Date())
   .utc()
   .format()
+
+const generateNewAchievement = userId => {
+  return {
+    user: userId,
+    ratings: generateRatings(),
+    record: {}
+  }
+}
+
+const generateRatings = () => {
+  const achievements = dal.findMain()
+
+  let ratings = []
+  for (let item in achievements) {
+    const achievement = achievements[item]
+    ratings.push({
+      name: achievement.name,
+      xp: achievement.xp,
+      ranges: generateRanges(achievement.ranges)
+    })
+  }
+
+  return ratings
+}
+
+const generateRanges = ranges => {
+  let newRanges = []
+  for (let item in ranges) {
+    newRanges.push({
+      name: item,
+      value: ranges[item]
+    })
+  }
+
+  return newRanges
+}
+
+const setRangesEarnedDates = (ratings, level) => {
+  return ratings.map(rating => {
+    rating.ranges = rating.ranges.map(range => {
+      if (range.value <= level) {
+        if (!range.earnedDate) range.earnedDate = today
+      } else {
+        range.earnedDate = null
+      }
+
+      return range
+    })
+
+    return rating
+  })
+}
 
 const generateMessages = achievement => {
   const lastRating = getLastRatingEarned(achievement)
@@ -20,25 +73,74 @@ const generateMessages = achievement => {
   ]
 }
 
-const convertToRecord = (lastRating, achievement) => {
-  if (lastRating.rating && lastRating.range) {
-    return {
-      name: lastRating.rating.name,
-      range: lastRating.range.name,
-      level: lastRating.range.value,
-      earnedDate: today
-    }
+const convertToRecord = rating => {
+  return {
+    name: rating.name,
+    range: rating.range,
+    level: rating.total,
+    earnedDate: rating.earnedDate
   }
-
-  return achievement.record
 }
 
 const getLastRatingEarned = achievement => {
   return achievementsUtils.getLastRatingEarned(achievement)
 }
 
+const getScore = achievement => {
+  let score = 0
+  if (isNewAchievement(achievement)) {
+    score = getAllScoreToIncrease(achievement.ratings)
+  } else {
+    score = getLastScoreToIncrease(achievement.ratings)
+  }
+
+  return score
+}
+
+const getAllScoreToIncrease = ratings => {
+  return ratings.reduce((total, rating) => {
+    const earned = rating.ranges.every(range => range.earnedDate)
+    return total + (earned ? rating.xp : 0)
+  }, 0)
+}
+
+const getLastScoreToIncrease = ratings => {
+  const rating = ratings
+    .reverse()
+    .find(rating => rating.ranges.every(range => range.earnedDate))
+  return rating.xp || 0
+}
+
+const isNewAchievement = achievement => {
+  return moment(achievement.createdAt).isSame(moment(new Date()), 'day')
+}
+
+const isNewLevel = (currentLevel, newLevel) => {
+  return parseInt(currentLevel, 10) !== parseInt(newLevel, 10)
+}
+
+const getRecord = achievement => {
+  const rating = getLastRatingEarned(achievement)
+  let newRecord = convertToRecord(rating)
+
+  if (
+    !achievement.record ||
+    !achievement.record.name ||
+    newRecord.level > achievement.record.level
+  ) {
+    return newRecord
+  }
+
+  return achievement.record
+}
+
 export default {
   generateMessages,
   convertToRecord,
-  getLastRatingEarned
+  getLastRatingEarned,
+  generateNewAchievement,
+  getRecord,
+  setRangesEarnedDates,
+  getScore,
+  isNewLevel
 }

@@ -9,6 +9,10 @@ const interactionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  channelName: {
+    type: String,
+    required: false
+  },
   description: {
     type: String,
     required: true

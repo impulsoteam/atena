@@ -15,10 +15,23 @@ const isAtenaReaction = interaction =>
 const isGithubInteraction = interaction =>
   interaction.category === 'network' && interaction.action === 'github'
 
+const getRoomToSendMessage = interaction => {
+  let room = interaction.channelName
+  if (!room) room = getRoomByInteraction(interaction)
+  return room
+}
+
+const getRoomByInteraction = interaction => {
+  let room = 'impulso-network'
+  if (isGithubInteraction(interaction)) room = 'open-source'
+  return room
+}
+
 export default {
   isChatInteraction,
   isPositiveReaction,
   isNegativeReaction,
   isAtenaReaction,
-  isGithubInteraction
+  isGithubInteraction,
+  getRoomToSendMessage
 }
