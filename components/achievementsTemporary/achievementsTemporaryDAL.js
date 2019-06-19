@@ -38,9 +38,8 @@ const getAllInactivitiesDaily = () => {
     .exec()
 }
 
-const create = async achievement => {
-  const newAchievement = new model(achievement)
-  return await newAchievement.save()
+const save = achievement => {
+  return model(achievement).save()
 }
 
 export default {
@@ -48,5 +47,5 @@ export default {
   findByUser,
   findOne,
   getAllInactivitiesDaily,
-  create
+  save
 }

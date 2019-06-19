@@ -1,32 +1,24 @@
 import service from './achievementsTemporaryService'
 import dal from './achievementsTemporaryDAL'
-import achievementsTemporaryDataController from '../achievementsTemporaryData'
+import utils from './achievementsTemporaryUtils'
+import achievementsTemporaryData from '../achievementsTemporaryData'
 
-const save = async (interaction, user) => {
-  try {
-    let data = await achievementsTemporaryDataController.getByInteraction(
-      interaction
-    )
+const handle = async (interaction, user) => {
+  let achievementsData = await achievementsTemporaryData.getAllByInteraction(
+    interaction
+  )
 
-    for (let temporaryAchievementData of data) {
-      let temporaryAchievement = await service.getOrCreate(
-        temporaryAchievementData,
-        user
-      )
-
-      if (temporaryAchievement) {
-        if (service.isBeforeEndDate(temporaryAchievementData)) {
-          await updateAchievementTemporary(temporaryAchievement, user)
-        } else {
-          let temporaryAchievement = resetEarnedAchievements(
-            temporaryAchievement
-          )
-          await temporaryAchievement.save()
-        }
+  for (let data of achievementsData) {
+    let achievement = await service.findOrCreate(data, user)
+    if (achievement) {
+      if (utils.isBeforeEndDate(data)) {
+        await service.update(achievement, user, interaction)
+      } else {
+        console.log('!utils.isBeforeEndDate(data)')
+        // let achievement = resetEarnedAchievements(achievement)
+        // await achievement.save()
       }
     }
-  } catch (error) {
-    console.log('[CONTROLLER] Error saving temporary achievement')
   }
 }
 
@@ -43,7 +35,7 @@ const findInactivities = async () => {
 }
 
 export default {
-  save,
+  handle,
   getMessages,
   resetAllEarned,
   findInactivities

@@ -1,7 +1,8 @@
-import moment from 'moment-timezone'
 import dal from './achievementsTemporaryDAL'
 import utils from './achievementsTemporaryUtils'
-import achievementsUtils from '../achievements/achievementsUtils'
+import achievementsService from '../achievements/achievementsService'
+import users from '../users'
+import interactions from '../interactions'
 
 const getMessages = async userId => {
   const achievementsTemporary = await dal.findAllByUser(userId)
@@ -25,62 +26,71 @@ const resetAllEarned = achievement => {
   return achievement
 }
 
-const getOrCreate = async (temporaryData, user) => {
-  let temporaryAchievement = await dal.findOne({
-    temporaryData: temporaryData._id,
+const findOrCreate = async (data, user) => {
+  let achievement = await dal.findOne({
+    temporaryData: data._id,
     user: user._id
   })
 
-  if (!temporaryAchievement && isBeforeLimitDate(temporaryData)) {
-    temporaryAchievement = await create(temporaryData, user)
+  if (!achievement && utils.isBeforeLimitDate(data)) {
+    achievement = await create(data, user)
   }
 
-  return temporaryAchievement
+  return achievement
 }
 
 const create = async (temporaryData, user) => {
   let achievement = utils.convertDataToAchievement(temporaryData, user._id)
-  await sendMessageStart(user, achievement)
-  return dal.create(achievement)
+  return dal.save(achievement)
 }
 
-const setEarned = async (achievement, user) => {
-  if (!utils.isInLimitTime(achievement)) {
-    return achievement
+const update = async (achievement, user, interaction) => {
+  if (!utils.isInDeadline(achievement)) return achievement
+  achievement.ratings = utils.setEarned(achievement.ratings)
+  achievement.total += 1
+  achievement.lastEarnedDate = Date.now
+  achievement.record = utils.getRecord(achievement)
+  await addScore(user, achievement, interaction)
+  return dal.save(achievement)
+}
+
+const addScore = async (user, achievement, interaction) => {
+  const score = utils.calculateScoreToIncrease(achievement.ratings)
+
+  if (score > 0) {
+    await users.updateScore(user, score)
+    await saveScoreInteraction(user, achievement, score, 'Conquista Temporária')
   }
 
-  achievement.ratings = utils.setEarnedRating(achievement.ratings)
-  achievement.record = utils.getRecord(achievement)
-  // await addScore(user, achievement)
-  return await achievement.save()
+  if (score > 0 || achievement.total === 1) {
+    await sendEarnedMessage(user, achievement, interaction)
+  }
 }
 
-const isBeforeLimitDate = achievement => {
-  const currentDate = moment(new Date())
-  const limitDate = moment(achievement.limitDate)
-  return limitDate.isSameOrAfter(currentDate)
+const saveScoreInteraction = async (user, achievement, score, text) => {
+  return interactions.saveManual({
+    user: user._id,
+    rocketUsername: user.username,
+    score: score,
+    value: achievement._id,
+    text: text
+  })
 }
 
-export const isBeforeEndDate = achievement => {
-  const currentDate = moment(new Date())
-  const limitDate = moment(achievement.endDate)
-  return limitDate.isSameOrAfter(currentDate)
-}
-
-const sendMessageStart = (user, achievement) => {
+const sendEarnedMessage = (user, achievement, interaction) => {
   const current = {
     name: achievement.name,
-    rating: achievement.ratings[0].name,
-    range: achievement.ratings[0].ranges[0].name
+    rating: achievement.record.name,
+    range: achievement.record.range
   }
 
-  achievementsUtils.sendEarnedMessage(user, current)
+  achievementsService.sendEarnedMessage(user, current, interaction)
 }
 
 export default {
   getMessages,
   resetAllEarned,
-  getOrCreate,
+  findOrCreate,
   create,
-  setEarned
+  update
 }

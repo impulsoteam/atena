@@ -1,5 +1,5 @@
 import moment from 'moment-timezone'
-import interactionUtils from '../interactions/interactionsUtils'
+import achievementsUtils from '../achievements/achievementsUtils'
 
 const generateKind = data => {
   let kind = null
@@ -36,17 +36,6 @@ const generateDates = data => {
     limitDate,
     endDate
   }
-}
-
-const generateNewRatings = achievementTemporaryData => {
-  return achievementTemporaryData.ratings.map(rating => {
-    return {
-      name: rating.name,
-      xp: rating.xp,
-      total: 0,
-      ranges: rating.ranges
-    }
-  })
 }
 
 const generateRatings = ratings => {
@@ -98,12 +87,13 @@ const convertNumberToRoman = num => {
 }
 
 const getQueryToFindCurrent = interaction => {
-  const type = interactionUtils.getType(interaction)
+  const type = achievementsUtils.getInteractionType(interaction)
   const kind = `${interaction.category}.${interaction.action}.${type}`
+  const today = new Date().toISOString()
 
   return {
     kind: kind,
-    initialDate: { $lte: new Date().toISOString() }
+    initialDate: { $lte: today }
   }
 }
 

@@ -1,11 +1,12 @@
 import moment from 'moment-timezone'
+import config from 'config-yml'
 import achievementsUtils from '../achievements/achievementsUtils'
 
 const today = moment(new Date()).utc()
 
 const generateMessages = achievements => {
   return achievements.map(achievement => {
-    const currentAchievement = getLastRatingEarned(achievement)
+    const currentAchievement = getLastRatingEarned(achievement.ratings)
 
     return {
       text: `*${achievement.name}*:
@@ -15,19 +16,15 @@ const generateMessages = achievements => {
   })
 }
 
-const getLastRatingEarned = achievement => {
-  return achievementsUtils.getLastRatingEarned(achievement)
-}
-
-const convertDataToAchievement = (achievementTemporaryData, user) => {
-  const ratings = generateNewRatings(achievementTemporaryData)
+const convertDataToAchievement = (achievementData, user) => {
+  const ratings = generateNewRatings(achievementData)
 
   return {
-    name: achievementTemporaryData.name,
-    kind: achievementTemporaryData.kind,
-    rangeTime: achievementTemporaryData.rangeTime,
+    name: achievementData.name,
+    kind: achievementData.kind,
+    rangeTime: achievementData.rangeTime,
     startDate: Date.now(),
-    temporaryData: achievementTemporaryData._id,
+    temporaryData: achievementData._id,
     user: user,
     ratings: ratings
   }
@@ -44,80 +41,149 @@ const generateNewRatings = achievements => {
   })
 }
 
-const setEarnedRating = temporaryAchievement => {
-  let wasUpdated = false
-  return temporaryAchievement.ratings.map(rating => {
-    if (!wasUpdated) {
-      let updatedRanges = setEarnedRange(rating)
-      rating.ranges = updatedRanges.ranges
-
-      if (updatedRanges.wasUpdated) {
-        wasUpdated = true
-        temporaryAchievement.lastEarnedDate = today.format()
-        temporaryAchievement.total += 1
-      }
-    }
-
-    return rating
-  })
+const getLastRatingEarned = ratings => {
+  return achievementsUtils.getLastRatingEarned(ratings)
 }
 
-const setEarnedRange = rating => {
-  let newTotal = rating.total + 1
-  let wasUpdated = false
+const getRecord = achievement => {
+  const newRecord = getLastRatingEarned(achievement.ratings)
 
-  let ranges = rating.ranges.map(range => {
-    if (!range.earnedDate) {
-      if (range.value == newTotal) {
-        range.earnedDate = today.format()
-        rating.total = newTotal
-        wasUpdated = true
-      }
-    }
-    return range
-  })
+  if (
+    !achievement.record ||
+    !achievement.record.name ||
+    newRecordIsBigger(newRecord, achievement.record)
+  ) {
+    return newRecord
+  }
 
-  return {
-    ranges: ranges,
-    wasUpdated: wasUpdated
+  return achievement.record
+}
+
+const newRecordIsBigger = (newRecord, current) => {
+  if (!current || !current.name) return true
+
+  const positionRatings = getPositionRatings()
+  let newPosition = positionRatings.findIndex(
+    name => name.toLowerCase() == newRecord.name.toLowerCase()
+  )
+
+  let currentPosition = positionRatings.findIndex(
+    name => name.toLowerCase() == current.name.toLowerCase()
+  )
+
+  if (newPosition == currentPosition) {
+    return newRecord.total >= current.total
+  } else {
+    return newPosition > currentPosition
   }
 }
 
-const isInLimitTime = achievement => {
+const getPositionRatings = () =>
+  Object.keys(config.ratings).map(key => config.ratings[key])
+
+const isBeforeLimitDate = achievement => {
+  const currentDate = moment(new Date())
+  const limitDate = moment(achievement.limitDate)
+  return limitDate.isSameOrAfter(currentDate)
+}
+
+const isBeforeEndDate = achievement => {
+  const currentDate = moment(new Date())
+  const limitDate = moment(achievement.endDate)
+  return limitDate.isSameOrAfter(currentDate)
+}
+
+const isInDeadline = achievement => {
   if (achievement.lastEarnedDate) {
     const lastEarnedDate = moment(achievement.lastEarnedDate)
       .utc()
       .format()
-    const limitTime = getLimitTime(
+    const deadline = generateDeadlineDate(
       achievement.lastEarnedDate,
       achievement.rangeTime
     )
-    return !today.isSame(lastEarnedDate, 'day') && today.isBefore(limitTime)
+    const today = moment(new Date()).utc()
+    return !today.isSame(lastEarnedDate, 'day') && today.isBefore(deadline)
   }
 
   return true
 }
 
-const getLimitTime = (date, rangeTime) => {
-  let limitTime = date
+const generateDeadlineDate = (date, rangeTime) => {
+  let deadline = date
   if (rangeTime == 'daily') {
-    limitTime = moment(date)
+    deadline = moment(date)
       .add(1, 'days')
       .utc()
       .endOf('day')
       .toISOString()
   }
 
-  return limitTime
+  return deadline
 }
 
-const getRecord = achievement => achievementsUtils.getRecord(achievement)
+const setEarned = ratings => {
+  let wasEarned = false
+  return ratings.map(rating => {
+    const current = !rating.ranges.every(range => range.earnedDate)
+    if (current && !wasEarned) {
+      rating.ranges = setEarnedRanges(rating)
+      rating.total = getEarnedTotal(rating)
+      wasEarned = true
+    }
+    return rating
+  })
+}
+
+const getEarnedTotal = rating => {
+  let total = rating.total
+  const wasEarned = rating.ranges.find(range =>
+    wasEarnedToday(range.earnedDate)
+  )
+  if (wasEarned) total += 1
+  return total
+}
+
+const wasEarnedToday = earnedDate => {
+  return moment(earnedDate).isSame(moment(new Date()), 'day')
+}
+
+const setEarnedRanges = rating => {
+  let total = rating.total + 1
+  return rating.ranges.map(range => {
+    if (!range.earnedDate && range.value == total) {
+      range.earnedDate = today
+    }
+    return range
+  })
+}
+
+const calculateScoreToIncrease = ratings => {
+  let score = 0
+  const today = moment(new Date())
+  const rating = ratings
+    .reverse()
+    .find(rating => rating.ranges.every(range => range.earnedDate))
+
+  if (rating) {
+    const wasEarned = rating.ranges.find(range =>
+      moment(range.earnedDate).isSame(today, 'day')
+    )
+
+    if (wasEarned) score = rating.xp
+  }
+
+  return score
+}
 
 export default {
   generateMessages,
   getLastRatingEarned,
   convertDataToAchievement,
-  isInLimitTime,
-  setEarnedRating,
-  getRecord
+  getRecord,
+  isBeforeLimitDate,
+  isBeforeEndDate,
+  isInDeadline,
+  setEarned,
+  calculateScoreToIncrease
 }

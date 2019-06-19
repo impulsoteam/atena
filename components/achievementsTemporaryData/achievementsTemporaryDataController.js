@@ -8,7 +8,7 @@ const file = 'Achievements Temporary Data | Controller'
 const save = data => {
   try {
     const dates = utils.generateDates(data)
-    let achievement = {
+    let achievementData = {
       name: data.name,
       kind: utils.generateKind(data),
       rangeTime: data.rangeTime,
@@ -18,7 +18,7 @@ const save = data => {
       ratings: utils.generateRatings(data.ratings)
     }
 
-    return dal.save(achievement)
+    return dal.save(achievementData)
   } catch (e) {
     errors._throw(file, 'save', e)
   }
@@ -26,19 +26,19 @@ const save = data => {
 
 const update = async (id, data) => {
   try {
-    let temporaryAchievementData = await dal.findById(id)
-    if (!temporaryAchievementData) {
+    let achievementData = await dal.findById(id)
+    if (!achievementData) {
       errors._throw(file, 'update', 'Achievement Temporary Data not found')
       return
     }
 
     const dates = utils.generateDates(data)
-    temporaryAchievementData.name = data.name
-    temporaryAchievementData.initialDate = dates.initialDate
-    temporaryAchievementData.limitDate = dates.limitDate
-    temporaryAchievementData.endDate = dates.endDate
+    achievementData.name = data.name
+    achievementData.initialDate = dates.initialDate
+    achievementData.limitDate = dates.limitDate
+    achievementData.endDate = dates.endDate
 
-    return temporaryAchievementData.save()
+    return achievementData.save()
   } catch (e) {
     errors._throw(file, 'update', e)
   }
@@ -74,9 +74,8 @@ const getAll = () => {
   }
 }
 
-const getByInteraction = interaction => {
-  const query = service.getQueryToFindCurrent(interaction)
-  return dal.findAllByQuery(query)
+const getAllByInteraction = interaction => {
+  return service.getAllByInteraction(interaction)
 }
 
 export default {
@@ -85,5 +84,5 @@ export default {
   disable,
   getById,
   getAll,
-  getByInteraction
+  getAllByInteraction
 }

@@ -37,11 +37,15 @@ const isPositiveReaction = interaction =>
 const isAtenaReaction = interaction =>
   interactionsUtils.isAtenaReaction(interaction)
 
-const getLastRatingEarned = achievement => {
-  let lastRating = achievement.ratings
+const getLastRatingEarned = ratings => {
+  let lastRating = ratings
     .reverse()
-    .find(rating => rating.ranges.reverse().find(range => range.earnedDate))
-  let lastRange = lastRating.ranges.find(range => range.earnedDate)
+    .find(rating => rating.ranges.find(range => range.earnedDate))
+
+  let lastRange = lastRating.ranges
+    .filter(range => range.earnedDate)
+    .slice(-1)
+    .pop()
 
   return {
     name: lastRating.name,
@@ -51,42 +55,6 @@ const getLastRatingEarned = achievement => {
   }
 }
 
-const getRecord = achievement => {
-  let newRecord = getLastRatingEarned(achievement)
-
-  if (
-    !newRecord ||
-    (achievement.record && !newRecordIsBigger(newRecord, achievement.record))
-  ) {
-    newRecord = achievement.record
-  }
-
-  return newRecord
-}
-
-const newRecordIsBigger = (newRecord, current) => {
-  if (!current || !current.name) return true
-
-  const positionRatings = getPositionRatings()
-  let newPosition = positionRatings.findIndex(
-    name => name.toLowerCase() == newRecord.name.toLowerCase()
-  )
-
-  let currentPosition = positionRatings.findIndex(
-    name => name.toLowerCase() == current.name.toLowerCase()
-  )
-
-  if (newPosition == currentPosition) {
-    const type = current.level && newRecord.level ? 'level' : 'total'
-    return newRecord[type] >= current[type]
-  } else {
-    return newPosition > currentPosition
-  }
-}
-
-const getPositionRatings = () =>
-  Object.keys(config.ratings).map(key => config.ratings[key])
-
 const getInteractionType = interaction =>
   isChatInteraction(interaction) ? 'sended' : interaction.type
 
@@ -94,7 +62,7 @@ const isChatInteraction = interaction =>
   interactionsUtils.isChatInteraction(interaction)
 
 const calculateScoreToIncrease = achievement => {
-  let scoreToIncrease = 0
+  let score = 0
   const today = moment(new Date())
 
   achievement.ratings.map(rating => {
@@ -107,11 +75,11 @@ const calculateScoreToIncrease = achievement => {
       moment(lastEarnedDate).isSame(today, 'day') &&
       (!achievement.total || achievement.total == lastRange.value)
     ) {
-      scoreToIncrease = rating.xp
+      score = rating.xp
     }
   })
 
-  return scoreToIncrease
+  return score
 }
 
 const setEarned = achievement => {
@@ -280,8 +248,6 @@ export default {
   isValidReaction,
   generateAchievementsMessages,
   getLastRatingEarned,
-  newRecordIsBigger,
-  getRecord,
   getInteractionType,
   setEarned,
   getCurrentRating,
