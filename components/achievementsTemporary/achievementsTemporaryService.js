@@ -45,10 +45,21 @@ const create = async (temporaryData, user) => {
 }
 
 const update = async (achievement, user, interaction) => {
-  if (!utils.isInDeadline(achievement)) return achievement
+  console.log('Entrou update', utils.isInDeadline(achievement))
+  if (utils.isInDeadline(achievement)) {
+    return addEarned(achievement, user, interaction)
+  } else {
+    achievement = await resetEarned(achievement)
+    return addEarned(achievement, user, interaction)
+  }
+}
+
+const addEarned = async (achievement, user, interaction) => {
+  if (!utils.isOnTime(achievement)) return achievement
+
   achievement.ratings = utils.setEarned(achievement.ratings)
   achievement.total += 1
-  achievement.lastEarnedDate = Date.now
+  achievement.lastEarnedDate = Date.now()
   achievement.record = utils.getRecord(achievement)
   await addScore(user, achievement, interaction)
   return dal.save(achievement)
@@ -78,13 +89,34 @@ const saveScoreInteraction = async (user, achievement, score, text) => {
 }
 
 const sendEarnedMessage = (user, achievement, interaction) => {
+  const rating = utils.getLastRatingEarned(achievement.ratings)
   const current = {
     name: achievement.name,
-    rating: achievement.record.name,
-    range: achievement.record.range
+    rating: rating.name,
+    range: rating.range
   }
 
   achievementsService.sendEarnedMessage(user, current, interaction)
+}
+
+const resetEarned = achievement => {
+  console.log('Entrou resetEarned')
+  achievement.ratings = achievement.ratings.map(rating => {
+    rating.ranges = rating.ranges.map(range => {
+      return {
+        name: range.name,
+        value: range.value,
+        earnedDate: null
+      }
+    })
+
+    rating.total = 0
+    return rating
+  })
+
+  achievement.total = 0
+  achievement.lastEarnedDate = utils.getNextAvailableDate(achievement)
+  return dal.save(achievement)
 }
 
 export default {
@@ -92,5 +124,6 @@ export default {
   resetAllEarned,
   findOrCreate,
   create,
-  update
+  update,
+  resetEarned
 }

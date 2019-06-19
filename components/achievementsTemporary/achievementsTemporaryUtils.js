@@ -26,6 +26,7 @@ const convertDataToAchievement = (achievementData, user) => {
     startDate: Date.now(),
     temporaryData: achievementData._id,
     user: user,
+    total: 0,
     ratings: ratings
   }
 }
@@ -43,6 +44,14 @@ const generateNewRatings = achievements => {
 
 const getLastRatingEarned = ratings => {
   return achievementsUtils.getLastRatingEarned(ratings)
+}
+
+const getNextAvailableDate = achievement => {
+  const type = getTypeRange(achievement)
+  return moment(new Date())
+    .subtract(1, type)
+    .utc()
+    .format()
 }
 
 const getRecord = achievement => {
@@ -94,19 +103,35 @@ const isBeforeEndDate = achievement => {
 }
 
 const isInDeadline = achievement => {
-  if (achievement.lastEarnedDate) {
-    const lastEarnedDate = moment(achievement.lastEarnedDate)
-      .utc()
-      .format()
-    const deadline = generateDeadlineDate(
-      achievement.lastEarnedDate,
-      achievement.rangeTime
-    )
-    const today = moment(new Date()).utc()
-    return !today.isSame(lastEarnedDate, 'day') && today.isBefore(deadline)
+  if (!achievement.lastEarnedDate) return true
+
+  const deadline = generateDeadlineDate(
+    achievement.lastEarnedDate,
+    achievement.rangeTime
+  )
+  const today = moment(new Date()).utc()
+  return today.isBefore(deadline)
+}
+
+const isOnTime = achievement => {
+  if (!achievement.lastEarnedDate) return true
+
+  const lastEarnedDate = moment(achievement.lastEarnedDate)
+    .utc()
+    .format()
+
+  const type = getTypeRange(achievement)
+  return !today.isSame(lastEarnedDate, type)
+}
+
+const getTypeRange = achievement => {
+  let type
+
+  if (achievement.rangeTime == 'daily') {
+    type = 'day'
   }
 
-  return true
+  return type
 }
 
 const generateDeadlineDate = (date, rangeTime) => {
@@ -126,7 +151,9 @@ const setEarned = ratings => {
   let wasEarned = false
   return ratings.map(rating => {
     const current = !rating.ranges.every(range => range.earnedDate)
+    console.log('current', current, wasEarned)
     if (current && !wasEarned) {
+      console.log('Entrou...')
       rating.ranges = setEarnedRanges(rating)
       rating.total = getEarnedTotal(rating)
       wasEarned = true
@@ -185,5 +212,7 @@ export default {
   isBeforeEndDate,
   isInDeadline,
   setEarned,
-  calculateScoreToIncrease
+  calculateScoreToIncrease,
+  isOnTime,
+  getNextAvailableDate
 }

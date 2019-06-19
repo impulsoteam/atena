@@ -25,7 +25,7 @@ const findOne = query => {
   return model.findOne(query).exec()
 }
 
-const getAllInactivitiesDaily = () => {
+const findAllInactivitiesDaily = () => {
   return model
     .find({
       lastEarnedDate: {
@@ -46,6 +46,6 @@ export default {
   findAllByUser,
   findByUser,
   findOne,
-  getAllInactivitiesDaily,
+  findAllInactivitiesDaily,
   save
 }

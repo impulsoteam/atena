@@ -9,16 +9,10 @@ const handle = async (interaction, user) => {
   )
 
   for (let data of achievementsData) {
+    if (!utils.isBeforeEndDate(data)) return
+
     let achievement = await service.findOrCreate(data, user)
-    if (achievement) {
-      if (utils.isBeforeEndDate(data)) {
-        await service.update(achievement, user, interaction)
-      } else {
-        console.log('!utils.isBeforeEndDate(data)')
-        // let achievement = resetEarnedAchievements(achievement)
-        // await achievement.save()
-      }
-    }
+    if (achievement) await service.update(achievement, user, interaction)
   }
 }
 
@@ -26,17 +20,17 @@ const getMessages = async userId => {
   return await service.getMessages(userId)
 }
 
-const resetAllEarned = temporaryAchievement => {
-  return service.resetAllEarned(temporaryAchievement)
+const resetEarned = achievement => {
+  return service.resetEarned(achievement)
 }
 
 const findInactivities = async () => {
-  return await dal.getAllInactivitiesDaily()
+  return dal.findAllInactivitiesDaily()
 }
 
 export default {
   handle,
   getMessages,
-  resetAllEarned,
+  resetEarned,
   findInactivities
 }
