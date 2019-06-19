@@ -21,12 +21,14 @@ const handle = async (error, message, messageOptions) => {
     return
   }
 
-  console.log('MESSAGE: ', message, messageOptions)
-  message.origin = 'rocket'
-
   try {
     if (!service.isValidMessage(BOT_ID, message, messageOptions)) return
 
+    if (process.env.ENABLE_LOGS) {
+      console.log('MESSAGE: ', message, messageOptions)
+    }
+
+    message.origin = 'rocket'
     await interactions.handle({
       ...message,
       ...messageOptions
@@ -90,7 +92,6 @@ const getChannels = async () => {
 
 const sendMessageToRoom = (message, room) => {
   try {
-    console.log(`Send message to room ${room}: \n ${message}`)
     return driver.sendToRoom(message, room)
   } catch (e) {
     errors._throw(file, 'sendMessageToRoom', e)
@@ -99,7 +100,6 @@ const sendMessageToRoom = (message, room) => {
 
 const sendMessageToUser = (message, user) => {
   try {
-    console.log(`Send message to ${user}: \n ${message}`)
     return driver.sendDirectToUser(message, user)
   } catch (e) {
     errors._throw(file, 'sendMessageToUser', e)
