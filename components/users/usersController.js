@@ -1,6 +1,7 @@
 import moment from 'moment-timezone'
 import utils from './usersUtils'
 import dal from './usersDAL'
+import service from './usersService'
 import rankings from '../rankings'
 import messages from '../messages'
 import usersLevelsHistory from '../usersLevelsHistory'
@@ -157,6 +158,10 @@ const sendWelcomeMessage = user => {
   return messages.sendToUser(message, user)
 }
 
+const findInactivities = async () => {
+  return service.findInactivities()
+}
+
 export default {
   findBy,
   findOne,
@@ -167,5 +172,6 @@ export default {
   findAllToRanking,
   isCoreTeam,
   commandUserIsPro,
-  sendWelcomeMessage
+  sendWelcomeMessage,
+  findInactivities
 }

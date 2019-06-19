@@ -10,5 +10,6 @@ export default {
   commandScore: controller.commandScore,
   commandPro: controller.commandPro,
   commandUserIsPro: controller.commandUserIsPro,
-  sendWelcomeMessage: controller.sendWelcomeMessage
+  sendWelcomeMessage: controller.sendWelcomeMessage,
+  findInactivities: controller.findInactivities
 }
