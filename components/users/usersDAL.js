@@ -4,8 +4,11 @@ const save = user => {
   return model(user).save()
 }
 
-const findBy = query => {
-  return model.find(query).exec()
+const findBy = (query, sort = { _id: 1 }) => {
+  return model
+    .find(query)
+    .sort(sort)
+    .exec()
 }
 
 const findOne = query => {
