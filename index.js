@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
-import runCrons from './cron'
 import appRoutes from './routes'
 import compression from 'compression'
 import session from 'express-session'
@@ -9,14 +8,14 @@ import passport from 'passport'
 import bodyParser from 'body-parser'
 import log4js from 'log4js'
 import bots from './components/bots'
+import crons from './components/crons'
 
 // require('./workers/receive')
 
 if (process.env.NODE_ENV !== 'test') {
   bots.exec()
+  crons.exec()
 }
-
-// runCrons()
 
 process.env.NODE_ENV !== 'production' && dotenv.config()
 
