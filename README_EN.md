@@ -18,42 +18,42 @@ A step-by-step of the minimal setup you need to get a Atena running.
 
 ### Initial configuration
 
-- Install [Mongodb](https://docs.mongodb.com/manual/installation/)
-- Create your slack app - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
+-  Install [Mongodb](https://docs.mongodb.com/manual/installation/)
+-  Create your slack app - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
 
 ### Developing
 
-- Make `fork` for your user account, then `clone`
+-  Make `fork` for your user account, then `clone`
 
 ```sh
 > git clone https://github.com/[your account]/atena
 ```
 
-- Navigate to the destination folder
+-  Navigate to the destination folder
 
 ```sh
 > cd atena/
 ```
 
-- Install `yarn` from npm (global is optional)
+-  Install `yarn` from npm (global is optional)
 
 ```sh
 > npm i yarn -g
 ```
 
-- Install repositories using `yarn`
+-  Install repositories using `yarn`
 
 ```sh
 > yarn -i
 ```
 
-- Add remote reference
+-  Add remote reference
 
 ```sh
 > git remote add upstream https://github.com/UniversoImpulso/atena
 ```
 
-- Create your .env file using .env.example model
+-  Create your .env file using .env.example model
 
 ```sh
 PORT=4390
@@ -66,7 +66,7 @@ CHANNELS=CCWSMJZ6U CCXCXJWBW
 
 ### Running
 
-- Run the server using the following command:
+-  Run the server using the following command:
 
 ```sh
 > yarn start:dev

@@ -29,7 +29,9 @@ const commands = async message => {
     meusPontos: /^!meuspontos$/g,
     minhasConquistas: /^!minhasconquistas$/g,
     isPro: /^!pro$/g,
-    commands: /^!comandos$/g
+    commands: /^!comandos$/g,
+    darpontos: /^!darpontos/g,
+    checkPro: /^!checkpro/g
   };
 
   if (regex.meusPontos.test(message.msg)) {
@@ -44,6 +46,10 @@ const commands = async message => {
     userController.isPro(message);
   } else if (regex.commands.test(message.msg)) {
     customCommands.show(message);
+  } else if (regex.darpontos.test(message.msg)) {
+    customCommands.givePoints(message);
+  } else if (regex.checkPro.test(message.msg)) {
+    customCommands.checkPro(message);
   }
 
   return;
@@ -53,7 +59,23 @@ const processMessages = async (err, message, messageOptions) => {
   if (!err) {
     message.origin = "rocket";
     console.log("MESSAGE: ", message, messageOptions);
-    if (message.u._id === myuserid || message.t) return;
+
+    if (!message.reactions) {
+      await commands(message);
+    }
+
+    if (
+      message.u._id === myuserid ||
+      message.t ||
+      messageOptions.roomType === "d"
+    )
+      return;
+
+    message = {
+      ...message,
+      ...messageOptions
+    };
+
     interactionController.save(message).catch(() => {
       console.log(
         "Erro ao salvar interação do usuário: id: ",
@@ -64,7 +86,7 @@ const processMessages = async (err, message, messageOptions) => {
         new Date(message.ts["$date"]).toLocaleDateString("en-US")
       );
     });
-    if (!message.reactions && !message.tmid) {
+    if (!message.reactions && !message.replies) {
       await commands(message);
     }
   } else {

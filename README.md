@@ -18,11 +18,11 @@ Um passo-a-passo da configuração mínima que você precisa para obter o Atena 
 
 ### Configuração inicial
 
-- Instalar o mongodb [Mongodb](https://docs.mongodb.com/manual/installation/)
+-  Instalar o mongodb [Mongodb](https://docs.mongodb.com/manual/installation/)
 
 ### Configuração Slack
 
-- Criar um aplicativo Slack utilizando ngrok - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
+-  Criar um aplicativo Slack utilizando ngrok - [Using ngrok to develop locally for Slack](https://api.slack.com/tutorials/tunneling-with-ngrok)
 
 ### Configuração Rocket Chat
 
@@ -30,37 +30,37 @@ Para usar o Rocket Chat você precisa de um usuário com os níveis de usuário 
 
 ### Desenvolvimento
 
-- Faça um `fork` do projeto para a tua conta, e então faça o `clone`
+-  Faça um `fork` do projeto para a tua conta, e então faça o `clone`
 
 ```sh
 > git clone https://github.com/[your account]/atena
 ```
 
-- Navegue até a pasta de destino onde fez o clone do projeto
+-  Navegue até a pasta de destino onde fez o clone do projeto
 
 ```sh
 > cd atena/
 ```
 
-- Instale o `yarn` a partir do `npm` (ser global é opcional)
+-  Instale o `yarn` a partir do `npm` (ser global é opcional)
 
 ```sh
 > npm i yarn -g
 ```
 
-- instalar os repositorios utilizando o `yarn`
+-  instalar os repositorios utilizando o `yarn`
 
 ```sh
 > yarn -i
 ```
 
-- Adicionar referências remotas
+-  Adicionar referências remotas
 
 ```sh
 > git remote add upstream https://github.com/UniversoImpulso/atena
 ```
 
-- Criar o arquivo `.env` com as suas configurações utilizando o `.env.example` presente no projeto
+-  Criar o arquivo `.env` com as suas configurações utilizando o `.env.example` presente no projeto
 
 ```sh
 PORT=4390
@@ -76,7 +76,7 @@ ROCKET_BOT_PASS=mybotpassword
 
 ### Executando
 
-- Inicie o servidor utilizando o seguinte comando:
+-  Inicie o servidor utilizando o seguinte comando:
 
 ```sh
 > yarn start:dev
