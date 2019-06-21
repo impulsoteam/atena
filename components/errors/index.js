@@ -1,6 +1,3 @@
-import controller from './errorsController'
+import errors from './errorsController'
 
-export default {
-  _throw: controller._throw,
-  _log: controller._log
-}
+export default errors

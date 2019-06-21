@@ -1,6 +1,3 @@
-import controller from './achievementsController'
+import achievements from './achievementsController'
 
-module.exports = {
-  commandIndex: controller.commandIndex,
-  handle: controller.handle
-}
+export default achievements

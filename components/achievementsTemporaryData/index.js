@@ -1,8 +1,7 @@
-import controller from './achievementsTemporaryDataController'
+import achievementsTemporaryData from './achievementsTemporaryDataController'
 import routes from './achievementsTemporaryDataRoutes'
 
 export default {
-  routes: routes,
-  getByQuery: controller.getByQuery,
-  getAllByInteraction: controller.getAllByInteraction
+  ...achievementsTemporaryData,
+  routes: routes
 }

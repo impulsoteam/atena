@@ -1,5 +1,3 @@
-import controller from './cronsController'
+import crons from './cronsController'
 
-export default {
-  exec: controller.exec
-}
+export default crons

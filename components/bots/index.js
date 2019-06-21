@@ -1,5 +1,3 @@
-import controller from './botsController'
+import bots from './botsController'
 
-export default {
-  exec: controller.exec
-}
+export default bots

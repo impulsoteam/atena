@@ -1,6 +1,3 @@
-import controller from './achievementsTemporaryController'
+import achievementsTemporary from './achievementsTemporaryController'
 
-export default {
-  getMessages: controller.getMessages,
-  handle: controller.handle
-}
+export default achievementsTemporary

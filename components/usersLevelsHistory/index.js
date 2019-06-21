@@ -1,5 +1,3 @@
-import controller from './usersLevelsHistoryController'
+import usersLevelsHistory from './usersLevelsHistoryController'
 
-export default {
-  save: controller.save
-}
+export default usersLevelsHistory

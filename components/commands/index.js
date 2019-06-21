@@ -1,6 +1,3 @@
-import controller from './commandsController'
+import commands from './commandsController'
 
-module.exports = {
-  givePoints: controller.givePoints,
-  handle: controller.handle
-}
+export default commands

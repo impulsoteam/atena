@@ -1,6 +1,3 @@
-import controller from './settingsController'
+import settings from './settingsController'
 
-export default {
-  getValue: controller.getValue,
-  create: controller.create
-}
+export default settings

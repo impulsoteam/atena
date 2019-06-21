@@ -1,7 +1,3 @@
-import controller from './rankingsController'
+import rankings from './rankingsController'
 
-export default {
-  calculatePositionByUser: controller.calculatePositionByUser,
-  commandGeneral: controller.commandGeneral,
-  commandByMonth: controller.commandByMonth
-}
+export default rankings

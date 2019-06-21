@@ -1,6 +1,3 @@
-import controller from './achievementsLevelController'
+import achievementsLevel from './achievementsLevelController'
 
-export default {
-  getMessages: controller.getMessages,
-  handle: controller.handle
-}
+export default achievementsLevel

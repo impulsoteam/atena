@@ -1,6 +1,3 @@
-import controller from './messagesController'
+import messages from './messagesController'
 
-export default {
-  sendToUser: controller.sendToUser,
-  sendToRoom: controller.sendToRoom
-}
+export default messages
