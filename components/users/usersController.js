@@ -4,8 +4,6 @@ import dal from './usersDAL'
 import service from './usersService'
 import rankings from '../rankings'
 import messages from '../messages'
-import usersLevelsHistory from '../usersLevelsHistory'
-import achievementsLevel from '../achievementsLevel'
 import errors from '../errors'
 
 const file = 'Users | Controller'
@@ -27,24 +25,7 @@ const findOneAndUpdate = (query, args, options) => {
 }
 
 const updateScore = async (user, score) => {
-  if (!user || score === 0) return
-
-  user.previousLevel = user.score === 0 ? 0 : user.level
-  user.score += score
-  user.level = utils.calculateLevel(user.score)
-  await user.save()
-  await onChangeLevel(user)
-  return user
-}
-
-const onChangeLevel = async user => {
-  if (user.level !== user.previousLevel) {
-    await usersLevelsHistory.save(user._id, user.previousLevel, user.level)
-    await achievementsLevel.handle(user._id, user.previousLevel, user.level)
-
-    // TODO: valida pro
-    console.log('Entrou em onChangeLevel')
-  }
+  return service.updateScore(user, score)
 }
 
 const commandScore = async message => {
@@ -201,6 +182,21 @@ const findRocketUsersByName = async name => {
   }
 }
 
+const transferScore = async (userId, type, score) => {
+  let user
+  try {
+    if (type === 'slack') {
+      user = await service.transferScoreToSlackUser(userId, score)
+    } else if (type === 'rocket') {
+      user = await service.transferScoreToSlackUser(userId, score)
+    }
+  } catch (e) {
+    errors._throw(file, 'transferScore', e)
+  }
+
+  return user
+}
+
 export default {
   save,
   findBy,
@@ -219,5 +215,6 @@ export default {
   getProFinishDate,
   updatePro,
   findUsersWithSlack,
-  findRocketUsersByName
+  findRocketUsersByName,
+  transferScore
 }

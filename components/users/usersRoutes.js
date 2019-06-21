@@ -4,7 +4,6 @@ import users from './usersController'
 const router = express.Router()
 
 router.get('/', async (req, res) => {
-  console.log('req.query', req.query)
   let result = {}
   if (req.query.slack) {
     result = await users.findUsersWithSlack()
@@ -12,6 +11,12 @@ router.get('/', async (req, res) => {
     result = await users.findRocketUsersByName(req.query.name)
   }
 
+  return res.json(result)
+})
+
+router.put('/:id/score', async (req, res) => {
+  const { type, score } = req.body
+  const result = await users.transferScore(req.params.id, type, score)
   return res.json(result)
 })
 
