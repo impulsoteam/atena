@@ -1,9 +1,9 @@
-const enabled = process.env.ENABLE_LOGS || false
+const enabled = process.env.ATENA_ENABLE_LOGS || false
 
-const show = text => {
-  if (enabled) console.log(text)
+const info = (text, ...rest) => {
+  if (enabled) console.info(text, ...rest)
 }
 
 export default {
-  show
+  info
 }

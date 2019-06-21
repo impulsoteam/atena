@@ -2,17 +2,17 @@ import { driver, api } from '@rocket.chat/sdk'
 import { getOr } from 'lodash/fp'
 import service from './rocketService'
 import errors from '../errors'
+import logs from '../logs'
 import commands from '../commands'
 import settings from '../settings'
 import interactions from '../interactions'
 
 const file = 'Rocket | Controller'
 let BOT_ID
-let API_ID
 
 const exec = async () => {
   BOT_ID = await service.runBot(handle)
-  API_ID = await service.runAPI()
+  await service.runAPI()
 }
 
 const handle = async (error, message, messageOptions) => {
@@ -24,25 +24,20 @@ const handle = async (error, message, messageOptions) => {
   try {
     if (!service.isValidMessage(BOT_ID, message, messageOptions)) return
 
-    if (process.env.ENABLE_LOGS) {
-      console.log('MESSAGE: ', message, messageOptions)
-    }
-
-    message.origin = 'rocket'
-    await interactions.handle({
+    const data = {
+      origin: 'rocket',
       ...message,
       ...messageOptions
-    })
+    }
 
+    logs.info('MESSAGE: ', data)
+
+    await interactions.handle(data)
     if (!message.reactions && !message.replies) await commands.handle(message)
   } catch (e) {
-    errors._throw(file, 'handle', e)
     const data = new Date(message.ts['$date']).toLocaleDateString('en-US')
-    errors._log(
-      file,
-      'handle',
-      `${message.u.name} (${message.u._id}) - ${data}`
-    )
+    const text = `${e.message} - ${message.u.name} (${message.u._id}) - ${data}`
+    errors._throw(file, 'handle', text)
   }
 }
 
