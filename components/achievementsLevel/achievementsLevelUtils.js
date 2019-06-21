@@ -67,7 +67,7 @@ const generateMessages = achievement => {
   return [
     {
       text: `*Network | Nível*:
-    \n Você é ${lastRating.name} ${lastRating.range} com nível ${lastRating.level}.
+    \n Você é ${lastRating.name} ${lastRating.range} com nível ${lastRating.total}.
     \n :trophy: Seu record é ${achievement.record.name}${recordRange} com nível ${achievement.record.level}.`
     }
   ]
