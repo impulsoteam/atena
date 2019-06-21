@@ -37,7 +37,8 @@ const isPositiveReaction = interaction =>
 const isAtenaReaction = interaction =>
   interactionsUtils.isAtenaReaction(interaction)
 
-const getLastRatingEarned = ratings => {
+const getLastRatingEarned = achievement => {
+  const ratings = [...achievement.ratings]
   let lastRating = ratings
     .reverse()
     .find(rating => rating.ranges.find(range => range.earnedDate))

@@ -6,7 +6,7 @@ const today = moment(new Date()).utc()
 
 const generateMessages = achievements => {
   return achievements.map(achievement => {
-    const currentAchievement = getLastRatingEarned(achievement.ratings)
+    const currentAchievement = getLastRatingEarned(achievement)
 
     return {
       text: `*${achievement.name}*:
@@ -42,8 +42,8 @@ const generateNewRatings = achievements => {
   })
 }
 
-const getLastRatingEarned = ratings => {
-  return achievementsUtils.getLastRatingEarned(ratings)
+const getLastRatingEarned = achievement => {
+  return achievementsUtils.getLastRatingEarned(achievement)
 }
 
 const getNextAvailableDate = achievement => {
@@ -55,7 +55,7 @@ const getNextAvailableDate = achievement => {
 }
 
 const getRecord = achievement => {
-  const newRecord = getLastRatingEarned(achievement.ratings)
+  const newRecord = getLastRatingEarned(achievement)
 
   if (
     !achievement.record ||
@@ -151,13 +151,13 @@ const setEarned = ratings => {
   let wasEarned = false
   return ratings.map(rating => {
     const current = !rating.ranges.every(range => range.earnedDate)
-    console.log('current', current, wasEarned)
+
     if (current && !wasEarned) {
-      console.log('Entrou...')
       rating.ranges = setEarnedRanges(rating)
       rating.total = getEarnedTotal(rating)
       wasEarned = true
     }
+
     return rating
   })
 }
@@ -185,9 +185,10 @@ const setEarnedRanges = rating => {
   })
 }
 
-const calculateScoreToIncrease = ratings => {
+const calculateScoreToIncrease = achievement => {
   let score = 0
   const today = moment(new Date())
+  const ratings = [...achievement.ratings]
   const rating = ratings
     .reverse()
     .find(rating => rating.ranges.every(range => range.earnedDate))

@@ -45,7 +45,6 @@ const create = async (temporaryData, user) => {
 }
 
 const update = async (achievement, user, interaction) => {
-  console.log('Entrou update', utils.isInDeadline(achievement))
   if (utils.isInDeadline(achievement)) {
     return addEarned(achievement, user, interaction)
   } else {
@@ -66,7 +65,7 @@ const addEarned = async (achievement, user, interaction) => {
 }
 
 const addScore = async (user, achievement, interaction) => {
-  const score = utils.calculateScoreToIncrease(achievement.ratings)
+  const score = utils.calculateScoreToIncrease(achievement)
 
   if (score > 0) {
     await users.updateScore(user, score)
@@ -89,7 +88,8 @@ const saveScoreInteraction = async (user, achievement, score, text) => {
 }
 
 const sendEarnedMessage = (user, achievement, interaction) => {
-  const rating = utils.getLastRatingEarned(achievement.ratings)
+  const rating = utils.getLastRatingEarned(achievement)
+
   const current = {
     name: achievement.name,
     rating: rating.name,
@@ -100,7 +100,6 @@ const sendEarnedMessage = (user, achievement, interaction) => {
 }
 
 const resetEarned = achievement => {
-  console.log('Entrou resetEarned')
   achievement.ratings = achievement.ratings.map(rating => {
     rating.ranges = rating.ranges.map(range => {
       return {
