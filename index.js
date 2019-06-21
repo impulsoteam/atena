@@ -9,12 +9,12 @@ import bodyParser from 'body-parser'
 import log4js from 'log4js'
 import bots from './components/bots'
 import crons from './components/crons'
-
-// require('./workers/receive')
+import workers from './components/workers'
 
 if (process.env.NODE_ENV !== 'test') {
   bots.exec()
   crons.exec()
+  workers.exec()
 }
 
 process.env.NODE_ENV !== 'production' && dotenv.config()
