@@ -55,7 +55,11 @@ const getNextAvailableDate = achievement => {
 }
 
 const getRecord = achievement => {
-  const newRecord = getLastRatingEarned(achievement)
+  const lastRating = getLastRatingEarned(achievement)
+  const newRecord = {
+    ...lastRating,
+    total: achievement.total
+  }
 
   if (
     !achievement.record ||
