@@ -1,3 +1,7 @@
 import users from './usersController'
+import routes from './usersRoutes'
 
-export default users
+export default {
+  ...users,
+  routes: routes
+}

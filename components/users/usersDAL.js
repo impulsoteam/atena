@@ -4,10 +4,11 @@ const save = user => {
   return model(user).save()
 }
 
-const findBy = (query, sort = { _id: 1 }) => {
+const findBy = (query, sort = { _id: 1 }, limit = 9999) => {
   return model
     .find(query)
     .sort(sort)
+    .limit(limit)
     .exec()
 }
 

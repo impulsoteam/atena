@@ -6,6 +6,9 @@ import rankings from '../rankings'
 import messages from '../messages'
 import usersLevelsHistory from '../usersLevelsHistory'
 import achievementsLevel from '../achievementsLevel'
+import errors from '../errors'
+
+const file = 'Users | Controller'
 
 const save = user => {
   return dal.save(user)
@@ -182,6 +185,22 @@ const updatePro = async user => {
   return service.updatePro(user)
 }
 
+const findUsersWithSlack = async (req, res) => {
+  try {
+    return service.findUsersWithSlack()
+  } catch (e) {
+    errors._throw(file, 'findUsersWithSlack', e)
+  }
+}
+
+const findRocketUsersByName = async name => {
+  try {
+    return service.findRocketUsersByName(name)
+  } catch (err) {
+    errors._throw(file, 'findRocketUserByName', e)
+  }
+}
+
 export default {
   save,
   findBy,
@@ -198,5 +217,7 @@ export default {
   receiveProPlan,
   getProBeginDate,
   getProFinishDate,
-  updatePro
+  updatePro,
+  findUsersWithSlack,
+  findRocketUsersByName
 }

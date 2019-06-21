@@ -17,12 +17,18 @@ import express from 'express'
 // import apiRoutes from './api'
 import achievementsTemporyData from '../components/achievementsTemporaryData'
 import blog from '../components/blog'
+import auth from '../components/auth'
+import users from '../components/users'
 
 import { renderScreen } from '../utils/ssr'
 
 const router = express.Router()
+
 router.use('/achievements/temporary/data', achievementsTemporyData.routes)
 router.use('/blog', blog.routes)
+router.use('/auth', auth.routes)
+router.use('/users', users.routes)
+router.use('/api/v1/users', users.routes)
 
 // router.use('/slack', slackRoutes)
 // router.use('/rocket', rocketRoutes)
@@ -37,7 +43,6 @@ router.use('/blog', blog.routes)
 // router.use('/integrations/disqus', disqusRoutes)
 // router.use('/integrations/rd', rdRoutes)
 // router.use('/miner', minerRoutes)
-// router.use('/auth', authRoutes)
 // router.use('/blog', blogRoutes)
 // router.use('/api/v1', apiRoutes)
 

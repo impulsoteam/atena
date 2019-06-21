@@ -27,6 +27,31 @@ const findInactivities = async () => {
   )
 }
 
+const findUsersWithSlack = () => {
+  return dal.findBy(
+    {
+      slackId: { $exists: true },
+      score: { $gt: 5 }
+    },
+    { score: -1 },
+    15
+  )
+}
+
+const findRocketUsersByName = name => {
+  return dal.findBy(
+    {
+      $text: {
+        $search: name,
+        $caseSensitive: false,
+        $diacriticSensitive: false
+      },
+      rocketId: { $exists: true }
+    },
+    { score: -1 }
+  )
+}
+
 const receiveProPlan = data => {
   return data.current_plan && data.current_plan.name
 }
@@ -106,5 +131,7 @@ export default {
   receiveProPlan,
   getProBeginDate,
   getProFinishDate,
-  updatePro
+  updatePro,
+  findUsersWithSlack,
+  findRocketUsersByName
 }
