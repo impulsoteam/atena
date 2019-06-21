@@ -1,6 +1,7 @@
 import service from './nextService'
 import users from '../users'
 import errors from '../errors'
+import workers from '../workers'
 
 const file = 'Next | Controller'
 
@@ -24,6 +25,20 @@ const handleUser = async data => {
   }
 }
 
+const sendToQueue = user => {
+  const data = {
+    uuid: user.uuid,
+    current_plan: {
+      name: user.level > 2 ? 'Atena - Level' : 'Atena - Cargo',
+      begin_at: user.proBeginAt,
+      finish_at: user.proFinishAt
+    }
+  }
+
+  return workers.publish(data)
+}
+
 export default {
-  handleUser
+  handleUser,
+  sendToQueue
 }

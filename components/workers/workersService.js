@@ -10,18 +10,19 @@ const onError = (error, method) => {
 }
 
 const consumer = conn => {
-  const on_open = (error, ch) => {
+  const onCreate = (error, ch) => {
     if (error != null) onError(error, 'consumer')
 
     ch.assertQueue(queueIn, { durable: true })
-    logs.show('[*] Waiting for messages in %s.', queueIn)
+    logs.info('[*] Waiting for messages in %s.', queueIn)
 
     ch.consume(queueIn, async msg => {
       if (msg === null) return
       try {
         const data = msg.content.toString()
-        logs.show('[*] Processing message: ', data)
+        logs.info('[*] Processing message: ', data)
         await next.handleUser(JSON.parse(data))
+        logs.info('[*] Processed message: ', data)
       } catch (e) {
         onError(e, 'consumer')
       }
@@ -30,29 +31,30 @@ const consumer = conn => {
     })
   }
 
-  conn.createChannel(on_open)
+  conn.createChannel(onCreate)
 }
 
 const publisher = async (conn, data) => {
-  const on_open = async (error, ch) => {
+  const onCreate = async (error, ch) => {
     if (error != null) onError(error, 'publisher')
 
     const message = new Buffer(JSON.stringify(data))
     await ch.assertExchange(queueOut, 'fanout', { durable: false })
 
-    logs.show(' [x] Sended %s', JSON.stringify(data))
-    const queueOpts = { persistent: true }
+    logs.info(' [*] Sending %s', JSON.stringify(data))
+    const queueOpts = { persistent: false }
     await ch.sendToQueue(queueOut, message, queueOpts)
     const sended = await ch.publish(queueOut, '', message, queueOpts)
 
-    if (!sended) onError(sended, 'publisher')
-
-    setTimeout(function() {
-      conn.close()
-    }, 500)
+    if (sended) logs.info(' [*] Sended %s', JSON.stringify(data))
+    else onError(sended, 'publisher')
   }
 
-  return conn.createChannel(on_open)
+  conn.createChannel(onCreate)
+
+  setTimeout(function() {
+    conn.close()
+  }, 500)
 }
 
 export default {

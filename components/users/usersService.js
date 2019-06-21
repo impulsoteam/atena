@@ -2,6 +2,11 @@ import config from 'config-yml'
 import moment from 'moment-timezone'
 import dal from './usersDAL'
 import rocket from '../rocket'
+import next from '../next'
+
+const today = moment(new Date())
+  .utc()
+  .endOf('day')
 
 const findInactivities = async () => {
   const today = new Date()
@@ -43,7 +48,44 @@ const getProFinishDate = (user, plan) => {
 }
 
 const updatePro = async user => {
-  return user.level > 2 || (await hasProRole(user))
+  const canBePro = user.level > 2 || (await hasProRole(user))
+  const wasPro = user.pro
+
+  if (canBePro) {
+    user = await setProPlan(user)
+  } else {
+    user = await removeProPlan(user)
+  }
+
+  if (canBePro !== wasPro) next.sendToQueue(user)
+
+  return user
+}
+
+const setProPlan = user => {
+  user.pro = true
+
+  if (!user.proBeginAt && !user.proFinishAt) {
+    user.proBeginAt = today.format()
+    user.proFinishAt = today.add(5, 'years').format()
+  } else if (
+    user.proFinishAt &&
+    moment(user.proFinishAt).isSameOrBefore(today)
+  ) {
+    user.proFinishAt = today.add(5, 'years').format()
+  }
+
+  return dal.save(user)
+}
+
+const removeProPlan = user => {
+  user.pro = false
+
+  if (user.proBeginAt && user.proFinishAt) {
+    user.proFinishAt = today.format()
+  }
+
+  return dal.save(user)
 }
 
 const hasProRole = async user => {
