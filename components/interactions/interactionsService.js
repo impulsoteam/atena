@@ -82,10 +82,10 @@ const getTodayScore = async rocketId => {
 }
 
 const onSaveInteraction = async (interaction, user) => {
+  await users.updatePro(user)
   await users.updateScore(user, interaction.score)
   await achievements.handle(interaction, user)
-
-  // await achievementsTemporary.save(interaction, user)
+  await achievementsTemporary.handle(interaction, user)
 }
 
 export default {

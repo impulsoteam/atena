@@ -170,6 +170,18 @@ const receiveProPlan = data => {
   return service.receiveProPlan(data)
 }
 
+const getProBeginDate = (user, plan) => {
+  return service.getProBeginDate(user, plan)
+}
+
+const getProFinishDate = (user, plan) => {
+  return service.getProFinishDate(user, plan)
+}
+
+const updatePro = async user => {
+  return service.updatePro(user)
+}
+
 export default {
   save,
   findBy,
@@ -183,5 +195,8 @@ export default {
   isCoreTeam,
   commandUserIsPro,
   sendWelcomeMessage,
-  receiveProPlan
+  receiveProPlan,
+  getProBeginDate,
+  getProFinishDate,
+  updatePro
 }

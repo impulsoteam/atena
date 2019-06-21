@@ -7,6 +7,7 @@ const file = 'Next | Controller'
 const handleUser = async data => {
   try {
     let user = await service.findOrCreateUser(data)
+
     user.rocketId = data.rocket_chat.id
     user.name = data.fullname
     user.email = data.network_email
@@ -14,8 +15,8 @@ const handleUser = async data => {
     user.username = data.rocket_chat.username
     user.uuid = data.uuid
     user.pro = users.receiveProPlan(data)
-    user.proBeginAt = user.proBeginAt || data.current_plan.begin_at
-    user.proFinishAt = user.proFinishAt || data.current_plan.finish_at
+    user.proBeginAt = users.getProBeginDate(user, data)
+    user.proFinishAt = users.getProFinishDate(user, data)
 
     return users.save(user)
   } catch (e) {
