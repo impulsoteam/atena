@@ -1,15 +1,11 @@
 import { driver } from '@rocket.chat/sdk'
-import userController from '../../controllers/user'
 import dal from './achievementsDAL'
 import utils from './achievementsUtils'
 import service from './achievementsService'
+import users from '../users'
 
 const commandIndex = async message => {
-  const interaction = {
-    origin: 'rocket',
-    user: message.u._id
-  }
-  const user = await userController.findByOrigin(interaction)
+  const user = await users.findOne({ rocketId: message.u._id })
   const response = await service.getAllMessages(user)
   await driver.sendDirectToUser(response, message.u.username)
 }

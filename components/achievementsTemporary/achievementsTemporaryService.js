@@ -5,8 +5,8 @@ import users from '../users'
 import interactions from '../interactions'
 
 const getMessages = async userId => {
-  const achievementsTemporary = await dal.findAllByUser(userId)
-  return utils.generateMessages(achievementsTemporary)
+  const achievements = await dal.findAllByUser(userId)
+  return utils.generateMessages(achievements)
 }
 
 const resetAllEarned = achievement => {

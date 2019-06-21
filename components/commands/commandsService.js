@@ -1,13 +1,8 @@
-import moment from 'moment-timezone'
 import utils from './commandsUtils'
 import users from '../users'
 import rankings from '../rankings'
+import achievements from '../achievements'
 
-// import { driver } from '@rocket.chat/sdk'
-// import interactionController from '../controllers/interaction'
-// import rankingController from '../controllers/ranking'
-// import userController from '../controllers/user'
-// import achievementsController from '../components/achievements'
 // import * as customCommands from '../components/commands'
 // import {
 //   auth as authGithub,
@@ -25,8 +20,8 @@ const getCommandMessage = async message => {
     response = await rankings.commandGeneral(message)
   } else if (regex.ranking.test(message.msg)) {
     response = await rankings.commandByMonth(message)
-    // } else if (regex.minhasConquistas.test(message.msg)) {
-    //   await achievementsController.commandIndex(message)
+  } else if (regex.minhasConquistas.test(message.msg)) {
+    await achievements.commandIndex(message)
   } else if (regex.isPro.test(message.msg)) {
     response = await users.commandPro(message)
   } else if (regex.commands.test(message.msg)) {

@@ -10,7 +10,7 @@ const generateMessages = achievements => {
 
     return {
       text: `*${achievement.name}*:
-      \n Você é ${currentAchievement.rating.name} ${currentAchievement.range.name} com total de ${currentAchievement.rating.total}.
+      \n Você é ${currentAchievement.name} ${currentAchievement.range} com total de ${currentAchievement.total}.
       \n :trophy: Seu record é ${achievement.record.name} ${achievement.record.range} com total de ${achievement.record.total}.`
     }
   })
