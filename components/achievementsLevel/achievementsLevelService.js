@@ -25,12 +25,14 @@ const update = async (achievement, level) => {
 
 const addScore = async (achievement, userId) => {
   const score = utils.getScore(achievement)
+  const user = await users.findOne({ _id: userId })
+
   if (score > 0) {
-    const user = await users.findOne({ _id: userId })
-    await sendEarnedMessage(user)
     await saveScoreInteraction(user, achievement, score, 'Conquista de Nível')
     await users.updateScore(user, score)
   }
+
+  await sendEarnedMessage(user)
 }
 
 const sendEarnedMessage = async user => {
