@@ -7,6 +7,10 @@ import messages from '../messages'
 import usersLevelsHistory from '../usersLevelsHistory'
 import achievementsLevel from '../achievementsLevel'
 
+const save = user => {
+  return dal.save(user)
+}
+
 const findBy = query => {
   return dal.findBy(query)
 }
@@ -162,10 +166,16 @@ const findInactivities = async () => {
   return service.findInactivities()
 }
 
+const receiveProPlan = data => {
+  return service.receiveProPlan(data)
+}
+
 export default {
+  save,
   findBy,
   findOne,
   findOneAndUpdate,
+  findInactivities,
   updateScore,
   commandScore,
   commandPro,
@@ -173,5 +183,5 @@ export default {
   isCoreTeam,
   commandUserIsPro,
   sendWelcomeMessage,
-  findInactivities
+  receiveProPlan
 }

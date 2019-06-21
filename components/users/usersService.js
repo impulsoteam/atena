@@ -20,6 +20,11 @@ const findInactivities = async () => {
   )
 }
 
+const receiveProPlan = data => {
+  return data.current_plan && data.current_plan.name
+}
+
 export default {
-  findInactivities
+  findInactivities,
+  receiveProPlan
 }
