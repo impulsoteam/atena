@@ -1,7 +1,6 @@
 import logs from '../logs'
 
 const _throw = (file, method, error) => {
-  console.log('error', error)
   const text = error.message || error
   _log(file, method, text)
 }
