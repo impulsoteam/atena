@@ -15,9 +15,9 @@ const chatInactivities = async () => {
   cron.schedule('* * * * *', async () => {
     try {
       const inactives = await users.findInactivities()
-      inactives.forEach(user => {
+      await inactives.forEach(async user => {
         const score = config.xprules.inactive.value
-        users.updateScore(user, score)
+        await users.updateScore(user, score)
       })
       return true
     } catch (e) {
@@ -30,12 +30,12 @@ const chatInactivities = async () => {
 const achievementsTemporaryInactivities = async () => {
   cron.schedule('0 0 0 * * *', async () => {
     try {
-      const achievements = await achievementsTemporary.findInactivities()
-      achievements.map(achievement => {
+      const inactives = await achievementsTemporary.findInactivities()
+      await inactives.map(async achievement => {
         const updatedAchievement = achievementsTemporary.resetEarned(
           achievement
         )
-        updatedAchievement.save()
+        await updatedAchievement.save()
       })
       return true
     } catch (e) {
