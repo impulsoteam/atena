@@ -30,9 +30,6 @@ const getGeneralRanking = async (userId, isCoreTeam) => {
     text: `Ah, e você está na posição ${myPosition} do ranking`
   })
 
-  // TODO: se analytics
-  // analyticsSendBotCollect(req.body)
-
   return response
 }
 
