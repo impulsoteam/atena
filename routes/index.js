@@ -16,11 +16,10 @@ import express from 'express'
 // import blogRoutes from './blog'
 // import apiRoutes from './api'
 import achievementsTemporyData from '../components/achievementsTemporaryData'
+import screens from '../components/screens'
 import blog from '../components/blog'
 import auth from '../components/auth'
 import users from '../components/users'
-
-import { renderScreen } from '../utils/ssr'
 
 const router = express.Router()
 
@@ -47,7 +46,7 @@ router.use('/api/v1/users', users.routes)
 // router.use('/api/v1', apiRoutes)
 
 router.get('/', (req, res) =>
-  renderScreen(req, res, 'HowItWorks', {
+  screens.render(req, res, 'HowItWorks', {
     page: 'index'
   })
 )
