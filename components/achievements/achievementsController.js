@@ -16,7 +16,7 @@ const handle = async (interaction, user) => {
     await save(type, interaction, user)
 
     if (interaction.parentUser) {
-      const parentUser = await userController.findByOrigin(interaction, true)
+      const parentUser = await users.find({ rocketId: interaction.parentUser })
       await save('received', interaction, parentUser)
     }
   }
