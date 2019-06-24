@@ -9,7 +9,15 @@ const findOne = query => {
   return model.findOne(query).exec()
 }
 
-const findBy = query => {
+const findOneAndUpdate = (query, args, options) => {
+  return model.findOneAndUpdate(query, args, options).exec()
+}
+
+const updateMany = (query, args, options) => {
+  return model.updateMany(query, args, options).exec()
+}
+
+const find = query => {
   return model.find(query).exec()
 }
 
@@ -38,9 +46,11 @@ const findLastMessageByUser = userId => {
 }
 
 export default {
-  findBy,
+  find,
   findOne,
+  findOneAndUpdate,
   findAllFromToday,
   findLastMessageByUser,
+  updateMany,
   save
 }

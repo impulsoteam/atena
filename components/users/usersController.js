@@ -12,8 +12,12 @@ const save = user => {
   return dal.save(user)
 }
 
-const findBy = query => {
-  return dal.findBy(query)
+const find = (query, sort, limit, skip) => {
+  return dal.find(query, sort, limit, skip)
+}
+
+const findAll = () => {
+  return dal.findAll()
 }
 
 const findOne = query => {
@@ -199,7 +203,8 @@ const transferScore = async (userId, type, score) => {
 
 export default {
   save,
-  findBy,
+  find,
+  findAll,
   findOne,
   findOneAndUpdate,
   findInactivities,

@@ -35,9 +35,14 @@ const findOne = query => {
   return dal.findOne(query)
 }
 
+const changeUserId = (limit, skip) => {
+  return service.changeUserId(limit, skip)
+}
+
 export default {
   getLastMessage,
   saveManual,
   handle,
-  findOne
+  findOne,
+  changeUserId
 }

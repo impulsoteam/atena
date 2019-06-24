@@ -88,9 +88,29 @@ const onSaveInteraction = async (interaction, user) => {
   await achievementsTemporary.handle(interaction, user)
 }
 
+const changeUserId = async (limit = 1000, skip = 0) => {
+  const allUsers = await users.find({}, { _id: 1 }, limit, skip)
+
+  const promises = allUsers.map(async user => {
+    await dal.updateMany(
+      {
+        user: user.rocketId || user.slackId
+      },
+      {
+        user: user._id
+      }
+    )
+    return user._id
+  })
+
+  const usersId = await Promise.all(promises)
+  return { total: usersId.length, users: usersId }
+}
+
 export default {
   getModuleController,
   onSaveInteraction,
   hasScore,
-  normalize
+  normalize,
+  changeUserId
 }

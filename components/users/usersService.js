@@ -19,7 +19,7 @@ const findInactivities = async () => {
     today.getDate() - config.xprules.inactive.mindays
   )
 
-  return await dal.findBy(
+  return await dal.find(
     {
       rocketId: { $exists: true },
       lastUpdate: { $lt: dateRange },
@@ -32,7 +32,7 @@ const findInactivities = async () => {
 }
 
 const findUsersWithSlack = () => {
-  return dal.findBy(
+  return dal.find(
     {
       slackId: { $exists: true },
       score: { $gt: 5 }
@@ -43,7 +43,7 @@ const findUsersWithSlack = () => {
 }
 
 const findRocketUsersByName = name => {
-  return dal.findBy(
+  return dal.find(
     {
       $text: {
         $search: name,
