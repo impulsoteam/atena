@@ -1,45 +1,21 @@
-import dal from './rankingsDAL'
-
-const getMonthFromMessage = message => {
-  let month = new Date(Date.now()).getMonth() + 1
+const getMonthFromMessage = async message => {
+  let month = getCurrentMonth()
   const monthFromMessage = message.msg.replace(/[^0-9]+/g, '')
-  if (
-    monthFromMessage.length &&
-    monthFromMessage > 0 &&
-    monthFromMessage < 13
-  ) {
+
+  if (await isValidMonth(monthFromMessage)) {
     month = monthFromMessage
   }
 
   return month
 }
 
-const getRankingByMonth = async month => {
-  if (!(await isValidMonth(month)))
-    return { error: 'Digite um mês válido Ex: /ranking 1' }
-
-  const today = new Date(Date.now())
-  let query = new Date(today.getFullYear(), month - 1)
-
-  const ranking = await dal.findOne({
-    date: {
-      $gte: query
-    }
-  })
-
-  if (!ranking) {
-    const monthName = getMonthName(month - 1)
-    return {
-      error: `Ranking do mês de ${monthName} não foi gerado ou encontrado`
-    }
-  }
-
-  return ranking
+const getCurrentMonth = () => {
+  return new Date(Date.now()).getMonth() + 1
 }
 
 const isValidMonth = async month => {
-  const re = /(^0?[1-9]$)|(^1[0-2]$)/
-  return re.test(month)
+  const isValid = /(^0?[1-9]$)|(^1[0-2]$)/
+  return isValid.test(month)
 }
 
 const getMonthName = number => {
@@ -62,7 +38,8 @@ const getMonthName = number => {
 }
 
 export default {
+  getCurrentMonth,
   getMonthFromMessage,
-  getRankingByMonth,
-  getMonthName
+  getMonthName,
+  isValidMonth
 }

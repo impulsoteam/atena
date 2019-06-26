@@ -107,10 +107,35 @@ const changeUserId = async (limit = 1000, skip = 0) => {
   return { total: usersId.length, users: usersId }
 }
 
+const findByDate = async (year, month) => {
+  return dal.aggregate([
+    {
+      $match: {
+        date: {
+          $lte: new Date(year, month),
+          $gte: new Date(year, month - 1)
+        },
+        score: { $gte: 0 }
+      }
+    },
+    {
+      $group: {
+        _id: { user: '$user' },
+        date: { $first: '$date' },
+        totalScore: { $sum: '$score' }
+      }
+    },
+    {
+      $sort: { totalScore: -1 }
+    }
+  ])
+}
+
 export default {
   getModuleController,
   onSaveInteraction,
   hasScore,
   normalize,
-  changeUserId
+  changeUserId,
+  findByDate
 }

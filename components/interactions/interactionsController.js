@@ -27,6 +27,10 @@ const handle = async data => {
   return dal.save(interaction)
 }
 
+const findByDate = async (year, month) => {
+  return service.findByDate(year, month)
+}
+
 const getLastMessage = userId => {
   return dal.findLastMessageByUser(userId)
 }
@@ -40,6 +44,7 @@ const changeUserId = (limit, skip) => {
 }
 
 export default {
+  findByDate,
   getLastMessage,
   saveManual,
   handle,

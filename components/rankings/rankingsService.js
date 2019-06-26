@@ -1,5 +1,8 @@
 import users from '../users'
 import utils from './rankingsUtils'
+import dal from './rankingsDAL'
+import interactions from '../interactions'
+import usersUtils from '../users/usersUtils'
 
 const calculatePositionByUser = async (userId, isCoreTeam = false) => {
   const allUsers = await users.findAllToRanking(isCoreTeam, 0)
@@ -33,8 +36,18 @@ const getGeneralRanking = async (userId, isCoreTeam) => {
   return response
 }
 
-const getRankingByMonth = async (userId, month) => {
-  const rankingMonthly = await utils.getRankingByMonth(month)
+const getUserMessagePositionByMonth = async (userId, month, rankingUsers) => {
+  let message = `Opa, você não pontuou no game em ${month}`
+
+  const position = await getPositionFromUsers(rankingUsers, userId)
+  if (position > 0)
+    message = `Ah, e você está na posição ${position} do ranking de ${month}`
+
+  return message
+}
+
+const getRankingMessageByMonth = async (userId, month) => {
+  const rankingMonthly = await getRankingByMonth(month)
   if (rankingMonthly.error) {
     return { msg: rankingMonthly.error }
   }
@@ -49,33 +62,128 @@ const getRankingByMonth = async (userId, month) => {
     attachments: []
   }
 
-  let allUsers = await users.findAllToRanking(false, 0)
-
   response.attachments = await rankingMonthly.users
     .slice(0, 5)
     .map((user, index) => {
-      const userAtena = allUsers.find(u => u.rocketId === user.user)
-      if (!userAtena) return false
-
       return {
-        text: `${index + 1}º lugar está ${userAtena.name} com ${
+        text: `${index + 1}º lugar está ${user.user.name} com ${
           user.score
         } XP, no nível ${user.level}`
       }
     })
 
-  let userMsg = `Opa, você não pontuou no game em ${monthName}`
-  const position = await getPositionFromUsers(rankingMonthly.users, userId)
-  if (position > 0)
-    userMsg = `Ah, e você está na posição ${position} do ranking de ${monthName}`
-
-  response.attachments.push({ text: userMsg })
+  const userMessage = await getUserMessagePositionByMonth(
+    userId,
+    monthName,
+    rankingMonthly.users
+  )
+  response.attachments.push({ text: userMessage })
 
   return response
+}
+
+const getRankingByMonth = async (month, year) => {
+  if (!(await utils.isValidMonth(month)))
+    return { error: 'Digite um mês válido Ex: *!ranking 1*' }
+
+  if (!year) year = new Date(Date.now()).getFullYear()
+
+  const ranking = await dal.findOneAndPopulate(
+    {
+      date: {
+        $gte: new Date(year, month - 1)
+      }
+    },
+    'users.user'
+  )
+
+  if (!ranking) {
+    const monthName = utils.getMonthName(month - 1)
+    return {
+      error: `Ranking do mês de ${monthName} não foi gerado ou encontrado`
+    }
+  }
+
+  return ranking
+}
+
+const generateUsersPosition = async (
+  usersFromRanking,
+  team = false,
+  start = 0,
+  limit = 20
+) => {
+  let rankingUsers = [...usersFromRanking]
+  if (team) rankingUsers.filter(u => u.teams.includes(team))
+  rankingUsers = rankingUsers.slice(start, limit)
+
+  return rankingUsers.map((u, index) => ({
+    name: u.user.name,
+    xp: u.score || u.xp,
+    level: u.level,
+    avatar: u.user.avatar,
+    teams: u.user.teams || [],
+    slackId: u.user.slackId,
+    rocketId: u.user.rocketId,
+    position: index + 1
+  }))
+}
+
+const closePreviousRanking = async date => {
+  let year = date.getFullYear()
+  let month = date.getMonth()
+
+  if (month == 0) {
+    year -= 1
+    month = 12
+  }
+
+  const ranking = await dal.findOne({
+    date: {
+      $gte: new Date(year, --month)
+    }
+  })
+
+  if (ranking) {
+    ranking.closed = true
+    await dal.save(ranking)
+  }
+}
+
+const getRankingUsersByMonth = async (month, year) => {
+  const allInteractions = await interactions.findByDate(year, month)
+
+  const rankingUsers = allInteractions.map(interaction => ({
+    user: interaction._id.user,
+    score: interaction.totalScore,
+    level: usersUtils.calculateLevel(interaction.totalScore)
+  }))
+
+  return rankingUsers
+}
+
+const findOrCreate = async (year, month) => {
+  let ranking = await getRankingByMonth(month, year)
+
+  if (!ranking || ranking.error) {
+    ranking = {
+      isCoreTeam: false,
+      users: [],
+      date: Date.now(),
+      isNew: true
+    }
+  }
+
+  return ranking
 }
 
 export default {
   calculatePositionByUser,
   getGeneralRanking,
-  getRankingByMonth
+  getRankingByMonth,
+  getRankingMessageByMonth,
+  generateUsersPosition,
+  closePreviousRanking,
+  getRankingUsersByMonth,
+  findOrCreate
 }

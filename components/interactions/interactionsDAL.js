@@ -45,6 +45,10 @@ const findLastMessageByUser = userId => {
   )
 }
 
+const aggregate = args => {
+  return model.aggregate(args).exec()
+}
+
 export default {
   find,
   findOne,
@@ -52,5 +56,6 @@ export default {
   findAllFromToday,
   findLastMessageByUser,
   updateMany,
-  save
+  save,
+  aggregate
 }
