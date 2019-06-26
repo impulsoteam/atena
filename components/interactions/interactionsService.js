@@ -94,7 +94,14 @@ const changeUserId = async (limit = 1000, skip = 0) => {
   const promises = allUsers.map(async user => {
     await dal.updateMany(
       {
-        user: user.rocketId || user.slackId
+        $or: [
+          {
+            user: user.username
+          },
+          {
+            user: user.rocketId || user.slackId
+          }
+        ]
       },
       {
         user: user._id
