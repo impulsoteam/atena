@@ -3,6 +3,11 @@ import rankings from './rankingsController'
 
 const router = express.Router()
 
+router.get('/general', async (req, res) => {
+  let result = await rankings.getGeneralRanking()
+  return res.json(result)
+})
+
 router.get('/monthly', async (req, res) => {
   let result = await rankings.getRankingByMonth(req.query.month)
   return res.json(result)

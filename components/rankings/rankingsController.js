@@ -20,7 +20,6 @@ const commandByMonth = async message => {
   return service.getRankingMessageByMonth(message.u._id, month)
 }
 
-// index
 const getRankingByMonth = async (month, team = false) => {
   // TODO: move to miner
   // const isMiner = await minerController.isMiner(req, res)
@@ -56,7 +55,7 @@ const getRankingByMonth = async (month, team = false) => {
     return
   }
 
-  let rankingUsers = await service.generateUsersPosition(ranking.users, team)
+  const rankingUsers = await service.generateUsersPosition(ranking.users, team)
 
   data.first_users = rankingUsers.slice(0, 3)
   data.last_users = rankingUsers.slice(3, 20)
@@ -64,37 +63,27 @@ const getRankingByMonth = async (month, team = false) => {
   return data
 }
 
-// general
-// const general = async (req, res) => {
-//   const isMiner = await minerController.isMiner(req, res)
-//   const { team, token } = req.headers
-//   let first_users = []
-//   let last_users = []
-//   const limit = isMiner ? 0 : 20
+const getGeneralRanking = async (team = false, limit = 20) => {
+  // const isMiner = await minerController.isMiner(req, res)
+  // const { team, token } = req.headers
+  // const limit = isMiner ? 0 : 20
+  // if (isMiner && isValidToken(team, token)) {
+  // res.json(initialData)
+  // }
 
-//   let users = await userController.findAll(
-//     false,
-//     limit,
-//     '-email -_id -lastUpdate'
-//   )
-//   users = await position(users)
-//   if (isMiner) users = await byTeam(users, team)
-//   first_users = await firstUsers(users)
-//   last_users = await lastUsers(users)
-//   const initialData = {
-//     title: 'Ranking Geral',
-//     first_users: first_users,
-//     last_users: last_users,
-//     monthName: 'GERAL',
-//     page: 'geral'
-//   }
+  const allUsers = await users.find({ isCoreTeam: false }, { score: -1 }, limit)
+  const rankingUsers = await service.generateUsersPosition(
+    allUsers,
+    team,
+    limit
+  )
 
-//   if (req.query.format === 'json' || (isMiner && isValidToken(team, token))) {
-//     res.json(initialData)
-//   } else {
-//     renderScreen(req, res, 'Ranking', initialData)
-//   }
-// }
+  return {
+    first_users: rankingUsers.slice(0, 3),
+    last_users: rankingUsers.slice(3, 20),
+    monthName: 'GERAL'
+  }
+}
 
 const generate = async month => {
   try {
@@ -120,5 +109,6 @@ export default {
   commandGeneral,
   commandByMonth,
   getRankingByMonth,
+  getGeneralRanking,
   generate
 }

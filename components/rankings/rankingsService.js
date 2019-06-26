@@ -110,21 +110,20 @@ const getRankingByMonth = async (month, year) => {
 const generateUsersPosition = async (
   usersFromRanking,
   team = false,
-  start = 0,
   limit = 20
 ) => {
-  let rankingUsers = [...usersFromRanking]
-  if (team) rankingUsers.filter(u => u.teams.includes(team))
-  rankingUsers = rankingUsers.slice(start, limit)
+  let allUsers = [...usersFromRanking]
+  if (team) allUsers.filter(u => u.teams.includes(team))
+  allUsers = allUsers.slice(0, limit)
 
-  return rankingUsers.map((u, index) => ({
-    name: u.user.name,
-    xp: u.score || u.xp,
+  return allUsers.map((u, index) => ({
+    name: u.name || u.user.name,
+    xp: parseInt(u.score || u.xp, 10) || 0,
     level: u.level,
-    avatar: u.user.avatar,
-    teams: u.user.teams || [],
-    slackId: u.user.slackId,
-    rocketId: u.user.rocketId,
+    avatar: u.user ? u.user.avatar : u.avatar,
+    teams: u.teams || u.user.teams,
+    slackId: u.user ? u.user.slackId : u.slackId,
+    rocketId: u.user ? u.user.rocketId : u.rocketId,
     position: index + 1
   }))
 }
