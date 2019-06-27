@@ -64,13 +64,6 @@ const getRankingByMonth = async (month, team = false) => {
 }
 
 const getGeneralRanking = async (team = false, limit = 20) => {
-  // const isMiner = await minerController.isMiner(req, res)
-  // const { team, token } = req.headers
-  // const limit = isMiner ? 0 : 20
-  // if (isMiner && isValidToken(team, token)) {
-  // res.json(initialData)
-  // }
-
   const allUsers = await users.find({ isCoreTeam: false }, { score: -1 }, limit)
   const rankingUsers = await service.generateUsersPosition(
     allUsers,
@@ -80,7 +73,7 @@ const getGeneralRanking = async (team = false, limit = 20) => {
 
   return {
     first_users: rankingUsers.slice(0, 3),
-    last_users: rankingUsers.slice(3, 20),
+    last_users: rankingUsers.slice(3, limit),
     monthName: 'GERAL'
   }
 }

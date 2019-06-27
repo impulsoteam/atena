@@ -113,7 +113,13 @@ const generateUsersPosition = async (
   limit = 20
 ) => {
   let allUsers = [...usersFromRanking]
-  if (team) allUsers.filter(u => u.teams.includes(team))
+
+  if (team) {
+    allUsers = allUsers.filter(u =>
+      u.user ? u.user.teams.includes(team) : u.teams.includes(team)
+    )
+  }
+
   allUsers = allUsers.slice(0, limit)
 
   return allUsers.map((u, index) => ({
