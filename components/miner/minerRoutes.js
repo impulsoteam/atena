@@ -21,6 +21,13 @@ const verifyToken = function(req, res, next) {
   }
 }
 
+router.get('/ranking', verifyToken, async (req, res) => {
+  const team = req.headers.team ? req.headers.team : false
+  const limit = req.headers.limit ? req.headers.limit : 9999999
+  const result = await miner.getAllUsers(team)
+  return res.json(result)
+})
+
 router.get('/ranking/geral', verifyToken, async (req, res) => {
   const team = req.headers.team ? req.headers.team : false
   const limit = req.headers.limit ? req.headers.limit : 9999999
