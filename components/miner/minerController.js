@@ -21,7 +21,11 @@ const getAllUsers = async (team, limit) => {
 }
 
 const getGeneralRanking = async (team, limit) => {
-  return ranking.getGeneralRanking(team, limit)
+  try {
+    return ranking.getGeneralRanking(team, limit)
+  } catch (e) {
+    errors._throw(file, 'getGeneralRanking', e)
+  }
 }
 
 export default {
