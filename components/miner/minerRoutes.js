@@ -41,4 +41,12 @@ router.get('/ranking/mes/:month', verifyToken, async (req, res) => {
   return res.json(result)
 })
 
+router.get('/mostactive', verifyToken, async (req, res) => {
+  const result = await miner.getMostActiveUsers(
+    req.headers.begin,
+    req.headers.end
+  )
+  return res.json(result)
+})
+
 export default router

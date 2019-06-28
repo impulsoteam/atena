@@ -40,8 +40,39 @@ const getRankingByMonth = async (month, team) => {
   }
 }
 
+const getMostActiveUsers = async (begin, end) => {
+  let response = {
+    text: '',
+    attachments: []
+  }
+
+  const allUsers = await users.getMostActives(begin, end)
+
+  if (allUsers.error) return { error: allUsers.error }
+
+  response.text = `Total de ${allUsers.length} usuário engajados`
+
+  allUsers.forEach(user => {
+    const usernameText = user._id.username
+      ? `Username: @${user._id.username} | `
+      : ''
+    const nameText = user._id.name ? `Name: ${user._id.name} | ` : ''
+
+    const rocketIdText = user._id.rocketId
+      ? `Rocket ID: ${user._id.rocketId} | `
+      : ''
+
+    response.attachments.push({
+      text: `${usernameText}${nameText}${rocketIdText}Qtd. interações: ${user.count}`
+    })
+  })
+
+  return response
+}
+
 export default {
   getGeneralRanking,
   getRankingByMonth,
-  getAllUsers
+  getAllUsers,
+  getMostActiveUsers
 }

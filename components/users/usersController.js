@@ -5,6 +5,7 @@ import service from './usersService'
 import rankings from '../rankings'
 import messages from '../messages'
 import errors from '../errors'
+import interactions from '../interactions'
 
 const file = 'Users | Controller'
 
@@ -201,6 +202,10 @@ const transferScore = async (userId, type, score) => {
   return user
 }
 
+const getMostActives = async (begin, end) => {
+  return interactions.getMostActivesUsers(begin, end)
+}
+
 export default {
   save,
   find,
@@ -221,5 +226,6 @@ export default {
   updatePro,
   findUsersWithSlack,
   findRocketUsersByName,
-  transferScore
+  transferScore,
+  getMostActives
 }

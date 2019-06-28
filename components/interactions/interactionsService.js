@@ -138,9 +138,66 @@ const findByDate = async (year, month) => {
   ])
 }
 
+const getMostActivesUsers = async (
+  begin,
+  end,
+  channel = false,
+  minCount = 6
+) => {
+  let queryMatch = {
+    date: { $gte: begin, $lte: end },
+    count: { $gte: minCount }
+  }
+
+  if (channel) {
+    queryMatch = {
+      ...queryMatch,
+      channel: { $eq: channel }
+    }
+  }
+
+  return dal.aggregate([
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'userDetails'
+      }
+    },
+    {
+      $unwind: {
+        path: '$userDetails',
+        includeArrayIndex: '_id',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $group: {
+        _id: {
+          _id: '$userDetails._id',
+          name: '$userDetails.name',
+          rocketId: '$userDetails.rocketId',
+          username: '$userDetails.username',
+          channel: '$channel'
+        },
+        count: { $sum: 1 },
+        date: { $first: '$date' }
+      }
+    },
+    {
+      $match: queryMatch
+    },
+    {
+      $sort: { count: -1 }
+    }
+  ])
+}
+
 export default {
   getModuleController,
   onSaveInteraction,
+  getMostActivesUsers,
   hasScore,
   normalize,
   changeUserId,

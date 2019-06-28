@@ -1,3 +1,4 @@
+import moment from 'moment-timezone'
 import dal from './interactionsDAL'
 import service from './interactionsService'
 import users from '../users'
@@ -43,11 +44,28 @@ const changeUserId = (limit, skip) => {
   return service.changeUserId(limit, skip)
 }
 
+const getMostActivesUsers = async (begin, end, channel, minCount) => {
+  begin = moment(begin, 'DD-MM-YYYY').startOf('day')
+  end = moment(end, 'DD-MM-YYYY').endOf('day')
+
+  if (!begin.isValid()) return { error: 'Data *begin* em formato inválido.' }
+  if (!end.isValid()) return { error: 'Data *end* em formato inválido.' }
+  if (end.diff(begin) < 0) return { error: 'Intervalo de datas em inválido.' }
+
+  return service.getMostActivesUsers(
+    begin.toDate(),
+    end.toDate(),
+    channel,
+    minCount
+  )
+}
+
 export default {
   findByDate,
   getLastMessage,
   saveManual,
   handle,
   findOne,
-  changeUserId
+  changeUserId,
+  getMostActivesUsers
 }
