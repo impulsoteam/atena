@@ -35,4 +35,10 @@ router.get('/ranking/geral', verifyToken, async (req, res) => {
   return res.json(result)
 })
 
+router.get('/ranking/mes/:month', verifyToken, async (req, res) => {
+  const team = req.headers.team ? req.headers.team : false
+  const result = await miner.getRankingByMonth(req.params.month, team)
+  return res.json(result)
+})
+
 export default router

@@ -21,13 +21,6 @@ const commandByMonth = async message => {
 }
 
 const getRankingByMonth = async (month, team = false) => {
-  // TODO: move to miner
-  // const isMiner = await minerController.isMiner(req, res)
-  // const { team, token } = req.headers
-  // if (isMiner && isValidToken(team, token)) {
-  // res.json(initialData)
-  // }
-
   if (!(await utils.isValidMonth(month))) month = utils.getCurrentMonth()
 
   const ranking = await service.getRankingByMonth(month)

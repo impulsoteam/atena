@@ -1,6 +1,7 @@
 import errors from '../errors'
 import users from '../users'
 import ranking from '../rankings'
+import rankingUtils from '../rankings/rankingsUtils'
 
 const file = 'Miner | Controller'
 
@@ -28,7 +29,19 @@ const getGeneralRanking = async (team, limit) => {
   }
 }
 
+const getRankingByMonth = async (month, team) => {
+  try {
+    if (!(await rankingUtils.isValidMonth(month)))
+      return { error: 'Envie um mês válido Ex: /miner/ranking/mes/1' }
+
+    return ranking.getRankingByMonth(month, team)
+  } catch (e) {
+    errors._throw(file, 'getRankingByMonth', e)
+  }
+}
+
 export default {
   getGeneralRanking,
+  getRankingByMonth,
   getAllUsers
 }
