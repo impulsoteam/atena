@@ -5,13 +5,14 @@ const router = express.Router()
 
 const verifyToken = function(req, res, next) {
   const { token } = req.headers
-  if (token) {
+  const isMiner = miner.test(req.originalUrl) || false
+  if (isMiner && token) {
     if (token !== process.env[`X_MINER_TOKEN`]) {
       res.sendStatus(401)
     } else {
       next()
     }
-  } else if (req.method === 'OPTIONS') {
+  } else if (isMiner && req.method === 'OPTIONS') {
     next()
   } else {
     return res.status(401).send({
