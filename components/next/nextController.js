@@ -14,6 +14,7 @@ const handleUser = async data => {
     user.email = data.network_email
     user.linkedinId = data.linkedin.uid
     user.username = data.rocket_chat.username
+    user.avatar = data.rocket_chat.avatar
     user.uuid = data.uuid
     user.pro = users.receiveProPlan(data)
     user.proBeginAt = users.getProBeginDate(user, data)
