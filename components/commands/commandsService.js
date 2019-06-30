@@ -26,8 +26,8 @@ const getCommandMessage = async message => {
     response = await users.commandPro(message)
   } else if (regex.commands.test(message.msg)) {
     response = await commandsList(message)
-    // } else if (regex.darpontos.test(message.msg)) {
-    //   customCommands.givePoints(message)
+  } else if (regex.darpontos.test(message.msg)) {
+    response = users.sendPoints(message)
   } else if (regex.checkPro.test(message.msg)) {
     response = await users.commandUserIsPro(message)
     // } else if (regex.openSource.test(message.msg)) {

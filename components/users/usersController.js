@@ -81,8 +81,7 @@ const findAllToRanking = async (
 }
 
 const isCoreTeam = async rocketId => {
-  const user = await dal.findOne({ rocketId: rocketId })
-  return user.isCoreTeam || false
+  return service.isCoreTeam(rocketId)
 }
 
 const commandPro = async message => {
@@ -206,6 +205,10 @@ const getMostActives = async (begin, end) => {
   return interactions.getMostActivesUsers(begin, end)
 }
 
+const sendPoints = async data => {
+  return service.sendPoints(data)
+}
+
 export default {
   save,
   find,
@@ -227,5 +230,6 @@ export default {
   findUsersWithSlack,
   findRocketUsersByName,
   transferScore,
-  getMostActives
+  getMostActives,
+  sendPoints
 }

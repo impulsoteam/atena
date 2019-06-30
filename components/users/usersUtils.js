@@ -29,8 +29,32 @@ const getWelcomeMessage = () => {
   Espero que aproveite ao máximo *tua jornada* por aqui!`
 }
 
+const getSendedPointsOptions = async message => {
+  // eslint-disable-next-line no-useless-escape
+  const regex = /(!darpontos) (@[a-z\-]+) ([\d]+) "(.+?)"/g
+  const options = await regex.exec(message)
+  return options
+}
+const getSendedPointsUser = async message => {
+  const options = await getSendedPointsOptions(message)
+  return options ? options[2].replace('@', '') : false
+}
+
+const getSendedPointsValue = async message => {
+  const options = await getSendedPointsOptions(message)
+  return options ? options[3] : false
+}
+
+const getSendedPointsReason = async message => {
+  const options = await getSendedPointsOptions(message)
+  return options ? options[4] : false
+}
+
 export default {
   calculateLevel,
   getUsernameByMessage,
-  getWelcomeMessage
+  getWelcomeMessage,
+  getSendedPointsUser,
+  getSendedPointsValue,
+  getSendedPointsReason
 }

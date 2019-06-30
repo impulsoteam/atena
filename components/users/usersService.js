@@ -4,9 +4,13 @@ import dal from './usersDAL'
 import utils from './usersUtils'
 import rocket from '../rocket'
 import next from '../next'
+import users from '../users'
 import usersLevelsHistory from '../usersLevelsHistory'
 import achievementsLevel from '../achievementsLevel'
 import messages from '../messages'
+import errors from '../errors'
+
+const file = 'Users | Controller'
 
 const today = moment(new Date())
   .utc()
@@ -134,7 +138,7 @@ const updateScore = async (user, score) => {
   if (!user || score === 0) return
 
   user.previousLevel = user.score === 0 ? 0 : user.level
-  user.score += score
+  user.score += parseInt(score, 10)
   user.level = utils.calculateLevel(user.score)
   await user.save()
   await onChangeLevel(user)
@@ -174,6 +178,70 @@ const sendTransferScoreMessage = (user, score, oldLevel) => {
   return messages.sendToUser(message, user.username)
 }
 
+const isCoreTeam = async rocketId => {
+  const user = await dal.findOne({ rocketId: rocketId })
+  return user.isCoreTeam || false
+}
+
+const sendPoints = async data => {
+  const { msg, u } = data
+
+  try {
+    const belongsCoreTeam = await isCoreTeam(u._id)
+    if (!belongsCoreTeam) {
+      return {
+        msg: 'Ops! *Não tens acesso* a esta operação!'
+      }
+    }
+
+    const sendedUser = await utils.getSendedPointsUser(msg)
+    const points = await utils.getSendedPointsValue(msg)
+    const reason = await utils.getSendedPointsReason(msg)
+
+    if (!sendedUser || !points || !reason) {
+      return {
+        msg: `Ops! Tem algo *errado* no seu comando. Tente desta forma:
+        ${'`!darpontos`'} ${'`@nome-usuario`'} ${'`pontos`'} ${'`"motivo"`'}
+        Ah! E o motivo deve estar entre aspas!`
+      }
+    }
+
+    if (sendedUser === u.username) {
+      return {
+        msg: `Ops! *Não podes* dar pontos para ti mesmo.`
+      }
+    }
+
+    const user = await users.findOne({ username: sendedUser })
+    if (!user) {
+      return {
+        msg: `Ops! Usuário *${sendedUser}* não encontrado.`
+      }
+    }
+
+    const updatedScore = await users.updateScore(user, points)
+    let response = {
+      msg: 'Opa, aconteceu algo inesperado. Tua pontuação não foi enviada!'
+    }
+
+    if (updatedScore) {
+      const message = {
+        msg: `Acabaste de receber *${points} pontos* de experiência por *${reason}*.`
+      }
+
+      messages.sendToUser(message, user.username)
+
+      response = {
+        msg: `Sucesso! Enviaste *${points} pontos* de experiência para *${user.name}*!`
+      }
+    }
+
+    return response
+  } catch (e) {
+    errors._throw(file, 'sendPoints', e)
+  }
+}
+
 export default {
   findInactivities,
   receiveProPlan,
@@ -184,5 +252,7 @@ export default {
   findUsersWithSlack,
   findRocketUsersByName,
   transferScoreToSlackUser,
-  transferScoreToRocketUser
+  transferScoreToRocketUser,
+  isCoreTeam,
+  sendPoints
 }
