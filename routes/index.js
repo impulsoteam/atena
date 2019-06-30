@@ -20,6 +20,7 @@ import users from '../components/users'
 import rankings from '../components/rankings'
 import interactions from '../components/interactions'
 import miner from '../components/miner'
+import checkpoints from '../components/checkpoints'
 
 const router = express.Router()
 
@@ -29,6 +30,7 @@ router.use('/auth', auth.routes)
 router.use('/users', users.routes)
 router.use('/interactions', interactions.routes)
 router.use('/miner', miner.routes)
+router.use('/checkpoints', checkpoints.routes)
 router.use('/api/v1/users', users.routes)
 router.use('/api/v1/ranking', rankings.routes)
 
