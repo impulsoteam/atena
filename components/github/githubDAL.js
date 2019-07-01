@@ -1,48 +1,37 @@
 import model from './github'
 
-export const getRepositories = async (query = {}) => {
-  return model.find(query).then(results => {
-    return Promise.resolve(results.map(row => row.repositoryId))
-  })
+const findAllRepositories = async (query = {}) => {
+  const repositories = await model.find(query)
+  return repositories.map(row => row.repositoryId)
 }
 
 export const getRepository = async repositoryId =>
   model.findOne({ repositoryId: repositoryId })
 
-export const getExcludedUsers = async (query = {}) => {
+const getExcludedUsers = async (query = {}) => {
   return model.findOne(query).then(doc => {
     return Promise.resolve(doc.excludedUsers)
   })
 }
 
-export const isValidRepository = async repositoryId => {
-  return getRepositories().then(results => {
-    return results.includes(repositoryId)
-  })
+const findExcludedUser = async (repositoryId, userId) => {
+  return model.findOne(
+    {
+      repositoryId: repositoryId,
+      'excludedUsers.userId': userId
+    },
+    {
+      'excludedUsers.$': 1
+    }
+  )
 }
 
-export const isExcludedUser = async (repositoryId, userId) => {
-  return model
-    .findOne(
-      {
-        repositoryId: repositoryId,
-        'excludedUsers.userId': userId
-      },
-      {
-        'excludedUsers.$': 1
-      }
-    )
-    .then(doc => {
-      if (doc === null) {
-        return Promise.reject('Usuário não adicionado a lista de excluídos')
-      }
-      return true
-    })
-    .catch(() => {
-      return false
-    })
-}
-
-export const save = async obj => {
+const save = async obj => {
   return model(obj).save()
+}
+
+export default {
+  findAllRepositories,
+  findExcludedUser,
+  save
 }

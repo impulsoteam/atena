@@ -2,6 +2,7 @@ import utils from './commandsUtils'
 import users from '../users'
 import rankings from '../rankings'
 import achievements from '../achievements'
+import github from '../github'
 
 // import * as customCommands from '../components/commands'
 // import {
@@ -30,8 +31,8 @@ const getCommandMessage = async message => {
     response = users.sendPoints(message)
   } else if (regex.checkPro.test(message.msg)) {
     response = await users.commandUserIsPro(message)
-    // } else if (regex.openSource.test(message.msg)) {
-    //   authGithub(message)
+  } else if (regex.openSource.test(message.msg)) {
+    response = await github.auth(message)
     // } else if (regex.openSourceAddRepository.test(message.msg)) {
     //   addRepository(message)
     // } else if (regex.openSourceAddRepositoryUser.test(message.msg)) {

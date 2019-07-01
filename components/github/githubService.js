@@ -1,33 +1,6 @@
 import config from 'config-yml'
-import { driver } from '@rocket.chat/sdk'
-import { dal as interactionDAL } from '../interactions'
-
-const getId = data => {
-  return data.pull_request && data.pull_request.merged
-    ? data.pull_request.user.id
-    : data.sender.id
-}
-
-const getTypeByAction = action => {
-  let res = null
-  switch (action) {
-    case 'closed':
-      res = 'merged_pull_request'
-      break
-    case 'opened':
-      res = 'pull_request'
-      break
-  }
-  return res
-}
-
-const getType = data => {
-  let type = null
-  if (data.issue) type = 'issue'
-  if (data.review) type = 'review'
-  if (data.pull_request) type = defaultFunctions.getTypeByAction(data.action)
-  return type
-}
+import messages from '../messages'
+import dal from './githubDAL'
 
 const normalizeCommon = data => {
   return {
@@ -73,48 +46,39 @@ const normalizeMergedPullRequest = data => {
 }
 
 const normalize = data => {
-  let response = {}
-  if (data.type === 'issue') response = defaultFunctions.normalizeIssue(data)
-  if (data.type === 'review') response = defaultFunctions.normalizeReview(data)
-  if (data.type === 'pull_request')
-    response = defaultFunctions.normalizePullRequest(data)
-  if (data.type === 'merged_pull_request')
-    response = defaultFunctions.normalizeMergedPullRequest(data)
+  const normalizeTypes = {
+    issue: normalizeIssue(data),
+    review: normalizeReview(data),
+    pull_request: normalizePullRequest(data),
+    merged_pull_request: normalizeMergedPullRequest(data)
+  }
 
   return {
     ...normalizeCommon(data),
-    ...response
+    ...normalizeTypes[data.type]
   }
-}
-
-const interactionSave = async data => {
-  return interactionDAL.save(data)
-}
-
-const sendOnRocket = async user => {
-  const response = {
-    msg: `Olá @${
-      user.username
-    } acabou de ganhar pontos ao contribuir nos nossos projetos open source`
-  }
-  driver.sendToRoom(response, 'open-source')
 }
 
 const sendMessage = async user => {
-  sendOnRocket(user)
+  const response = {
+    msg: `Olá @${user.username} acabou de ganhar pontos ao contribuir nos nossos projetos open source`
+  }
+
+  messages.sendToRoom(response, 'open-source')
 }
 
-const defaultFunctions = {
-  getType,
-  getId,
+const isValidRepository = async repositoryId => {
+  const repositories = await dal.findAllRepositories()
+  return repositories.includes(repositoryId)
+}
+
+const isExcludedUser = async (repositoryId, userId) => {
+  return dal.findExcludedUser(repositoryId, userId)
+}
+
+export default {
+  isExcludedUser,
   normalize,
-  normalizePullRequest,
-  normalizeReview,
-  normalizeMergedPullRequest,
-  normalizeIssue,
-  getTypeByAction,
-  interactionSave,
-  sendMessage
+  sendMessage,
+  isValidRepository
 }
-
-export default defaultFunctions
