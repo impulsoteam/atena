@@ -5,20 +5,20 @@ import { getStyleLog } from "../utils";
 
 export default async () => {
   cron.schedule("* * * * *", async () => {
-    let users;
-    try {
-      users = await UserController.findInactivities();
-    } catch (e) {
-      console.log(getStyleLog("red"), `\n-- error updating inactivity users`);
-      return false;
-    }
-    users.forEach(user => {
-      const score = config.xprules.inactive.value;
-      const interaction = null;
+    // let users;
+    // try {
+    //   users = await UserController.findInactivities();
+    // } catch (e) {
+    //   console.log(getStyleLog("red"), `\n-- error updating inactivity users`);
+    //   return false;
+    // }
+    // users.forEach(user => {
+    //   const score = config.xprules.inactive.value;
+    //   const interaction = null;
 
-      UserController.updateUserData(user, interaction, score);
-    });
+    //   UserController.updateUserData(user, interaction, score);
+    // });
 
-    return true;
+    // return true;
   });
 };
