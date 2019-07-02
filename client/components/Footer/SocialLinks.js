@@ -4,23 +4,19 @@ import StyledSocialLinks from './SocialLinks.style'
 const links = [
   {
     icon: 'facebook-f',
-    link: 'https://www.facebook.com/workimpulso'
+    link: 'https://www.facebook.com/UniversoImpulso'
   },
   {
     icon: 'twitter',
-    link: 'https://twitter.com/impulsonetwork'
+    link: 'https://twitter.com/UniversoImpulso'
   },
   {
     icon: 'linkedin-in',
-    link: 'https://www.linkedin.com/company/impulsowork/'
-  },
-  {
-    icon: 'instagram',
-    link: 'https://www.instagram.com/impulso.network/'
+    link: 'https://www.linkedin.com/company/UniversoImpulso/'
   },
   {
     icon: 'github',
-    link: 'https://github.com/impulsonetwork'
+    link: 'https://github.com/UniversoImpulso'
   },
   {
     icon: 'rocketchat',

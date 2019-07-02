@@ -9,7 +9,7 @@ const Footer = () => (
       <SocialLinks />
       <hr />
       <StyledCopyright>
-        2018 © Todos os direitos reservados. Impulso.
+        2019 © Todos os direitos reservados. Impulso.
       </StyledCopyright>
     </section>
   </StyledFooter>
