@@ -380,9 +380,7 @@ const details = async (req, res) => {
   const interactions = await interactionController.findBy({ user: id })
   const response = {
     user,
-    avatar: `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${
-      user.rocketId
-    }`,
+    avatar: `${process.env.ROCKET_HOST}/api/v1/users.getAvatar?userId=${user.rocketId}`,
     interactions: interactions
   }
   res.json(response)
@@ -403,9 +401,7 @@ export const commandScore = async message => {
   myPosition = await rankingPosition(user.rocketId)
 
   response = {
-    msg: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${
-      user.score
-    } XP`,
+    msg: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${user.score} XP`,
     attachments: [
       {
         text: `Ah, e você está na posição ${myPosition} do ranking`
@@ -425,10 +421,20 @@ export const handleFromNext = async data => {
         rocketId: data.rocket_chat.id,
         name: data.fullname,
         username: data.rocket_chat.username,
-        uuid: data.uuid
+        uuid: data.uuid,
+        level: 1
       }
 
       user = await save(userData)
+
+      await interactionController.manualInteractions({
+        type: 'manual',
+        user: user.rocketId,
+        username: user.username,
+        text: `Usuário criado a partir do next`,
+        value: 0,
+        score: 0
+      })
     }
 
     user.rocketId = data.rocket_chat.id
@@ -671,18 +677,12 @@ const editScore = async (req, res) => {
     }
 
     const message = {
-      msg: `Olá ${
-        user.name
-      }, sua pontuação do slack, *${score} pontos*, foi tranferida. Agora sua nova pontuação é de *${
-        user.score
-      } pontos!*`,
+      msg: `Olá ${user.name}, sua pontuação do slack, *${score} pontos*, foi tranferida. Agora sua nova pontuação é de *${user.score} pontos!*`,
       attachments: []
     }
 
     const attachments = {
-      text: `Ah, e você ainda subiu de nivel. Seu novo nivel é *${
-        user.level
-      }* .`
+      text: `Ah, e você ainda subiu de nivel. Seu novo nivel é *${user.level}* .`
     }
 
     if (oldLevel !== user.level) {
