@@ -28,7 +28,7 @@ export const userSchema = new mongoose.Schema({
   level: {
     type: Number,
     required: true,
-    default: 0,
+    default: 1,
     set: function(name) {
       this._previousLevel = this.level
       return name

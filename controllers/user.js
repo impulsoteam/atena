@@ -56,7 +56,10 @@ const update = async interaction => {
   if (interaction.origin === 'slack' || !interaction.origin) {
     userInfo = await getUserInfo(interaction.user)
     user = await UserModel.findOne({ slackId: interaction.user }).exec()
-  } else if (interaction.origin === 'rocket') {
+  } else if (
+    interaction.origin === 'rocket' ||
+    interaction.origin === 'sistema'
+  ) {
     userInfo = false
     user = await UserModel.findOne({ rocketId: interaction.user }).exec()
   }
@@ -422,7 +425,9 @@ export const handleFromNext = async data => {
         name: data.fullname,
         username: data.rocket_chat.username,
         uuid: data.uuid,
-        level: 1
+        level: 1,
+        score: 0,
+        pro: false
       }
 
       user = await save(userData)
@@ -504,6 +509,7 @@ export const calculateLevel = score => {
 
 export const handlePro = async user => {
   const isEligiblePro = await isEligibleToPro(user)
+
   if (isEligiblePro != user.pro) {
     runPublisher(user)
   }
