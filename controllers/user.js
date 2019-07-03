@@ -20,6 +20,10 @@ import api from '../rocket/api'
 import userModel from '../models/user'
 import { runPublisher } from '../workers/publisher'
 
+const today = moment(new Date())
+  .utc()
+  .endOf('day')
+
 const updateParentUser = async interaction => {
   const score = calculateReceivedScore(interaction)
   const userInfo = await getRocketUserInfo(interaction.parentUser)
@@ -27,9 +31,9 @@ const updateParentUser = async interaction => {
   if (userInfo) {
     let user = await findByOrigin(interaction, true)
 
-    user.pro = await handlePro(user)
-
     if (user) {
+      user = await handlePro(user)
+
       if (score > 0) {
         const newScore = user.score + score
         user.level = calculateLevel(newScore)
@@ -64,7 +68,13 @@ const update = async interaction => {
     user = await UserModel.findOne({ rocketId: interaction.user }).exec()
   }
 
-  user.pro = await handlePro(user)
+  if (user) {
+    user = await updateUserData(user, interaction, score)
+  } else {
+    user = await createUserData(userInfo, score, interaction, UserModel)
+  }
+
+  user = await handlePro(user)
 
   if (user.score === 0) {
     sendToUser(
@@ -89,12 +99,6 @@ const update = async interaction => {
       Espero que aproveite ao máximo *tua jornada* por aqui!`,
       interaction.rocketUsername
     )
-  }
-
-  if (user) {
-    return await updateUserData(user, interaction, score)
-  } else {
-    return await createUserData(userInfo, score, interaction, UserModel)
   }
 }
 
@@ -448,11 +452,18 @@ export const handleFromNext = async data => {
     user.linkedinId = data.linkedin.uid
     user.username = data.rocket_chat.username
     user.uuid = data.uuid
-    user.pro = await isEligibleToPro(user, data)
-    if (user.pro && data.current_plan.begin_at && data.current_plan.finish_at) {
-      user.proBeginAt = data.current_plan.begin_at
-      user.proFinishAt = data.current_plan.finish_at
+    const isPro = Boolean(data.current_plan && data.current_plan.name)
+
+    if (isPro) {
+      user.pro = true
+      user.proBeginAt = user.proBeginAt || data.current_plan.begin_at
+      user.proFinishAt =
+        !user.proFinishAt ||
+        moment(data.current_plan.finish_at).isSameOrAfter(user.proFinishAt)
+          ? data.current_plan.finish_at
+          : user.proFinishAt
     }
+
     return await user.save()
   } catch (err) {
     console.error(err)
@@ -510,11 +521,46 @@ export const calculateLevel = score => {
 export const handlePro = async user => {
   const isEligiblePro = await isEligibleToPro(user)
 
-  if (isEligiblePro != user.pro) {
-    runPublisher(user)
+  if (isEligiblePro) {
+    if (!user.proBeginAt && !user.proFinishAt) {
+      user.proBeginAt = today.format()
+      user.proFinishAt = today.add(5, 'years').format()
+    } else if (
+      user.proFinishAt &&
+      moment(user.proFinishAt).isSameOrBefore(today)
+    ) {
+      user.proFinishAt = today.add(5, 'years').format()
+    }
+  } else {
+    if (user.proBeginAt && user.proFinishAt) {
+      user.proFinishAt = today.format()
+    }
   }
 
-  return isEligiblePro
+  if (isEligiblePro != user.pro) {
+    let data
+    if (isEligiblePro) {
+      data = {
+        uuid: user.uuid,
+        current_plan: {
+          name: user.level > 2 ? 'Atena - Level' : 'Atena - Cargo',
+          begin_at: user.proBeginAt,
+          finish_at: user.proFinishAt
+        }
+      }
+    } else {
+      data = {
+        uuid: user.uuid,
+        current_plan: {
+          finish_at: today.format()
+        }
+      }
+    }
+
+    runPublisher(data)
+  }
+
+  return user
 }
 
 const isCoreTeam = async obj => {
