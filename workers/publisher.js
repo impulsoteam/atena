@@ -1,34 +1,34 @@
-const url = process.env.CLOUDAMQP_URL;
-const queue = process.env.CLOUDMQP_QUEUE;
+const url = process.env.CLOUDAMQP_URL
+const queue = process.env.CLOUDMQP_QUEUE_OUT
 
 const bail = err => {
-  console.error(err);
-  process.exit(1);
-};
+  console.error('[*] Error sending message', err)
+}
 
-const publisher = (conn, user) => {
+const publisher = (conn, data) => {
   const on_open = (err, ch) => {
-    if (err != null) bail(err);
+    if (err != null) bail(err)
 
-    ch.assertQueue(queue, { durable: true });
-    console.log("[*] Waiting for messages in %s.", queue);
-    ch.publish(queue, user, res => {
-      if (res) {
-        console.log(res.content.toString());
-      } else {
-        console.error("[*] Error sending message", res.toString());
-      }
-    });
-  };
-
-  conn.createChannel(on_open);
-};
-
-export const runPublisher = user => {
-  if (url) {
-    require("amqplib/callback_api").connect(url, (err, conn) => {
-      if (err != null) bail(err);
-      publisher(conn, user);
-    });
+    const queueOpts = { persistent: true }
+    const message = new Buffer(JSON.stringify(data))
+    ch.assertExchange(queue, 'fanout', { durable: false })
+    ch.sendToQueue(queue, message, queueOpts)
+    ch.publish(queue, '', message, queueOpts)
+    console.log(' [x] Sended %s', JSON.stringify(data))
   }
-};
+
+  conn.createChannel(on_open)
+
+  setTimeout(function() {
+    conn.close()
+  }, 500)
+}
+
+export const runPublisher = data => {
+  if (url) {
+    require('amqplib/callback_api').connect(url, (err, conn) => {
+      if (err != null) bail(err)
+      publisher(conn, data)
+    })
+  }
+}

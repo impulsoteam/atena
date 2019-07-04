@@ -1,7 +1,7 @@
 // import { _throw } from "../helpers";
-import { sendToUser } from "../rocket/bot";
-import { calculateAchievementsPosition } from "./calculateAchievementsPosition";
-import { getLastAchievementRatingEarned } from "./achievements";
+import { sendToUser } from '../rocket/bot'
+import { calculateAchievementsPosition } from './calculateAchievementsPosition'
+import { getLastAchievementRatingEarned } from './achievements'
 
 export const sendEarnedAchievementMessage = async (
   user,
@@ -9,39 +9,37 @@ export const sendEarnedAchievementMessage = async (
   isAchievementLevel = false
 ) => {
   if (!user) {
-    console.log("Error no user pass to send earned achievement messages");
+    console.log('Error no user pass to send earned achievement messages')
   }
 
   if (!achievement) {
-    console.log(
-      "Error no achievement pass to send earned achievement messages"
-    );
+    console.log('Error no achievement pass to send earned achievement messages')
   }
-  const name = achievement.name.split(" | ");
+  const name = achievement.name.split(' | ')
 
   let privateMessage = `:medal: Você obteve a conquista [${
     achievement.rating
-  } ${achievement.range} | ${name[1]}]!`;
+  } ${achievement.range} | ${name[1]}]!`
 
   // let publicMessage = `:medal: @${rocketUser.username} obteve a conquista [${
   //   achievement.rating
   // } ${achievement.range} | ${name[1]}]!`;
 
   if (isAchievementLevel) {
-    privateMessage = `:medal: Você obteve o *Nível ${user.level}*!`;
+    privateMessage = `:medal: Você obteve o *Nível ${user.level}*!`
     // publicMessage = `:medal: @${rocketUser.username} obteve o *Nível ${
     //   user.level
     // }*!`;
   }
 
-  await sendToUser(privateMessage, user.username);
+  await sendToUser(privateMessage, user.username)
   // await sendMessage(publicMessage, "impulso-network");
-};
+}
 
 export const generateAchievementsMessages = achievements => {
-  let messages = [];
+  let messages = []
 
-  achievements = calculateAchievementsPosition(achievements);
+  achievements = calculateAchievementsPosition(achievements)
   if (achievements.length) {
     achievements.map(achievement => {
       messages.push({
@@ -49,18 +47,18 @@ export const generateAchievementsMessages = achievements => {
         \n Você é ${achievement.rating.name} com ${achievement.total}/${
           achievement.rating.value
         }.`
-      });
-    });
+      })
+    })
   }
 
-  return messages;
-};
+  return messages
+}
 
 export const generateAchievementsTemporaryMessages = achievements => {
-  let messages = [];
+  let messages = []
 
   achievements.map(achievement => {
-    const currentAchievement = getLastAchievementRatingEarned(achievement);
+    const currentAchievement = getLastAchievementRatingEarned(achievement)
     messages.push({
       text: `*${achievement.name}*:
       \n Você é ${currentAchievement.rating.name} ${
@@ -69,18 +67,18 @@ export const generateAchievementsTemporaryMessages = achievements => {
       \n :trophy: Seu record é ${achievement.record.name} ${
         achievement.record.range
       } com total de ${achievement.record.total}.`
-    });
-  });
+    })
+  })
 
-  return messages;
-};
+  return messages
+}
 
 export const generateAchievementLevelMessage = achievement => {
-  let messages = [];
-  const lastRating = getLastAchievementRatingEarned(achievement);
+  let messages = []
+  const lastRating = getLastAchievementRatingEarned(achievement)
   const recordRange = achievement.record.range
     ? ` ${achievement.record.range}`
-    : "";
+    : ''
 
   messages.push({
     text: `*Network | Nível*:
@@ -90,7 +88,7 @@ export const generateAchievementLevelMessage = achievement => {
     \n :trophy: Seu record é ${
       achievement.record.name
     }${recordRange} com nível ${achievement.record.level}.`
-  });
+  })
 
-  return messages;
-};
+  return messages
+}

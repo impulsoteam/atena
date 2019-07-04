@@ -1,6 +1,6 @@
-import React from "react";
-import { StyledFooter, StyledCopyright } from "./style";
-import SocialLinks from "./SocialLinks";
+import React from 'react'
+import { StyledFooter, StyledCopyright } from './style'
+import SocialLinks from './SocialLinks'
 
 const Footer = () => (
   <StyledFooter>
@@ -13,6 +13,6 @@ const Footer = () => (
       </StyledCopyright>
     </section>
   </StyledFooter>
-);
+)
 
-export default Footer;
+export default Footer

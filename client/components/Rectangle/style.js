@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const StyledRectangle = styled.div`
   background: ${props =>
@@ -17,22 +17,22 @@ export const StyledRectangle = styled.div`
   }
   a:after {
     background: none repeat scroll 0 0 #fff;
-    content: "";
+    content: '';
     display: block;
     height: ${props => props.theme.spacing.unit * 0.25}px;
     position: relative;
     width: ${props => props.theme.spacing.unit * 3.75}px;
   }
-`;
+`
 
 export const LeftStyledRectangle = styled(StyledRectangle)`
   border-top-left-radius: 100px;
   border-bottom-left-radius: 100px;
-`;
+`
 
 export const RightStyleRectangle = styled(StyledRectangle)`
   border-top-right-radius: 100px;
   border-bottom-right-radius: 100px;
-`;
+`
 
-export default StyledRectangle;
+export default StyledRectangle

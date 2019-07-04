@@ -1,46 +1,46 @@
-import config from "config-yml";
-import express from "express";
-import axios from "axios";
-import bodyParser from "body-parser";
-import { analyticsSendBotCollect, getRanking } from "../utils";
-import userController from "../controllers/user";
-import interactionController from "../controllers/interaction";
-import achievementController from "../controllers/achievement";
-import achievementTemporaryController from "../controllers/achievementTemporary";
-import achievementLevelController from "../controllers/achievementLevel";
-import rankingController from "../controllers/ranking";
-import { isCoreTeam } from "../utils";
-import { sendMessage } from "../rocket/bot";
+import config from 'config-yml'
+import express from 'express'
+import axios from 'axios'
+import bodyParser from 'body-parser'
+import { analyticsSendBotCollect, getRanking } from '../utils'
+import userController from '../controllers/user'
+import interactionController from '../controllers/interaction'
+import achievementController from '../controllers/achievement'
+import achievementTemporaryController from '../controllers/achievementTemporary'
+import achievementLevelController from '../controllers/achievementLevel'
+import rankingController from '../controllers/ranking'
+import { isCoreTeam } from '../utils'
+import { sendMessage } from '../rocket/bot'
 import {
   generateAchievementsMessages,
   generateAchievementsTemporaryMessages,
   generateAchievementLevelMessage
-} from "../utils/achievementsMessages";
+} from '../utils/achievementsMessages'
 
-const router = express.Router();
+const router = express.Router()
 
-const urlencodedParser = bodyParser.urlencoded({ extended: true });
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }));
+const urlencodedParser = bodyParser.urlencoded({ extended: true })
+router.use(bodyParser.json())
+router.use(bodyParser.urlencoded({ extended: true }))
 
-router.post("/score", urlencodedParser, async (req, res) => {
-  let user = {};
-  let query_user;
-  let myPosition = 0;
+router.post('/score', urlencodedParser, async (req, res) => {
+  let user = {}
+  let query_user
+  let myPosition = 0
   let response = {
-    text: "Ops! Você ainda não tem pontos registrados."
-  };
+    text: 'Ops! Você ainda não tem pontos registrados.'
+  }
 
-  if (req.headers.origin === "rocket") {
-    req.body.user_id = req.body.id;
-    query_user = { rocketId: req.body.user_id };
+  if (req.headers.origin === 'rocket') {
+    req.body.user_id = req.body.id
+    query_user = { rocketId: req.body.user_id }
   } else {
-    query_user = { slackId: req.body.user_id };
+    query_user = { slackId: req.body.user_id }
   }
 
   try {
-    user = await userController.findBy(query_user);
-    myPosition = await userController.rankingPosition(req.body.user_id);
+    user = await userController.findBy(query_user)
+    myPosition = await userController.rankingPosition(req.body.user_id)
     response = {
       text: `Olá ${user.name}, atualmente você está no nível ${
         user.level
@@ -50,189 +50,189 @@ router.post("/score", urlencodedParser, async (req, res) => {
           text: `Ah, e você está na posição ${myPosition} do ranking`
         }
       ]
-    };
-    analyticsSendBotCollect(req.body);
+    }
+    analyticsSendBotCollect(req.body)
   } catch (e) {
-    console.log("Bot -> Score:", e);
+    console.log('Bot -> Score:', e)
   }
 
-  res.json(response);
-});
+  res.json(response)
+})
 
-router.post("/ranking", rankingController.bot_index);
+router.post('/ranking', rankingController.bot_index)
 
-router.get("/ranking-save", async (req, res) => {
-  await rankingController.save();
-  res.send("save");
-});
+router.get('/ranking-save', async (req, res) => {
+  await rankingController.save()
+  res.send('save')
+})
 
-router.post("/general-raking", urlencodedParser, async (req, res) => {
-  let response = {};
+router.post('/general-raking', urlencodedParser, async (req, res) => {
+  let response = {}
 
   try {
-    const coreTeam = await isCoreTeam(req.body.id);
-    response = await getRanking(req, coreTeam);
-    analyticsSendBotCollect(req.body);
+    const coreTeam = await isCoreTeam(req.body.id)
+    response = await getRanking(req, coreTeam)
+    analyticsSendBotCollect(req.body)
   } catch (e) {
-    console.log(e);
+    console.log(e)
   }
 
-  response.text = response.msg;
-  res.json(response);
-});
+  response.text = response.msg
+  res.json(response)
+})
 
-router.post("/coreteamranking", urlencodedParser, async (req, res) => {
-  let response = {};
+router.post('/coreteamranking', urlencodedParser, async (req, res) => {
+  let response = {}
 
   if (isCoreTeam(req.body.user_id)) {
     try {
-      response = await getRanking(req, true);
-      analyticsSendBotCollect(req.body);
+      response = await getRanking(req, true)
+      analyticsSendBotCollect(req.body)
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
   } else {
     response.text =
-      "Você não faz parte do Core Team nem um cavaleiro de ouro, tente ver o seu ranking com o comando */ranking*";
+      'Você não faz parte do Core Team nem um cavaleiro de ouro, tente ver o seu ranking com o comando */ranking*'
   }
 
-  res.json(response);
-});
+  res.json(response)
+})
 
-router.post("/feedback", urlencodedParser, async (req, res) => {
-  let user = {};
-  let response = {};
+router.post('/feedback', urlencodedParser, async (req, res) => {
+  let user = {}
+  let response = {}
   try {
-    user = await userController.find(req.body.user_id);
+    user = await userController.find(req.body.user_id)
 
     const url = `https://slack.com/api/chat.postEphemeral?token=${
       process.env.SLACK_TOKEN
     }&channel=${config.channels.valid_channels[0]}&text=${encodeURIComponent(
       `Tio, ${user.name} mandou um super feedback, saca só: _${req.body.text}_`
-    )}&user=${process.env.SLACK_USER_FEEDBACK}&pretty=1`;
+    )}&user=${process.env.SLACK_USER_FEEDBACK}&pretty=1`
 
-    response = await axios.post(url);
+    response = await axios.post(url)
   } catch (e) {
-    response.error = e;
+    response.error = e
   }
 
   res.json({
     text:
-      "Super Obrigado pelo feedback, vou compartilhar isso com Seiya e os outros cavaleiros já! =D"
-  });
+      'Super Obrigado pelo feedback, vou compartilhar isso com Seiya e os outros cavaleiros já! =D'
+  })
 
-  return response;
-});
+  return response
+})
 
-router.post("/sendpoints", urlencodedParser, async (req, res) => {
+router.post('/sendpoints', urlencodedParser, async (req, res) => {
   let response = {
-    text: "você tá tentando dar pontos prum coleguinha, né?!"
-  };
-  const value = +req.body.text.split("> ")[1] || 0;
-  const theUser = req.body.username || "ninguém";
+    text: 'você tá tentando dar pontos prum coleguinha, né?!'
+  }
+  const value = +req.body.text.split('> ')[1] || 0
+  const theUser = req.body.username || 'ninguém'
   const impulser =
     req.body.text
-      .split("|")[0]
-      .substring(2, req.body.text.split("|")[0].length) || "ninguém";
+      .split('|')[0]
+      .substring(2, req.body.text.split('|')[0].length) || 'ninguém'
 
   if (config.coreteam.admins.some(user => user === theUser)) {
     try {
       await interactionController.manualInteractions({
-        type: "manual",
+        type: 'manual',
         user: impulser,
         text: `você recebeu esses ${value} pontos de @${theUser}`,
         value: value
-      });
+      })
 
-      response.text = `você tá dando ${value} pontos para @${impulser}`;
+      response.text = `você tá dando ${value} pontos para @${impulser}`
     } catch (e) {
       response.text =
-        "Ocorreu um erro nessa sua tentativa legal de dar pontos para outro coleguinha";
-      console.log(e);
+        'Ocorreu um erro nessa sua tentativa legal de dar pontos para outro coleguinha'
+      console.log(e)
     }
   } else {
     response.text =
-      "Nobre cavaleiro(a) da casa de bronze, infelizmente sua armadura não dá permissão para tal façanha =/";
+      'Nobre cavaleiro(a) da casa de bronze, infelizmente sua armadura não dá permissão para tal façanha =/'
   }
 
-  res.json(response);
-});
+  res.json(response)
+})
 
-router.post("/minhasconquistas", urlencodedParser, async (req, res) => {
-  let response = { msg: "Ops! Você ainda não tem conquistas registradas. :(" };
+router.post('/minhasconquistas', urlencodedParser, async (req, res) => {
+  let response = { msg: 'Ops! Você ainda não tem conquistas registradas. :(' }
 
   try {
-    let user = {};
-    let attachments = [];
-    let interaction = {};
+    let user = {}
+    let attachments = []
+    let interaction = {}
 
-    if (req.headers.origin === "rocket") {
+    if (req.headers.origin === 'rocket') {
       interaction = {
-        origin: "rocket",
+        origin: 'rocket',
         user: req.body.id
-      };
+      }
     } else {
       interaction = {
-        origin: "slack",
+        origin: 'slack',
         user: req.body.user_id
-      };
+      }
     }
 
-    user = await userController.findByOrigin(interaction);
+    user = await userController.findByOrigin(interaction)
 
     if (user) {
-      let achievements = await achievementController.findAllByUser(user._id);
+      let achievements = await achievementController.findAllByUser(user._id)
 
       if (achievements.length) {
-        const achievementsMessages = generateAchievementsMessages(achievements);
-        attachments = attachments.concat(achievementsMessages);
+        const achievementsMessages = generateAchievementsMessages(achievements)
+        attachments = attachments.concat(achievementsMessages)
       }
 
       let achievementsTemporary = await achievementTemporaryController.findAllByUser(
         user._id
-      );
+      )
 
       if (achievementsTemporary.length) {
         const achievementsMessages = generateAchievementsTemporaryMessages(
           achievementsTemporary
-        );
-        attachments = attachments.concat(achievementsMessages);
+        )
+        attachments = attachments.concat(achievementsMessages)
       }
 
       let achievementLevel = await achievementLevelController.findByUser(
         user._id
-      );
+      )
 
       if (achievementLevel) {
         const achievementMessage = generateAchievementLevelMessage(
           achievementLevel
-        );
-        attachments = attachments.concat(achievementMessage);
+        )
+        attachments = attachments.concat(achievementMessage)
       }
 
       if (attachments.length) {
         response = {
           msg: `Olá ${user.name}, eis aqui as conquistas que solicitou:`,
           attachments: attachments
-        };
+        }
       }
     }
   } catch (e) {
-    console.log("Bot -> Minhas Conquistas:", e);
+    console.log('Bot -> Minhas Conquistas:', e)
   }
 
-  res.json(response);
-});
+  res.json(response)
+})
 
-router.post("/enviarcomoatena", urlencodedParser, req => {
-  const message = req.body.text;
+router.post('/enviarcomoatena', urlencodedParser, req => {
+  const message = req.body.text
 
   if (
     config.coreteam.admins.some(user => user === req.body.user) &&
     message.length > 1
   ) {
-    sendMessage(message);
+    sendMessage(message)
   }
-});
+})
 
-export default router;
+export default router

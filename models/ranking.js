@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 // import user from "./user";
 
 const rankingSchema = new mongoose.Schema({
@@ -22,7 +22,7 @@ const rankingSchema = new mongoose.Schema({
     default: false
   },
   users: []
-});
+})
 
 // users: [user.schema]
-export default mongoose.model("Ranking", rankingSchema);
+export default mongoose.model('Ranking', rankingSchema)

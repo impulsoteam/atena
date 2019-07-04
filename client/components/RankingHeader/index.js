@@ -1,5 +1,5 @@
-import React from "react";
-import { StyledRankingHeader } from "./style";
+import React from 'react'
+import { StyledRankingHeader } from './style'
 
 const RankingHeader = () => (
   <StyledRankingHeader>
@@ -8,6 +8,6 @@ const RankingHeader = () => (
     <div className="level">LEVEL</div>
     <div className="xp">XP</div>
   </StyledRankingHeader>
-);
+)
 
-export default RankingHeader;
+export default RankingHeader
