@@ -160,7 +160,11 @@ const ScreenHowItWorks = props => {
                 </p>
               </div>
               <Button>
-                <a href="https://www.notion.so/impulso/XP-O-que-e-como-ganhar-372bc91f3e404b418b50267ddcadce6f">
+                <a
+                  href="https://notion.so/impulso/XP-Como-ganhar-372bc91f3e404b418b50267ddcadce6f"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   mais detalhes
                 </a>
               </Button>
@@ -224,7 +228,11 @@ const ScreenHowItWorks = props => {
                   acesso à novas missões, cargos e recompensas.
                 </p>
                 <Button>
-                  <a href="https://www.notion.so/impulso/N-veis-O-que-s-o-e-como-ganhar-6d67592b078f49b3879ce4db91081be4">
+                  <a
+                    href="https://notion.so/impulso/N-veis-Como-ganhar-6d67592b078f49b3879ce4db91081be4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     mais detalhes
                   </a>
                 </Button>
@@ -251,7 +259,11 @@ const ScreenHowItWorks = props => {
                   representa este marco.
                 </p>
                 <Button>
-                  <a href="notion.so/impulso/Conquistas-O-que-s-o-e-como-ganhar-f8cded2569e7411ebabb78c8e99a2f94">
+                  <a
+                    href="https://notion.so/impulso/Conquistas-Como-ganhar-f8cded2569e7411ebabb78c8e99a2f94"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     mais detalhes
                   </a>
                 </Button>
