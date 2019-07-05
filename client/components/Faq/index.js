@@ -57,7 +57,11 @@ const Faq = () => (
       <Box width={[1, 3 / 5]} px={25}>
         <Accordion data={questions} />
         <Button>
-          <a href="https://www.notion.so/impulso/Atena-Um-projeto-de-gamifica-o-open-source-da-Impulso-cac95f0898e648f6a31f5911a3c46d41">
+          <a
+            href="https://www.notion.so/impulso/Atena-Um-projeto-de-gamifica-o-open-source-da-Impulso-cac95f0898e648f6a31f5911a3c46d41"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Mais dúvidas
           </a>
         </Button>
