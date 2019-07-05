@@ -161,7 +161,7 @@ const ScreenHowItWorks = props => {
               </div>
               <Button>
                 <a
-                  href="https://www.notion.so/XP-Como-ganhar-372bc91f3e404b418b50267ddcadce6f"
+                  href="https://notion.so/impulso/XP-Como-ganhar-372bc91f3e404b418b50267ddcadce6f"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
