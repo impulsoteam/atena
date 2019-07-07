@@ -9,6 +9,7 @@ import usersLevelsHistory from '../usersLevelsHistory'
 import achievementsLevel from '../achievementsLevel'
 import messages from '../messages'
 import errors from '../errors'
+import interactions from '../interactions'
 
 const file = 'Users | Controller'
 
@@ -234,6 +235,15 @@ const sendPoints = async data => {
       response = {
         msg: `Sucesso! Enviaste *${points} pontos* de experiência para *${user.name}*!`
       }
+
+      await interactions.saveManual({
+        score: points,
+        value: 0,
+        type: 'manual',
+        user: user._id,
+        username: user.username,
+        text: `você recebeu esses ${points} pontos de ${u.username}`
+      })
     }
 
     return response
