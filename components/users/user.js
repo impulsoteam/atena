@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   level: {
     type: Number,
     required: true,
-    default: 0
+    default: 1
   },
   score: {
     type: Number,
@@ -66,6 +66,10 @@ const userSchema = new mongoose.Schema({
       required: false,
       default: 0
     }
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   },
   lastUpdate: {
     type: Date,
