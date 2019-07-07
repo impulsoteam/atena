@@ -15,19 +15,19 @@ const getCommandMessage = async message => {
   const regex = utils.getCommandsRegex()
   let response = false
 
-  if (regex.meusPontos.test(message.msg)) {
+  if (regex.myPoints.test(message.msg)) {
     response = await users.commandScore(message)
   } else if (regex.rankingGeral.test(message.msg)) {
     response = await rankings.commandGeneral(message)
   } else if (regex.ranking.test(message.msg)) {
     response = await rankings.commandByMonth(message)
-  } else if (regex.minhasConquistas.test(message.msg)) {
+  } else if (regex.myAchievements.test(message.msg)) {
     await achievements.commandIndex(message)
   } else if (regex.isPro.test(message.msg)) {
     response = await users.commandPro(message)
   } else if (regex.commands.test(message.msg)) {
     response = await commandsList(message)
-  } else if (regex.darpontos.test(message.msg)) {
+  } else if (regex.sendPoints.test(message.msg)) {
     response = users.sendPoints(message)
   } else if (regex.checkPro.test(message.msg)) {
     response = await users.commandUserIsPro(message)
