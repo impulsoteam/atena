@@ -148,9 +148,13 @@ const updateScore = async (user, score) => {
 
 const onChangeLevel = async user => {
   if (user.level !== user.previousLevel) {
-    await usersLevelsHistory.save(user._id, user.previousLevel, user.level)
-    await achievementsLevel.handle(user._id, user.previousLevel, user.level)
+    saveOnNewLevel(user)
   }
+}
+
+const saveOnNewLevel = async user => {
+  await usersLevelsHistory.save(user._id, user.previousLevel, user.level)
+  await achievementsLevel.handle(user._id, user.previousLevel, user.level)
 }
 
 const transferScoreToSlackUser = async (userId, score) => {
@@ -264,5 +268,6 @@ export default {
   transferScoreToSlackUser,
   transferScoreToRocketUser,
   isCoreTeam,
-  sendPoints
+  sendPoints,
+  saveOnNewLevel
 }

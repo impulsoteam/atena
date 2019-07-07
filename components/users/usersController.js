@@ -33,6 +33,10 @@ const updateScore = async (user, score) => {
   return service.updateScore(user, score)
 }
 
+const saveOnNewLevel = async user => {
+  return service.saveOnNewLevel(user)
+}
+
 const commandScore = async message => {
   let response = {
     msg: 'Ops! Você ainda não tem pontos registrados.'
@@ -231,5 +235,6 @@ export default {
   findRocketUsersByName,
   transferScore,
   getMostActives,
-  sendPoints
+  sendPoints,
+  saveOnNewLevel
 }
