@@ -1,7 +1,6 @@
 import moment from 'moment-timezone'
 import dal from './interactionsDAL'
 import service from './interactionsService'
-import users from '../users'
 
 let moduleController
 
@@ -20,9 +19,6 @@ const handle = async data => {
 
   const user = await moduleController.findOrCreateUser(interaction)
   interaction.user = user._id
-
-  if (user.score === 0 && user.username)
-    await users.sendWelcomeMessage(user.username)
 
   await service.onSaveInteraction(interaction, user)
   return dal.save(interaction)
