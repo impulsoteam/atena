@@ -32,7 +32,8 @@ const normalize = (data, moduleController = false) => {
       description: 'ação do sistema',
       channel: 'matrix',
       category: config.categories.network.type,
-      action: 'inactivity'
+      action: 'inactivity',
+      score: data.score || 0
     }
   } else {
     interaction = moduleController.normalize(data)
