@@ -14,13 +14,18 @@ const handleUser = async data => {
     user.email = data.network_email
     user.linkedinId = data.linkedin.uid
     user.username = data.rocket_chat.username
-    user.avatar = data.rocket_chat.avatar
+    user.avatar = data.photo_url
     user.uuid = data.uuid
     user.pro = users.receiveProPlan(data)
     user.proBeginAt = users.getProBeginDate(user, data)
     user.proFinishAt = users.getProFinishDate(user, data)
 
-    return users.save(user)
+    user = await users.save(user)
+
+    if (user.score === 0 && user.username)
+      await users.sendWelcomeMessage(user.username)
+
+    return user
   } catch (e) {
     errors._throw(file, 'handleUser', e)
   }
