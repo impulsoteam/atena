@@ -17,7 +17,7 @@ const handle = async (interaction, user) => {
 }
 
 const getMessages = async userId => {
-  return await service.getMessages(userId)
+  return service.getMessages(userId)
 }
 
 const resetEarned = achievement => {
