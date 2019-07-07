@@ -59,6 +59,8 @@ const setRangesEarnedDates = (ratings, level) => {
 }
 
 const generateMessages = achievement => {
+  if (!achievement) return {}
+
   const lastRating = getLastRatingEarned(achievement)
   const recordRange = achievement.record.range
     ? ` ${achievement.record.range}`

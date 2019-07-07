@@ -10,7 +10,7 @@ const handle = async (userId, currentLevel, newLevel) => {
 }
 
 const getMessages = async userId => {
-  return await service.getMessages(userId)
+  return service.getMessages(userId)
 }
 
 export default {

@@ -70,8 +70,8 @@ const saveScoreInteraction = async (user, achievement, score, text) => {
 }
 
 const getMessages = async userId => {
-  const achievements = await dal.findByUser(userId)
-  return utils.generateMessages(achievements)
+  const achievement = await dal.findByUser(userId)
+  return utils.generateMessages(achievement)
 }
 
 export default {
