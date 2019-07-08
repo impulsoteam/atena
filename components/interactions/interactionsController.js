@@ -12,7 +12,7 @@ const saveManual = data => {
 
 const handle = async data => {
   moduleController = service.getModuleController(data)
-  const interaction = service.normalize(data, moduleController)
+  const interaction = await service.normalize(data, moduleController)
 
   const countingScore = await service.hasScore(moduleController, interaction)
   if (!countingScore) interaction.score = 0

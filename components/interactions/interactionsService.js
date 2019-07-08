@@ -74,8 +74,8 @@ const getDailyLimit = async moduleController => {
   return moduleLimit || config.xprules.limits.daily
 }
 
-const getTodayScore = async rocketId => {
-  const interactions = await dal.findAllFromToday(rocketId)
+const getTodayScore = async userId => {
+  const interactions = await dal.findAllFromToday(userId)
   return interactions.reduce(
     (prevVal, interaction) => prevVal + interaction.score,
     0

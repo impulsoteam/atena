@@ -21,10 +21,10 @@ const find = query => {
   return model.find(query).exec()
 }
 
-const findAllFromToday = rocketId => {
+const findAllFromToday = userId => {
   return model
     .find({
-      user: rocketId,
+      user: userId,
       date: {
         $gte: _today.start
       }
