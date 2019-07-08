@@ -45,10 +45,23 @@ const getMessages = (type, items = {}) => {
   return message || ''
 }
 
+const getRepositoryIdByMessage = message => {
+  const items = message.split(' ')
+  return items.length > 1 ? items[1] : false
+}
+
+const getUserByMessage = message => {
+  const items = message.split(' ')
+  const username = items.length > 2 ? items[2].split('@') : false
+  return username.length ? username[1] : false
+}
+
 export default {
   getStartUrl,
   getPullRequestType,
   getType,
   getId,
-  getMessages
+  getMessages,
+  getRepositoryIdByMessage,
+  getUserByMessage
 }

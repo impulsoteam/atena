@@ -42,7 +42,7 @@ const getCommandsRegex = () => {
     checkPro: /^!checkpro/g,
     openSource: /^!opensource$/g,
     openSourceAddRepository: /^!addrepositorio[ \d\w]*$/g,
-    openSourceAddRepositoryUser: /^!addusuarioexcluidonorepositorio [@a-z-A-Z]* [\d]*$/,
+    openSourceRemoveRepositoryUser: /^!removerepositoriousuario[ \d\w @a-z-A-Z]*$/g,
     transfere: /^!transfere[ \d\w \dw]*$/g
   }
 }

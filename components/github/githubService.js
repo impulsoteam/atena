@@ -74,6 +74,10 @@ const isExistentRepository = async repositoryId => {
   return repositories.includes(repositoryId)
 }
 
+const getRepository = async repositoryId => {
+  return dal.findRepositoryById(repositoryId)
+}
+
 const isExcludedUser = async (repositoryId, userId) => {
   return dal.findExcludedUser(repositoryId, userId)
 }
@@ -104,5 +108,6 @@ export default {
   sendMessage,
   isExistentRepository,
   getAccessToken,
-  getUserInfo
+  getUserInfo,
+  getRepository
 }

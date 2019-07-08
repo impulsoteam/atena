@@ -61,104 +61,126 @@ const addUser = async (githubCode, rocketId) => {
   }
 }
 
-// const addExcludedUser = async req => {
-//   let response = { msg: 'Não foi possível adicionar o usuário ao repositório.' }
-//   const username = req.u.username
-//   const rocketId = req.u._id
-//   const excludedUsername = req.msg.split(' ')[1].split('@')[1]
-//   const repositoryId = req.msg.split(' ')[2]
-//   let repository = null
-//   usersController
-//     .find({ rocketId: rocketId })
-//     .then(user => {
-//       if (!user.isCoreTeam) {
-//         return Promise.reject('Você não é do coreteam.')
-//       }
-//       return !isValidRepository(repositoryId)
-//     })
-//     .then(() => {
-//       return getRepository(repositoryId)
-//     })
-//     .then(res => {
-//       repository = res
-//       return usersController.find({ username: excludedUsername })
-//     })
-//     .then(user => {
-//       repository.excludedUsers.push({ userId: user._id })
-//       return repository.save()
-//     })
-//     .then(() => {
-//       response.msg = `Usuário @${excludedUsername} adicionado com sucesso`
-//       return response.msg
-//     })
-//     .catch(err => {
-//       response.msg = err
-//     })
-//     .then(() => {
-//       driver.sendDirectToUser(response, username)
-//     })
-// }
-
-const addRepository = async req => {
-  let response = 'Não foi possível adicionar esse repositório. :/'
-
-  const user = await users.findOne({ rocketId: req.u._id })
-  if (!user || !user.isCoreTeam) {
-    return {
-      msg:
-        'Ops! Você não tem permissão para adicionar repositórios. Procure com alguém do core team.'
+const removeRepositoryUser = async data => {
+  try {
+    const repositoryId = utils.getRepositoryIdByMessage(data.msg)
+    const excludedUsername = utils.getUserByMessage(data.msg)
+    if (!excludedUsername || !repositoryId) {
+      return {
+        msg: `Comando incorreto. Enviar no formato: ${'`!removerpositoriousuario`'} ${'`id-repositorio`'} ${'`@nome-usuario`'}`
+      }
     }
-  }
 
-  const repositoryId = req.msg.split(' ')[1]
-  if (!repositoryId) {
-    return { msg: 'Ops! Faltou enviar o id do repositório. :/' }
-  }
+    const user = await users.findOne({ rocketId: data.u._id })
+    if (!user || !user.isCoreTeam) {
+      return {
+        msg:
+          'Ops! Você não tem permissão para adicionar repositórios. Procure com alguém do core team.'
+      }
+    }
 
-  const isExistent = await service.isExistentRepository(repositoryId)
-  if (isExistent) {
-    response =
-      'Este repositório já foi cadastrado anteriormente. É só seguir codando! :)'
-  } else {
-    await dal.save({ repositoryId: repositoryId })
-    response = 'Repositório adicionado com sucesso! :)'
-  }
+    const repository = await service.getRepository(repositoryId)
+    if (!repository) {
+      return {
+        msg: 'Ops! Repositório inválido. :/'
+      }
+    }
 
-  return { msg: response }
+    const sendedUser = await users.findOne({ username: excludedUsername })
+    if (!sendedUser) {
+      return {
+        msg: 'Ops! Usuário não encontrado. :/'
+      }
+    }
+
+    const alrightExcluded = repository.excludedUsers.find(
+      excluded => excluded.userId === sendedUser._id.toString()
+    )
+    if (alrightExcluded) {
+      return {
+        msg: 'Ops! Esse usuário já pertence ao grupo de excluídos.'
+      }
+    }
+
+    repository.excludedUsers.push({ userId: sendedUser._id })
+    await dal.save(repository)
+
+    return {
+      msg: ` @${excludedUsername} foi inserido(a) no grupo de usuários excluídos. :)`
+    }
+  } catch (e) {
+    errors._throw(file, 'removeRepositoryUser', e)
+  }
+}
+
+const addRepository = async data => {
+  try {
+    let response = 'Não foi possível adicionar esse repositório. :/'
+
+    const user = await users.findOne({ rocketId: data.u._id })
+    if (!user || !user.isCoreTeam) {
+      return {
+        msg:
+          'Ops! Você não tem permissão para adicionar repositórios. Procure com alguém do core team.'
+      }
+    }
+
+    const repositoryId = data.msg.split(' ')[1]
+    if (!repositoryId) {
+      return { msg: 'Ops! Faltou enviar o id do repositório. :/' }
+    }
+
+    const isExistent = await service.isExistentRepository(repositoryId)
+    if (isExistent) {
+      response =
+        'Este repositório já foi cadastrado anteriormente. É só seguir codando! :)'
+    } else {
+      await dal.save({ repositoryId: repositoryId })
+      response = 'Repositório adicionado com sucesso! :)'
+    }
+
+    return { msg: response }
+  } catch (e) {
+    errors._throw(file, 'removeRepositoryUser', e)
+  }
 }
 
 const handle = async data => {
-  const repositoryId = data.repository.id.toString()
-  data.origin = 'github'
+  try {
+    const repositoryId = data.repository.id.toString()
+    data.origin = 'github'
 
-  data.type = utils.getType(data)
-  if (!data.type) {
-    return { error: 'Tipo incorreto de interação' }
-  }
-
-  const isExistent = await service.isExistentRepository(repositoryId)
-  if (!isExistent) {
-    return { error: 'Repositório inválido' }
-  }
-
-  const githubId = utils.getId(data)
-  const user = await users.findOne({ githubId: githubId })
-  if (!user) return { error: 'Usuário inválido' }
-  data.user = user._id
-
-  const wasExcluded = await service.isExcludedUser(repositoryId, user._id)
-  if (wasExcluded) {
-    return {
-      error: 'Esse usuário não faz parte do time, não pode pontuar.'
+    data.type = utils.getType(data)
+    if (!data.type) {
+      return { error: 'Tipo incorreto de interação' }
     }
+
+    const isExistent = await service.isExistentRepository(repositoryId)
+    if (!isExistent) {
+      return { error: 'Repositório inválido' }
+    }
+
+    const githubId = utils.getId(data)
+    const user = await users.findOne({ githubId: githubId })
+    if (!user) return { error: 'Usuário inválido' }
+    data.user = user._id
+
+    const wasExcluded = await service.isExcludedUser(repositoryId, user._id)
+    if (wasExcluded) {
+      return {
+        error: 'Esse usuário não faz parte do time, não pode pontuar.'
+      }
+    }
+
+    const interaction = await interactions.handle(data)
+
+    data.interaction = interaction
+    if (interaction.score > 0) await service.sendMessage(user)
+
+    return data
+  } catch (e) {
+    errors._throw(file, 'handle', e)
   }
-
-  const interaction = await interactions.handle(data)
-
-  data.interaction = interaction
-  if (interaction.score > 0) await service.sendMessage(user)
-
-  return data
 }
 
 const normalize = async data => {
@@ -182,6 +204,7 @@ export default {
   auth,
   addUser,
   addRepository,
+  removeRepositoryUser,
   normalize,
   getDailyLimit,
   isFlood,

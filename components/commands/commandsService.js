@@ -31,12 +31,12 @@ const getCommandMessage = async message => {
     response = users.sendPoints(message)
   } else if (regex.checkPro.test(message.msg)) {
     response = await users.commandUserIsPro(message)
+  } else if (regex.openSourceRemoveRepositoryUser.test(message.msg)) {
+    response = await github.removeRepositoryUser(message)
   } else if (regex.openSource.test(message.msg)) {
     response = await github.auth(message)
   } else if (regex.openSourceAddRepository.test(message.msg)) {
     response = await github.addRepository(message)
-    // } else if (regex.openSourceAddRepositoryUser.test(message.msg)) {
-    //   addRepositoryExcludedUser(message)
   }
 
   return response
