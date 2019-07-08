@@ -1,4 +1,4 @@
-import Achievement from './achievement'
+import Achievement from '../../components/achievements/achievement'
 
 describe('[Models] Achievement', () => {
   let achievement

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
 
-import UserLevelHistory from './userLevelHistory'
+import UserLevelHistory from '../../components/usersLevelsHistory/userLevelHistory'
 
-describe('[Models] UserLvelHistory', () => {
+describe('[Models] UserLevelHistory', () => {
   let userLevelHistory
   beforeEach(() => {
     userLevelHistory = new UserLevelHistory({

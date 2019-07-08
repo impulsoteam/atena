@@ -1,4 +1,4 @@
-import AchievementLevel from './achievementLevel'
+import AchievementLevel from '../../components/achievementsLevel/achievementLevel'
 
 describe('[Models] AchievementLevel', () => {
   let achievement
