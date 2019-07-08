@@ -1,5 +1,6 @@
 import config from 'config-yml'
 import commandsUtils from '../commands/commandsUtils'
+import interactionsUtils from '../interactions/interactionsUtils'
 
 const calculateLevel = score =>
   config.levelrules.levels_range.findIndex(l => score < l) + 1
@@ -50,11 +51,63 @@ const getSendedPointsReason = async message => {
   return options ? options[4] : false
 }
 
+const calculateReactions = (interaction, reactions = {}) => {
+  // FIXME: Remove after all users are updated
+  reactions = convertToPositiveAndNegative(reactions)
+
+  if (interactionsUtils.isPositiveReaction(interaction)) {
+    reactions.positives = calculateNewReactionsValues(
+      interaction.type,
+      reactions.positives
+    )
+  } else if (interactionsUtils.isNegativeReaction(interaction)) {
+    reactions.negatives = calculateNewReactionsValues(
+      interaction.type,
+      reactions.negatives
+    )
+  } else if (interactionsUtils.isAtenaReaction(interaction)) {
+    reactions.others = calculateNewReactionsValues(
+      interaction.type,
+      reactions.others
+    )
+  }
+
+  return reactions
+}
+
+const convertToPositiveAndNegative = reactions => {
+  if (
+    typeof reactions.positives === 'undefined' &&
+    typeof reactions.negatives === 'undefined'
+  ) {
+    let newReactions = {}
+    newReactions.positives = 0
+    newReactions.negatives = 0
+    newReactions.others = parseInt(reactions, 10) || 0
+
+    return newReactions
+  }
+
+  return reactions
+}
+
+const calculateNewReactionsValues = (interactionType, reactions) => {
+  if (interactionType === 'reaction_added') {
+    reactions += 1
+  } else if (interactionType === 'reaction_removed') {
+    reactions -= 1
+    reactions = reactions > 0 ? reactions : 0
+  }
+
+  return reactions
+}
+
 export default {
   calculateLevel,
   getUsernameByMessage,
   getWelcomeMessage,
   getSendedPointsUser,
   getSendedPointsValue,
-  getSendedPointsReason
+  getSendedPointsReason,
+  calculateReactions
 }
