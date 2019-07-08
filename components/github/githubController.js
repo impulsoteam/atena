@@ -1,29 +1,63 @@
 import service from './githubService'
 import utils from './githubUtils'
+import errors from '../errors'
 import { save, getRepository } from './githubDAL'
 import users from '../users'
 import interactions from '../interactions'
 
-const auth = async req => {
-  const rocketId = req.u._id
-  const user = users.find({ rocketId: rocketId })
-  if (!user) {
-    return {
-      msg:
-        'Opa! essa é a primeira interação na Atena, por favor depois das mensagem de boas vindas, repita o comando *!opensource*'
+const file = 'Github | Controller'
+
+const auth = async data => {
+  try {
+    let response = 'Ops! Não conseguimos responder a esse comando agora. :/'
+    const user = await users.findOne({ rocketId: data.u._id })
+    if (!user) {
+      response = utils.getMessages('firstInteraction')
+    } else if (!user.githubId) {
+      const authUrl = utils.getStartUrl(user.rocketId)
+      response = utils.getMessages('noPermission', {
+        username: user.name,
+        url: authUrl
+      })
+    } else {
+      response = utils.getMessages('letsWork', {
+        username: user.name
+      })
     }
-  }
 
-  let response = {}
-  if (!user.githubId) {
-    const authUrl = utils.getStartUrl(rocketId)
-    response.msg = `Olá! Parece que você ainda não pertence as nossas fileiras, Impulser! Mas você não viria tão longe se não quisesse participar dos trabalhos com open-source, certo?!
-Portanto, tens o que é preciso para estar entre nós, ${user.name}! Mas para participar dos trabalhos com open-source, preciso que vá até o seguinte local: ${authUrl}. Uma vez que conclua essa missão voltaremos a conversar!`
-  } else {
-    response.msg = `Olá! Leal, ${user.name}, você já pode participar dos meus trabalhos open-source! Go coding!`
+    return { msg: response }
+  } catch (e) {
+    errors._throw(file, 'auth', e)
   }
+}
 
-  return response
+const addUser = async (githubCode, rocketId) => {
+  try {
+    const url = process.env.ATENA_URL
+    let response = {
+      redirect: `${url}/github/error`
+    }
+
+    const user = await users.findOne({ rocketId: rocketId })
+    if (user) {
+      let data = await service.getAccessToken(githubCode)
+
+      if (data.access_token) {
+        const githubInfo = await service.getUserInfo(data.access_token)
+        user.githubId = githubInfo.data.id
+        await users.save(user)
+
+        response.redirect = `${url}/github/success`
+      } else if (data.error) {
+        const authUrl = utils.getStartUrl(rocketId)
+        response.redirect = `${url}/github/retry?url=${authUrl}`
+      }
+    }
+
+    return response
+  } catch (e) {
+    errors._throw(file, 'auth', e)
+  }
 }
 
 // const addExcludedUser = async req => {
@@ -92,43 +126,45 @@ Portanto, tens o que é preciso para estar entre nós, ${user.name}! Mas para pa
 //     })
 // }
 
-// const handle = async data => {
-//   // @todo - add secret on github webhook
-//   // console.log('data', data)
-//   const repositoryId = data.repository.id.toString()
-//   data.origin = 'github'
+const handle = async data => {
+  // @todo - add secret on github webhook
+  // console.log('data', data)
+  const repositoryId = data.repository.id.toString()
+  data.origin = 'github'
 
-//   data.type = utils.getType(data)
-//   if (!data.type) {
-//     return { error: 'Tipo incorreto de interação' }
-//   }
+  data.type = utils.getType(data)
+  if (!data.type) {
+    return { error: 'Tipo incorreto de interação' }
+  }
 
-//   const isValid = await service.isValidRepository(repositoryId)
-//   if (!isValid) {
-//     return { error: 'Repositório Inválido' }
-//   }
+  const isValid = await service.isValidRepository(repositoryId)
+  if (!isValid) {
+    return { error: 'Repositório Inválido' }
+  }
 
-//   const githubId = utils.getId(data)
-//   const user = await users.find({ githubId: githubId })
-//   if (!user) return { error: 'Usuário Inválido' }
-//   data.user = user.rocketId
+  const githubId = utils.getId(data)
+  const user = await users.find({ githubId: githubId })
+  if (!user) return { error: 'Usuário Inválido' }
+  data.user = user.rocketId
 
-//   const hasPermission = await service.isExcludedUser(repositoryId, user._id)
-//   if (!hasPermission) {
-//     return {
-//       error: 'Esse usuário não faz parte do time, não pode pontuar'
-//     }
-//   }
+  const hasPermission = await service.isExcludedUser(repositoryId, user._id)
+  if (!hasPermission) {
+    return {
+      error: 'Esse usuário não faz parte do time, não pode pontuar'
+    }
+  }
 
-//   const interactionData = service.normalize(data)
-//   const interaction = interactions.handle(interactionData)
+  const interactionData = service.normalize(data)
+  const interaction = interactions.handle(interactionData)
 
-//   data.interaction = interaction
-//   if (interaction.score > 0) service.sendMessage(user)
+  data.interaction = interaction
+  if (interaction.score > 0) service.sendMessage(user)
 
-//   return data
-// }
+  return data
+}
 
 export default {
-  auth
+  handle,
+  auth,
+  addUser
 }

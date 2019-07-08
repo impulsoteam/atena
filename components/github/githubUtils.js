@@ -1,3 +1,5 @@
+import messages from './githubMessages'
+
 const getId = data => {
   return data.pull_request && data.pull_request.merged
     ? data.pull_request.user.id
@@ -30,9 +32,23 @@ const getStartUrl = rocketId => {
   return `${url}&state=${rocketId}`
 }
 
+const getMessages = (type, items = {}) => {
+  let message = messages[type]
+  const params = Object.entries(items)
+
+  if (message && params.length) {
+    params.map(param => {
+      message = message.replace(`%${param[0]}%`, param[1])
+    })
+  }
+
+  return message || ''
+}
+
 export default {
   getStartUrl,
   getTypeByAction,
   getType,
-  getId
+  getId,
+  getMessages
 }

@@ -1,4 +1,6 @@
 import config from 'config-yml'
+import axios from 'axios'
+import queryString from 'querystring'
 import messages from '../messages'
 import dal from './githubDAL'
 
@@ -76,9 +78,31 @@ const isExcludedUser = async (repositoryId, userId) => {
   return dal.findExcludedUser(repositoryId, userId)
 }
 
+const getAccessToken = async code => {
+  const url = `${process.env.GITHUB_OAUTH_URL}access_token`
+  let res = await axios.post(url, {
+    client_id: process.env.GITHUB_CLIENT_ID,
+    client_secret: process.env.GITHUB_CLIENT_SECRET,
+    code: code,
+    accept: 'json'
+  })
+
+  return await queryString.parse(res.data)
+}
+
+const getUserInfo = async accessToken => {
+  return axios.get(`${process.env.GITHUB_API_URL}user`, {
+    params: {
+      access_token: accessToken
+    }
+  })
+}
+
 export default {
   isExcludedUser,
   normalize,
   sendMessage,
-  isValidRepository
+  isValidRepository,
+  getAccessToken,
+  getUserInfo
 }
