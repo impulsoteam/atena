@@ -33,7 +33,7 @@ const convertToInteraction = data => {
       ...response,
       description: Object.keys(reactions).pop(),
       parentUser: data.u._id,
-      user: null,
+      rocketId: null,
       action: config.actions.reaction.type,
       score: config.xprules.reactions.send
     }
@@ -45,7 +45,7 @@ const convertToInteraction = data => {
     response = {
       ...response,
       description: data.msg,
-      user: data.u._id,
+      rocketId: data.u._id,
       username: data.u.name,
       rocketUsername: data.u.username,
       action: config.actions.message.type,

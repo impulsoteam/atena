@@ -35,6 +35,7 @@ const handle = async (error, message, messageOptions) => {
     await interactions.handle(data)
     if (!message.reactions && !message.replies) await commands.handle(message)
   } catch (e) {
+    console.log('error ----->> ', e)
     const data = new Date(message.ts['$date']).toLocaleDateString('en-US')
     const text = `${e.message} - ${message.u.name} (${message.u._id}) - ${data}`
     errors._throw(file, 'handle', text)
@@ -110,7 +111,7 @@ const getDailyLimit = async () => {
 }
 
 const findOrCreateUser = async interaction => {
-  const rocketUser = await getUserInfo(interaction.user)
+  const rocketUser = await getUserInfo(interaction.rocketId)
   return await service.findOrCreateUser(rocketUser)
 }
 
