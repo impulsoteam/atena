@@ -156,7 +156,8 @@ const handle = async data => {
     }
 
     const isExistent = await service.isExistentRepository(repositoryId)
-    if (!isExistent) {
+    const isValid = await service.isValidRepository(repositoryId)
+    if (!isExistent || !isValid) {
       return { error: 'Repositório inválido' }
     }
 

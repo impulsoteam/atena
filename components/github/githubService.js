@@ -74,6 +74,17 @@ const isExistentRepository = async repositoryId => {
   return repositories.includes(repositoryId)
 }
 
+const isValidRepository = async repository => {
+  let validRepositories = []
+  if (process.env.NODE_ENV !== 'production') {
+    validRepositories = process.env.GITHUB_REPOSITORIES.split(' ')
+  } else {
+    validRepositories = config.github.valid_repositories
+  }
+
+  return validRepositories.filter(item => item === repository).length > 0
+}
+
 const getRepository = async repositoryId => {
   return dal.findRepositoryById(repositoryId)
 }
@@ -107,6 +118,7 @@ export default {
   normalize,
   sendMessage,
   isExistentRepository,
+  isValidRepository,
   getAccessToken,
   getUserInfo,
   getRepository
