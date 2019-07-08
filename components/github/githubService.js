@@ -17,7 +17,7 @@ const normalizeCommon = data => {
 
 const normalizeIssue = data => {
   return {
-    description: 'new github issue',
+    description: 'novo github issue',
     channel: data.repository.id,
     score: config.xprules.github.issue
   }
@@ -25,7 +25,7 @@ const normalizeIssue = data => {
 
 const normalizeReview = data => {
   return {
-    description: 'review',
+    description: 'novo github review',
     channel: data.review.id,
     score: config.xprules.github.review
   }
@@ -33,7 +33,7 @@ const normalizeReview = data => {
 
 const normalizePullRequest = data => {
   return {
-    description: 'review',
+    description: 'novo github pull request',
     channel: data.pull_request.id,
     score: config.xprules.github.pull_request
   }
@@ -41,7 +41,7 @@ const normalizePullRequest = data => {
 
 const normalizeMergedPullRequest = data => {
   return {
-    description: 'merged pull request',
+    description: 'novo github merged pull request',
     channel: data.pull_request.id,
     score: config.xprules.github.merged_pull_request
   }
@@ -49,27 +49,27 @@ const normalizeMergedPullRequest = data => {
 
 const normalize = data => {
   const normalizeTypes = {
-    issue: normalizeIssue(data),
-    review: normalizeReview(data),
-    pull_request: normalizePullRequest(data),
-    merged_pull_request: normalizeMergedPullRequest(data)
+    issue: normalizeIssue,
+    review: normalizeReview,
+    pull_request: normalizePullRequest,
+    merged_pull_request: normalizeMergedPullRequest
   }
 
   return {
     ...normalizeCommon(data),
-    ...normalizeTypes[data.type]
+    ...normalizeTypes[data.type](data)
   }
 }
 
 const sendMessage = async user => {
   const response = {
-    msg: `Olá @${user.username} acabou de ganhar pontos ao contribuir nos nossos projetos open source`
+    msg: `Olá, @${user.username} acabou de ganhar pontos ao contribuir nos nossos projetos open source!`
   }
 
   messages.sendToRoom(response, 'open-source')
 }
 
-const isValidRepository = async repositoryId => {
+const isExistentRepository = async repositoryId => {
   const repositories = await dal.findAllRepositories()
   return repositories.includes(repositoryId)
 }
@@ -102,7 +102,7 @@ export default {
   isExcludedUser,
   normalize,
   sendMessage,
-  isValidRepository,
+  isExistentRepository,
   getAccessToken,
   getUserInfo
 }

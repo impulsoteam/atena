@@ -33,8 +33,8 @@ const getCommandMessage = async message => {
     response = await users.commandUserIsPro(message)
   } else if (regex.openSource.test(message.msg)) {
     response = await github.auth(message)
-    // } else if (regex.openSourceAddRepository.test(message.msg)) {
-    //   addRepository(message)
+  } else if (regex.openSourceAddRepository.test(message.msg)) {
+    response = await github.addRepository(message)
     // } else if (regex.openSourceAddRepositoryUser.test(message.msg)) {
     //   addRepositoryExcludedUser(message)
   }

@@ -5,7 +5,7 @@ const findAllRepositories = async (query = {}) => {
   return repositories.map(row => row.repositoryId)
 }
 
-export const getRepository = async repositoryId =>
+const getRepository = async repositoryId =>
   model.findOne({ repositoryId: repositoryId })
 
 const getExcludedUsers = async (query = {}) => {
@@ -33,5 +33,7 @@ const save = async obj => {
 export default {
   findAllRepositories,
   findExcludedUser,
+  getRepository,
+  getExcludedUsers,
   save
 }

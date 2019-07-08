@@ -1,9 +1,10 @@
 import service from './githubService'
 import utils from './githubUtils'
+import dal from './githubDAL'
 import errors from '../errors'
-import { save, getRepository } from './githubDAL'
 import users from '../users'
 import interactions from '../interactions'
+import settings from '../settings'
 
 const file = 'Github | Controller'
 
@@ -98,37 +99,35 @@ const addUser = async (githubCode, rocketId) => {
 //     })
 // }
 
-// const add = async req => {
-//   let response = { msg: 'Não foi possível adicionar esse repositório.' }
-//   const username = req.u.username
-//   const rocketId = req.u._id
-//   const repositoryId = req.msg.split(' ')[1]
-//   usersController
-//     .find({ rocketId: rocketId })
-//     .then(user => {
-//       if (!user.isCoreTeam) {
-//         return Promise.reject('Você não é do coreteam.')
-//       }
-//       return !isValidRepository(repositoryId)
-//     })
-//     .then(() => {
-//       response.msg = 'Repositório Adicionado'
-//       return save({ repositoryId: repositoryId })
-//     })
-//     .catch(err => {
-//       response.msg = err
-//       if (err.code === 11000) {
-//         response.msg = 'Repositório já existe na nossa database'
-//       }
-//     })
-//     .then(() => {
-//       driver.sendDirectToUser(response, username)
-//     })
-// }
+const addRepository = async req => {
+  let response = 'Não foi possível adicionar esse repositório. :/'
+
+  const user = await users.findOne({ rocketId: req.u._id })
+  if (!user || !user.isCoreTeam) {
+    return {
+      msg:
+        'Ops! Você não tem permissão para adicionar repositórios. Procure com alguém do core team.'
+    }
+  }
+
+  const repositoryId = req.msg.split(' ')[1]
+  if (!repositoryId) {
+    return { msg: 'Ops! Faltou enviar o id do repositório. :/' }
+  }
+
+  const isExistent = await service.isExistentRepository(repositoryId)
+  if (isExistent) {
+    response =
+      'Este repositório já foi cadastrado anteriormente. É só seguir codando! :)'
+  } else {
+    await dal.save({ repositoryId: repositoryId })
+    response = 'Repositório adicionado com sucesso! :)'
+  }
+
+  return { msg: response }
+}
 
 const handle = async data => {
-  // @todo - add secret on github webhook
-  // console.log('data', data)
   const repositoryId = data.repository.id.toString()
   data.origin = 'github'
 
@@ -137,34 +136,54 @@ const handle = async data => {
     return { error: 'Tipo incorreto de interação' }
   }
 
-  const isValid = await service.isValidRepository(repositoryId)
-  if (!isValid) {
-    return { error: 'Repositório Inválido' }
+  const isExistent = await service.isExistentRepository(repositoryId)
+  if (!isExistent) {
+    return { error: 'Repositório inválido' }
   }
 
   const githubId = utils.getId(data)
-  const user = await users.find({ githubId: githubId })
-  if (!user) return { error: 'Usuário Inválido' }
-  data.user = user.rocketId
+  const user = await users.findOne({ githubId: githubId })
+  if (!user) return { error: 'Usuário inválido' }
+  data.user = user._id
 
-  const hasPermission = await service.isExcludedUser(repositoryId, user._id)
-  if (!hasPermission) {
+  const wasExcluded = await service.isExcludedUser(repositoryId, user._id)
+  if (wasExcluded) {
     return {
-      error: 'Esse usuário não faz parte do time, não pode pontuar'
+      error: 'Esse usuário não faz parte do time, não pode pontuar.'
     }
   }
 
-  const interactionData = service.normalize(data)
-  const interaction = interactions.handle(interactionData)
+  const interaction = await interactions.handle(data)
 
   data.interaction = interaction
-  if (interaction.score > 0) service.sendMessage(user)
+  if (interaction.score > 0) await service.sendMessage(user)
 
   return data
+}
+
+const normalize = async data => {
+  return service.normalize(data)
+}
+
+const getDailyLimit = async () => {
+  return settings.getValue('github_daily_limit')
+}
+
+const isFlood = async () => {
+  return false
+}
+
+const findOrCreateUser = async interaction => {
+  return users.findOne({ _id: interaction.user })
 }
 
 export default {
   handle,
   auth,
-  addUser
+  addUser,
+  addRepository,
+  normalize,
+  getDailyLimit,
+  isFlood,
+  findOrCreateUser
 }

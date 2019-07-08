@@ -8,13 +8,13 @@ const getId = data => {
 
 const getType = data => {
   let type = null
-  if (data.issue) type = 'issue'
+  if (data.issue && data.action === 'opened') type = 'issue'
   if (data.review) type = 'review'
-  if (data.pull_request) type = getTypeByAction(data.action)
+  if (data.pull_request) type = getPullRequestType(data.action)
   return type
 }
 
-const getTypeByAction = action => {
+const getPullRequestType = action => {
   let res = null
   switch (action) {
     case 'closed':
@@ -47,7 +47,7 @@ const getMessages = (type, items = {}) => {
 
 export default {
   getStartUrl,
-  getTypeByAction,
+  getPullRequestType,
   getType,
   getId,
   getMessages
