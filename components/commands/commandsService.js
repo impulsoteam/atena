@@ -4,13 +4,6 @@ import rankings from '../rankings'
 import achievements from '../achievements'
 import github from '../github'
 
-// import * as customCommands from '../components/commands'
-// import {
-//   auth as authGithub,
-//   addRepository,
-//   addRepositoryExcludedUser
-// } from '../components/github'
-
 const getCommandMessage = async message => {
   const regex = utils.getCommandsRegex()
   let response = false
