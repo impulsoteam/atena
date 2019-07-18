@@ -26,7 +26,6 @@ const handleUser = async data => {
     user = await users.save(user)
 
     if (isNew) {
-      await users.sendWelcomeMessage(user.username)
       await users.saveOnNewLevel(user)
       await interactions.saveManual({
         score: 0,
