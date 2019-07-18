@@ -1,10 +1,10 @@
 import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
+import cors from 'cors'
 import appRoutes from './routes'
 import compression from 'compression'
 import session from 'express-session'
-import passport from 'passport'
 import bodyParser from 'body-parser'
 import log4js from 'log4js'
 import bots from './components/bots'
@@ -43,7 +43,6 @@ app.use((req, res, next) => {
   }
 })
 
-app.use(express.static('public'))
 app.use(
   session({
     secret: 'atenagamification',
@@ -51,10 +50,11 @@ app.use(
     saveUninitialized: false
   })
 )
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(passport.initialize())
-app.use(passport.session())
+
+app.use(cors())
 app.use('/', appRoutes)
 
 process.env.NODE_ENV !== 'test' &&

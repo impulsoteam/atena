@@ -3,11 +3,17 @@ import controller from './authController'
 
 const router = express.Router()
 
-router.get('/error', controller.error)
+router.post('/', async (req, res) => {
+  const result = await controller.auth({ type: 'rocket', code: req.body.code })
+  return result.error ? res.status(401).json(result) : res.json(result)
+})
 
-router.get('/logout', (req, res) => {
-  req.logout()
-  res.redirect('/')
+router.post('/linkedin', async (req, res) => {
+  const result = await controller.auth({
+    type: 'linkedin',
+    code: req.body.code
+  })
+  return result.error ? res.status(401).json(result) : res.json(result)
 })
 
 export default router
