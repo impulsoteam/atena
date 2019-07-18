@@ -6,6 +6,8 @@ import logs from '../logs'
 import commands from '../commands'
 import settings from '../settings'
 import interactions from '../interactions'
+import users from '../users'
+import crypto from '../crypto'
 
 const file = 'Rocket | Controller'
 let BOT_ID
@@ -94,6 +96,35 @@ const sendMessageToRoom = (message, room) => {
   }
 }
 
+const auth = async (username, password) => {
+  try {
+    const login = await api.post('login', {
+      user: username,
+      password: password
+    })
+
+    if (login && login.status === 'success') {
+      const user = await users.findOne({ rocketId: login.data.userId })
+      if (!user) {
+        return { error: 'Usuário não encontrado na Atena' }
+      }
+
+      const data = {
+        nome: user.name,
+        isCoreTeam: user.isCoreTeam || false,
+        avatar: user.avatar || ''
+      }
+
+      const token = await crypto.encrypt(data)
+      return { token }
+    } else {
+      return { error: 'Usuário não encontrado no Rocket.Chat' }
+    }
+  } catch (e) {
+    errors._throw(file, 'loginWithEmail', e)
+  }
+}
+
 const sendMessageToUser = (message, user) => {
   try {
     return driver.sendDirectToUser(message, user)
@@ -130,5 +161,6 @@ export default {
   normalize,
   getDailyLimit,
   isFlood,
+  auth,
   exec
 }

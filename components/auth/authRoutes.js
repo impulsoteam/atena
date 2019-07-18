@@ -4,7 +4,11 @@ import controller from './authController'
 const router = express.Router()
 
 router.post('/', async (req, res) => {
-  const result = await controller.auth({ type: 'rocket', code: req.body.code })
+  const result = await controller.auth({
+    type: 'rocket',
+    user: req.body.user,
+    password: req.body.password
+  })
   return result.error ? res.status(401).json(result) : res.json(result)
 })
 

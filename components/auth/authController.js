@@ -1,10 +1,11 @@
 import linkedin from '../linkedin'
+import rocket from '../rocket'
 
 const auth = async data => {
   if (data.type === 'linkedin') {
     return linkedin.auth(data.code)
   } else {
-    return linkedin.auth({ user: '', password: '' })
+    return rocket.auth(data.user, data.password)
   }
 }
 
