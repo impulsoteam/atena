@@ -1,8 +1,9 @@
 import errors from '../errors'
 import service from './rankingsService'
 import utils from './rankingsUtils'
-import users from '../users'
 import dal from './rankingsDAL'
+import users from '../users'
+import messages from '../messages'
 
 const file = 'Ranking | Controller'
 
@@ -90,11 +91,42 @@ const generate = async month => {
   }
 }
 
+const sendToChannel = async () => {
+  const today = new Date(Date.now())
+  const roomname = process.env.ROCKET_DEFAULT_CHANNEL
+
+  const ranking = await service.getRankingByMonth(today.getMonth())
+
+  if (ranking.error || !ranking.users.length || ranking.users.length < 5) return
+
+  const rankingUsers = await service.generateUsersPosition(
+    ranking.users,
+    false,
+    5
+  )
+
+  let response = {
+    msg: 'Veja as primeiras pessoas do ranking:',
+    attachments: []
+  }
+
+  response.attachments = await rankingUsers.map((user, index) => {
+    return {
+      text: `${index + 1}º lugar está ${user.name} com ${user.xp} xp e nível ${
+        user.level
+      }`
+    }
+  })
+
+  return await messages.sendToRoom(response, roomname)
+}
+
 export default {
   calculatePositionByUser,
   commandGeneral,
   commandByMonth,
   getRankingByMonth,
   getGeneralRanking,
-  generate
+  generate,
+  sendToChannel
 }
