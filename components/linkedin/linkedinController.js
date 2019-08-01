@@ -1,3 +1,4 @@
+import moment from 'moment-timezone'
 import service from './linkedinService'
 import users from '../users'
 import errors from '../errors'
@@ -18,16 +19,19 @@ const auth = async code => {
     }
 
     const data = {
-      nome: user.name,
+      avatar: user.avatar || '',
+      uuid: user.uuid || '',
       isCoreTeam: user.isCoreTeam || false,
-      avatar: user.avatar || ''
+      expireAt: moment()
+        .add(20, 'minutes')
+        .format()
     }
 
     const token = await crypto.encrypt(data)
     return { token }
   } catch (e) {
     errors._throw(file, 'auth', e)
-    return { error: 'Error on access linkedin auth' }
+    return { error: 'Erro ao acessar linkedin auth' }
   }
 }
 

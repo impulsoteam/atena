@@ -1,5 +1,6 @@
 import { driver, api } from '@rocket.chat/sdk'
 import { getOr } from 'lodash/fp'
+import moment from 'moment-timezone'
 import service from './rocketService'
 import errors from '../errors'
 import logs from '../logs'
@@ -37,7 +38,6 @@ const handle = async (error, message, messageOptions) => {
     await interactions.handle(data)
     if (!message.reactions && !message.replies) await commands.handle(message)
   } catch (e) {
-    console.log('error ----->> ', e)
     const data = new Date(message.ts['$date']).toLocaleDateString('en-US')
     const text = `${e.message} - ${message.u.name} (${message.u._id}) - ${data}`
     errors._throw(file, 'handle', text)
@@ -110,9 +110,12 @@ const auth = async (username, password) => {
       }
 
       const data = {
-        nome: user.name,
+        avatar: user.avatar || '',
+        uuid: user.uuid || '',
         isCoreTeam: user.isCoreTeam || false,
-        avatar: user.avatar || ''
+        expireAt: moment()
+          .add(20, 'minutes')
+          .format()
       }
 
       const token = await crypto.encrypt(data)
@@ -121,7 +124,8 @@ const auth = async (username, password) => {
       return { error: 'Usuário não encontrado no Rocket.Chat' }
     }
   } catch (e) {
-    errors._throw(file, 'loginWithEmail', e)
+    errors._throw(file, 'auth', e)
+    return { error: 'Erro ao acessar Rocket.Chat auth' }
   }
 }
 
