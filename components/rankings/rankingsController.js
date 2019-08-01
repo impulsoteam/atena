@@ -106,7 +106,8 @@ const sendToChannel = async () => {
   )
 
   let response = {
-    msg: 'Veja as primeiras pessoas do ranking:',
+    msg: `Saiba quem são as pessoas que mais me orgulham no Olímpio pela interação.
+Essas nobres pessoas têm se destacado em meu templo:`,
     attachments: []
   }
 
