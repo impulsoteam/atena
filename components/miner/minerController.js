@@ -9,7 +9,8 @@ const getAllUsers = async (team, limit) => {
   try {
     const allUsers = await users.find(
       { teams: { $all: [team] } },
-      { score: -1 }
+      { score: -1 },
+      limit
     )
 
     return allUsers.map(user => {
