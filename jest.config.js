@@ -1,30 +1,10 @@
 module.exports = {
   verbose: true,
-  watchPathIgnorePatterns: [
-    'calculateReactions',
-    'reactions',
-    // "interaction",
-    'userLevelHistory',
-    'user',
-    'disqus',
-    'achievementLevel',
-    'ranking',
-    'achievements',
-    'calculateReceivedScore',
-    'github'
-  ],
+  watchPathIgnorePatterns: [],
   globalSetup: './setup.js',
   globalTeardown: './teardown.js',
   testEnvironment: './mongo-environment.js',
-  collectCoverageFrom: [
-    'controllers/*.js',
-    'cron/*.js',
-    'helpers/*.js',
-    'models/*.js',
-    'rocket/*.js',
-    'utils/*.js',
-    'workers/*.js'
-  ],
+  collectCoverageFrom: ['tests/**/*.js'],
   coverageThreshold: {
     global: {
       statements: 10,

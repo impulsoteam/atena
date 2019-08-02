@@ -1,36 +1,27 @@
 import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
-import runCrons from './cron'
+import cors from 'cors'
 import appRoutes from './routes'
 import compression from 'compression'
 import session from 'express-session'
-import passport from 'passport'
 import bodyParser from 'body-parser'
 import log4js from 'log4js'
-require('./models/interaction')
-require('./models/user')
-require('./models/achievement')
-require('./models/ranking')
-require('./models/checkpoint')
-require('./models/channelCheckPoint')
-require('./components/github')
-require('./components/interactions')
-require('./workers/receive')
+import bots from './components/bots'
+import crons from './components/crons'
+import workers from './components/workers'
 
 if (process.env.NODE_ENV !== 'test') {
-  require('./rocket/bot')
-  require('./rocket/api')
+  bots.exec()
+  crons.exec()
+  workers.exec()
 }
-
-runCrons()
 
 process.env.NODE_ENV !== 'production' && dotenv.config()
 
-const mongooseConnectUri = process.env.MONGODB_URI
-
-mongoose.connect(mongooseConnectUri)
-mongoose.set('useCreateIndexes', true)
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
+mongoose.set('useCreateIndex', true)
+mongoose.set('useFindAndModify', false)
 
 log4js.configure({
   appenders: { history: { type: 'file', filename: 'history.log' } },
@@ -52,7 +43,6 @@ app.use((req, res, next) => {
   }
 })
 
-app.use(express.static('public'))
 app.use(
   session({
     secret: 'atenagamification',
@@ -60,10 +50,11 @@ app.use(
     saveUninitialized: false
   })
 )
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(passport.initialize())
-app.use(passport.session())
+
+app.use(cors())
 app.use('/', appRoutes)
 
 process.env.NODE_ENV !== 'test' &&

@@ -1,7 +1,3 @@
-import commands from './commands'
+import commands from './commandsController'
 
-module.exports = {
-  show: commands.show,
-  givePoints: commands.givePoints,
-  checkPro: commands.checkPro
-}
+export default commands

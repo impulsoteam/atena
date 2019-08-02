@@ -1,9 +1,7 @@
-import controller from './githubController'
-// import * as dal from "./githubDAL"
+import github from './githubController'
+import routes from './githubRoutes'
 
-module.exports = {
-  events: controller.events,
-  auth: controller.auth,
-  addRepository: controller.add,
-  addRepositoryExcludedUser: controller.addExcludedUser
+export default {
+  ...github,
+  routes: routes
 }

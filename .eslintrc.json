@@ -1,7 +1,10 @@
 {
-  "plugins": [ "prettier", "react" ],
-  "extends": [ "eslint:recommended", "plugin:react/recommended" ],
+  "plugins": ["prettier"],
+  "extends": ["prettier"],
   "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module"
+  },
   "env": {
     "es6": true,
     "node": true,
@@ -11,7 +14,7 @@
   "rules": {
     "strict": 0,
     "no-console": "off",
-    "indent-size": [ true, 2 ],
+    "indent-size": [true, 2],
     "prettier/prettier": "error"
   }
 }

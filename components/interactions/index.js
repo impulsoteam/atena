@@ -1,5 +1,7 @@
-import * as dal from './interactionDAL'
+import interactions from './interactionsController'
+import routes from './interactionsRoutes'
 
-module.exports = {
-  dal: dal
+export default {
+  ...interactions,
+  routes: routes
 }

@@ -1,178 +1,213 @@
-'use strict'
-import { driver } from '@rocket.chat/sdk'
 import service from './githubService'
-import {
-  isValidRepository,
-  save,
-  isExcludedUser,
-  getRepository
-} from './githubDAL'
-import userController from '../../controllers/user'
-// import interactionController from "../../controllers/interaction"
+import utils from './githubUtils'
+import dal from './githubDAL'
+import errors from '../errors'
+import users from '../users'
+import interactions from '../interactions'
+import settings from '../settings'
 
-const link_auth = `${
-  process.env.GITHUB_OAUTH_URL
-}authorize?scope=user:email&client_id=${process.env.GITHUB_CLIENT_ID}`
+const file = 'Github | Controller'
 
-const auth = async req => {
-  let response = { msg: '' }
-  const username = req.u.username
-  const rocketId = req.u._id
-  userController
-    .findBy({ rocketId: rocketId })
-    .then(user => {
-      response.msg = `Olá! Leal, ${
-        user.name
-      }, você já pode participar dos meus trabalhos open-source! Go coding!`
-      if (!user.githubId) {
-        return Promise.reject(
-          `Olá! Parece que você ainda não pertence as nossas fileiras, Impulser! Mas você não viria tão longe se não quisesse participar dos trabalhos com open-source, certo?!
-Portanto, tens o que é preciso para estar entre nós, ${
-            user.name
-          }! Mas para participar dos trabalhos com open-source, preciso que vá até o seguinte local: ${link_auth}&state=${rocketId}. Uma vez que conclua essa missão voltaremos a conversar!`
-        )
-      }
-    })
-    .catch(err => {
-      response.msg = err
-      if (err === 'Usuário não encontrado') {
-        response.msg =
-          'Opa! essa é a primeira interação na Atena, por favor depois das mensagem de boas vindas, repita o comando *!opensource*'
-      }
-    })
-    .then(() => {
-      driver.sendDirectToUser(response, username)
-    })
+const auth = async data => {
+  try {
+    let response = 'Ops! Não conseguimos responder a esse comando agora. :/'
+    const user = await users.findOne({ rocketId: data.u._id })
+    if (!user) {
+      response = utils.getMessages('firstInteraction')
+    } else if (!user.githubId) {
+      const authUrl = utils.getStartUrl(user.rocketId)
+      response = utils.getMessages('noPermission', {
+        username: user.name,
+        url: authUrl
+      })
+    } else {
+      response = utils.getMessages('letsWork', {
+        username: user.name
+      })
+    }
+
+    return { msg: response }
+  } catch (e) {
+    errors._throw(file, 'auth', e)
+  }
 }
 
-const addExcludedUser = async req => {
-  let response = { msg: 'Não foi possível adicionar o usuário ao repositório.' }
-  const username = req.u.username
-  const rocketId = req.u._id
-  const excludedUsername = req.msg.split(' ')[1].split('@')[1]
-  const repositoryId = req.msg.split(' ')[2]
-  let repository = null
-  userController
-    .findBy({ rocketId: rocketId })
-    .then(user => {
-      if (!user.isCoreTeam) {
-        return Promise.reject('Você não é do coreteam.')
+const addUser = async (githubCode, rocketId) => {
+  try {
+    const url = process.env.ATENA_URL
+    let response = {
+      redirect: `${url}/github/error`
+    }
+
+    const user = await users.findOne({ rocketId: rocketId })
+    if (user) {
+      let data = await service.getAccessToken(githubCode)
+
+      if (data.access_token) {
+        const githubInfo = await service.getUserInfo(data.access_token)
+        user.githubId = githubInfo.data.id
+        await users.save(user)
+
+        response.redirect = `${url}/github/success`
+      } else if (data.error) {
+        const authUrl = utils.getStartUrl(rocketId)
+        response.redirect = `${url}/github/retry?url=${authUrl}`
       }
-      return !isValidRepository(repositoryId)
-    })
-    .then(() => {
-      return getRepository(repositoryId)
-    })
-    .then(res => {
-      repository = res
-      return userController.findBy({ username: excludedUsername })
-    })
-    .then(user => {
-      repository.excludedUsers.push({ userId: user._id })
-      return repository.save()
-    })
-    .then(() => {
-      response.msg = `Usuário @${excludedUsername} adicionado com sucesso`
-      return response.msg
-    })
-    .catch(err => {
-      response.msg = err
-    })
-    .then(() => {
-      driver.sendDirectToUser(response, username)
-    })
+    }
+
+    return response
+  } catch (e) {
+    errors._throw(file, 'auth', e)
+  }
 }
 
-const add = async req => {
-  let response = { msg: 'Não foi possível adicionar esse repositório.' }
-  const username = req.u.username
-  const rocketId = req.u._id
-  const repositoryId = req.msg.split(' ')[1]
-  userController
-    .findBy({ rocketId: rocketId })
-    .then(user => {
-      if (!user.isCoreTeam) {
-        return Promise.reject('Você não é do coreteam.')
+const removeRepositoryUser = async data => {
+  try {
+    const repositoryId = utils.getRepositoryIdByMessage(data.msg)
+    const excludedUsername = utils.getUserByMessage(data.msg)
+    if (!excludedUsername || !repositoryId) {
+      return {
+        msg: `Comando incorreto. Enviar no formato: ${'`!removerpositoriousuario`'} ${'`id-repositorio`'} ${'`@nome-usuario`'}`
       }
-      return !isValidRepository(repositoryId)
-    })
-    .then(() => {
-      response.msg = 'Repositório Adicionado'
-      return save({ repositoryId: repositoryId })
-    })
-    .catch(err => {
-      response.msg = err
-      if (err.code === 11000) {
-        response.msg = 'Repositório já existe na nossa database'
+    }
+
+    const user = await users.findOne({ rocketId: data.u._id })
+    if (!user || !user.isCoreTeam) {
+      return {
+        msg:
+          'Ops! Você não tem permissão para adicionar repositórios. Procure com alguém do core team.'
       }
-    })
-    .then(() => {
-      driver.sendDirectToUser(response, username)
-    })
+    }
+
+    const repository = await service.getRepository(repositoryId)
+    if (!repository) {
+      return {
+        msg: 'Ops! Repositório inválido. :/'
+      }
+    }
+
+    const sendedUser = await users.findOne({ username: excludedUsername })
+    if (!sendedUser) {
+      return {
+        msg: 'Ops! Usuário não encontrado. :/'
+      }
+    }
+
+    const alrightExcluded = repository.excludedUsers.find(
+      excluded => excluded.userId === sendedUser._id.toString()
+    )
+    if (alrightExcluded) {
+      return {
+        msg: 'Ops! Esse usuário já pertence ao grupo de excluídos.'
+      }
+    }
+
+    repository.excludedUsers.push({ userId: sendedUser._id })
+    await dal.save(repository)
+
+    return {
+      msg: ` @${excludedUsername} foi inserido(a) no grupo de usuários excluídos. :)`
+    }
+  } catch (e) {
+    errors._throw(file, 'removeRepositoryUser', e)
+  }
 }
 
-const events = async (req, res) => {
-  // @todo - add secret on github webhook
-  let data = req.body
-  let userModel = {}
-  const repositoryId = req.body.repository.id.toString()
-  data.origin = 'github'
-  data.type = service.getType(data)
-  const githubId = service.getId(data)
-  isValidRepository(repositoryId)
-    .then(valid => {
-      if (!valid) {
-        return Promise.reject('Repositório Inválido')
+const addRepository = async data => {
+  try {
+    let response = 'Não foi possível adicionar esse repositório. :/'
+
+    const user = await users.findOne({ rocketId: data.u._id })
+    if (!user || !user.isCoreTeam) {
+      return {
+        msg:
+          'Ops! Você não tem permissão para adicionar repositórios. Procure com alguém do core team.'
       }
-      return valid
-    })
-    .then(() => {
-      return userController.findBy({ githubId: githubId })
-    })
-    .then(user => {
-      // @todo change it to user.id in next version.
-      userModel = user
-      data.user = user.rocketId
-      return isExcludedUser(repositoryId, user._id)
-    })
-    .then(isExcludedUser => {
-      if (isExcludedUser) {
-        return Promise.reject(
-          'Esse usuário faz parte do time, não pode pontuar'
-        )
-      }
-      return isExcludedUser
-    })
-    .then(() => {
-      if (!data.type) {
-        return Promise.reject('Tipo incorreto de interação')
-      }
-      data = service.normalize(data)
-      return data
-    })
-    .then(data => {
-      return service.interactionSave(data)
-    })
-    .then(interaction => {
-      data.interaction = interaction
-      if (interaction.score > 0) {
-        service.sendMessage(userModel)
-      }
-      return interaction
-    })
-    .catch(error => {
-      data.error = error
-    })
-    .then(() => {
-      res.json(data)
-    })
+    }
+
+    const repositoryId = data.msg.split(' ')[1]
+    if (!repositoryId) {
+      return { msg: 'Ops! Faltou enviar o id do repositório. :/' }
+    }
+
+    const isExistent = await service.isExistentRepository(repositoryId)
+    if (isExistent) {
+      response =
+        'Este repositório já foi cadastrado anteriormente. É só seguir codando! :)'
+    } else {
+      await dal.save({ repositoryId: repositoryId })
+      response = 'Repositório adicionado com sucesso! :)'
+    }
+
+    return { msg: response }
+  } catch (e) {
+    errors._throw(file, 'removeRepositoryUser', e)
+  }
 }
 
-const defaultFunctions = {
-  events,
+const handle = async data => {
+  try {
+    const repositoryId = data.repository.id.toString()
+    data.origin = 'github'
+
+    data.type = utils.getType(data)
+    if (!data.type) {
+      return { error: 'Tipo incorreto de interação' }
+    }
+
+    const isExistent = await service.isExistentRepository(repositoryId)
+    const isValid = await service.isValidRepository(repositoryId)
+    if (!isExistent || !isValid) {
+      return { error: 'Repositório inválido' }
+    }
+
+    const githubId = utils.getId(data)
+    const user = await users.findOne({ githubId: githubId })
+    if (!user) return { error: 'Usuário inválido' }
+    data.user = user._id
+
+    const wasExcluded = await service.isExcludedUser(repositoryId, user._id)
+    if (wasExcluded) {
+      return {
+        error: 'Esse usuário não faz parte do time, não pode pontuar.'
+      }
+    }
+
+    const interaction = await interactions.handle(data)
+
+    data.interaction = interaction
+    if (interaction.score > 0) await service.sendMessage(user)
+
+    return data
+  } catch (e) {
+    errors._throw(file, 'handle', e)
+  }
+}
+
+const normalize = async data => {
+  return service.normalize(data)
+}
+
+const getDailyLimit = async () => {
+  return settings.getValue('github_daily_limit')
+}
+
+const isFlood = async () => {
+  return false
+}
+
+const findOrCreateUser = async interaction => {
+  return users.findOne({ _id: interaction.user })
+}
+
+export default {
+  handle,
   auth,
-  add,
-  addExcludedUser
+  addUser,
+  addRepository,
+  removeRepositoryUser,
+  normalize,
+  getDailyLimit,
+  isFlood,
+  findOrCreateUser
 }
-
-export default defaultFunctions
