@@ -39,7 +39,7 @@ const findInactivities = async () => {
 const findUsersWithSlack = () => {
   return dal.find(
     {
-      slackId: { $exists: true },
+      slackId: { $exists: true, $ne: null },
       score: { $gt: 5 }
     },
     { score: -1 },
@@ -55,7 +55,7 @@ const findRocketUsersByName = name => {
         $caseSensitive: false,
         $diacriticSensitive: false
       },
-      rocketId: { $exists: true }
+      rocketId: { $exists: true, $ne: null }
     },
     { score: -1 }
   )
@@ -165,7 +165,18 @@ const transferScoreToRocketUser = async (userId, score) => {
   let user = await dal.findOne({ _id: userId })
   const oldLevel = user.level
   user = await updateScore(user, score)
+
+  await interactions.saveManual({
+    score,
+    value: 0,
+    type: 'manual',
+    user: user._id,
+    username: user.username,
+    text: `Transferido ${score} pontos da conta do slack`
+  })
   await sendTransferScoreMessage(user, score, oldLevel)
+
+  return user
 }
 
 const sendTransferScoreMessage = (user, score, oldLevel) => {
