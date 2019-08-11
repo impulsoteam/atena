@@ -196,7 +196,7 @@ const transferScore = async (userId, type, score) => {
     if (type === 'slack') {
       user = await service.transferScoreToSlackUser(userId, score)
     } else if (type === 'rocket') {
-      user = await service.transferScoreToSlackUser(userId, score)
+      user = await service.transferScoreToRocketUser(userId, score)
     }
   } catch (e) {
     errors._throw(file, 'transferScore', e)

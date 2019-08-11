@@ -1,13 +1,16 @@
 import express from 'express'
 import controller from './authController'
+import crypto from '../crypto'
 
 const router = express.Router()
 
 router.post('/', async (req, res) => {
+  const { user, password } = await crypto.decrypt(req.body.data)
+
   const result = await controller.auth({
     type: 'rocket',
-    user: req.body.user,
-    password: req.body.password
+    user,
+    password
   })
   return result.error ? res.status(401).json(result) : res.json(result)
 })
