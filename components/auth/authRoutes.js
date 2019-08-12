@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
     user,
     password
   })
-  return result.error ? res.status(401).json(result) : res.json(result)
+  return result.error ? res.status(500).json(result) : res.json(result)
 })
 
 router.post('/linkedin', async (req, res) => {
@@ -20,7 +20,7 @@ router.post('/linkedin', async (req, res) => {
     type: 'linkedin',
     code: req.body.code
   })
-  return result.error ? res.status(401).json(result) : res.json(result)
+  return result.error ? res.status(500).json(result) : res.json(result)
 })
 
 export default router
