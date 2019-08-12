@@ -14,6 +14,7 @@
   "rules": {
     "strict": 0,
     "no-console": "off",
+    "indent": ["error", 2],
     "indent-size": 2,
     "prettier/prettier": "error"
   }
