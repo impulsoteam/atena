@@ -18,12 +18,13 @@ const auth = async code => {
       return { error: 'Usuário não encontrado' }
     }
 
+    const expireAt = process.env.ATENA_EXPIRE_TOKEN
     const data = {
       avatar: user.avatar || '',
       uuid: user.uuid || '',
       isCoreTeam: user.isCoreTeam || false,
       expireAt: moment()
-        .add(20, 'minutes')
+        .add(expireAt, 'minutes')
         .format()
     }
 
