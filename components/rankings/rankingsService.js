@@ -177,7 +177,7 @@ const findOrCreate = async (year, month) => {
     ranking = {
       isCoreTeam: false,
       users: [],
-      date: Date.now(),
+      date: new Date(year, month - 1),
       isNew: true
     }
   }
