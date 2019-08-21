@@ -284,8 +284,6 @@ const getUserProfileByUuid = async uuid => {
   const monthlyPosition = await rankings.getMonthlyPositionByUser(user._id)
   const allAchievements = await achievements.findAllByUser(user._id)
 
-  console.log('allAchievements', allAchievements)
-
   return {
     name: user.name,
     avatar: user.avatar || '',
