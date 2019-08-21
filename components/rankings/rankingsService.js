@@ -185,6 +185,17 @@ const findOrCreate = async (year, month) => {
   return ranking
 }
 
+const getMonthlyPositionByUser = async userId => {
+  const today = new Date(Date.now())
+  const monthlyRanking = await getRankingUsersByMonth(
+    today.getMonth() + 1,
+    today.getFullYear()
+  )
+
+  const monthlyPosition = monthlyRanking.findIndex(data => data.user === userId)
+  return monthlyPosition ? monthlyPosition + 1 : 0
+}
+
 export default {
   calculatePositionByUser,
   getGeneralRanking,
@@ -193,5 +204,6 @@ export default {
   generateUsersPosition,
   closePreviousRanking,
   getRankingUsersByMonth,
-  findOrCreate
+  findOrCreate,
+  getMonthlyPositionByUser
 }

@@ -122,6 +122,10 @@ Essas nobres pessoas têm se destacado em meu templo:`,
   return await messages.sendToRoom(response, roomname)
 }
 
+const getMonthlyPositionByUser = userId => {
+  return service.getMonthlyPositionByUser(userId)
+}
+
 export default {
   calculatePositionByUser,
   commandGeneral,
@@ -129,5 +133,6 @@ export default {
   getRankingByMonth,
   getGeneralRanking,
   generate,
-  sendToChannel
+  sendToChannel,
+  getMonthlyPositionByUser
 }

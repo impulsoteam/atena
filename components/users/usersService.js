@@ -11,6 +11,7 @@ import achievements from '../achievements'
 import messages from '../messages'
 import errors from '../errors'
 import interactions from '../interactions'
+import rankings from '../rankings'
 
 const file = 'Users | Controller'
 
@@ -278,7 +279,7 @@ const getUserProfileByUuid = async uuid => {
     user.isCoreTeam
   )
 
-  const monthlyPosition = await getMonthlyPositionByUser(user)
+  const monthlyPosition = await rankings.getMonthlyPositionByUser(user._id)
   const allAchievements = await achievements.findAllByUser(user._id)
 
   return {
@@ -295,20 +296,6 @@ const getUserProfileByUuid = async uuid => {
       }
     ]
   }
-}
-
-const getMonthlyPositionByUser = async user => {
-  const today = new Date(Date.now())
-  const monthlyRanking = await rankingsService.getRankingUsersByMonth(
-    today.getMonth() + 1,
-    today.getFullYear()
-  )
-
-  const monthlyPosition = monthlyRanking.findIndex(
-    data => data.user === user._id
-  )
-
-  return monthlyPosition ? monthlyPosition + 1 : 0
 }
 
 export default {
