@@ -213,6 +213,10 @@ const sendPoints = async data => {
   return service.sendPoints(data)
 }
 
+const getUserProfileByUuid = async uuid => {
+  return service.getUserProfileByUuid(uuid)
+}
+
 export default {
   save,
   find,
@@ -236,5 +240,6 @@ export default {
   transferScore,
   getMostActives,
   sendPoints,
-  saveOnNewLevel
+  saveOnNewLevel,
+  getUserProfileByUuid
 }
