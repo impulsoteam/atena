@@ -272,9 +272,11 @@ const sendPoints = async data => {
 const getUserProfileByUuid = async uuid => {
   if (!uuid) return { error: 'UUID não enviado' }
 
-  const user = await users.findOne({ uuid })
+  const user = await users.findOne({ uuid: uuid })
 
-  const generalPosition = await rankingsService.calculatePositionByUser(
+  if (!user) return { error: 'Usuário não encontrado' }
+
+  const generalPosition = await rankings.calculatePositionByUser(
     user.rocketId,
     user.isCoreTeam
   )
@@ -282,11 +284,13 @@ const getUserProfileByUuid = async uuid => {
   const monthlyPosition = await rankings.getMonthlyPositionByUser(user._id)
   const allAchievements = await achievements.findAllByUser(user._id)
 
+  console.log('allAchievements', allAchievements)
+
   return {
-    name,
-    avatar,
-    level,
-    score,
+    name: user.name,
+    avatar: user.avatar || '',
+    level: user.level,
+    score: user.score,
     generalPosition,
     monthlyPosition,
     userAchievements: [

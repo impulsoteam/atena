@@ -33,17 +33,17 @@ const save = async (type, interaction, user) => {
 const findAllByUser = async userId => {
   const allAchievements = await dal.findAllByUser(userId)
 
-  return allAchievements.forEach(a => {
+  return allAchievements.map(a => {
     const data = utils.getCurrentRating(a)
 
-    achievements.push({
+    return {
       type: a.kind,
       name: data.name,
       medal: data.rating,
       tier: utils.getLastRatingEarned(a).range,
       score: a.total,
       maxScore: data.total
-    })
+    }
   })
 }
 
