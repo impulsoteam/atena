@@ -20,4 +20,9 @@ router.put('/:id/score', async (req, res) => {
   return res.json(result)
 })
 
+router.get('/:uuid/profile', async (req, res) => {
+  const result = await users.getUserProfileByUuid(req.params.uuid)
+  return res.json(result)
+})
+
 export default router

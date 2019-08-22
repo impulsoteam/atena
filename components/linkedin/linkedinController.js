@@ -31,7 +31,6 @@ const auth = async code => {
     const token = await crypto.encrypt(data)
     return { token }
   } catch (e) {
-    console.log('----- error', e)
     errors._throw(file, 'auth', e)
     return { error: 'Erro ao acessar linkedin auth' }
   }

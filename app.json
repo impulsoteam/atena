@@ -11,6 +11,12 @@
     "CLOUDAMQP_URL": {
       "required": true
     },
+    "CLOUDMQP_QUEUE": {
+      "required": true
+    },
+    "CLOUDMQP_QUEUE_OUT": {
+      "required": true
+    },
     "GA": {
       "required": false
     },
@@ -18,6 +24,12 @@
       "required": true
     },
     "GITHUB_CLIENT_SECRET": {
+      "required": true
+    },
+    "GITHUB_OAUTH_URL": {
+      "required": true
+    },
+    "GITHUB_API_URL": {
       "required": true
     },
     "LINKEDIN_CLIENT_ID": {
@@ -32,6 +44,15 @@
     "LINKEDIN_SECRET": {
       "required": true
     },
+    "LINKEDIN_OAUTH_URL": {
+      "required": true
+    },
+    "LINKEDIN_API_URL": {
+      "required": true
+    },
+    "LINKEDIN_URL_CALLBACK": {
+      "required": true
+    },
     "MONGODB_URI": {
       "required": true
     },
@@ -44,16 +65,19 @@
     "ROCKET_BOT_USER": {
       "required": true
     },
+    "ROCKET_USER_TOKEN": {
+      "required": true
+    },
+    "ROCKET_USER_ID": {
+      "required": true
+    },
     "ROCKET_HOST": {
       "required": true
     },
     "ROCKETCHAT_URL": {
       "required": true
     },
-    "SLACK_SIGNIN_EVENTS": {
-      "required": true
-    },
-    "SLACK_TOKEN": {
+    "ROCKET_DEFAULT_CHANNEL": {
       "required": true
     },
     "TEAM_NETWORK_TOKEN": {
@@ -63,6 +87,18 @@
       "required": true
     },
     "ATENA_EXPIRE_TOKEN": {
+      "required": true
+    },
+    "BLOG_API_URL": {
+      "required": true
+    },
+    "ATENA_ENABLE_LOGS": {
+      "required": true
+    },
+    "ATENA_URL": {
+      "required": true
+    },
+    "ATENA_CRYPTO_SALT": {
       "required": true
     }
   },

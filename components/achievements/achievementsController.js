@@ -30,7 +30,25 @@ const save = async (type, interaction, user) => {
   return dal.save(achievement)
 }
 
+const findAllByUser = async userId => {
+  const allAchievements = await dal.findAllByUser(userId)
+
+  return allAchievements.map(a => {
+    const data = utils.getCurrentRating(a)
+
+    return {
+      type: a.kind,
+      name: data.name,
+      medal: data.rating,
+      tier: utils.getLastRatingEarned(a).range,
+      score: a.total,
+      maxScore: data.total
+    }
+  })
+}
+
 export default {
   handle,
-  commandIndex
+  commandIndex,
+  findAllByUser
 }

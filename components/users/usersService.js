@@ -7,9 +7,11 @@ import next from '../next'
 import users from '../users'
 import usersLevelsHistory from '../usersLevelsHistory'
 import achievementsLevel from '../achievementsLevel'
+import achievements from '../achievements'
 import messages from '../messages'
 import errors from '../errors'
 import interactions from '../interactions'
+import rankings from '../rankings'
 
 const file = 'Users | Controller'
 
@@ -267,6 +269,37 @@ const sendPoints = async data => {
   }
 }
 
+const getUserProfileByUuid = async uuid => {
+  if (!uuid) return { error: 'UUID não enviado' }
+
+  const user = await users.findOne({ uuid: uuid })
+
+  if (!user) return { error: 'Usuário não encontrado' }
+
+  const generalPosition = await rankings.calculatePositionByUser(
+    user.rocketId,
+    user.isCoreTeam
+  )
+
+  const monthlyPosition = await rankings.getMonthlyPositionByUser(user._id)
+  const allAchievements = await achievements.findAllByUser(user._id)
+
+  return {
+    name: user.name,
+    avatar: user.avatar || '',
+    level: user.level,
+    score: user.score,
+    generalPosition,
+    monthlyPosition,
+    userAchievements: [
+      {
+        name: 'Network',
+        achievements: allAchievements
+      }
+    ]
+  }
+}
+
 export default {
   findInactivities,
   receiveProPlan,
@@ -280,5 +313,6 @@ export default {
   transferScoreToRocketUser,
   isCoreTeam,
   sendPoints,
-  saveOnNewLevel
+  saveOnNewLevel,
+  getUserProfileByUuid
 }
