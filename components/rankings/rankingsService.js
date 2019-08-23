@@ -192,7 +192,9 @@ const getMonthlyPositionByUser = async userId => {
     today.getFullYear()
   )
 
-  const monthlyPosition = monthlyRanking.findIndex(data => data.user === userId)
+  const monthlyPosition = monthlyRanking.findIndex(
+    data => data.user.toString() === userId.toString()
+  )
   return monthlyPosition ? monthlyPosition + 1 : 0
 }
 
