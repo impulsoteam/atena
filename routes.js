@@ -19,8 +19,8 @@ router.use('/interactions', interactions.routes)
 router.use('/miner', middlewares.miner.auth, miner.routes)
 router.use('/checkpoints', checkpoints.routes)
 router.use('/integrations/github', github.routes)
-router.use('/api/v1/users', middlewares.api.auth, users.routes)
-router.use('/api/v1/ranking', middlewares.api.auth, rankings.routes)
+router.use('/api/v1/ranking', rankings.routes)
 router.use('/api/v1/auth', auth.routes)
+router.use('/api/v1/users', middlewares.api.auth, users.routes)
 
 export default router
