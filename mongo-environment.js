@@ -1,33 +1,33 @@
-const NodeEnvironment = require("jest-environment-node");
-const path = require("path");
-const fs = require("fs");
-const globalConfigPath = path.join(__dirname, "globalConfig.json");
+const NodeEnvironment = require('jest-environment-node')
+const path = require('path')
+const fs = require('fs')
+const globalConfigPath = path.join(__dirname, 'globalConfig.json')
 
 class MongoEnvironment extends NodeEnvironment {
   constructor(config) {
-    super(config);
+    super(config)
   }
 
   async setup() {
-    console.log("Setup MongoDB Test Environment");
+    console.log('Setup MongoDB Test Environment')
 
-    const globalConfig = JSON.parse(fs.readFileSync(globalConfigPath, "utf-8"));
+    const globalConfig = JSON.parse(fs.readFileSync(globalConfigPath, 'utf-8'))
 
-    this.global.__MONGO_URI__ = globalConfig.mongoUri;
-    this.global.__MONGO_DB_NAME__ = globalConfig.mongoDbName;
+    this.global.__MONGO_URI__ = globalConfig.mongoUri
+    this.global.__MONGO_DB_NAME__ = globalConfig.mongoDbName
 
-    await super.setup();
+    await super.setup()
   }
 
   async teardown() {
-    console.log("Teardown MongoDB Test Environment");
+    console.log('Teardown MongoDB Test Environment')
 
-    await super.teardown();
+    await super.teardown()
   }
 
   runScript(script) {
-    return super.runScript(script);
+    return super.runScript(script)
   }
 }
 
-module.exports = MongoEnvironment;
+module.exports = MongoEnvironment
