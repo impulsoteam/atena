@@ -25,13 +25,9 @@ const interactionSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  // user: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'User',
-  //   required: true
-  // },
   user: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   thread: {
