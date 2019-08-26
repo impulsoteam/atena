@@ -94,6 +94,9 @@ const generate = async month => {
 const sendToChannel = async () => {
   const today = new Date(Date.now())
   const roomname = process.env.ROCKET_DEFAULT_CHANNEL
+  const isEnabled = process.env.ROCKET_SEND_TO_CHANNEL
+
+  if (!roomname || isEnabled) return
 
   const ranking = await service.getRankingByMonth(today.getMonth())
 
