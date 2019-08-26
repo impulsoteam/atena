@@ -16,7 +16,8 @@
     "no-console": "off",
     "indent": ["error", 2, {
       "ImportDeclaration": "first",
-      "MemberExpression": "off"
+      "MemberExpression": "off",
+      "SwitchCase": 0
     }],
     "prettier/prettier": "error"
   }
