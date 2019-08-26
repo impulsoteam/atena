@@ -31,14 +31,6 @@ const app = express()
 
 app.use(compression())
 
-app.use((req, res, next) => {
-  if (['production', 'staging'].includes(process.env.NODE_ENV) && !req.secure) {
-    res.redirect(`https://${req.headers.host}${req.url}`)
-  } else {
-    next()
-  }
-})
-
 app.use(
   session({
     secret: 'atenagamification',
