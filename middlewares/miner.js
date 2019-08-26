@@ -2,7 +2,8 @@ import miner from '../components/miner'
 
 const auth = function(req, res, next) {
   const { token } = req.headers
-  const isMiner = miner.test(req.originalUrl) || false
+
+  const isMiner = /miner/g.test(req.originalUrl) || false
   if (isMiner && token) {
     if (token !== process.env[`X_MINER_TOKEN`]) {
       res.sendStatus(401).json({
