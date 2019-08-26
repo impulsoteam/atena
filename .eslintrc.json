@@ -1,7 +1,15 @@
 {
-  "plugins": [ "prettier", "react" ],
-  "extends": [ "eslint:recommended", "plugin:react/recommended" ],
+  "plugins": ["prettier"],
+  "extends": ["prettier"],
   "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
   "env": {
     "es6": true,
     "node": true,
@@ -11,7 +19,13 @@
   "rules": {
     "strict": 0,
     "no-console": "off",
-    "indent-size": [ true, 2 ],
+    "indent": ["error", 2, {
+      "ImportDeclaration": "first",
+      "MemberExpression": 1,
+      "SwitchCase": 0
+    }],
     "prettier/prettier": "error"
   }
 }
+
+
