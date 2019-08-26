@@ -4,7 +4,6 @@ import mongoose from 'mongoose'
 import appRoutes from './routes'
 import compression from 'compression'
 import session from 'express-session'
-import bodyParser from 'body-parser'
 import log4js from 'log4js'
 import bots from './components/bots'
 import crons from './components/crons'
@@ -49,9 +48,6 @@ app.use(
     saveUninitialized: false
   })
 )
-
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use('/', appRoutes)
 

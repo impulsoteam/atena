@@ -1,4 +1,5 @@
 import express from 'express'
+import bodyParser from 'body-parser'
 import achievementsTemporyData from './components/achievementsTemporaryData'
 import blog from './components/blog'
 import users from './components/users'
@@ -11,6 +12,9 @@ import auth from './components/auth'
 import middlewares from './middlewares'
 
 const router = express.Router()
+
+router.use(bodyParser.json())
+router.use(bodyParser.urlencoded({ extended: true }))
 
 router.use('/achievements/temporary/data', achievementsTemporyData.routes)
 router.use('/blog', blog.routes)
