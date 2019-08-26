@@ -32,10 +32,10 @@ const convertToInteraction = data => {
     response = {
       ...response,
       description: Object.keys(reactions).pop(),
-      parentUser: data.u._id,
-      rocketId: null,
+      parentUser: null,
+      rocketId: data.u._id,
       action: config.actions.reaction.type,
-      score: config.xprules.reactions.send
+      score: 0
     }
   } else {
     if (data.attachments) {
