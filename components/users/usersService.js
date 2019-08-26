@@ -219,8 +219,8 @@ const sendPoints = async data => {
     if (!sendedUser || !points || !reason) {
       return {
         msg: `Ops! Tem algo *errado* no seu comando. Tente desta forma:
-        ${'`!darpontos`'} ${'`@nome-usuario`'} ${'`pontos`'} ${'`"motivo"`'}
-        Ah! E o motivo deve estar entre aspas!`
+				${'`!darpontos`'} ${'`@nome-usuario`'} ${'`pontos`'} ${'`"motivo"`'}
+				Ah! E o motivo deve estar entre aspas!`
       }
     }
 
