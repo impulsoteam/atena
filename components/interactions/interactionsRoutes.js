@@ -1,4 +1,5 @@
 import express from 'express'
+import bodyParser from 'body-parser'
 import interactions from './interactionsController'
 
 const router = express.Router()
