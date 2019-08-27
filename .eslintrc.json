@@ -22,7 +22,7 @@
     "indent": ["error", 2, {
       "ImportDeclaration": "first",
       "MemberExpression": 1,
-      "SwitchCase": 0
+      "SwitchCase": 1
     }],
     "prettier/prettier": "error"
   }
