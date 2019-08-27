@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
+import cors from 'cors'
 import appRoutes from './routes'
 import compression from 'compression'
 import session from 'express-session'
@@ -38,6 +39,8 @@ app.use(
     saveUninitialized: false
   })
 )
+
+app.use(cors())
 
 app.use('/', appRoutes)
 
