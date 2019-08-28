@@ -5,7 +5,6 @@ import cors from 'cors'
 import appRoutes from './routes'
 import compression from 'compression'
 import session from 'express-session'
-import bodyParser from 'body-parser'
 import log4js from 'log4js'
 import bots from './components/bots'
 import crons from './components/crons'
@@ -33,16 +32,6 @@ const app = express()
 
 app.use(compression())
 
-app.enable('trust proxy')
-
-app.use((req, res, next) => {
-  if (['production', 'staging'].includes(process.env.NODE_ENV) && !req.secure) {
-    res.redirect(`https://${req.headers.host}${req.url}`)
-  } else {
-    next()
-  }
-})
-
 app.use(
   session({
     secret: 'atenagamification',
@@ -51,10 +40,8 @@ app.use(
   })
 )
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-
 app.use(cors())
+
 app.use('/', appRoutes)
 
 process.env.NODE_ENV !== 'test' &&

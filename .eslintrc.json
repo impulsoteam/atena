@@ -3,7 +3,12 @@
   "extends": ["prettier"],
   "parser": "babel-eslint",
   "parserOptions": {
-    "sourceType": "module"
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true,
+      "experimentalObjectRestSpread": true
+    }
   },
   "env": {
     "es6": true,
@@ -14,8 +19,13 @@
   "rules": {
     "strict": 0,
     "no-console": "off",
-    "indent": ["error", 2],
-    "indent-size": 2,
+    "indent": ["error", 2, {
+      "ImportDeclaration": "first",
+      "MemberExpression": 1,
+      "SwitchCase": 1
+    }],
     "prettier/prettier": "error"
   }
 }
+
+
