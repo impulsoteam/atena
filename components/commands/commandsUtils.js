@@ -47,7 +47,7 @@ const getCommandsRegex = () => {
 }
 
 const getUsernameByMessage = message => {
-  const checkFields = /(@[a-z-]+)/g
+  const checkFields = /(@[a-z0-9\-]+)/g
   const result = checkFields.exec(message)
   return result ? result[1].replace('@', '') : false
 }
