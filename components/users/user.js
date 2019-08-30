@@ -1,5 +1,11 @@
 import mongoose, { mongo } from 'mongoose'
-const userRelatedModels = ['Interaction', 'UserLevelHistory', 'AchievementLevel', 'AchievementTemporary', 'Achievement']
+const userRelatedModels = [
+  'Interaction', 
+  'UserLevelHistory', 
+  'AchievementLevel', 
+  'AchievementTemporary', 
+  'Achievement'
+]
 
 const userSchema = new mongoose.Schema({
   avatar: {
@@ -118,8 +124,14 @@ userSchema.pre('save', function(next) {
 })
 
 userSchema.pre('deleteMany', async function() { 
-  const conditions = await this.find(this._conditions).distinct('_id').then(ids => ({ user: { $in: ids } }))
-  userRelatedModels.forEach(async model => await mongoose.model(model).deleteMany(conditions))
+  const conditions = await this.find(this._conditions)
+    .distinct('_id')
+    .then(ids => ({ user: { $in: ids } }))
+    
+  userRelatedModels.forEach(async model => { 
+    await mongoose.model(model)
+      .deleteMany(conditions) 
+  })
 })
 
 export default mongoose.model('User', userSchema)
