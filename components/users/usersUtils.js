@@ -32,7 +32,7 @@ const getWelcomeMessage = () => {
 
 const getSendedPointsOptions = async message => {
   // eslint-disable-next-line no-useless-escape
-  const regex = /(!darpontos) (@[a-z\-]+) ([\d]+) "(.+?)"/g
+  const regex = /(!darpontos) (@[a-z0-9\-]+) ([\d]+) "(.+?)"/g
   const options = await regex.exec(message)
   return options
 }
