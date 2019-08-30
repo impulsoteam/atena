@@ -108,10 +108,6 @@ const userSchema = new mongoose.Schema({
   proFinishAt: {
     type: Date,
     required: false
-  },
-  active: {
-    type: Boolean,
-    default: true
   }
 })
 
