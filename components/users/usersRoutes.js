@@ -39,4 +39,13 @@ router.delete('/delete-many/:field', async (req, res) => {
   }
 })
 
+router.delete('/delete-one/:val', async (req, res) => {
+  const user = await user.deleteOne({
+    $or: {
+      username: req.params.val,
+      uuid: req.param.val,
+    }
+  })
+})
+
 export default router
