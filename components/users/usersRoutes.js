@@ -26,9 +26,17 @@ router.get('/:uuid/profile', async (req, res) => {
   return res.json(result)
 })
 
-router.delete('/uuids', async (req, res) => {
-  await user.deleteMany({ uuid: { $in: req.body } })
-  res.send(true)
+router.delete('/delete-many/:field', async (req, res) => {
+  if(!['username', 'uuid'].includes(req.params.field)) return res.status(405).send('Method not allowed')
+  const conditions = { [req.params.field]: { $in: req.body } }
+
+  try {
+    const usersToRemove = await user.find(conditions).select('name email username')
+    await user.deleteMany(conditions)
+    res.send(usersToRemove)
+  } catch (error) {
+    res.sendStatus(500)
+  }
 })
 
 export default router
