@@ -1,5 +1,6 @@
 import express from 'express'
 import users from './usersController'
+import user from './user'
 
 const router = express.Router()
 
@@ -23,6 +24,11 @@ router.put('/:id/score', async (req, res) => {
 router.get('/:uuid/profile', async (req, res) => {
   const result = await users.getUserProfileByUuid(req.params.uuid)
   return res.json(result)
+})
+
+router.delete('/uuids', async (req, res) => {
+  await user.deleteMany({ uuid: { $in: req.body } })
+  res.send(true)
 })
 
 export default router

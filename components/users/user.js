@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
 
 const userSchema = new mongoose.Schema({
   avatar: {
@@ -118,6 +118,12 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', function(next) {
   this.lastUpdate = Date.Now
   next()
+})
+
+userSchema.pre('deleteMany', async function() { 
+  const conditions = await this.find(this._conditions).distinct('_id').then(ids => ({ user: { $in: ids } }))
+  const models = ['Interaction', 'UserLevelHistory', 'AchievementLevel', 'AchievementTemporary', 'Achievement']
+  models.forEach(async model => await mongoose.model(model).deleteMany(conditions))
 })
 
 export default mongoose.model('User', userSchema)

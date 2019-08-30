@@ -217,6 +217,10 @@ const getUserProfileByUuid = async uuid => {
   return service.getUserProfileByUuid(uuid)
 }
 
+const deleteUsersByUuids = async ids => {
+  return service.deleteUsersByUuids(ids)
+}
+
 export default {
   save,
   find,
