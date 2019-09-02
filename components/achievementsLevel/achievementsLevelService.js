@@ -39,7 +39,7 @@ const sendEarnedMessage = async user => {
   if (!user.username) return
 
   await sendMessageToUser(user)
-  await sendMessageToRoom(user)
+  // await sendMessageToRoom(user)
 }
 
 const sendMessageToUser = async user => {
