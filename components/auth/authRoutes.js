@@ -20,7 +20,7 @@ router.post('/linkedin', async (req, res) => {
     type: 'linkedin',
     code: req.body.code
   })
-  console.log(result)
+
   return result.error ? res.status(500).json(result) : res.json(result)
 })
 
