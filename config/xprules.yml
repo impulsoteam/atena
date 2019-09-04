@@ -20,7 +20,7 @@ github:
 disqus:
   comment: 5
 blog:
-  post: 25
+  post: 30
   comment: 5
 inactive:
   mindays: 8
