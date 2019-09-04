@@ -32,7 +32,7 @@ const auth = async code => {
     return { token }
   } catch (e) {
     errors._throw(file, 'auth', e)
-    return { error: 'Erro ao acessar linkedin auth' }
+    return { error: e }
   }
 }
 
