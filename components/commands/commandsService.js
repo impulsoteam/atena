@@ -22,8 +22,8 @@ const getCommandMessage = async message => {
     response = await commandsList(message)
   } else if (regex.sendPoints.test(message.msg)) {
     response = users.sendPoints(message)
-  } else if (regex.checkPro.test(message.msg)) {
-    response = await users.commandUserIsPro(message)
+  } else if (regex.checkInfos.test(message.msg)) {
+    response = await users.commandUserInfos(message)
   } else if (regex.openSourceRemoveRepositoryUser.test(message.msg)) {
     response = await github.removeRepositoryUser(message)
   } else if (regex.openSource.test(message.msg)) {

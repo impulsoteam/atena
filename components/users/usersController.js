@@ -119,7 +119,7 @@ const commandPro = async message => {
   return response
 }
 
-const commandUserIsPro = async message => {
+const commandUserInfos = async message => {
   const coreTeam = await isCoreTeam(message.u._id)
   if (!coreTeam) return { msg: 'Ops! *Não tens acesso* a esta operação!' }
 
@@ -128,8 +128,6 @@ const commandUserIsPro = async message => {
 
   const user = await dal.findOne({ username: username })
   if (!user) return { msg: 'Usuário *não* encontrado.' }
-
-  if (!user.pro) return { msg: 'Usuário *não possui* plano pro!' }
 
   const beginDate = user.proBeginAt
     ? moment(user.proBeginAt).format('L')
@@ -140,10 +138,19 @@ const commandUserIsPro = async message => {
     : 'Sem data definida'
 
   return {
-    msg: 'Usuário *possui* plano pro!',
+    msg: `*Usuário*: _${user.name}_`,
     attachments: [
       {
-        text: `Plano iniciou em ${beginDate} e terminará em ${finishDate}`
+        text: `*Nível*: ${user.level}`
+      },
+      {
+        text: `*XP*: ${user.score}`
+      },
+      {
+        text: user.pro
+          ? `Usuário *possui* plano pro.\n\
+          Plano iniciou em *${beginDate}* e terminará em *${finishDate}*`
+          : 'Usuário *não possui* plano pro!'
       }
     ]
   }
@@ -229,7 +236,7 @@ export default {
   commandPro,
   findAllToRanking,
   isCoreTeam,
-  commandUserIsPro,
+  commandUserInfos,
   sendWelcomeMessage,
   receiveProPlan,
   getProBeginDate,

@@ -25,7 +25,7 @@ const getCoreTeamCommandsText = () => {
       text: `Digite ${'`!darpontos`'} ${'`@nome-usuario`'} ${'`pontos`'} ${'`motivo`'} para dar pontos ao usuário. `
     },
     {
-      text: `Digite ${'`!checkpro`'} ${'`@nome-usuario`'} para checar se o usuario é Pro e a duração do beneficio. `
+      text: `Digite ${'`!checkinfos`'} ${'`@nome-usuario`'} para checar dados relevantes do usuário. `
     }
   ]
 }
@@ -39,7 +39,7 @@ const getCommandsRegex = () => {
     isPro: /^!pro$/g,
     commands: /^!comandos$/g,
     sendPoints: /^!darpontos/g,
-    checkPro: /^!checkpro/g,
+    checkInfos: /^!checkinfos/g,
     openSource: /^!opensource$/g,
     openSourceAddRepository: /^!addrepositorio[ \d\w]*$/g,
     openSourceRemoveRepositoryUser: /^!removerepositoriousuario[ \d\w @a-z-A-Z]*$/g
@@ -47,7 +47,7 @@ const getCommandsRegex = () => {
 }
 
 const getUsernameByMessage = message => {
-  const checkFields = /(@[a-z-]+)/g
+  const checkFields = /(@[a-z0-9\-]+)/g
   const result = checkFields.exec(message)
   return result ? result[1].replace('@', '') : false
 }
