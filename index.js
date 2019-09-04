@@ -1,6 +1,9 @@
 import dotenv from 'dotenv'
+process.env.NODE_ENV !== 'production' && dotenv.config()
+
 import express from 'express'
 import mongoose from 'mongoose'
+import cors from 'cors'
 import appRoutes from './routes'
 import compression from 'compression'
 import session from 'express-session'
@@ -14,8 +17,6 @@ if (process.env.NODE_ENV !== 'test') {
   crons.exec()
   workers.exec()
 }
-
-process.env.NODE_ENV !== 'production' && dotenv.config()
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
 mongoose.set('useCreateIndex', true)
@@ -38,6 +39,8 @@ app.use(
     saveUninitialized: false
   })
 )
+
+app.use(cors())
 
 app.use('/', appRoutes)
 
