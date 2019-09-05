@@ -273,11 +273,10 @@ const getUserProfileByUuid = async uuid => {
   if (!uuid) return { error: 'UUID não enviado' }
 
   const user = await users.findOne({ uuid: uuid })
-
   if (!user) return { error: 'Usuário não encontrado' }
 
   const generalPosition = await rankings.calculatePositionByUser(
-    user.rocketId,
+    user,
     user.isCoreTeam
   )
 
