@@ -4,23 +4,25 @@ import dal from './rankingsDAL'
 import interactions from '../interactions'
 import usersUtils from '../users/usersUtils'
 
-const calculatePositionByUser = async (userId, isCoreTeam = false) => {
+const calculatePositionByUser = async (user, isCoreTeam = false) => {
   const allUsers = await users.findAllToRanking(isCoreTeam, 0)
-  return (await getPositionFromUsers(allUsers, userId)) + 1 || 0
+  return await getPositionFromUsers(allUsers, user)
 }
 
-const getPositionFromUsers = async (allUsers, userId) => {
-  return allUsers.map(e => e.rocketId).indexOf(userId)
-}
+const getGeneralRanking = async (rocketId, isCoreTeam) => {
+  const user = await users.findOne({ rocketId })
 
-const getGeneralRanking = async (userId, isCoreTeam) => {
+  if (!user) {
+    return { msg: 'Ops. Não conseguimos gerar o ranking nesse momento. :/' }
+  }
+
   let response = {
     msg: 'Veja as primeiras pessoas do ranking:',
     attachments: []
   }
 
   const allUsers = await users.findAllToRanking(isCoreTeam, 5)
-  const myPosition = await calculatePositionByUser(userId, isCoreTeam)
+  const myPosition = await calculatePositionByUser(user, isCoreTeam)
   if (!allUsers.length) response.msg = 'Ops! Ainda ninguém pontuou. =/'
 
   response.attachments = allUsers.map((user, index) => ({
@@ -36,17 +38,21 @@ const getGeneralRanking = async (userId, isCoreTeam) => {
   return response
 }
 
-const getUserMessagePositionByMonth = async (userId, month, rankingUsers) => {
+const getUserMessagePositionByMonth = async (user, month, rankingUsers) => {
   let message = `Opa, você não pontuou no game em ${month}`
 
-  const position = await getPositionFromUsers(rankingUsers, userId)
+  const position = await getPositionFromUsers(rankingUsers, user)
   if (position > 0)
     message = `Ah, e você está na posição ${position} do ranking de ${month}`
 
   return message
 }
 
-const getRankingMessageByMonth = async (userId, month) => {
+const getRankingMessageByMonth = async (user, month) => {
+  if (!user) {
+    return { msg: 'Ops. Não conseguimos gerar o ranking nesse momento. :/' }
+  }
+
   const rankingMonthly = await getRankingByMonth(month)
   if (rankingMonthly.error) {
     return { msg: rankingMonthly.error }
@@ -73,7 +79,7 @@ const getRankingMessageByMonth = async (userId, month) => {
     })
 
   const userMessage = await getUserMessagePositionByMonth(
-    userId,
+    user,
     monthName,
     rankingMonthly.users
   )
@@ -91,7 +97,7 @@ const getRankingByMonth = async (month, year) => {
   const ranking = await dal.findOneAndPopulate(
     {
       date: {
-        $gte: new Date(year, month - 1)
+        $gte: new Date(year, month - 1, 1)
       }
     },
     'users.user'
@@ -177,7 +183,7 @@ const findOrCreate = async (year, month) => {
     ranking = {
       isCoreTeam: false,
       users: [],
-      date: new Date(year, month - 1),
+      date: new Date(year, month - 1, 1),
       isNew: true
     }
   }
@@ -195,7 +201,18 @@ const getMonthlyPositionByUser = async userId => {
   const monthlyPosition = monthlyRanking.findIndex(
     data => data.user.toString() === userId.toString()
   )
-  return monthlyPosition ? monthlyPosition + 1 : 0
+  return monthlyPosition + 1
+}
+
+const getPositionFromUsers = async (rankingUsers, user) => {
+  const position = rankingUsers.findIndex(
+    data =>
+      data.user.uuid &&
+      user.uuid &&
+      data.user.uuid.toString() === user.uuid.toString()
+  )
+
+  return position + 1
 }
 
 export default {
