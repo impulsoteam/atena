@@ -25,10 +25,12 @@ const getGeneralRanking = async (rocketId, isCoreTeam) => {
   const myPosition = await calculatePositionByUser(user, isCoreTeam)
   if (!allUsers.length) response.msg = 'Ops! Ainda ninguém pontuou. =/'
 
-  response.attachments = allUsers.map((user, index) => ({
+  response.attachments = allUsers.map((rankingUser, index) => ({
     text: `${index + 1}º lugar está ${
-      user.rocketId === userId ? 'você' : user.name
-    } com ${parseInt(user.score)} XP, no nível ${user.level}`
+      rankingUser.uuid.toString() === user.uuid.toString()
+        ? 'você'
+        : rankingUser.name
+    } com ${parseInt(rankingUser.score)} XP, no nível ${rankingUser.level}`
   }))
 
   response.attachments.push({
@@ -205,12 +207,14 @@ const getMonthlyPositionByUser = async userId => {
 }
 
 const getPositionFromUsers = async (rankingUsers, user) => {
-  const position = rankingUsers.findIndex(
-    data =>
-      data.user.uuid &&
+  const position = rankingUsers.findIndex(data => {
+    const rankingUser = data.user || data
+    return (
       user.uuid &&
-      data.user.uuid.toString() === user.uuid.toString()
-  )
+      rankingUser.uuid &&
+      rankingUser.uuid.toString() === user.uuid.toString()
+    )
+  })
 
   return position + 1
 }
