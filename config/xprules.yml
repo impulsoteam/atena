@@ -13,14 +13,14 @@ reactions:
     positive: 3
     negative: -1
 github:
-  issue: 1
+  issue: 2
   review: 3
   pull_request: 5
   merged_pull_request: 9
 disqus:
   comment: 5
 blog:
-  post: 25
+  post: 30
   comment: 5
 inactive:
   mindays: 8

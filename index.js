@@ -1,4 +1,6 @@
 import dotenv from 'dotenv'
+process.env.NODE_ENV !== 'production' && dotenv.config()
+
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
@@ -15,8 +17,6 @@ if (process.env.NODE_ENV !== 'test') {
   crons.exec()
   workers.exec()
 }
-
-process.env.NODE_ENV !== 'production' && dotenv.config()
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
 mongoose.set('useCreateIndex', true)
