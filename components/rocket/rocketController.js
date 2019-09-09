@@ -25,7 +25,8 @@ const handle = async (error, message, messageOptions) => {
   }
 
   try {
-    if (!service.isValidMessage(BOT_ID, message, messageOptions)) return
+    const isValidaMessage = await service.isValidMessage(BOT_ID, message, messageOptions)
+    if(!isValidaMessage) return
 
     const data = {
       origin: 'rocket',
