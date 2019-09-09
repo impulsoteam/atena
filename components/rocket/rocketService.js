@@ -4,13 +4,19 @@ import { driver, api } from '@rocket.chat/sdk'
 import users from '../users'
 import interactions from '../interactions'
 
-const isValidMessage = (botId, message, messageOptions) => {
-  return !(
-    message.u._id === botId ||
-    message.t ||
-    messageOptions.roomType === 'd' ||
-    message.bot != undefined
-  )
+const isValidMessage = async (botId, message, messageOptions) => {
+  return new Promise(async (resolve) => {
+    const exists = await interactions.messageExists(message._id)
+    const conditions = !(
+      exists ||
+      message.u._id === botId ||
+      message.t ||
+      messageOptions.roomType === 'd' ||
+      message.bot != undefined
+    )
+
+    resolve(conditions)
+  })
 }
 
 const convertToInteraction = data => {
