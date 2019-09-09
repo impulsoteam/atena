@@ -38,17 +38,19 @@ const saveOnNewLevel = async user => {
 }
 
 const commandScore = async message => {
+  const user = await dal.findOne({ username: message.u.username })
+  if (!user) {
+    response = {
+      msg: 'Ops! Não conseguimos verificar seus pontos. :/'
+    }
+  }
+
   let response = {
     msg: 'Ops! Você ainda não tem pontos registrados.'
   }
 
-  const user = await dal.findOne({ username: message.u.username })
-  const position = await rankings.calculatePositionByUser(
-    user.rocketId,
-    user.isCoreTeam
-  )
-
-  if (user && position > 0) {
+  const position = await rankings.calculatePositionByUser(user, user.isCoreTeam)
+  if (position > 0) {
     response = {
       msg: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${user.score} XP`,
       attachments: [
