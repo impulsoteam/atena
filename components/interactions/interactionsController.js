@@ -21,6 +21,8 @@ const handle = async data => {
   interaction.user = user._id
 
   await service.onSaveInteraction(interaction, user)
+
+  interaction.messageId = data._id
   return dal.save(interaction)
 }
 
