@@ -25,7 +25,11 @@ const handle = async (error, message, messageOptions) => {
   }
 
   try {
-    const isValidaMessage = await service.isValidMessage(BOT_ID, message, messageOptions)
+    const isValidaMessage = await service.isValidMessage(
+      BOT_ID, 
+      message, 
+      messageOptions
+    )
     if(!isValidaMessage) return
 
     const data = {
