@@ -32,7 +32,7 @@ const handle = async (error, message, messageOptions) => {
       messageOptions
     )
 
-    if(!isValidaMessage) return
+    if (!isValidaMessage) return
 
     const data = {
       origin: 'rocket',
