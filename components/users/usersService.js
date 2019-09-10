@@ -150,6 +150,7 @@ const updateScore = async (user, score) => {
 const onChangeLevel = async user => {
   if (user.level !== user.previousLevel) {
     saveOnNewLevel(user)
+    next.sendUserLevelToQueue(user)
   }
 }
 
