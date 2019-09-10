@@ -5,7 +5,6 @@ import service from './interactionsService'
 let moduleController
 
 const saveManual = data => {
-  data.type = 'manual'
   const interaction = service.normalize(data)
   return dal.save(interaction)
 }

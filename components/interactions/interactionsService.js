@@ -33,7 +33,7 @@ const normalize = (data, moduleController = false) => {
       channel: 'matrix',
       category: config.categories.network.type,
       action: 'inactivity',
-      score: data.score || 0
+      score: data.score
     }
   } else {
     interaction = moduleController.normalize(data)
