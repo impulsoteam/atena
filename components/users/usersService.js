@@ -27,7 +27,7 @@ const findInactivities = async () => {
   )
   return await dal.find(
     {
-      rocketId: { $exists: true },
+      rocketId: { $exists: true, $ne: null },
       lastInteraction: { $lt: dateRange },
       score: { $gt: 1 }
     },
