@@ -151,6 +151,7 @@ const updateScore = async (user, score) => {
 const onChangeLevel = async user => {
   if (user.level !== user.previousLevel) {
     saveOnNewLevel(user)
+    next.sendUserLevelToQueue(user)
   }
 }
 
@@ -273,11 +274,10 @@ const getUserProfileByUuid = async uuid => {
   if (!uuid) return { error: 'UUID não enviado' }
 
   const user = await users.findOne({ uuid: uuid })
-
   if (!user) return { error: 'Usuário não encontrado' }
 
   const generalPosition = await rankings.calculatePositionByUser(
-    user.rocketId,
+    user,
     user.isCoreTeam
   )
 

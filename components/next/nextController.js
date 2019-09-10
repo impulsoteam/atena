@@ -56,7 +56,18 @@ const sendToQueue = user => {
   return workers.publish(data)
 }
 
+const sendUserLevelToQueue = user => {
+  const data = {
+    type: 'level_change',
+    uuid: user.uuid,
+    level: user.level
+  }
+
+  return workers.publish(data)
+}
+
 export default {
   handleUser,
-  sendToQueue
+  sendToQueue,
+  sendUserLevelToQueue
 }
