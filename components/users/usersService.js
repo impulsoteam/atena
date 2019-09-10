@@ -25,11 +25,11 @@ const findInactivities = async () => {
   const dateRange = today.setDate(
     today.getDate() - config.xprules.inactive.mindays
   )
-
+  console.log(dateRange)
   return await dal.find(
     {
       rocketId: { $exists: true },
-      lastUpdate: { $lt: dateRange },
+      lastInteraction: { $lt: dateRange },
       score: { $gt: 1 }
     },
     {

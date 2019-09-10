@@ -17,7 +17,7 @@ const exec = () => {
 }
 
 const chatInactivities = async () => {
-  cron.schedule('0 3 * * *', async () => {
+  cron.schedule('*/10 * * * * * ', async () => {
     try {
       logs.info('[*] Starting cron: chatInactivities')
       const inactives = await users.findInactivities()
@@ -25,7 +25,7 @@ const chatInactivities = async () => {
         const score = config.xprules.inactive.value
         users.updateScore(user, score)
         interactions.saveManual({
-          score: score,
+          score,
           type: 'inactivity',
           user: user._id
         })

@@ -75,6 +75,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  lastInteraction: {
+    type: Date,
+    default: Date.now
+  },
   isCoreTeam: {
     type: Boolean,
     required: true,

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import logs from '../logs'
 
 const interactionSchema = new mongoose.Schema({
   type: {
@@ -60,6 +61,19 @@ const interactionSchema = new mongoose.Schema({
   score: {
     type: Number,
     default: 0
+  }
+})
+
+interactionSchema.post('save', async function(doc) {
+  if (doc.type !== 'inactivity') {
+    const userModel = mongoose.model('User')
+    const filter = { _id: doc.user }
+    const update = { lastInteraction: Date.now() }
+    try {
+      await userModel.findOneAndUpdate(filter, update)
+    } catch (error) {
+      logs.info(`Error on save lastUpdate for ${doc.user}`)
+    }
   }
 })
 
