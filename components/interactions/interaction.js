@@ -60,6 +60,9 @@ const interactionSchema = new mongoose.Schema({
   score: {
     type: Number,
     default: 0
+  },
+  messageId: {
+    type: String
   }
 })
 
