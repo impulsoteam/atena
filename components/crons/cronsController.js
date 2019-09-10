@@ -17,7 +17,7 @@ const exec = () => {
 }
 
 const chatInactivities = async () => {
-  cron.schedule('*/10 * * * * * ', async () => {
+  cron.schedule('0 3 * * *', async () => {
     try {
       logs.info('[*] Starting cron: chatInactivities')
       const inactives = await users.findInactivities()
