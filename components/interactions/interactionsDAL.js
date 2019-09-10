@@ -49,6 +49,10 @@ const aggregate = args => {
   return model.aggregate(args).exec()
 }
 
+const messageExists = messageId => {
+  return model.countDocuments({ messageId }).then(count => count > 0)
+}
+
 export default {
   find,
   findOne,
@@ -57,5 +61,6 @@ export default {
   findLastMessageByUser,
   updateMany,
   save,
-  aggregate
+  aggregate,
+  messageExists
 }

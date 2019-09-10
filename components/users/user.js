@@ -116,7 +116,7 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.pre('save', function(next) {
-  this.lastUpdate = Date.Now
+  this.lastUpdate = Date.now()
   next()
 })
 

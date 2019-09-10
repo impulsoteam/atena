@@ -26,7 +26,13 @@ const handle = async (error, message, messageOptions) => {
 
   try {
     if (messageOptions.roomType === 'd') await commands.handle(message)
-    if (!service.isValidMessage(BOT_ID, message, messageOptions)) return
+    const isValidMessage = await service.isValidMessage(
+      BOT_ID,
+      message,
+      messageOptions
+    )
+
+    if (!isValidMessage) return
 
     const data = {
       origin: 'rocket',

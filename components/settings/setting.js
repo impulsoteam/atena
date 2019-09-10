@@ -17,7 +17,7 @@ const settingSchema = new mongoose.Schema({
 })
 
 settingSchema.pre('save', function(next) {
-  this.lastUpdate = Date.now
+  this.lastUpdate = Date.now()
   next()
 })
 
