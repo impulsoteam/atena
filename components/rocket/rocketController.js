@@ -25,6 +25,7 @@ const handle = async (error, message, messageOptions) => {
   }
 
   try {
+    if (messageOptions.roomType === 'd') await commands.handle(message)
     if (!service.isValidMessage(BOT_ID, message, messageOptions)) return
 
     const data = {
