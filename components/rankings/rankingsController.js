@@ -7,8 +7,8 @@ import messages from '../messages'
 
 const file = 'Ranking | Controller'
 
-const calculatePositionByUser = async (userId, isCoreTeam) => {
-  return service.calculatePositionByUser(userId, isCoreTeam)
+const calculatePositionByUser = async (user, isCoreTeam) => {
+  return service.calculatePositionByUser(user, isCoreTeam)
 }
 
 const commandGeneral = async message => {
@@ -18,7 +18,8 @@ const commandGeneral = async message => {
 
 const commandByMonth = async message => {
   const month = await utils.getMonthFromMessage(message)
-  return service.getRankingMessageByMonth(message.u._id, month)
+  const user = await users.findOne({ rocketId: message.u._id })
+  return service.getRankingMessageByMonth(user, month)
 }
 
 const getRankingByMonth = async (month, team = false) => {

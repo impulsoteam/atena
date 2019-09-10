@@ -2,8 +2,13 @@ import config from 'config-yml'
 import commandsUtils from '../commands/commandsUtils'
 import interactionsUtils from '../interactions/interactionsUtils'
 
-const calculateLevel = score =>
-  config.levelrules.levels_range.findIndex(l => score < l) + 1
+const calculateLevel = score => {
+  const levelsRange = config.levelrules.levels_range
+  const lastValue = levelsRange.slice(-1)[0]
+
+  if (score >= lastValue) return 10
+  return levelsRange.findIndex(l => score < l) + 1
+}
 
 const getUsernameByMessage = message => {
   return commandsUtils.getUsernameByMessage(message)
