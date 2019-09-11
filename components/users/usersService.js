@@ -25,11 +25,10 @@ const findInactivities = async () => {
   const dateRange = today.setDate(
     today.getDate() - config.xprules.inactive.mindays
   )
-
   return await dal.find(
     {
-      rocketId: { $exists: true },
-      lastUpdate: { $lt: dateRange },
+      rocketId: { $exists: true, $ne: null },
+      lastInteraction: { $lt: dateRange },
       score: { $gt: 1 }
     },
     {
@@ -151,6 +150,7 @@ const updateScore = async (user, score) => {
 const onChangeLevel = async user => {
   if (user.level !== user.previousLevel) {
     saveOnNewLevel(user)
+    next.sendUserLevelToQueue(user)
   }
 }
 
@@ -273,11 +273,10 @@ const getUserProfileByUuid = async uuid => {
   if (!uuid) return { error: 'UUID não enviado' }
 
   const user = await users.findOne({ uuid: uuid })
-
   if (!user) return { error: 'Usuário não encontrado' }
 
   const generalPosition = await rankings.calculatePositionByUser(
-    user.rocketId,
+    user,
     user.isCoreTeam
   )
 

@@ -33,7 +33,7 @@ const normalize = (data, moduleController = false) => {
       channel: 'matrix',
       category: config.categories.network.type,
       action: 'inactivity',
-      score: data.score || 0
+      score: data.score
     }
   } else {
     interaction = moduleController.normalize(data)
@@ -120,10 +120,10 @@ const findByDate = async (year, month) => {
     {
       $match: {
         date: {
-          $lte: new Date(year, month),
-          $gte: new Date(year, month - 1)
+          $lt: new Date(year, month, 1),
+          $gte: new Date(year, month - 1, 1)
         },
-        score: { $gte: 0 }
+        score: { $gt: 0 }
       }
     },
     {

@@ -76,6 +76,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  lastInteraction: {
+    type: Date,
+    default: Date.now
+  },
   isCoreTeam: {
     type: Boolean,
     required: true,
@@ -113,7 +117,7 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.pre('save', function(next) {
-  this.lastUpdate = Date.Now
+  this.lastUpdate = Date.now()
   this.wasNew = this.isNew
   next()
 })

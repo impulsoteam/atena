@@ -20,10 +20,10 @@ github:
 disqus:
   comment: 5
 blog:
-  post: 25
+  post: 30
   comment: 5
 inactive:
-  mindays: 8
+  mindays: 14
   value: -2
 linkedin: 3
 team:

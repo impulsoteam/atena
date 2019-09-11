@@ -5,7 +5,6 @@ import service from './interactionsService'
 let moduleController
 
 const saveManual = data => {
-  data.type = 'manual'
   const interaction = service.normalize(data)
   return dal.save(interaction)
 }
@@ -21,6 +20,8 @@ const handle = async data => {
   interaction.user = user._id
 
   await service.onSaveInteraction(interaction, user)
+
+  interaction.messageId = data._id
   return dal.save(interaction)
 }
 
@@ -56,6 +57,10 @@ const getMostActivesUsers = async (begin, end, channel, minCount) => {
   )
 }
 
+const messageExists = messageId => {
+  return dal.messageExists(messageId)
+}
+
 export default {
   findByDate,
   getLastMessage,
@@ -63,5 +68,6 @@ export default {
   handle,
   findOne,
   changeUserId,
-  getMostActivesUsers
+  getMostActivesUsers,
+  messageExists
 }

@@ -25,7 +25,7 @@ const chatInactivities = async () => {
         const score = config.xprules.inactive.value
         users.updateScore(user, score)
         interactions.saveManual({
-          score: score,
+          score,
           type: 'inactivity',
           user: user._id
         })
