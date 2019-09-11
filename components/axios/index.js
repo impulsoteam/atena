@@ -8,7 +8,7 @@ const onboardingApi = axios.create({
   baseURL: rocketchatApiUrl,
   headers: {
     'X-User-Id': process.env.ROCKETCHAT_ONBOARDING_USER_ID,
-    'X-Auth-Token': process.env.ROCKETCHAT_USER_TOKEN
+    'X-Auth-Token': process.env.ROCKETCHAT_ONBOARDING_USER_TOKEN
   }
 })
 
