@@ -20,7 +20,16 @@ const sendToRoom = (message, room = 'comunicados') => {
   return rocket.sendMessageToRoom(message, room)
 }
 
+const routeMessageToUserOrRoom = (rawMessage, regex) => {
+  const [_, destination, message] = new RegExp(regex).exec(rawMessage)
+  const handler =
+    destination[0] === '#' ? rocket.sendMessageToRoom : rocket.sendMessageToUser
+
+  return handler(message, destination.slice(1))
+}
+
 export default {
   sendToUser,
-  sendToRoom
+  sendToRoom,
+  routeMessageToUserOrRoom
 }

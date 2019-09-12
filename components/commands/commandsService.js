@@ -3,6 +3,7 @@ import users from '../users'
 import rankings from '../rankings'
 import achievements from '../achievements'
 import github from '../github'
+import messages from '../messages'
 
 const getCommandMessage = async message => {
   const regex = utils.getCommandsRegex()
@@ -30,6 +31,11 @@ const getCommandMessage = async message => {
     response = await github.auth(message)
   } else if (regex.openSourceAddRepository.test(message.msg)) {
     response = await github.addRepository(message)
+  } else if (regex.sendMessageThroughAtena.test(message.msg)) {
+    response = await messages.routeMessageToUserOrRoom(
+      message.msg,
+      regex.sendMessageThroughAtena
+    )
   }
 
   return response
