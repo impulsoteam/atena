@@ -43,7 +43,7 @@ const getCommandsRegex = () => {
     openSource: /^!opensource$/g,
     openSourceAddRepository: /^!addrepositorio[ \d\w]*$/g,
     openSourceRemoveRepositoryUser: /^!removerepositoriousuario[ \d\w @a-z-A-Z]*$/g,
-    sendMessageThroughAtena: /^!sendmessage\s([@#][\w\d-]+)\s?\n(.+)$/gm
+    sendMessageThroughAtena: /^!hey\s(([@#][\w\d-]+\s?)+\s?)\n.+$/gm
   }
 }
 

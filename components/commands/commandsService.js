@@ -32,10 +32,7 @@ const getCommandMessage = async message => {
   } else if (regex.openSourceAddRepository.test(message.msg)) {
     response = await github.addRepository(message)
   } else if (regex.sendMessageThroughAtena.test(message.msg)) {
-    response = await messages.routeMessageToUserOrRoom(
-      message.msg,
-      regex.sendMessageThroughAtena
-    )
+    response = await messages.routeMessageToUserOrRoom(message)
   }
 
   return response

@@ -1,4 +1,5 @@
 import rocket from '../rocket'
+import users from '../users'
 
 const notAllowedChannels = [
   'impulso-network',
@@ -20,12 +21,25 @@ const sendToRoom = (message, room = 'comunicados') => {
   return rocket.sendMessageToRoom(message, room)
 }
 
-const routeMessageToUserOrRoom = (rawMessage, regex) => {
-  const [_, destination, message] = new RegExp(regex).exec(rawMessage)
-  const handler =
-    destination[0] === '#' ? rocket.sendMessageToRoom : rocket.sendMessageToUser
+const routeMessageToUserOrRoom = async rawMessage => {
+  const isCoreTeam = await users.isCoreTeam(rawMessage.u._id)
 
-  return handler(message, destination.slice(1))
+  if (!isCoreTeam) return
+
+  const message = rawMessage.msg
+    .split('\n')
+    .slice(1)
+    .join('\n')
+
+  const userMessages = rawMessage.mentions.map(user => {
+    return rocket.sendMessageToUser(message, user.username)
+  })
+
+  const channelMessages = rawMessage.channels.map(channel => {
+    return rocket.sendMessageToRoom(message, channel.name)
+  })
+
+  return Promise.all([...userMessages, ...channelMessages])
 }
 
 export default {
