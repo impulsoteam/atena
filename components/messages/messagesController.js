@@ -1,7 +1,6 @@
 import rocket from '../rocket'
 
 const notAllowedChannels = [
-  'impulso-network',
   'apresente-se',
   'oportunidades ',
   'comunicados',
