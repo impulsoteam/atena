@@ -20,7 +20,7 @@ Essas nobres pessoas têm se destacado em meu templo:`,
     attachments: []
   }
 
-  response.attachments = await ranking.slice(0, 5).map((user, index) => {
+  response.attachments = ranking.slice(0, 5).map((user, index) => {
     return {
       text: `${index + 1}º lugar está ${user.name} com ${
         user.monthlyScore
@@ -28,7 +28,7 @@ Essas nobres pessoas têm se destacado em meu templo:`,
     }
   })
 
-  return await messages.sendToRoom(response, roomname)
+  return messages.sendToRoom(response, roomname)
 }
 
 const getGeneralRanking = async ({ page, limit }) => {

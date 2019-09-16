@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 const generateRankingMessage = async ({ ranking, user, monthName }) => {
   const month = monthName ? ` de ${monthName}` : ''
   if (!ranking) {
