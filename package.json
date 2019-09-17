@@ -31,6 +31,11 @@
     "test:watch": "set NODE_ENV=test && jest --watch --onlyChanged --forceExit --detectOpenHandles",
     "lint-md": "remark ."
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
   "remarkConfig": {
     "plugins": [
       "remark-preset-lint-recommended"
@@ -89,6 +94,7 @@
     "eslint-plugin-prettier": "^3.1.0",
     "factory-girl": "^5.0.4",
     "ghooks": "^2.0.4",
+    "husky": "^3.0.5",
     "jest": "^24.1.0",
     "mockdate": "^2.0.2",
     "mockingoose": "^2.13.0",
