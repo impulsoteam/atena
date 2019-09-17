@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 const generateRankingMessage = async ({ ranking, user, monthName }) => {
   const month = monthName ? ` de ${monthName}` : ''
   if (!ranking) {
@@ -18,9 +17,6 @@ const generateRankingMessage = async ({ ranking, user, monthName }) => {
     }! Veja as primeiras pessoas do ranking${month}:`,
     attachments: []
   }
-  const userPosition = user.isCoreTeam
-    ? null
-    : ranking.findIndex(u => user.rocketId === u.rocketId) + 1
 
   const topFive = ranking.slice(0, 5)
 
@@ -32,14 +28,21 @@ const generateRankingMessage = async ({ ranking, user, monthName }) => {
     }`
   }))
 
-  const message =
-    userPosition && userPosition < 6
-      ? `Parabéns! Tu estás entre os 5 primeiros colocados`
-      : user.isCoreTeam
-      ? `Psiu... Tu não estás no ranking pois pertence ao coreTeam. :/`
-      : userPosition <= 0
-      ? `Ah, e tu ainda não pontuaste neste mês`
-      : `Ah, e tu estás na posição ${userPosition} do ranking`
+  const userPosition = user.isCoreTeam
+    ? 'coreTeam'
+    : ranking.findIndex(u => user.rocketId === u.rocketId) + 1
+
+  let message = `Ah, e tu estás na posição ${userPosition} do ranking`
+
+  if (userPosition === 'coreTeam') {
+    message = `Psiu... Tu não estás no ranking pois pertence ao coreTeam. :/`
+  }
+  if (userPosition < 0 && userPosition < 6) {
+    message = `Parabéns! Tu estás entre os 5 primeiros colocados`
+  }
+  if (userPosition === 0) {
+    message = `Ah, e tu ainda não pontuaste neste mês`
+  }
 
   response.attachments.push({
     text: message

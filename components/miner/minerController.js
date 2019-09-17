@@ -5,12 +5,16 @@ import rankingUtils from '../rankings/rankingsUtils'
 
 const file = 'Miner | Controller'
 
-const getAllUsers = async (team, limit) => {
+const getAllUsers = async team => {
   try {
     const allUsers = await users.find(
-      { teams: { $all: [team] } },
-      { score: -1 },
-      limit
+      {
+        teams: { $in: [team] },
+        rocketId: { $ne: null },
+        score: { $gt: 0 },
+        isCoreTeam: false
+      },
+      { score: -1 }
     )
 
     return allUsers.map(user => {

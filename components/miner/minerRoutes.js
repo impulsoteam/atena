@@ -3,9 +3,8 @@ import miner from './minerController'
 const router = express.Router()
 
 router.get('/ranking', async (req, res) => {
-  const team = req.headers.team ? req.headers.team : false
-  const limit = req.headers.limit ? req.headers.limit : 9999999
-  const result = await miner.getAllUsers(team, limit)
+  const teams = req.headers.teams || 'network'
+  const result = await miner.getAllUsers(teams)
   return res.json(result)
 })
 
