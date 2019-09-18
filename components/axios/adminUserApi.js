@@ -52,7 +52,7 @@ const inviteUserToNotJoinedChannels = async username => {
         type: channel.t
       },
       {
-        delay: index * 60000
+        delay: index * 10000
       }
     )
   })
