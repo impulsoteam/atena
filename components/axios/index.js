@@ -1,7 +1,7 @@
-import adminUserApi from './adminUserApi'
 import onboardingApi from './onboardingApi'
+import adminUserApi from './adminUserApi'
 
 export default {
-  onboardingApi,
-  adminUserApi
+  adminUserApi,
+  onboardingApi
 }
