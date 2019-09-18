@@ -1,142 +1,172 @@
-import errors from '../errors'
+import moment from 'moment'
+
 import service from './rankingsService'
 import utils from './rankingsUtils'
-import dal from './rankingsDAL'
+import interactions from '../interactions'
 import users from '../users'
 import messages from '../messages'
 
-const file = 'Ranking | Controller'
-
-const calculatePositionByUser = async (user, isCoreTeam) => {
-  return service.calculatePositionByUser(user, isCoreTeam)
-}
-
-const commandGeneral = async message => {
-  const coreTeam = await users.isCoreTeam(message.u._id)
-  return service.getGeneralRanking(message.u._id, coreTeam)
-}
-
-const commandByMonth = async message => {
-  const month = await utils.getMonthFromMessage(message)
-  const user = await users.findOne({ rocketId: message.u._id })
-  return service.getRankingMessageByMonth(user, month)
-}
-
-const getRankingByMonth = async (month, team = false) => {
-  if (!(await utils.isValidMonth(month))) month = utils.getCurrentMonth()
-
-  const ranking = await service.getRankingByMonth(month)
-  const monthName = utils.getMonthName(month - 1)
-
-  const data = {
-    first_users: [],
-    last_users: [],
-    monthName: monthName,
-    error: null
-  }
-
-  if (ranking.error) {
-    data.error = ranking.error
-    return
-  }
-
-  if (!ranking.users.length) {
-    data.error = `Ops! Ainda ninguém pontuou em ${monthName}. =/`
-    return
-  }
-
-  if (ranking.users.length < 3) {
-    data.error = `Ops! Ranking incompleto em ${monthName}. =/`
-    return
-  }
-
-  const rankingUsers = await service.generateUsersPosition(ranking.users, team)
-
-  data.first_users = rankingUsers.slice(0, 3)
-  data.last_users = rankingUsers.slice(3, 20)
-
-  return data
-}
-
-const getGeneralRanking = async (team = false, limit = 20) => {
-  const allUsers = await users.find({ isCoreTeam: false }, { score: -1 }, limit)
-  const rankingUsers = await service.generateUsersPosition(
-    allUsers,
-    team,
-    limit
-  )
-
-  return {
-    first_users: rankingUsers.slice(0, 3),
-    last_users: rankingUsers.slice(3, limit),
-    monthName: 'GERAL'
-  }
-}
-
-const generate = async month => {
-  try {
-    if (!(await utils.isValidMonth(month))) month = utils.getCurrentMonth()
-
-    const today = new Date(Date.now())
-    const rankingUsers = await service.getRankingUsersByMonth(
-      month,
-      today.getFullYear()
-    )
-
-    const ranking = await service.findOrCreate(today.getFullYear(), month)
-    if (ranking.isNew) await service.closePreviousRanking(today)
-    ranking.users = rankingUsers
-    return await dal.save(ranking)
-  } catch (e) {
-    errors._throw(file, 'generate', e)
-  }
-}
-
 const sendToChannel = async () => {
-  const today = new Date(Date.now())
   const roomname = process.env.ROCKET_DEFAULT_CHANNEL
   const isEnabled = process.env.ROCKET_SEND_TO_CHANNEL
 
-  if (!roomname || isEnabled) return
+  if (!roomname || !isEnabled) return
+  const ranking = await interactions.findByDate({})
 
-  const ranking = await service.getRankingByMonth(today.getMonth())
-
-  if (ranking.error || !ranking.users.length || ranking.users.length < 5) return
-
-  const rankingUsers = await service.generateUsersPosition(
-    ranking.users,
-    false,
-    5
-  )
-
+  if (ranking.error || ranking.length < 5) return
   let response = {
     msg: `Saiba quem são as pessoas que mais me orgulham no Olímpio pela interação.
 Essas nobres pessoas têm se destacado em meu templo:`,
     attachments: []
   }
 
-  response.attachments = await rankingUsers.map((user, index) => {
+  response.attachments = ranking.slice(0, 5).map((user, index) => {
     return {
-      text: `${index + 1}º lugar está ${user.name} com ${user.xp} xp e nível ${
-        user.level
-      }`
+      text: `${index + 1}º lugar está ${user.name} com ${
+        user.monthlyScore
+      } xp e nível ${user.level}`
     }
   })
 
-  return await messages.sendToRoom(response, roomname)
+  return messages.sendToRoom(response, roomname)
 }
 
-const getMonthlyPositionByUser = userId => {
-  return service.getMonthlyPositionByUser(userId)
+const getGeneralRanking = async ({ page, limit }) => {
+  try {
+    const ranking = await users.aggregate([
+      {
+        $match: {
+          isCoreTeam: false,
+          rocketId: { $ne: null },
+          score: { $gt: 0 }
+        }
+      },
+      { $project: { rocketId: 1, name: 1, avatar: 1, score: 1, level: 1 } },
+      { $sort: { score: -1 } },
+      { $skip: page ? parseInt(page) * parseInt(limit || 50) : 0 },
+      { $limit: parseInt(limit) || 99999 }
+    ])
+
+    return ranking
+  } catch (error) {
+    return { message: `Não foi possível buscar o ranking`, error }
+  }
 }
 
+const getMonthlyRanking = async ({ year, month, limit, page }) => {
+  const { date, monthName } = await utils.getDate({ year, month })
+  try {
+    const ranking = await interactions.findByDate({ date, limit, page })
+
+    if (!ranking.length) {
+      return {
+        message: `Ops! Ainda ninguém pontuou em ${monthName}. =/`
+      }
+    }
+
+    if (ranking.length < 3) {
+      return {
+        message: `Ops! Ranking incompleto em ${monthName}. =/`
+      }
+    }
+
+    return ranking
+  } catch (error) {
+    return { message: `Não foi possível buscar o ranking`, error }
+  }
+}
+
+const commandGeneral = async message => {
+  const ranking = await users.aggregate([
+    {
+      $match: {
+        rocketId: { $ne: null },
+        score: { $gt: 0 },
+        isCoreTeam: false
+      }
+    },
+    { $project: { rocketId: 1, name: 1, score: 1, level: 1 } },
+    { $sort: { score: -1 } }
+  ])
+  const user = await users.findOne({ rocketId: message.u._id })
+  return await service.generateRankingMessage({ ranking, user })
+}
+
+const commandByMonth = async message => {
+  const { date, monthName } = await utils.getDateFromMessage(message)
+  const user = await users.findOne({ rocketId: message.u._id })
+  const ranking = await interactions.findByDate({ date })
+  return service.generateRankingMessage({ ranking, user, monthName })
+}
+
+const getMonthlyPositionByUser = async userId => {
+  const ranking = await interactions.findByDate({})
+  const index = ranking.findIndex(user => user._id.toString() == userId)
+  return {
+    position: index === -1 ? null : index + 1,
+    score: ranking[index].monthlyScore || null
+  }
+}
+const getMonthlyScoreByUser = async userId => {
+  const score = await interactions.aggregate([
+    {
+      $match: {
+        user: userId,
+        date: {
+          $gte: moment()
+            .startOf('month')
+            .toDate(),
+          $lt: moment()
+            .endOf('month')
+            .toDate()
+        }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        monthlyScore: { $sum: '$score' }
+      }
+    }
+  ])
+
+  return score[0].monthlyScore
+}
+
+const getGeneralPositionByUser = async userId => {
+  const ranking = await users.aggregate([
+    {
+      $match: {
+        rocketId: { $ne: null },
+        score: { $gt: 0 },
+        isCoreTeam: false
+      }
+    },
+    { $project: { rocketId: 1, name: 1, score: 1, level: 1 } },
+    { $sort: { score: -1 } }
+  ])
+  const index = ranking.findIndex(user => user._id.toString() == userId)
+  return {
+    position: index === -1 ? null : index + 1,
+    score: ranking[index].score
+  }
+}
+
+const calculatePositionByUser = async userId => {
+  const monthly = await getMonthlyPositionByUser(userId)
+  const general = await getGeneralPositionByUser(userId)
+
+  return {
+    monthly,
+    general
+  }
+}
 export default {
   calculatePositionByUser,
+  getMonthlyScoreByUser,
   commandGeneral,
   commandByMonth,
-  getRankingByMonth,
   getGeneralRanking,
-  generate,
-  sendToChannel,
-  getMonthlyPositionByUser
+  getMonthlyRanking,
+  sendToChannel
 }

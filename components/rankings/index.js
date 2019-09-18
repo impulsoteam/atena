@@ -3,5 +3,5 @@ import routes from './rankingsRoutes'
 
 export default {
   ...rankings,
-  routes: routes
+  routes
 }

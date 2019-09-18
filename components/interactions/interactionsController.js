@@ -25,8 +25,8 @@ const handle = async data => {
   return dal.save(interaction)
 }
 
-const findByDate = async (year, month) => {
-  return service.findByDate(year, month)
+const findByDate = async data => {
+  return service.findByDate(data)
 }
 
 const getLastMessage = userId => {
@@ -35,6 +35,10 @@ const getLastMessage = userId => {
 
 const findOne = query => {
   return dal.findOne(query)
+}
+
+const aggregate = query => {
+  return dal.aggregate(query)
 }
 
 const changeUserId = (limit, skip) => {
@@ -62,6 +66,7 @@ const messageExists = messageId => {
 }
 
 export default {
+  aggregate,
   findByDate,
   getLastMessage,
   saveManual,
