@@ -80,6 +80,7 @@ const addScore = async (user, achievement, interaction) => {
 const saveScoreInteraction = async (user, achievement, score, text) => {
   return interactions.saveManual({
     user: user._id,
+    type: 'manual',
     rocketUsername: user.username,
     score: score,
     value: achievement._id,

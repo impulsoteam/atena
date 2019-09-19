@@ -12,6 +12,7 @@ import messages from '../messages'
 import errors from '../errors'
 import interactions from '../interactions'
 import rankings from '../rankings'
+import usersUtils from './usersUtils'
 
 const file = 'Users | Controller'
 
@@ -25,11 +26,10 @@ const findInactivities = async () => {
   const dateRange = today.setDate(
     today.getDate() - config.xprules.inactive.mindays
   )
-
   return await dal.find(
     {
-      rocketId: { $exists: true },
-      lastUpdate: { $lt: dateRange },
+      rocketId: { $exists: true, $ne: null },
+      lastInteraction: { $lt: dateRange },
       score: { $gt: 1 }
     },
     {
@@ -151,6 +151,7 @@ const updateScore = async (user, score) => {
 const onChangeLevel = async user => {
   if (user.level !== user.previousLevel) {
     saveOnNewLevel(user)
+    next.sendUserLevelToQueue(user)
   }
 }
 
@@ -273,24 +274,15 @@ const getUserProfileByUuid = async uuid => {
   if (!uuid) return { error: 'UUID não enviado' }
 
   const user = await users.findOne({ uuid: uuid })
-
   if (!user) return { error: 'Usuário não encontrado' }
 
-  const generalPosition = await rankings.calculatePositionByUser(
-    user.rocketId,
-    user.isCoreTeam
-  )
-
-  const monthlyPosition = await rankings.getMonthlyPositionByUser(user._id)
   const allAchievements = await achievements.findAllByUser(user._id)
 
-  return {
+  let response = {
     name: user.name,
     avatar: user.avatar || '',
     level: user.level,
     score: user.score,
-    generalPosition,
-    monthlyPosition,
     userAchievements: [
       {
         name: 'Network',
@@ -298,6 +290,19 @@ const getUserProfileByUuid = async uuid => {
       }
     ]
   }
+
+  if (user.isCoreTeam) {
+    response.generalPosition = 'coreTeam'
+    response.monthlyPosition = 'coreTeam'
+  } else {
+    const { monthly, general } = await rankings.calculatePositionByUser(
+      user._id
+    )
+    response.generalPosition = general.position
+    response.monthlyPosition = monthly.position
+  }
+
+  return response
 }
 
 export default {

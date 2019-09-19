@@ -12,7 +12,6 @@ const file = 'Cron | Controller'
 const exec = () => {
   chatInactivities()
   achievementsTemporaryInactivities()
-  generateMonthlyRanking()
   sendToChannelTop5Ranking()
 }
 
@@ -25,7 +24,7 @@ const chatInactivities = async () => {
         const score = config.xprules.inactive.value
         users.updateScore(user, score)
         interactions.saveManual({
-          score: score,
+          score,
           type: 'inactivity',
           user: user._id
         })
@@ -53,25 +52,6 @@ const achievementsTemporaryInactivities = async () => {
       errors._throw(file, 'achievementsTemporaryInactivities', e)
     }
   })
-}
-
-const generateMonthlyRanking = async () => {
-  cron.schedule(
-    '1 0 * * *',
-    async () => {
-      try {
-        logs.info('[*] Starting cron: generateMonthlyRanking')
-        const today = new Date(Date.now())
-        await rankings.generate(today.getMonth())
-        logs.info('[*] Ending cron: generateMonthlyRanking')
-      } catch (e) {
-        errors._throw(file, 'generateMonthlyRanking', e)
-      }
-    },
-    null,
-    true,
-    'America/Sao_Paulo'
-  )
 }
 
 const sendToChannelTop5Ranking = async () => {
