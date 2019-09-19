@@ -1,5 +1,4 @@
 import axios from 'axios'
-import inviteUserToChannelQueue from '../queues/inviteUserToChannelQueue'
 
 const api = axios.create({
   baseURL: `${process.env.ROCKETCHAT_URL}/api/v1`,
@@ -33,37 +32,9 @@ const inviteUserToChannel = (userId, roomId, type = 'c') => {
   return api.post(endpoint, { userId, roomId })
 }
 
-const inviteUserToNotJoinedChannels = async username => {
-  const [user, userChannels, allChannels] = await Promise.all([
-    getUserInfoByUsername(username),
-    getUserChannelsList(username),
-    getChannelsList()
-  ])
-
-  const userChannelsNames = userChannels.map(channel => channel.name)
-  const channelsNotIn = allChannels.filter(
-    channel => !userChannelsNames.includes(channel.name)
-  )
-  const promises = channelsNotIn.map((channel, index) => {
-    return inviteUserToChannelQueue.add(
-      {
-        userId: user._id,
-        roomId: channel._id,
-        type: channel.t
-      },
-      {
-        delay: index * 10000
-      }
-    )
-  })
-
-  return Promise.all(promises)
-}
-
 export default {
   getUserInfoByUsername,
   getChannelsList,
   getUserChannelsList,
-  inviteUserToChannel,
-  inviteUserToNotJoinedChannels
+  inviteUserToChannel
 }

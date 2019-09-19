@@ -6,7 +6,7 @@ import users from '../users'
 import interactions from '../interactions'
 import achievementsTemporary from '../achievementsTemporary'
 import rankings from '../rankings'
-import api from '../axios'
+import rocket from '../rocket'
 
 const file = 'Cron | Controller'
 
@@ -99,10 +99,10 @@ const queueInviteUsersToChannel = () => {
     try {
       logs.info('[*] Starting cron: queueInviteUsersToChannel')
       await Promise.all([
-        api.adminUserApi.inviteUserToNotJoinedChannels('luiz'),
-        api.adminUserApi.inviteUserToNotJoinedChannels('fabio')
+        rocket.inviteUserToNotJoinedChannels('luiz'),
+        rocket.inviteUserToNotJoinedChannels('fabio')
       ])
-      logs.info('[*] Starting cron: queueInviteUsersToChannel')
+      logs.info('[*] Finished cron: queueInviteUsersToChannel')
     } catch (e) {
       errors._throw(file, 'queueInviteUsersToChannel')
     }
