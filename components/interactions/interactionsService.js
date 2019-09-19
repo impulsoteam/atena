@@ -135,12 +135,12 @@ const findByDate = async ({ date, limit, page }) => {
     {
       $group: {
         _id: '$user',
-        monthlyScore: { $sum: '$score' }
+        score: { $sum: '$score' }
       }
     },
     {
       $match: {
-        monthlyScore: { $gt: 0 }
+        score: { $gt: 0 }
       }
     },
     {
@@ -158,7 +158,7 @@ const findByDate = async ({ date, limit, page }) => {
       }
     },
     {
-      $sort: { monthlyScore: -1 }
+      $sort: { score: -1 }
     },
     {
       $unwind: '$user'
@@ -170,7 +170,8 @@ const findByDate = async ({ date, limit, page }) => {
         name: '$user.name',
         avatar: '$user.avatar',
         level: '$user.level',
-        score: '$user.score'
+        uuid: '$user.uuid',
+        username: '$user.username'
       }
     },
     {
