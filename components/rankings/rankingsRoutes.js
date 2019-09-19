@@ -4,17 +4,13 @@ import rankings from './rankingsController'
 const router = express.Router()
 
 router.get('/general', async (req, res) => {
-  const result = await rankings.getGeneralRanking()
+  const result = await rankings.getGeneralRanking({})
   return res.json(result)
 })
 
 router.get('/monthly', async (req, res) => {
-  const result = await rankings.getRankingByMonth(req.query.month)
-  return res.json(result)
-})
-
-router.post('/monthly', async (req, res) => {
-  const result = await rankings.generate(req.body.month)
+  const { year, month } = req.query
+  const result = await rankings.getMonthlyRanking({ year, month })
   return res.json(result)
 })
 

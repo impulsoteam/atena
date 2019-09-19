@@ -3,22 +3,20 @@ import miner from './minerController'
 const router = express.Router()
 
 router.get('/ranking', async (req, res) => {
-  const team = req.headers.team ? req.headers.team : false
-  const limit = req.headers.limit ? req.headers.limit : 9999999
-  const result = await miner.getAllUsers(team, limit)
+  const teams = req.headers.teams || 'network'
+  const result = await miner.getAllUsers(teams)
   return res.json(result)
 })
 
-router.get('/ranking/geral', async (req, res) => {
-  const team = req.headers.team ? req.headers.team : false
-  const limit = req.headers.limit ? req.headers.limit : 9999999
-  const result = await miner.getGeneralRanking(team, limit)
+router.get('/ranking/general', async (req, res) => {
+  const { page, limit } = req.query
+  const result = await miner.getGeneralRanking({ page, limit })
   return res.json(result)
 })
 
-router.get('/ranking/mes/:month', async (req, res) => {
-  const team = req.headers.team ? req.headers.team : false
-  const result = await miner.getRankingByMonth(req.params.month, team)
+router.get('/ranking/monthly', async (req, res) => {
+  const { page, limit } = req.query
+  const result = await miner.getMonthlyRanking({ page, limit })
   return res.json(result)
 })
 

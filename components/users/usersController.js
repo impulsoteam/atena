@@ -17,6 +17,10 @@ const find = (query, sort, limit, skip) => {
   return dal.find(query, sort, limit, skip)
 }
 
+const aggregate = args => {
+  return dal.aggregate(args)
+}
+
 const findAll = () => {
   return dal.findAll()
 }
@@ -38,29 +42,58 @@ const saveOnNewLevel = async user => {
 }
 
 const commandScore = async message => {
-  const user = await dal.findOne({ username: message.u.username })
-  if (!user) {
-    response = {
-      msg: 'Ops! Não conseguimos verificar seus pontos. :/'
-    }
-  }
-
   let response = {
-    msg: 'Ops! Você ainda não tem pontos registrados.'
+    msg: 'Ops! Não conseguimos verificar seus pontos. :/',
+    attachments: []
+  }
+  const user = await dal.findOne({ rocketId: message.u._id })
+  if (!user) return response
+  const { isCoreTeam } = user
+
+  if (isCoreTeam) {
+    const monthlyScore = await rankings.getMonthlyScoreByUser(user._id)
+    response.msg = `Olá ${
+      user.name.split(' ')[0]
+    }! Atualmente tu estás no nível ${user.level}.
+    Como tu es do coreTeam, não possues posição no ranking geral ou mensal. :/
+    Eis a sua pontuação até o momento:`
+    response.attachments.push({
+      text: `${monthlyScore} pontos no ranking mensal!`
+    })
+    response.attachments.push({
+      text: `${user.score} pontos no ranking geral!`
+    })
+    return response
   }
 
-  const position = await rankings.calculatePositionByUser(user, user.isCoreTeam)
-  if (position > 0) {
-    response = {
-      msg: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${user.score} XP`,
-      attachments: [
-        {
-          text: `Ah, e você está na posição ${position} do ranking`
-        }
-      ]
-    }
+  const { monthly, general } = await rankings.calculatePositionByUser(user._id)
+
+  response.msg = `Olá ${
+    user.name.split(' ')[0]
+  }! Atualmente tu estás no nível ${user.level}.
+    Eis tua pontuação em nossos rankings:`
+
+  if (monthly.score) {
+    response.attachments.push({
+      text: `${monthly.score} pontos no ranking mensal!
+      Tu és o ${monthly.position}º colocado :grin: `
+    })
+  } else {
+    response.attachments.push({
+      text: `Tu ainda não pontuaste no ranking mensal`
+    })
   }
 
+  if (general.score) {
+    response.attachments.push({
+      text: `${general.score} pontos no ranking geral!
+      Tu és o ${general.position}º colocado :partying_face:`
+    })
+  } else {
+    response.attachments.push({
+      text: `Tu ainda não pontuaste no ranking geral`
+    })
+  }
   return response
 }
 
@@ -233,6 +266,7 @@ export default {
   findOne,
   findOneAndUpdate,
   findInactivities,
+  aggregate,
   updateScore,
   commandScore,
   commandPro,

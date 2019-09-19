@@ -5,12 +5,16 @@ import rankingUtils from '../rankings/rankingsUtils'
 
 const file = 'Miner | Controller'
 
-const getAllUsers = async (team, limit) => {
+const getAllUsers = async team => {
   try {
     const allUsers = await users.find(
-      { teams: { $all: [team] } },
-      { score: -1 },
-      limit
+      {
+        teams: { $in: [team] },
+        rocketId: { $ne: null },
+        score: { $gt: 0 },
+        isCoreTeam: false
+      },
+      { score: -1 }
     )
 
     return allUsers.map(user => {
@@ -22,20 +26,17 @@ const getAllUsers = async (team, limit) => {
   }
 }
 
-const getGeneralRanking = async (team, limit) => {
+const getGeneralRanking = async ({ page, limit }) => {
   try {
-    return ranking.getGeneralRanking(team, limit)
+    return await ranking.getGeneralRanking({ page, limit })
   } catch (e) {
     errors._throw(file, 'getGeneralRanking', e)
   }
 }
 
-const getRankingByMonth = async (month, team) => {
+const getMonthlyRanking = async ({ page, limit }) => {
   try {
-    if (!(await rankingUtils.isValidMonth(month)))
-      return { error: 'Envie um mês válido Ex: /miner/ranking/mes/1' }
-
-    return ranking.getRankingByMonth(month, team)
+    return ranking.getMonthlyRanking({ page, limit })
   } catch (e) {
     errors._throw(file, 'getRankingByMonth', e)
   }
@@ -73,7 +74,7 @@ const getMostActiveUsers = async (begin, end) => {
 
 export default {
   getGeneralRanking,
-  getRankingByMonth,
+  getMonthlyRanking,
   getAllUsers,
   getMostActiveUsers
 }
