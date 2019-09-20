@@ -23,7 +23,7 @@ Essas nobres pessoas têm se destacado em meu templo:`,
   response.attachments = ranking.slice(0, 5).map((user, index) => {
     return {
       text: `${index + 1}º lugar está ${user.name} com ${
-        user.monthlyScore
+        user.score
       } xp e nível ${user.level}`
     }
   })
@@ -41,7 +41,17 @@ const getGeneralRanking = async ({ page, limit }) => {
           score: { $gt: 0 }
         }
       },
-      { $project: { rocketId: 1, name: 1, avatar: 1, score: 1, level: 1 } },
+      {
+        $project: {
+          rocketId: 1,
+          name: 1,
+          avatar: 1,
+          score: 1,
+          level: 1,
+          uuid: 1,
+          username: 1
+        }
+      },
       { $sort: { score: -1 } },
       { $skip: page ? parseInt(page) * parseInt(limit || 50) : 0 },
       { $limit: parseInt(limit) || 99999 }
@@ -104,7 +114,7 @@ const getMonthlyPositionByUser = async userId => {
   const index = ranking.findIndex(user => user._id.toString() == userId)
   return {
     position: index === -1 ? null : index + 1,
-    score: ranking[index].monthlyScore || null
+    score: ranking[index].score || null
   }
 }
 const getMonthlyScoreByUser = async userId => {
@@ -125,12 +135,12 @@ const getMonthlyScoreByUser = async userId => {
     {
       $group: {
         _id: null,
-        monthlyScore: { $sum: '$score' }
+        score: { $sum: '$score' }
       }
     }
   ])
 
-  return score[0].monthlyScore
+  return score[0].score
 }
 
 const getGeneralPositionByUser = async userId => {
