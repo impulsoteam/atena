@@ -23,9 +23,7 @@ const generateRankingMessage = async ({ ranking, user, monthName }) => {
   response.attachments = topFive.map((impulser, index) => ({
     text: `${index + 1}º lugar está ${
       impulser.rocketId === user.rocketId ? 'você' : impulser.name
-    } com ${month ? impulser.monthlyScore : impulser.score} XP, no nível ${
-      impulser.level
-    }`
+    } com ${impulser.score} XP, no nível ${impulser.level}`
   }))
 
   const userPosition = user.isCoreTeam
@@ -37,7 +35,7 @@ const generateRankingMessage = async ({ ranking, user, monthName }) => {
   if (userPosition === 'coreTeam') {
     message = `Psiu... Tu não estás no ranking pois pertence ao coreTeam. :/`
   }
-  if (userPosition < 0 && userPosition < 6) {
+  if (userPosition > 0 && userPosition < 6) {
     message = `Parabéns! Tu estás entre os 5 primeiros colocados`
   }
   if (userPosition === 0) {

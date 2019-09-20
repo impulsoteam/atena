@@ -76,7 +76,7 @@ const commandScore = async message => {
   if (monthly.score) {
     response.attachments.push({
       text: `${monthly.score} pontos no ranking mensal!
-      Tu és o ${monthly.position}º colocado :grin: `
+      Tu és o(a) ${monthly.position}º colocado(a) :grin: `
     })
   } else {
     response.attachments.push({
@@ -87,7 +87,7 @@ const commandScore = async message => {
   if (general.score) {
     response.attachments.push({
       text: `${general.score} pontos no ranking geral!
-      Tu és o ${general.position}º colocado :partying_face:`
+      Tu és o(a) ${general.position}º colocado(a) :partying_face:`
     })
   } else {
     response.attachments.push({
