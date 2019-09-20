@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import onboarding from '../onboarding'
+import api from '../axios'
 
 const userSchema = new mongoose.Schema({
   avatar: {
@@ -118,14 +118,8 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('save', function(next) {
   this.lastUpdate = Date.now()
-  this.wasNew = this.isNew
+  if (this.isNew) api.onboardingApi.sendOnboardingMessage(this.username)
   next()
-})
-
-userSchema.post('save', function() {
-  if (this.wasNew) {
-    onboarding.sendOnboardingMessage(this.username)
-  }
 })
 
 export default mongoose.model('User', userSchema)

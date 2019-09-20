@@ -9,6 +9,8 @@ import settings from '../settings'
 import interactions from '../interactions'
 import users from '../users'
 import crypto from '../crypto'
+import axiosApi from '../axios'
+import inviteUserToChannelQueue from '../queues/inviteUserToChannelQueue'
 
 const file = 'Rocket | Controller'
 let BOT_ID
@@ -162,6 +164,34 @@ const isFlood = interaction => {
   return service.isFlood(interaction)
 }
 
+const inviteUserToNotJoinedChannels = async username => {
+  const [user, userChannels, allChannels] = await Promise.all([
+    axiosApi.adminUserApi.getUserInfoByUsername(username),
+    axiosApi.adminUserApi.getUserChannelsList(username),
+    axiosApi.adminUserApi.getChannelsList()
+  ])
+
+  const userChannelsNames = userChannels.map(channel => channel.name)
+  const channelsNotIn = allChannels.filter(
+    channel => !userChannelsNames.includes(channel.name)
+  )
+
+  const promises = channelsNotIn.map((channel, index) => {
+    return inviteUserToChannelQueue.add(
+      {
+        userId: user._id,
+        roomId: channel._id,
+        type: channel.t
+      },
+      {
+        delay: index * 10000
+      }
+    )
+  })
+
+  return Promise.all(promises)
+}
+
 export default {
   sendMessageToUser,
   sendMessageToRoom,
@@ -174,5 +204,6 @@ export default {
   getDailyLimit,
   isFlood,
   auth,
+  inviteUserToNotJoinedChannels,
   exec
 }
