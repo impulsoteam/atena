@@ -6,6 +6,7 @@ import users from '../users'
 import interactions from '../interactions'
 import achievementsTemporary from '../achievementsTemporary'
 import rankings from '../rankings'
+import rocket from '../rocket'
 
 const file = 'Cron | Controller'
 
@@ -13,6 +14,7 @@ const exec = () => {
   chatInactivities()
   achievementsTemporaryInactivities()
   sendToChannelTop5Ranking()
+  queueInviteUsersToChannel()
 }
 
 const chatInactivities = async () => {
@@ -70,6 +72,21 @@ const sendToChannelTop5Ranking = async () => {
     true,
     'America/Sao_Paulo'
   )
+}
+
+const queueInviteUsersToChannel = () => {
+  cron.schedule('0 3 * * *', async () => {
+    try {
+      logs.info('[*] Starting cron: queueInviteUsersToChannel')
+      await Promise.all([
+        rocket.inviteUserToNotJoinedChannels('luiz'),
+        rocket.inviteUserToNotJoinedChannels('fabio')
+      ])
+      logs.info('[*] Finished cron: queueInviteUsersToChannel')
+    } catch (e) {
+      errors._throw(file, 'queueInviteUsersToChannel')
+    }
+  })
 }
 
 export default {
