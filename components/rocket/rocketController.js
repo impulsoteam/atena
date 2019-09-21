@@ -66,8 +66,6 @@ const handleUserStatus = async ({ rocketId, username, status }) => {
       const email = emails[0].address
       user = await User.create({ name, rocketId, username, email })
     }
-
-    console.log(user)
     // TODO: Create interaction
   } catch (error) {
     errors._throw(file, 'handleUserStatus', text)
