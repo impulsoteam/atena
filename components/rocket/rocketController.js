@@ -9,16 +9,17 @@ import settings from '../settings'
 import interactions from '../interactions'
 import users from '../users'
 import crypto from '../crypto'
+import mongoose from 'mongoose'
 
 const file = 'Rocket | Controller'
 let BOT_ID
 
 const exec = async () => {
-  BOT_ID = await service.runBot(handle)
+  BOT_ID = await service.runBot(handleMessages, handleUserStatus)
   await service.runAPI()
 }
 
-const handle = async (error, message, messageOptions) => {
+const handleMessages = async (error, message, messageOptions) => {
   if (error) {
     errors._throw(file, 'handle', error)
     return
@@ -47,7 +48,29 @@ const handle = async (error, message, messageOptions) => {
   } catch (e) {
     const data = new Date(message.ts['$date']).toLocaleDateString('en-US')
     const text = `${e.message} - ${message.u.name} (${message.u._id}) - ${data}`
-    errors._throw(file, 'handle', text)
+    errors._throw(file, 'handleMessage', text)
+  }
+}
+
+const handleUserStatus = async ({ rocketId, username, status }) => {
+  const Interaction = mongoose.model('Interaction')
+  const User = mongoose.model('User')
+
+  // TODO: Check wich statuses can create interaction and return false if not listed
+
+  try {
+    let user = await users.findOne({ rocketId })
+    if (!user) {
+      const rocketChatUser = await api.get('users.info', { username })
+      const { name, emails } = rocketChatUser.user
+      const email = emails[0].address
+      user = await User.create({ name, rocketId, username, email })
+    }
+
+    console.log(user)
+    // TODO: Create interaction
+  } catch (error) {
+    errors._throw(file, 'handleUserStatus', text)
   }
 }
 
