@@ -16,10 +16,16 @@ userStatusChangeQueue.process(async function(job) {
   logs.info(`[*] Started queue userStatusChange for user ${username}`)
 
   try {
-    let [userInfo, user] = await Promise.all([
-      api.get('users.info', { username }).then(response => response.user),
-      users.findOne({ rocketId })
-    ])
+    const userInfo = await api
+      .get('users.info', { username })
+      .then(response => response.user)
+
+    if (userInfo.roles.includes('bot')) {
+      logs.info(`[*] Finished queue userStatusChange for bot ${username}`)
+      return
+    }
+
+    let user = await users.findOne({ rocketId })
 
     const status =
       userInfo.statusConnection === 'offline' ? 'offline' : 'online'
