@@ -6,13 +6,14 @@ import api from '../axios'
 
 const file = 'Queue | userStatusChangeQueue'
 
-const inviteUserToChannelQueue = new Queue(
+const userStatusChangeQueue = new Queue(
   'User Status Change',
   process.env.REDIS_URL
 )
 
-inviteUserToChannelQueue.process(async function(job) {
+userStatusChangeQueue.process(async function(job) {
   const { rocketId, username } = job.data
+  logs.info(`[*] Started queue: userStatusChange for user ${username}`)
 
   try {
     let [userInfo, user] = await Promise.all([
@@ -35,20 +36,24 @@ inviteUserToChannelQueue.process(async function(job) {
 
     if (!lastUserLogin) {
       await logins.create({ status, user: user._id })
+      logs.info(`[*] Finished queue: userStatusChange for user ${username}`)
       return Promise.resolve()
     }
 
     if (lastUserLogin.status === status) {
+      logs.info(`[*] Finished queue: userStatusChange for user ${username}`)
       return Promise.resolve()
     }
 
     await logins.create({ status, user: user._id })
+    logs.info(`[*] Finished queue: userStatusChange for user ${username}`)
     return Promise.resolve()
   } catch (error) {
     console.log(error)
+    logs.info(`[*] Error in queue: userStatusChange for user ${username}`)
     errors._throw(file, 'sendMessageToRoom', e)
     return Promise.reject()
   }
 })
 
-export default inviteUserToChannelQueue
+export default userStatusChangeQueue
