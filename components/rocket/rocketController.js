@@ -11,7 +11,7 @@ import users from '../users'
 import crypto from '../crypto'
 import axiosApi from '../axios'
 import inviteUserToChannelQueue from '../queues/inviteUserToChannelQueue'
-import userStatusChange from '../queues/userStatusChangeQueue'
+import userStatusChangeQueue from '../queues/userStatusChangeQueue'
 
 const file = 'Rocket | Controller'
 let BOT_ID
@@ -55,7 +55,7 @@ const handleMessages = async (error, message, messageOptions) => {
 }
 
 const handleUserStatus = async ({ rocketId, username }) => {
-  userStatusChange.add({ rocketId, username })
+  userStatusChangeQueue.add({ rocketId, username })
 }
 
 const getUserInfo = async userId => {
