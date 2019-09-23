@@ -118,8 +118,14 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('save', function(next) {
   this.lastUpdate = Date.now()
-  if (this.isNew) api.onboardingApi.sendOnboardingMessage(this.username)
+  this.wasNew = this.isNew
   next()
+})
+
+userSchema.post('save', function() {
+  if (this.wasNew) {
+    api.onboardingApi.sendOnboardingMessage(this.username)
+  }
 })
 
 export default mongoose.model('User', userSchema)
