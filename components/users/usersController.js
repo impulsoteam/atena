@@ -13,6 +13,10 @@ const save = user => {
   return dal.save(user)
 }
 
+const create = user => {
+  return dal.create(user)
+}
+
 const find = (query, sort, limit, skip) => {
   return dal.find(query, sort, limit, skip)
 }
@@ -261,6 +265,7 @@ const getUserProfileByUuid = async uuid => {
 
 export default {
   save,
+  create,
   find,
   findAll,
   findOne,
