@@ -2,7 +2,7 @@ import Queue from 'bull'
 import logs from '../logs'
 import logins from '../logins'
 import users from '../users'
-import api from '../axios'
+import { api } from '@rocket.chat/sdk'
 
 const file = 'Queue | userStatusChangeQueue'
 
@@ -17,7 +17,7 @@ userStatusChangeQueue.process(async function(job) {
 
   try {
     let [userInfo, user] = await Promise.all([
-      api.adminUserApi.getUserInfoByUsername(username),
+      api.get('users.info', { username }),
       users.findOne({ rocketId })
     ])
 
@@ -25,7 +25,7 @@ userStatusChangeQueue.process(async function(job) {
       userInfo.statusConnection === 'offline' ? 'offline' : 'online'
 
     if (!user) {
-      const { name, emails } = userInfo
+      const { name, emails } = userInfo.user
       const email = emails[0].address
       user = await users.create({ rocketId, username, name, email })
     }
