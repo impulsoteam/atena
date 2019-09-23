@@ -9,9 +9,9 @@ import settings from '../settings'
 import interactions from '../interactions'
 import users from '../users'
 import crypto from '../crypto'
-import mongoose from 'mongoose'
 import axiosApi from '../axios'
 import inviteUserToChannelQueue from '../queues/inviteUserToChannelQueue'
+import userStatusChange from '../queues/userStatusChangeQueue'
 
 const file = 'Rocket | Controller'
 let BOT_ID
@@ -54,24 +54,8 @@ const handleMessages = async (error, message, messageOptions) => {
   }
 }
 
-const handleUserStatus = async ({ rocketId, username, status }) => {
-  const Interaction = mongoose.model('Interaction')
-  const User = mongoose.model('User')
-
-  // TODO: Check wich statuses can create interaction and return false if not listed
-
-  try {
-    let user = await users.findOne({ rocketId })
-    if (!user) {
-      const rocketChatUser = await api.get('users.info', { username })
-      const { name, emails } = rocketChatUser.user
-      const email = emails[0].address
-      user = await User.create({ name, rocketId, username, email })
-    }
-    // TODO: Create interaction
-  } catch (error) {
-    errors._throw(file, 'handleUserStatus', text)
-  }
+const handleUserStatus = async ({ rocketId, username }) => {
+  userStatusChange.add({ rocketId, username })
 }
 
 const getUserInfo = async userId => {
