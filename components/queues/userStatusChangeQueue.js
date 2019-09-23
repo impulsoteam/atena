@@ -17,7 +17,7 @@ userStatusChangeQueue.process(async function(job) {
 
   try {
     let [userInfo, user] = await Promise.all([
-      api.get('users.info', { username }),
+      api.get('users.info', { username }).then(response => response.user),
       users.findOne({ rocketId })
     ])
 
@@ -25,7 +25,7 @@ userStatusChangeQueue.process(async function(job) {
       userInfo.statusConnection === 'offline' ? 'offline' : 'online'
 
     if (!user) {
-      const { name, emails } = userInfo.user
+      const { name, emails } = userInfo
       const email = emails[0].address
       user = await users.create({ rocketId, username, name, email })
     }
