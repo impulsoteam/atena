@@ -7,7 +7,7 @@ import interactions from '../interactions'
 const isValidMessage = async (botId, message, messageOptions) => {
   const exists = await interactions.messageExists(message._id)
   const conditions = !(
-    exists ||
+    (exists && !message.reactions) ||
     message.u._id === botId ||
     message.t ||
     messageOptions.roomType === 'd' ||
