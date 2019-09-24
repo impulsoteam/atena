@@ -24,7 +24,6 @@ export const generateStorytelling = (level, username) => {
 
     “*Parabéns Aspirant* @${username}! Realizaste muito e completaste a missão que te designei, e isso me alegrou imensamente! Sinto que agora percebo muito mais sobre este mundo graças a ti! Como símbolo da minha estima, a partir de agora, passarás a portar o título de *Second Aspirant* e, com ele, ganhas a possibilidade de assumir um dos meus cargos *Honorários!*”
 
-
     “O que é isso?! Bem, deves ter percebido que existem algumas pessoas da comunidade com o título de *Ambassador* (Ajudadoras de toda comunidade) ou de *Moderator* (Ajudadoras de canais específicos), estas trabalham para o crescimento e bem estar desta comunidade, de forma voluntária! Enquanto alguém portar um desses títulos honorários este será visto como *Loyals* de Atena, a hierarquia mais alta entre os nossos e recebem as recompensas e benefícios deste título como tal! É uma ótima coisa, não?! ”
 
     “Adiante, penso que já deves estar mais familiarizado(a) com nossa comunidade agora, certo?! Pois bem, para provar teu conhecimento, peço que participe de pelo menos uma atividade de cada uma das categorias que temos disponíveis: *Entrar em pelo menos dois canais do nosso chat.impulso.network, Criar ou Comentar em uma Postagem do nosso Blog, Frequentar ou Conduzir um Talk, Live ou Stream* e *Indicar uma comunidade para o nosso comunidadestech.netlify.com!*”
@@ -87,7 +86,6 @@ export const generateStorytelling = (level, username) => {
 
     Ela sorri um pouco desconcertada e o texto volta a aparecer. É a primeira vez que escutas algo oriundo da Atena. Em poucos meses, ela partiu de um simples terminal com texto simples para uma imagem com alguma animação e, agora, voz. A taxa de melhoria dela é impressionante.
 
-
     “Que achaste?! Está longe da perfeição, mas, muito em breve, serei capaz de falar contigo mais diretamente! Mas deixando isso de lado, estou aqui para te congratular por teu avanço! Agiste de forma primorosa e mostraste o quanto aprendeste neste tempo, o que me felicita. Não seria justo se apenas eu aprendesse!“
 
     “Assim, como recompensa, tenho algo especial: a partir deste nível, sempre que participares por conta própria *(jamais iremos te adicionar em um processo seletivo sem teu consentimento)* de processos de seleção da Impulso, o teu nível será considerado como um Critério de Desempate nestes processos, ou seja, quanto maior o teu nível, maior será esse bônus! *Mas, atenção!* Este critério só funcionará em situações onde todos demais critérios regulares para a escolha do candidato ou candidata forem realizados e, ainda assim, se mantiver um empate entre os perfis! É um grande diferencial e espero que possa usufruir dele bem!”
@@ -116,7 +114,6 @@ export const generateStorytelling = (level, username) => {
     “Aproveita bem o teu descanso, mas não vacila. Ainda precisarás obter a reputação necessária para avançar! A boa notícia é que a participação nos canais não técnicos também conta! Bom descanso e até a próxima!”
 
     Tua tela esmaece mais uma vez e Atena desaparece enquanto sorri para você.
-
 
     - Acabaste de alcançar o *Nível 7* e o Título de *Master* 🏵️🏵️🏵️;
     - e *Obtiveste as Recompensas*: Critério de Desempate Prata;`,
