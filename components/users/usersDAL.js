@@ -4,6 +4,10 @@ const save = user => {
   return model(user).save()
 }
 
+const create = user => {
+  return model.create(user)
+}
+
 const find = (query, sort = { _id: 1 }, limit = 99999, skip = 0) => {
   return model
     .find(query)
@@ -40,5 +44,6 @@ export default {
   findAll,
   findOneAndUpdate,
   aggregate,
-  save
+  save,
+  create
 }
