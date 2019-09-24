@@ -124,34 +124,37 @@ const isCoreTeam = async rocketId => {
 }
 
 const commandPro = async message => {
-  let response = {
-    msg: 'Ops! Você não tem plano pro.'
-  }
+  const rocketId = message.u._id
+  const user = await dal.findOne({ rocketId })
 
-  const user = await dal.findOne({ rocketId: message.u._id })
-  if (user.pro) {
-    const beginDate = user.proBeginAt
-      ? moment(user.proBeginAt).format('DD/MM/YYYY')
-      : 'Sem data definida'
+  const msg =
+    user.pro || user.level >= 3
+      ? `Olá ${user.name}, você possui um plano pro.`
+      : 'Ops! Você não possui plano pro'
 
-    const finishDate = user.proFinishAt
-      ? moment(user.proFinishAt).format('DD/MM/YYYY')
-      : 'Sem data definida'
+  const beginDate = user.proBeginAt
+    ? moment(user.proBeginAt).format('DD/MM/YYYY')
+    : 'Sem data definida'
 
-    response = {
-      msg: `Olá ${user.name}, você tem um plano pro.`,
-      attachments: [
-        {
-          text: `Início do Plano: ${beginDate}`
-        },
-        {
-          text: `Fim do Plano: ${finishDate}`
-        }
-      ]
+  let finishDate = user.proFinishAt
+    ? moment(user.proFinishAt).format('DD/MM/YYYY')
+    : 'Sem data definida'
+
+  let attachments = [
+    { text: `Início do plano: ${beginDate}` },
+    { text: `Fim do plano: ${finishDate}` }
+  ]
+
+  if (user.level >= 3) {
+    attachments[1] = {
+      text: `Sem prazo para finalizar enquanto você estiver no level 3 ou superior`
     }
+    attachments.push({
+      text: `Atualmente você está no level ${user.level}`
+    })
   }
 
-  return response
+  return user.pro || user.level >= 3 ? { msg, attachments } : { msg }
 }
 
 const commandUserInfos = async message => {
