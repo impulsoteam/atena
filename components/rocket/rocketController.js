@@ -11,16 +11,17 @@ import users from '../users'
 import crypto from '../crypto'
 import axiosApi from '../axios'
 import inviteUserToChannelQueue from '../queues/inviteUserToChannelQueue'
+import userStatusChangeQueue from '../queues/userStatusChangeQueue'
 
 const file = 'Rocket | Controller'
 let BOT_ID
 
 const exec = async () => {
-  BOT_ID = await service.runBot(handle)
+  BOT_ID = await service.runBot(handleMessages, handleUserStatus)
   await service.runAPI()
 }
 
-const handle = async (error, message, messageOptions) => {
+const handleMessages = async (error, message, messageOptions) => {
   if (error) {
     errors._throw(file, 'handle', error)
     return
@@ -49,8 +50,12 @@ const handle = async (error, message, messageOptions) => {
   } catch (e) {
     const data = new Date(message.ts['$date']).toLocaleDateString('en-US')
     const text = `${e.message} - ${message.u.name} (${message.u._id}) - ${data}`
-    errors._throw(file, 'handle', text)
+    errors._throw(file, 'handleMessage', text)
   }
+}
+
+const handleUserStatus = async ({ rocketId, username }) => {
+  userStatusChangeQueue.add({ rocketId, username })
 }
 
 const getUserInfo = async userId => {
