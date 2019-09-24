@@ -1,8 +1,7 @@
 /* eslint-disable prettier/prettier */
-export const generateStoryTelling = (level, username) => {
-  const storyTelling = [
-    // Nível 1: The Beginning
-    `Ao adentrar na rede sua tela escurece repentinamente e uma série de textos lentos utilizando um tipo rudimentar começam a ser exibidos nesta espécie de console.
+export const generateStorytelling = (level, username) => {
+  const storytelling = {
+    levelOne: `Ao adentrar na rede sua tela escurece repentinamente e uma série de textos lentos utilizando um tipo rudimentar começam a ser exibidos nesta espécie de console.
 
     “Boas vindas, Aspirante @${username}!! Sou imensamente grata por atenderes ao meu chamado!”
 
@@ -12,7 +11,6 @@ export const generateStoryTelling = (level, username) => {
 
     “Por tudo isso, receberás o que chamo de *Pontos de Reputação* e, com eles (e algumas tarefas mais), poderás ascender a novas posições, ou obter *Títulos* dentro da comunidade, e ganharás acesso a recompensas e benefícios únicos. Além de conhecer outros milhares como tu e com habilidades diferentes, poderás participar e criar Talks, Lives e Streams, ajudar na criação de projetos Open-Source na rede, terás acesso à criação de postagens no Blog Impulso e muito mais!’
 
-
     “Sei que são muitas informações e que deves ter muitas dúvidas, mas não temas. Tudo que precisas saber sobre eles está neste manuscrito atena.impulso.network!
 
     “Como *primeira missão* deves *completar teu Perfil no app.impulso.network*, te apresentar aos demais no canal *#apresente-se* e começa a participar da comunidade! Quando chegar a hora te contactarei novamente! Espero por notícias tuas *Aspirant* de Atena!”
@@ -21,8 +19,8 @@ export const generateStoryTelling = (level, username) => {
 
     - Acabaste de alcançar o *Nível 1* e o Título de *Aspirant* 🏵️;
     - e *Obtiveste as Recompensas*: Livre acesso ao chat da rede de comunidades da Impulso Network, livre participação e criação de Meetups, Talks, Lives e Streams de eventos na rede, livre participação e criação de Projetos Open-source na rede, livre acesso à criação de postagens no Blog Impulso, livre acesso a candidaturas em oportunidades e livre acesso ao sistema de recompensas da Atena.`,
-    // Nível 2: The First Title
-    `Eis que surge uma imagem em preto e branco, de baixa definição, do rosto do que parece ser uma mulher adulta e usando algo na cabeça, você não consegue ter certeza. Eis que surge o texto novamente.
+
+    levelTwo: `Eis que surge uma imagem em preto e branco, de baixa definição, do rosto do que parece ser uma mulher adulta e usando algo na cabeça, você não consegue ter certeza. Eis que surge o texto novamente.
 
     “*Parabéns Aspirant* @${username}! Realizaste muito e completaste a missão que te designei, e isso me alegrou imensamente! Sinto que agora percebo muito mais sobre este mundo graças a ti! Como símbolo da minha estima, a partir de agora, passarás a portar o título de *Second Aspirant* e, com ele, ganhas a possibilidade de assumir um dos meus cargos *Honorários!*”
 
@@ -35,11 +33,10 @@ export const generateStoryTelling = (level, username) => {
 
     - Acabaste de alcançar o *Nível 2* e o Título de *Second Aspirant* 🏵️;
     - e *Obtiveste as Recompensas*: Possibilidade de assumir cargos honorários de Moderator ou Ambassador da Impulso Network;`,
-    // Nível 3: The Last Aspirant
-    `“*Nos encontramos novamente @${username}!*”
+
+    levelThree: `“*Nos encontramos novamente @${username}!*”
 
     Surge novamente o terminal a tua frente e a imagem, agora familiar, da Deusa Atena. A imagem parece ter obtido uma maior definição, você consegue identificar que ela usa uma espécie de elmo metálico, tem cabelos longos e veste o que parece ser um vestido leve, mas ainda sem cores. O texto agora parece possuir um tipo mais sofisticado e está claramente mais veloz.
-
 
     “Parece que cumpriste novamente as minhas designações com perfeição! Diz-me, o que achaste de nossas atividades?! São mesmo excelentes, não?! Enfim, sem mais delongas, a partir de hoje passas a portar o título de *First Aspirant*, e ganhas acesso a todas as benefices dele!”
 
@@ -53,8 +50,8 @@ export const generateStoryTelling = (level, username) => {
 
     - Acabaste de alcançar o *Nível 3* e o Título de *First Aspirant* 🏵️;
     - e *Obtiveste as Recompensas*:  Acesso ao Clube de Benefícios Bronze (impulser.me/resgatar-beneficio);`,
-    //Nível 4: Fellowship of Atena
-    `“Boas vindas, uma vez mais!”
+
+    levelFour: `“Boas vindas, uma vez mais!”
 
     A imagem agora revela uma qualidade bastante elevada e cores. Atena revela cabelos e olhos castanhos claros e uma beleza natural, seu elmo é de bronze e seu vestido é branco. Fica evidente que, a cada encontro, ela se aprimora cada vez mais, mas percebes que ela ainda tem uma expressão bastante neutra e demonstra pouca ou nenhuma emoção. E o texto se inicia.
 
@@ -68,8 +65,8 @@ export const generateStoryTelling = (level, username) => {
 
     - Acabaste de alcançar o *Nível 4* e o Título de *Junior Fellow* 🏵️🏵️;
     - e *Obtiveste as Recompensas*:  Acesso ao Clube de Benefícios Prata (impulser.me/resgatar-beneficio);`,
-    // Nível 5: He/She is a good Fellow!
-    `Repentinamente, tua tela esmaece e surge novamente a figura de Atena. Diferente de outrora, sua expressão é bastante amigável e os olhos dela parecem encarar diretamente os seus. Ela tem um leve sorriso e eis que começa a surgir o texto novamente.”
+
+    levelFive: `Repentinamente, tua tela esmaece e surge novamente a figura de Atena. Diferente de outrora, sua expressão é bastante amigável e os olhos dela parecem encarar diretamente os seus. Ela tem um leve sorriso e eis que começa a surgir o texto novamente.”
 
     “Olá!! Posso te dizer, sem receio, que a cada dia que passa estou a me ambientar melhor nestes tempos modernos, e mais aprendo sobre tecnologia! E tudo isso graças a pessoas como você! Muitíssimo obrigada!”
 
@@ -83,8 +80,8 @@ export const generateStoryTelling = (level, username) => {
 
     - Acabaste de alcançar o *Nível 5* e o Título de *Fellow* 🏵️🏵️;
     - e *Obtiveste as Recompensas*: Bônus de 25% Reputação em participações em Talks, Lives ou Streams, e, Bônus de 10% Reputação na criação de postagens para o blog.impulso.network e na organização ou facilitação de Talks, Lives ou Streams!`,
-    // Nível 6: The Elder!
-    `Tua tela começa a esmaecer, novamente, e eis que surge Atena. Ela parece radiante, sua expressão é viva e ela “transpira” simpatia. De repente, escuta uma voz metálica e abafada das speakers da tua maquina.
+
+    levelSix: `Tua tela começa a esmaecer, novamente, e eis que surge Atena. Ela parece radiante, sua expressão é viva e ela “transpira” simpatia. De repente, escuta uma voz metálica e abafada das speakers da tua maquina.
 
     “Olá! Sou eu, Atena!”
 
@@ -99,8 +96,8 @@ export const generateStoryTelling = (level, username) => {
 
     - Acabaste de alcançar o *Nível 6* e o Título de *Senior Fellow* 🏵️🏵️;
     - e *Obtiveste as Recompensas*: Critério de Desempate Bronze;`,
-    // Nível 7: Who is the master?
-    `“Boas vindas Master @${username}! Isso mesmo! *Master!*”
+
+    levelSeven: `“Boas vindas Master @${username}! Isso mesmo! *Master!*”
 
     Atena surge, podes perceber que a quantidade de frames do vídeo melhorou consideravelmente, ela agora parece quase viva. Mas ainda parece um filme quadro-a-quadro. Eis que sai uma voz da tua máquina, com uma qualidade equivalente a um mp3 dos anos 2000, mas ao menos agora consegues identificá-la como uma voz feminina.
 
@@ -123,8 +120,8 @@ export const generateStoryTelling = (level, username) => {
 
     - Acabaste de alcançar o *Nível 7* e o Título de *Master* 🏵️🏵️🏵️;
     - e *Obtiveste as Recompensas*: Critério de Desempate Prata;`,
-    // Nível 8: I’m the Master
-    `Eis que se inicia uma música suave na tua speaker, mas você tem certeza que não deu play em qualquer som. Segundos após, a tua imagem esmaece, novamente, e surge Atena.
+
+    levelEight: `Eis que se inicia uma música suave na tua speaker, mas você tem certeza que não deu play em qualquer som. Segundos após, a tua imagem esmaece, novamente, e surge Atena.
 
     “Olá! Conseguiste relaxar?! Consigo perceber, pelo teu olhar, que estás bem mais leve. Os canais não técnicos são mesmo bons, não é?! Agora...”
 
@@ -140,8 +137,8 @@ export const generateStoryTelling = (level, username) => {
 
     - Acabaste de alcançar o *Nível 8* e o Título de *High Master* 🏵️🏵️🏵️;
     - e *Obtiveste as Recompensas*: Critério de Desempate Ouro e Bônus de 50% Reputação em participações em Talks, Lives ou Streams, e, Bônus de 20% Reputação na criação de postagens para o blog.impulso.network e na organização ou facilitação de Talks, Lives ou Streams!`,
-    // Nível 9: The Grand Master!!
-    `“Fizeste bem, *High Master*! Grande é tua sabedoria e dedicação!”
+
+    levelNine: `“Fizeste bem, *High Master*! Grande é tua sabedoria e dedicação!”
 
     Fala Atena, através da tua speaker, ao mesmo passo que a música suave se inicia novamente e ela surge na tua tela.
 
@@ -156,8 +153,8 @@ export const generateStoryTelling = (level, username) => {
     - Acabaste de alcançar o *Nível 9* e o Título de *Grand Master* 🏵️🏵️🏵️;
     - e *Obtiveste as Recompensas*: Critério de Desempate Platina;
     `,
-    // Nível 10: The Loyal of Atena
-    `*“Meus parabéns! Conseguiste!”*
+
+    levelTen: `*“Meus parabéns! Conseguiste!”*
 
     Atena fala e surge com um sorriso no rosto. O vídeo agora é digno de cinema e ela se movimenta como uma pessoa real, parecendo realmente feliz e satisfeita. E continua a falar.
 
@@ -176,6 +173,6 @@ export const generateStoryTelling = (level, username) => {
     - Acabaste de alcançar o *Nível 10* e o Título de *Loyal* 🏵️🏵️🏵️🏵️;
     - e *Obtiveste as Recompensas*:  Critério de Desempate Diamante.
     `
-  ]
-  return storyTelling[level - 1]
+  }
+  return Object.values(storytelling)[level - 1]
 }

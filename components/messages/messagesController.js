@@ -1,6 +1,6 @@
 import rocket from '../rocket'
 import users from '../users'
-import { generateStoryTelling } from './storingTelling'
+import { generateStorytelling } from './storytelling'
 
 const notAllowedChannels = [
   'apresente-se',
@@ -42,8 +42,8 @@ const routeMessageToUserOrRoom = async rawMessage => {
   return Promise.all([...userMessages, ...channelMessages])
 }
 
-const sendStoryTelling = ({ level, username }) => {
-  const message = generateStoryTelling(level, username)
+const sendStorytelling = ({ level, username }) => {
+  const message = generateStorytelling(level, username)
   setTimeout(() => {
     sendToUser(message, username)
   }, 10000)
@@ -52,6 +52,6 @@ const sendStoryTelling = ({ level, username }) => {
 export default {
   sendToUser,
   sendToRoom,
-  sendStoryTelling,
+  sendStorytelling,
   routeMessageToUserOrRoom
 }
