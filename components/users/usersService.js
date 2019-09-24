@@ -67,21 +67,12 @@ const receiveProPlan = data => {
   return data.current_plan && data.current_plan.name ? true : false
 }
 
-const getProBeginDate = (user, plan) => {
-  return plan.current_plan && plan.current_plan.begin_at
+const getProBeginDate = data => {
+  return data.current_plan && data.current_plan.begin_at
 }
 
-const getProFinishDate = (user, plan) => {
-  return plan.current_plan && plan.current_plan.finish_at
-  // let finishDate = user.proFinishAt
-  // if (
-  //   !user.proFinishAt ||
-  //   moment(plan.finish_at).isSameOrAfter(user.proFinishAt)
-  // ) {
-  //   finishDate = plan.finish_at
-  // }
-
-  // return finishDate
+const getProFinishDate = data => {
+  return data.current_plan && data.current_plan.finish_at
 }
 
 const updatePro = async user => {

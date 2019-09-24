@@ -204,12 +204,12 @@ const receiveProPlan = data => {
   return service.receiveProPlan(data)
 }
 
-const getProBeginDate = (user, plan) => {
-  return service.getProBeginDate(user, plan)
+const getProBeginDate = data => {
+  return service.getProBeginDate(data)
 }
 
-const getProFinishDate = (user, plan) => {
-  return service.getProFinishDate(user, plan)
+const getProFinishDate = data => {
+  return service.getProFinishDate(data)
 }
 
 const updatePro = async user => {
