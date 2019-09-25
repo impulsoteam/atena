@@ -51,9 +51,3 @@ const rocketchatReactionsMatrix = message => {
 export default {
   handle
 }
-
-function logg(message) {
-  console.log('========================================')
-  console.log(JSON.stringify(message, null, 2))
-  console.log('========================================')
-}
