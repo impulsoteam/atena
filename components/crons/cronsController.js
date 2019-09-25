@@ -58,7 +58,7 @@ const achievementsTemporaryInactivities = async () => {
 
 const sendToChannelTop5Ranking = async () => {
   cron.schedule(
-    '* 9 * * mon',
+    '30 13 * * mon',
     async () => {
       try {
         logs.info('[*] Starting cron: sendToChannelTop5Ranking')
