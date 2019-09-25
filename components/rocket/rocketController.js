@@ -12,6 +12,7 @@ import crypto from '../crypto'
 import axiosApi from '../axios'
 import inviteUserToChannelQueue from '../queues/inviteUserToChannelQueue'
 import userStatusChangeQueue from '../queues/userStatusChangeQueue'
+import reactions from '../reactions'
 
 const file = 'Rocket | Controller'
 let BOT_ID
@@ -36,6 +37,8 @@ const handleMessages = async (error, message, messageOptions) => {
     )
 
     if (!isValidMessage) return
+
+    reactions.handle(message)
 
     const data = {
       origin: 'rocket',
