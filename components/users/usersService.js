@@ -245,13 +245,13 @@ const sendPoints = async data => {
 
     if (updatedScore) {
       const message = {
-        msg: `Acabaste de receber *${points} pontos* de experiência por *${reason}*.`
+        msg: `Acabaste de receber *${points} pontos* de reputação por *${reason}*.`
       }
 
       messages.sendToUser(message, user.username)
 
       response = {
-        msg: `Sucesso! Enviaste *${points} pontos* de experiência para *${user.name}*!`
+        msg: `Sucesso! Enviaste *${points} pontos* de reputação para *${user.name}*!`
       }
 
       await interactions.saveManual({
