@@ -4,10 +4,10 @@ import User from '../users/user'
 
 const handle = async message => {
   const interaction = await Interaction.findOne({ messageId: message._id })
-  const reactions = await Reaction.find({
-    interaction: interaction._id
-  })
+  const reactions = await Reaction.find({ interaction: interaction._id })
   const reactionsMatrix = rocketchatReactionsMatrix(message)
+
+  if (!interaction || reactionsMatrix.length === reactions.length) return
 
   if (reactionsMatrix.length > reactions.length) {
     const addedReactions = reactionsMatrix.filter(m => {
@@ -39,7 +39,7 @@ const handle = async message => {
 }
 
 const rocketchatReactionsMatrix = message => {
-  return Object.keys(message.reactions)
+  return Object.keys(message.reactions || [])
     .map(reaction => {
       return message.reactions[reaction].usernames.map(username => {
         return { username, reaction }
