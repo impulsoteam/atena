@@ -20,8 +20,8 @@ const handleUser = async data => {
     user.avatar = data.photo_url
     user.uuid = data.uuid
     user.pro = users.receiveProPlan(data)
-    user.proBeginAt = users.getProBeginDate(user, data)
-    user.proFinishAt = users.getProFinishDate(user, data)
+    user.proBeginAt = users.getProBeginDate(data)
+    user.proFinishAt = users.getProFinishDate(data)
 
     user = await users.save(user)
 
