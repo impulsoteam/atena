@@ -62,10 +62,10 @@ const commandScore = async message => {
     Como tu es do coreTeam, não possues posição no ranking geral ou mensal. :/
     Eis a sua pontuação até o momento:`
     response.attachments.push({
-      text: `${monthlyScore} pontos no ranking mensal!`
+      text: `${monthlyScore} pontos de reputação no ranking mensal!`
     })
     response.attachments.push({
-      text: `${user.score} pontos no ranking geral!`
+      text: `${user.score} pontos de reputação no ranking geral!`
     })
     return response
   }
@@ -79,8 +79,8 @@ const commandScore = async message => {
 
   if (monthly.score) {
     response.attachments.push({
-      text: `${monthly.score} pontos no ranking mensal!
-      Tu és o(a) ${monthly.position}º colocado(a) :grin: `
+      text: `${monthly.score} pontos de reputação no ranking mensal!
+      Tu estás na posição ${monthly.position} :grin: `
     })
   } else {
     response.attachments.push({
@@ -90,8 +90,8 @@ const commandScore = async message => {
 
   if (general.score) {
     response.attachments.push({
-      text: `${general.score} pontos no ranking geral!
-      Tu és o(a) ${general.position}º colocado(a) :partying_face:`
+      text: `${general.score} pontos de reputação no ranking geral!
+      Tu estás na posição ${general.position} :partying_face:`
     })
   } else {
     response.attachments.push({
@@ -186,7 +186,7 @@ const commandUserInfos = async message => {
         text: `*Nível*: ${user.level}`
       },
       {
-        text: `*XP*: ${user.score}`
+        text: `*Reputação*: ${user.score}`
       },
       {
         text: user.pro
