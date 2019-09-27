@@ -120,6 +120,7 @@ const onChangeLevel = async user => {
     saveOnNewLevel(user)
     next.sendUserLevelToQueue(user)
   }
+  if (user.level > user.previousLevel) messages.sendStorytelling(user)
 }
 
 const saveOnNewLevel = async user => {
