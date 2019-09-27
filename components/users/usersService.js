@@ -38,49 +38,16 @@ const findInactivities = async () => {
   )
 }
 
-const findUsersWithSlack = () => {
-  return dal.find(
-    {
-      slackId: { $exists: true, $ne: null },
-      score: { $gt: 5 }
-    },
-    { score: -1 },
-    15
-  )
-}
-
-const findRocketUsersByName = name => {
-  return dal.find(
-    {
-      $text: {
-        $search: name,
-        $caseSensitive: false,
-        $diacriticSensitive: false
-      },
-      rocketId: { $exists: true, $ne: null }
-    },
-    { score: -1 }
-  )
-}
-
 const receiveProPlan = data => {
-  return data.current_plan && data.current_plan.name
+  return data.current_plan && data.current_plan.name ? true : false
 }
 
-const getProBeginDate = (user, plan) => {
-  return user.proBeginAt || plan.begin_at
+const getProBeginDate = data => {
+  return data.current_plan && data.current_plan.begin_at
 }
 
-const getProFinishDate = (user, plan) => {
-  let finishDate = user.proFinishAt
-  if (
-    !user.proFinishAt ||
-    moment(plan.finish_at).isSameOrAfter(user.proFinishAt)
-  ) {
-    finishDate = plan.finish_at
-  }
-
-  return finishDate
+const getProFinishDate = data => {
+  return data.current_plan && data.current_plan.finish_at
 }
 
 const updatePro = async user => {
@@ -161,43 +128,6 @@ const saveOnNewLevel = async user => {
   await achievementsLevel.handle(user._id, user.previousLevel, user.level)
 }
 
-const transferScoreToSlackUser = async (userId, score) => {
-  return dal.findOneAndUpdate({ _id: userId }, { score }, { new: true })
-}
-
-const transferScoreToRocketUser = async (userId, score) => {
-  let user = await dal.findOne({ _id: userId })
-  const oldLevel = user.level
-  user = await updateScore(user, score)
-
-  await interactions.saveManual({
-    score,
-    value: 0,
-    type: 'manual',
-    user: user._id,
-    username: user.username,
-    text: `Transferido ${score} pontos da conta do slack`
-  })
-  await sendTransferScoreMessage(user, score, oldLevel)
-
-  return user
-}
-
-const sendTransferScoreMessage = (user, score, oldLevel) => {
-  const message = {
-    msg: `Olá ${user.name}, sua pontuação do slack, *${score} pontos*, foi tranferida. Agora sua nova pontuação é de *${user.score} pontos!*`,
-    attachments: []
-  }
-
-  if (oldLevel !== user.level) {
-    message.attachments.push({
-      text: `Ah, e você ainda subiu de nivel. Seu novo nivel é *${user.level}* .`
-    })
-  }
-
-  return messages.sendToUser(message, user.username)
-}
-
 const isCoreTeam = async rocketId => {
   const user = await dal.findOne({ rocketId: rocketId })
   return user.isCoreTeam || false
@@ -246,13 +176,13 @@ const sendPoints = async data => {
 
     if (updatedScore) {
       const message = {
-        msg: `Acabaste de receber *${points} pontos* de experiência por *${reason}*.`
+        msg: `Acabaste de receber *${points} pontos* de reputação por *${reason}*.`
       }
 
       messages.sendToUser(message, user.username)
 
       response = {
-        msg: `Sucesso! Enviaste *${points} pontos* de experiência para *${user.name}*!`
+        msg: `Sucesso! Enviaste *${points} pontos* de reputação para *${user.name}*!`
       }
 
       await interactions.saveManual({
@@ -313,10 +243,6 @@ export default {
   getProFinishDate,
   updatePro,
   updateScore,
-  findUsersWithSlack,
-  findRocketUsersByName,
-  transferScoreToSlackUser,
-  transferScoreToRocketUser,
   isCoreTeam,
   sendPoints,
   saveOnNewLevel,

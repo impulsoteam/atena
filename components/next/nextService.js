@@ -1,7 +1,10 @@
 import users from '../users'
 
 const findOrCreateUser = async data => {
-  return (await users.findOne({ uuid: data.uuid })) || {}
+  const user = await users.findOne({
+    $or: [{ rocketId: data.rocket_chat.id }, { uuid: data.uuid }]
+  })
+  return user || {}
 }
 
 export default {

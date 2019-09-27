@@ -10,8 +10,9 @@ const sendToChannel = async () => {
   const roomname = process.env.ROCKET_DEFAULT_CHANNEL
   const isEnabled = process.env.ROCKET_SEND_TO_CHANNEL
 
-  if (!roomname || !isEnabled) return
-  const ranking = await interactions.findByDate({})
+  if (!roomname || !JSON.parse(isEnabled)) return
+
+  const ranking = await interactions.findByDate({ limit: 5 })
 
   if (ranking.error || ranking.length < 5) return
   let response = {
@@ -20,11 +21,11 @@ Essas nobres pessoas têm se destacado em meu templo:`,
     attachments: []
   }
 
-  response.attachments = ranking.slice(0, 5).map((user, index) => {
+  response.attachments = ranking.map((user, index) => {
     return {
-      text: `${index + 1}º lugar está ${user.name} com ${
+      text: `${index + 1}º lugar está *${user.name}* com *${
         user.score
-      } xp e nível ${user.level}`
+      }* pontos de reputação e nível *${user.level}*`
     }
   })
 
@@ -87,17 +88,7 @@ const getMonthlyRanking = async ({ year, month, limit, page }) => {
 }
 
 const commandGeneral = async message => {
-  const ranking = await users.aggregate([
-    {
-      $match: {
-        rocketId: { $ne: null },
-        score: { $gt: 0 },
-        isCoreTeam: false
-      }
-    },
-    { $project: { rocketId: 1, name: 1, score: 1, level: 1 } },
-    { $sort: { score: -1 } }
-  ])
+  const ranking = await getGeneralRanking({})
   const user = await users.findOne({ rocketId: message.u._id })
   return await service.generateRankingMessage({ ranking, user })
 }
