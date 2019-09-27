@@ -223,37 +223,6 @@ const updatePro = async user => {
   return service.updatePro(user)
 }
 
-const findUsersWithSlack = async (req, res) => {
-  try {
-    return service.findUsersWithSlack()
-  } catch (e) {
-    errors._throw(file, 'findUsersWithSlack', e)
-  }
-}
-
-const findRocketUsersByName = async name => {
-  try {
-    return service.findRocketUsersByName(name)
-  } catch (err) {
-    errors._throw(file, 'findRocketUserByName', e)
-  }
-}
-
-const transferScore = async (userId, type, score) => {
-  let user
-  try {
-    if (type === 'slack') {
-      user = await service.transferScoreToSlackUser(userId, score)
-    } else if (type === 'rocket') {
-      user = await service.transferScoreToRocketUser(userId, score)
-    }
-  } catch (e) {
-    errors._throw(file, 'transferScore', e)
-  }
-
-  return user
-}
-
 const getMostActives = async (begin, end) => {
   return interactions.getMostActivesUsers(begin, end)
 }
@@ -286,9 +255,6 @@ export default {
   getProBeginDate,
   getProFinishDate,
   updatePro,
-  findUsersWithSlack,
-  findRocketUsersByName,
-  transferScore,
   getMostActives,
   sendPoints,
   saveOnNewLevel,
