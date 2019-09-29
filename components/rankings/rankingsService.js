@@ -1,5 +1,5 @@
 const generateRankingMessage = async ({ ranking, user, monthName }) => {
-  const month = monthName ? ` de ${monthName}` : ''
+  const type = monthName ? `de ${monthName}` : 'geral'
   if (!ranking) {
     return { msg: 'Ops. Não conseguimos gerar o ranking nesse momento. :/' }
   }
@@ -14,7 +14,7 @@ const generateRankingMessage = async ({ ranking, user, monthName }) => {
   let response = {
     msg: `Olá ${
       user.name.split(' ')[0]
-    }! Veja as primeiras pessoas do ranking${month}:`,
+    }! Veja as primeiras pessoas do ranking ${type}:`,
     attachments: []
   }
 
@@ -23,7 +23,7 @@ const generateRankingMessage = async ({ ranking, user, monthName }) => {
   response.attachments = topFive.map((impulser, index) => ({
     text: `${index + 1}º lugar está ${
       impulser.rocketId === user.rocketId ? 'você' : impulser.name
-    } com ${impulser.score} XP, no nível ${impulser.level}`
+    } com ${impulser.score} pontos de reputação, no nível ${impulser.level}`
   }))
 
   const userPosition = user.isCoreTeam
