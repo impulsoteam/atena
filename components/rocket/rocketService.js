@@ -30,7 +30,7 @@ const convertToInteraction = data => {
     date: dateMessage,
     type: 'message'
   }
-
+  if (data.tmid) response.parentMessage = data.tmid
   if (data.reactions) {
     const reactions = data.reactions
     response = {
