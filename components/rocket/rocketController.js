@@ -12,6 +12,7 @@ import crypto from '../crypto'
 import axiosApi from '../axios'
 import inviteUserToChannelQueue from '../queues/inviteUserToChannelQueue'
 import userStatusChangeQueue from '../queues/userStatusChangeQueue'
+import config from 'config-yml'
 import Message from '../models/message'
 import Reaction from '../models/reaction'
 import User from '../users/user'
@@ -34,10 +35,8 @@ const handleMessages = async (error, message, messageOptions) => {
 
   if (msg) {
     // Handle reactions
-    // Reaction.addOrRemove(message, msg)
   } else {
     // Handle message
-    // If tmid is present, is a thread response message
     let newMessage = {
       userId: user._id,
       rocketMessageId: message._id,
@@ -45,15 +44,16 @@ const handleMessages = async (error, message, messageOptions) => {
       content: message.msg
     }
 
+    //config.xprules.messages
+
     if (message.tmid) {
+      // If tmid is present, is a response to a thread
+      // config.xprules.thred
       const parentMessage = await Message.findOne({
         rocketMessageId: message.tmid
       })
 
-      await Message.updateOne(
-        { _id: parentMessage._id },
-        { $set: { thread: true } }
-      )
+      Message.updateOne({ _id: parentMessage._id },{ $set: { thread: true } })
 
       newMessage.parent = {
         messageId: parentMessage._id,
@@ -62,6 +62,8 @@ const handleMessages = async (error, message, messageOptions) => {
     }
 
     await Message.create(newMessage)
+    console.log()
+    // Create a score based on messages config
   }
 }
 
