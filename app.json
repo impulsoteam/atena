@@ -5,9 +5,6 @@
     "CHANNELS": {
       "required": true
     },
-    "CLOUDAMQP_APIKEY": {
-      "required": true
-    },
     "CLOUDAMQP_URL": {
       "required": true
     },
@@ -16,9 +13,6 @@
     },
     "CLOUDMQP_QUEUE_OUT": {
       "required": true
-    },
-    "GA": {
-      "required": false
     },
     "GITHUB_CLIENT_ID": {
       "required": true
@@ -65,12 +59,6 @@
     "ROCKET_BOT_USER": {
       "required": true
     },
-    "ROCKET_USER_TOKEN": {
-      "required": true
-    },
-    "ROCKET_USER_ID": {
-      "required": true
-    },
     "ROCKET_HOST": {
       "required": true
     },
@@ -78,9 +66,6 @@
       "required": true
     },
     "ROCKET_DEFAULT_CHANNEL": {
-      "required": true
-    },
-    "TEAM_NETWORK_TOKEN": {
       "required": true
     },
     "X_MINER_TOKEN": {
