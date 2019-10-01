@@ -12,6 +12,9 @@ import crypto from '../crypto'
 import axiosApi from '../axios'
 import inviteUserToChannelQueue from '../queues/inviteUserToChannelQueue'
 import userStatusChangeQueue from '../queues/userStatusChangeQueue'
+import Message from '../models/message'
+import Reaction from '../models/reaction'
+import User from '../users/user'
 
 const file = 'Rocket | Controller'
 let BOT_ID
@@ -22,37 +25,78 @@ const exec = async () => {
 }
 
 const handleMessages = async (error, message, messageOptions) => {
-  if (error) {
-    errors._throw(file, 'handle', error)
-    return
-  }
+  if (error) return errors._throw(file, 'handleMessages', error)
+  if (messageOptions.roomType === 'd') return await commands.handle(message)
+  if (message.u._id === BOT_ID || message.t || message.bot != undefined) return
 
-  try {
-    if (messageOptions.roomType === 'd') await commands.handle(message)
-    const isValidMessage = await service.isValidMessage(
-      BOT_ID,
-      message,
-      messageOptions
-    )
+  const msg = await Message.findOne({ rocketMessageId: message._id })
+  const user = await User.findOne({ rocketId: message.u._id })
 
-    if (!isValidMessage) return
-
-    const data = {
-      origin: 'rocket',
-      ...message,
-      ...messageOptions
+  if (msg) {
+    // Handle reactions
+    // Reaction.addOrRemove(message, msg)
+  } else {
+    // Handle message
+    // If tmid is present, is a thread response message
+    let newMessage = {
+      userId: user._id,
+      rocketMessageId: message._id,
+      roomId: message.rid,
+      content: message.msg
     }
 
-    logs.info('MESSAGE: ', data)
+    if (message.tmid) {
+      const parentMessage = await Message.findOne({
+        rocketMessageId: message.tmid
+      })
 
-    await interactions.handle(data)
-    if (!message.reactions && !message.replies) await commands.handle(message)
-  } catch (e) {
-    const data = new Date(message.ts['$date']).toLocaleDateString('en-US')
-    const text = `${e.message} - ${message.u.name} (${message.u._id}) - ${data}`
-    errors._throw(file, 'handleMessage', text)
+      await Message.updateOne(
+        { _id: parentMessage._id },
+        { $set: { thread: true } }
+      )
+
+      newMessage.parent = {
+        messageId: parentMessage._id,
+        rocketMessageId: parentMessage.rocketMessageId
+      }
+    }
+
+    await Message.create(newMessage)
   }
 }
+
+// const handleMessages = async (error, message, messageOptions) => {
+//   if (error) {
+//     errors._throw(file, 'handle', error)
+//     return
+//   }
+
+//   try {
+//     if (messageOptions.roomType === 'd') await commands.handle(message)
+//     const isValidMessage = await service.isValidMessage(
+//       BOT_ID,
+//       message,
+//       messageOptions
+//     )
+
+//     if (!isValidMessage) return
+
+//     const data = {
+//       origin: 'rocket',
+//       ...message,
+//       ...messageOptions
+//     }
+
+//     logs.info('MESSAGE: ', data)
+
+//     await interactions.handle(data)
+//     if (!message.reactions && !message.replies) await commands.handle(message)
+//   } catch (e) {
+//     const data = new Date(message.ts['$date']).toLocaleDateString('en-US')
+//     const text = `${e.message} - ${message.u.name} (${message.u._id}) - ${data}`
+//     errors._throw(file, 'handleMessage', text)
+//   }
+// }
 
 const handleUserStatus = async ({ rocketId, username }) => {
   userStatusChangeQueue.add({ rocketId, username })
