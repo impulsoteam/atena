@@ -53,7 +53,7 @@ const handleMessages = async (error, message, messageOptions) => {
         rocketMessageId: message.tmid
       })
 
-      Message.updateOne({ _id: parentMessage._id },{ $set: { thread: true } })
+      Message.updateOne({ _id: parentMessage._id }, { $set: { thread: true } })
 
       newMessage.parent = {
         messageId: parentMessage._id,
