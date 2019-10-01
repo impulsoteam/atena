@@ -9,16 +9,19 @@ import settings from '../settings'
 import interactions from '../interactions'
 import users from '../users'
 import crypto from '../crypto'
+import axiosApi from '../axios'
+import inviteUserToChannelQueue from '../queues/inviteUserToChannelQueue'
+import userStatusChangeQueue from '../queues/userStatusChangeQueue'
 
 const file = 'Rocket | Controller'
 let BOT_ID
 
 const exec = async () => {
-  BOT_ID = await service.runBot(handle)
+  BOT_ID = await service.runBot(handleMessages, handleUserStatus)
   await service.runAPI()
 }
 
-const handle = async (error, message, messageOptions) => {
+const handleMessages = async (error, message, messageOptions) => {
   if (error) {
     errors._throw(file, 'handle', error)
     return
@@ -47,8 +50,12 @@ const handle = async (error, message, messageOptions) => {
   } catch (e) {
     const data = new Date(message.ts['$date']).toLocaleDateString('en-US')
     const text = `${e.message} - ${message.u.name} (${message.u._id}) - ${data}`
-    errors._throw(file, 'handle', text)
+    errors._throw(file, 'handleMessage', text)
   }
+}
+
+const handleUserStatus = async ({ rocketId, username }) => {
+  userStatusChangeQueue.add({ rocketId, username })
 }
 
 const getUserInfo = async userId => {
@@ -162,6 +169,34 @@ const isFlood = interaction => {
   return service.isFlood(interaction)
 }
 
+const inviteUserToNotJoinedChannels = async username => {
+  const [user, userChannels, allChannels] = await Promise.all([
+    axiosApi.adminUserApi.getUserInfoByUsername(username),
+    axiosApi.adminUserApi.getUserChannelsList(username),
+    axiosApi.adminUserApi.getChannelsList()
+  ])
+
+  const userChannelsNames = userChannels.map(channel => channel.name)
+  const channelsNotIn = allChannels.filter(
+    channel => !userChannelsNames.includes(channel.name)
+  )
+
+  const promises = channelsNotIn.map((channel, index) => {
+    return inviteUserToChannelQueue.add(
+      {
+        userId: user._id,
+        roomId: channel._id,
+        type: channel.t
+      },
+      {
+        delay: index * 10000
+      }
+    )
+  })
+
+  return Promise.all(promises)
+}
+
 export default {
   sendMessageToUser,
   sendMessageToRoom,
@@ -174,5 +209,6 @@ export default {
   getDailyLimit,
   isFlood,
   auth,
+  inviteUserToNotJoinedChannels,
   exec
 }
