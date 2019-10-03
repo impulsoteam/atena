@@ -25,7 +25,7 @@ const schema = new mongoose.Schema(
       text: true
     },
     parent: {
-      type: mongoose.Schema.Types.ObjectId, 
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Message'
     },
     rocketData,

@@ -13,7 +13,7 @@ export default async message => {
   if (isCommand(message)) return handleCommand(message, user)
   if (!msg && !message.tmid) return handleNewMessage(message, user)
   if (!msg && message.tmid) return handleReply(message, user)
-  return handleReactions(message, user, msg)
+  return handleReactions(message, msg)
 }
 
 const isCommand = message => {
@@ -83,11 +83,64 @@ const handleReply = async (message, user) => {
   parentMessage.save()
 }
 
-const handleReactions = async (message, user, msg) => {
+const handleReactions = async (message, msg) => {
   if (!message.reactions) {
     // There is no reactions for that message anymore
     // Clear all
   }
-  // Handle the reactions
-  console.log(message.reactions)
+  const reactionsMatrix = createReactionsMatrixFromRocketMessage(message)
+  const reactions = await Reaction.find({ message: msg._id })
+
+  if (reactionsMatrix.length > reactions.length) {
+    const subject = reactionsMatrix.filter(rm => {
+      return reactions.find(r => {
+        return !(rm.username === r.username && rm.content === r.content)
+      })
+    })
+
+    return console.log(subject)
+
+    const user = await User.findOne({ username: subject.username })
+    const reaction = await Reaction.create({
+      'rocketData.messageId': message._id,
+      'rocketData.userId': user.rocketId,
+      'rocketdata.username': subject.username,
+      content: subject.content,
+      message: msg._id
+    })
+
+    console.log(reaction)
+    // Reaction was created
+  } else {
+    // Reaction was removed
+  }
 }
+
+const createReactionsMatrixFromRocketMessage = message => {
+  const { reactions } = message
+  const keys = Object.keys(reactions)
+  const matrix = keys.map(key => {
+    return reactions[key].usernames.map(username => {
+      return {
+        username,
+        content: key
+      }
+    })
+  })
+
+  return matrix.flat()
+}
+
+// {
+//   ':thumbsup:': { usernames: [ 'andre-cavallari' ] },
+//   ':impulso:': { usernames: [ 'teste' ] }
+// }
+
+/*
+[ 
+  { username: 'teste', content: ':impulso:' },
+  { username: 'andre-cavallari', content: ':impulso:' },
+  { username: 'andre-cavallari', content: ':thumbsup:' } 
+]
+
+*/
