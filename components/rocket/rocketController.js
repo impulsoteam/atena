@@ -12,10 +12,7 @@ import crypto from '../crypto'
 import axiosApi from '../axios'
 import inviteUserToChannelQueue from '../queues/inviteUserToChannelQueue'
 import userStatusChangeQueue from '../queues/userStatusChangeQueue'
-import config from 'config-yml'
-import Message from '../models/message'
-import Reaction from '../models/reaction'
-import User from '../users/user'
+import messageHandlers from './messagesHandlers'
 
 const file = 'Rocket | Controller'
 let BOT_ID
@@ -27,44 +24,9 @@ const exec = async () => {
 
 const handleMessages = async (error, message, messageOptions) => {
   if (error) return errors._throw(file, 'handleMessages', error)
-  if (messageOptions.roomType === 'd') return await commands.handle(message)
   if (message.u._id === BOT_ID || message.t || message.bot != undefined) return
-
-  const msg = await Message.findOne({ rocketMessageId: message._id })
-  const user = await User.findOne({ rocketId: message.u._id })
-
-  if (msg) {
-    // Handle reactions
-  } else {
-    // Handle message
-    let newMessage = {
-      userId: user._id,
-      rocketMessageId: message._id,
-      roomId: message.rid,
-      content: message.msg
-    }
-
-    //config.xprules.messages
-
-    if (message.tmid) {
-      // If tmid is present, is a response to a thread
-      // config.xprules.thred
-      const parentMessage = await Message.findOne({
-        rocketMessageId: message.tmid
-      })
-
-      Message.updateOne({ _id: parentMessage._id }, { $set: { thread: true } })
-
-      newMessage.parent = {
-        messageId: parentMessage._id,
-        rocketMessageId: parentMessage.rocketMessageId
-      }
-    }
-
-    await Message.create(newMessage)
-    console.log()
-    // Create a score based on messages config
-  }
+  if (messageOptions.roomType === 'd') return await commands.handle(message)
+  return messageHandlers(message)
 }
 
 // const handleMessages = async (error, message, messageOptions) => {
