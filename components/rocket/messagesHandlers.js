@@ -54,6 +54,7 @@ const handleReply = async (message, user) => {
   const parentMessage = await Message.findOne({
     'rocketData.messageId': message.tmid
   })
+
   const msg = await Message.create({
     user: user._id,
     'rocketData.messageId': message._id,
@@ -84,5 +85,5 @@ const handleReply = async (message, user) => {
 
 const handleReactions = async (message, user, msg) => {
   // Handle the reactions
-  console.log('Handle reactions')
+  console.log(message.reactions)
 }

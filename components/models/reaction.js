@@ -1,37 +1,33 @@
 import mongoose from 'mongoose'
 
+const rocketData = {
+  messageId: { type: String, required: true },
+  userId: { type: String, required: true },
+  username: { type: String, required: true }
+}
+
 const schema = new mongoose.Schema(
   {
-    messageId: {
+    message: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Message',
       required: true
     },
-    rocketMessageId: {
-      type: String,
-      required: true
-    },
-    userId: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true
-    },
-    username: {
-      type: String,
       required: true
     },
     content: {
       type: String,
       required: true
-    }
+    },
+    rocketData
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true }
   }
 )
-
-schema.statics.addOrRemove = async (rocketMessage, localMessage) => {
-  // Check if was added or removed
-}
 
 export default mongoose.model('Reaction', schema)
