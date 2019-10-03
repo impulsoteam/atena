@@ -27,6 +27,7 @@ const handleCommand = (message, user) => {
     user: user._id,
     'rocketData.messageId': message._id,
     'rocketData.roomId': message.rid,
+    'rocketData.userId': message.u._id,
     content: message.msg,
     'is.command': true
   })
@@ -37,6 +38,7 @@ const handleNewMessage = async (message, user) => {
     user: user._id,
     'rocketData.messageId': message._id,
     'rocketData.roomId': message.rid,
+    'rocketData.userId': message.u._id,
     content: message.msg
   })
 
@@ -57,6 +59,7 @@ const handleReply = async (message, user) => {
     'rocketData.messageId': message._id,
     'rocketData.roomId': message.rid,
     'rocketData.parent': message.tmid,
+    'rocketData.userId': message.u._id,
     content: message.msg,
     parent: parentMessage._id
   })
@@ -81,4 +84,5 @@ const handleReply = async (message, user) => {
 
 const handleReactions = async (message, user, msg) => {
   // Handle the reactions
+  console.log('Handle reactions')
 }

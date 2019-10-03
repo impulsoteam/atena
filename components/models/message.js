@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 const rocketData = {
   messageId: { type: String, required: true },
   roomId: { type: String, required: true },
+  userId: { type: String, required: true },
   parent: { type: String }
 }
 
