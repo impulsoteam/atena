@@ -2,23 +2,22 @@ import mongoose from 'mongoose'
 
 const schema = new mongoose.Schema(
   {
-    score: {
-      type: Number,
-      required: true
-    },
-    on: {
+    value: { type: Number, required: true },
+    description: { type: String },
+    ref: {
       type: mongoose.Schema.Types.ObjectId,
-      refPath: 'onModel',
+      refPath: 'refModel',
       required: true
     },
-    onModel: {
+    refModel: {
       type: String,
       enum: ['Message', 'Reaction'],
       required: true
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true }
   }
 )
 
