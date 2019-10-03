@@ -18,14 +18,18 @@
   },
   "rules": {
     "strict": 0,
+    "semi": ["error", "never"],
+    "quotes": [2, "single", { "avoidEscape": true }],
     "no-console": "off",
-    "indent": ["error", 2, {
-      "ImportDeclaration": "first",
-      "MemberExpression": 1,
-      "SwitchCase": 1
-    }],
+    "indent": [
+      "error",
+      2,
+      {
+        "ImportDeclaration": "first",
+        "MemberExpression": 1,
+        "SwitchCase": 1
+      }
+    ],
     "prettier/prettier": "error"
   }
-}
-
-
+ }
