@@ -1,4 +1,5 @@
 import moment from 'moment-timezone'
+import mongoose from 'mongoose'
 import utils from './usersUtils'
 import dal from './usersDAL'
 import service from './usersService'
@@ -235,10 +236,37 @@ const getUserProfileByUuid = async uuid => {
   return service.getUserProfileByUuid(uuid)
 }
 
+const remove = async ({ uuid }) => {
+  const AchievementsModel = mongoose.model('Achievement')
+  const AchievementsLevelModel = mongoose.model('AchievementLevel')
+  const InteractionsModel = mongoose.model('Interaction')
+  const LoginsModel = mongoose.model('Login')
+  const UsersLevelsHistoryModel = mongoose.model('UserLevelHistory')
+  const UsersModel = mongoose.model('User')
+
+  try {
+    const { _id } = await UsersModel.findOne({ uuid })
+
+    const achievements = await AchievementsModel.deleteMany({ user: _id })
+    const level = await AchievementsLevelModel.deleteMany({
+      user: _id
+    })
+    const interactions = await InteractionsModel.deleteMany({ user: _id })
+    const logins = await LoginsModel.deleteMany({ user: _id })
+    const history = await UsersLevelsHistoryModel.deleteMany({ user: _id })
+    await UsersModel.deleteOne({ uuid })
+
+    return { achievements, level, interactions, logins, history }
+  } catch (error) {
+    return JSON.stringify(error)
+  }
+}
+
 export default {
   save,
   create,
   find,
+  remove,
   findAll,
   findOne,
   findOneAndUpdate,
