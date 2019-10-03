@@ -84,6 +84,10 @@ const handleReply = async (message, user) => {
 }
 
 const handleReactions = async (message, user, msg) => {
+  if (!message.reactions) {
+    // There is no reactions for that message anymore
+    // Clear all
+  }
   // Handle the reactions
   console.log(message.reactions)
 }

@@ -19,8 +19,15 @@ const schema = new mongoose.Schema(
       ref: 'User',
       required: true
     },
-    content: { type: String, required: true, text: true },
-    parent: { type: mongoose.Schema.Types.ObjectId, ref: 'Message' },
+    content: {
+      type: String,
+      required: true,
+      text: true
+    },
+    parent: {
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Message'
+    },
     rocketData,
     is
   },
