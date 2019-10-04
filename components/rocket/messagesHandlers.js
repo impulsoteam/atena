@@ -60,7 +60,7 @@ const handleReply = async (message, user) => {
     user: user._id,
     'rocketData.messageId': message._id,
     'rocketData.roomId': message.rid,
-    'rocketData.parent': message.tmid,
+    'rocketData.parent': parentMessage.rocketData.messageId,
     'rocketData.userId': message.u._id,
     content: message.msg,
     parent: parentMessage._id
