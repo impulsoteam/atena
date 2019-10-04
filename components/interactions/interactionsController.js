@@ -12,12 +12,11 @@ const saveManual = data => {
 const handle = async data => {
   moduleController = service.getModuleController(data)
   const interaction = await service.normalize(data, moduleController)
+  const user = await moduleController.findOrCreateUser(interaction)
+  interaction.user = user._id
 
   const countingScore = await service.hasScore(moduleController, interaction)
   if (!countingScore) interaction.score = 0
-
-  const user = await moduleController.findOrCreateUser(interaction)
-  interaction.user = user._id
 
   await service.onSaveInteraction(interaction, user)
 

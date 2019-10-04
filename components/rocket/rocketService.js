@@ -30,7 +30,7 @@ const convertToInteraction = data => {
     date: dateMessage,
     type: 'message'
   }
-
+  if (data.tmid) response.parentMessage = data.tmid
   if (data.reactions) {
     const reactions = data.reactions
     response = {
@@ -67,7 +67,7 @@ const runAPI = async () => {
   })
 }
 
-const runBot = async handle => {
+const runBot = async (handleMessages, handleUserStatus) => {
   await driver.connect({
     host: process.env.ROCKET_HOST,
     useSsl:
@@ -80,7 +80,19 @@ const runBot = async handle => {
   })
 
   await driver.subscribeToMessages()
-  await driver.reactToMessages(handle)
+  await driver.subscribe('stream-notify-logged', 'user-status')
+
+  await driver.reactToMessages(handleMessages)
+
+  const userStatusCollection = driver.asteroid.getCollection(
+    'stream-notify-logged'
+  )
+
+  userStatusCollection.reactiveQuery({}).on('change', function(_id) {
+    const query = userStatusCollection.reactiveQuery({ _id }).result[0].args[0]
+    const [rocketId, username, status] = query
+    handleUserStatus({ rocketId, username, status })
+  })
 
   return BOT_ID
 }
