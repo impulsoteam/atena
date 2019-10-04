@@ -4,6 +4,11 @@ const schema = new mongoose.Schema(
   {
     value: { type: Number, required: true },
     description: { type: String },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User'
+    },
     ref: {
       type: mongoose.Schema.Types.ObjectId,
       refPath: 'refModel',

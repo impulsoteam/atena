@@ -45,6 +45,7 @@ const handleNewMessage = async (message, user) => {
   Score.create({
     value: config.xprules.messages.send,
     description: 'New message',
+    user: user._id,
     ref: msg._id,
     refModel: 'Message'
   })
@@ -68,6 +69,7 @@ const handleReply = async (message, user) => {
   Score.create({
     value: config.xprules.threads.send,
     description: 'New reply sent',
+    user: user._id,
     ref: msg._id,
     refModel: 'Message'
   })
@@ -75,6 +77,7 @@ const handleReply = async (message, user) => {
   Score.create({
     value: config.xprules.threads.receive,
     description: 'New reply received',
+    user: parentMessage.user,
     ref: parentMessage._id,
     refModel: 'Message'
   })
@@ -84,40 +87,63 @@ const handleReply = async (message, user) => {
 }
 
 const handleReactions = async (message, msg) => {
-  if (!message.reactions) {
-    // There is no reactions for that message anymore
-    // Clear all
-  }
   const reactionsMatrix = createReactionsMatrixFromRocketMessage(message)
   const reactions = await Reaction.find({ message: msg._id })
 
+  if (reactionsMatrix.length === reactions.length) return
   if (reactionsMatrix.length > reactions.length) {
     const subject = reactionsMatrix.filter(rm => {
-      return reactions.find(r => {
-        return !(rm.username === r.username && rm.content === r.content)
+      return !reactions.find(r => {
+        return rm.username === r.rocketData.username && rm.content === r.content
       })
     })
 
-    return console.log(subject)
+    subject.map(async reaction => {
+      const user = await User.findOne({ username: reaction.username })
+      const newReaction = await Reaction.create({
+        message: msg._id,
+        user: user._id,
+        content: reaction.content,
+        'rocketData.messageId': message._id,
+        'rocketData.userId': user.rocketId,
+        'rocketData.username': reaction.username
+      })
 
-    const user = await User.findOne({ username: subject.username })
-    const reaction = await Reaction.create({
-      'rocketData.messageId': message._id,
-      'rocketData.userId': user.rocketId,
-      'rocketdata.username': subject.username,
-      content: subject.content,
-      message: msg._id
+      Score.create({
+        value: config.xprules.reaction.send,
+        user: user._id,
+        description: 'Reaction sent',
+        ref: newReaction._id,
+        refModel: 'Reaction'
+      })
+
+      Score.create({
+        value: config.xprules.reaction.receive,
+        user: msg.user,
+        description: 'Reaction received',
+        ref: newReaction._id,
+        refModel: 'Reaction'
+      })
+    })
+  } else {
+    const subject = reactions.filter(r => {
+      return !reactionsMatrix.find(rm => {
+        return rm.username === r.rocketData.username && rm.content === r.content
+      })
     })
 
-    console.log(reaction)
-    // Reaction was created
-  } else {
-    // Reaction was removed
+    subject.map(async reaction => {
+      await Promise.all([
+        Score.deleteMany({ ref: reaction._id, refModel: 'Reaction' }),
+        Reaction.deleteOne({ _id: reaction._id })
+      ])
+    })
   }
 }
 
 const createReactionsMatrixFromRocketMessage = message => {
   const { reactions } = message
+  if (!reactions) return []
   const keys = Object.keys(reactions)
   const matrix = keys.map(key => {
     return reactions[key].usernames.map(username => {
@@ -130,17 +156,3 @@ const createReactionsMatrixFromRocketMessage = message => {
 
   return matrix.flat()
 }
-
-// {
-//   ':thumbsup:': { usernames: [ 'andre-cavallari' ] },
-//   ':impulso:': { usernames: [ 'teste' ] }
-// }
-
-/*
-[ 
-  { username: 'teste', content: ':impulso:' },
-  { username: 'andre-cavallari', content: ':impulso:' },
-  { username: 'andre-cavallari', content: ':thumbsup:' } 
-]
-
-*/

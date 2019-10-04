@@ -6,6 +6,9 @@ messages:
 threads:
   send: 2
   receive: 1
+reaction:
+  send: 2
+  receive: 2
 reactions:
   atena: 0.1
   send: 2
