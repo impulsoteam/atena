@@ -21,6 +21,11 @@ const isCommand = message => {
   return commandsList.find(command => new RegExp(command).test(message.msg))
 }
 
+const canCreateScoreForUser = async user => {
+  const currentDatescore = await Score.currentDateTotalScore(user)
+  return currentDatescore < config.xprules.limits.daily
+}
+
 const handleCommand = (message, user) => {
   commands.handle(message)
   Message.create({
@@ -42,13 +47,15 @@ const handleNewMessage = async (message, user) => {
     content: message.msg
   })
 
-  Score.create({
-    value: config.xprules.messages.send,
-    description: 'New message',
-    user: user._id,
-    ref: msg._id,
-    refModel: 'Message'
-  })
+  if (await canCreateScoreForUser(user._id)) {
+    Score.create({
+      value: config.xprules.messages.send,
+      description: 'New message',
+      user: user._id,
+      ref: msg._id,
+      refModel: 'Message'
+    })
+  }
 }
 
 const handleReply = async (message, user) => {
@@ -66,21 +73,25 @@ const handleReply = async (message, user) => {
     parent: parentMessage._id
   })
 
-  Score.create({
-    value: config.xprules.threads.send,
-    description: 'New reply sent',
-    user: user._id,
-    ref: msg._id,
-    refModel: 'Message'
-  })
+  if (await canCreateScoreForUser(user._id)) {
+    Score.create({
+      value: config.xprules.threads.send,
+      description: 'New reply sent',
+      user: user._id,
+      ref: msg._id,
+      refModel: 'Message'
+    })
+  }
 
-  Score.create({
-    value: config.xprules.threads.receive,
-    description: 'New reply received',
-    user: parentMessage.user,
-    ref: parentMessage._id,
-    refModel: 'Message'
-  })
+  if (await canCreateScoreForUser(parentMessage.user)) {
+    Score.create({
+      value: config.xprules.threads.receive,
+      description: 'New reply received',
+      user: parentMessage.user,
+      ref: parentMessage._id,
+      refModel: 'Message'
+    })
+  }
 
   parentMessage.is.thread = true
   parentMessage.save()
@@ -109,21 +120,25 @@ const handleReactions = async (message, msg) => {
         'rocketData.username': reaction.username
       })
 
-      Score.create({
-        value: config.xprules.reaction.send,
-        user: user._id,
-        description: 'Reaction sent',
-        ref: newReaction._id,
-        refModel: 'Reaction'
-      })
+      if (await canCreateScoreForUser(user._id)) {
+        Score.create({
+          value: config.xprules.reaction.send,
+          user: user._id,
+          description: 'Reaction sent',
+          ref: newReaction._id,
+          refModel: 'Reaction'
+        })
+      }
 
-      Score.create({
-        value: config.xprules.reaction.receive,
-        user: msg.user,
-        description: 'Reaction received',
-        ref: newReaction._id,
-        refModel: 'Reaction'
-      })
+      if (await canCreateScoreForUser(msg.user)) {
+        Score.create({
+          value: config.xprules.reaction.receive,
+          user: msg.user,
+          description: 'Reaction received',
+          ref: newReaction._id,
+          refModel: 'Reaction'
+        })
+      }
     })
   } else {
     const subject = reactions.filter(r => {
