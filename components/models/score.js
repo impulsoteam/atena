@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import moment from 'moment'
 
 const schema = new mongoose.Schema(
   {
@@ -25,5 +26,26 @@ const schema = new mongoose.Schema(
     toJSON: { virtuals: true }
   }
 )
+
+schema.statics.currentDateTotalScore = function(user) {
+  const today = moment()
+    .startOf('day')
+    .toDate()
+
+  return this.aggregate([
+    {
+      $match: {
+        user: mongoose.Types.ObjectId(user),
+        createdAt: { $gt: today }
+      }
+    },
+    {
+      $group: {
+        _id: '$user',
+        score: { $sum: '$value' }
+      }
+    }
+  ]).then(response => (response[0] ? response[0].score : 0))
+}
 
 export default mongoose.model('Score', schema)
