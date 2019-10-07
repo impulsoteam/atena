@@ -254,9 +254,9 @@ const remove = async ({ uuid }) => {
     const interactions = await InteractionsModel.deleteMany({ user: _id })
     const logins = await LoginsModel.deleteMany({ user: _id })
     const history = await UsersLevelsHistoryModel.deleteMany({ user: _id })
-    await UsersModel.deleteOne({ uuid })
+    const user = await UsersModel.deleteOne({ uuid })
 
-    return { achievements, level, interactions, logins, history }
+    return { achievements, level, interactions, logins, history, user }
   } catch (error) {
     return JSON.stringify(error)
   }
