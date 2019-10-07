@@ -80,7 +80,8 @@ const queueInviteUsersToChannel = () => {
       logs.info('[*] Starting cron: queueInviteUsersToChannel')
       await Promise.all([
         rocket.inviteUserToNotJoinedChannels('luiz'),
-        rocket.inviteUserToNotJoinedChannels('fabio')
+        rocket.inviteUserToNotJoinedChannels('fabio'),
+        rocket.inviteUserToNotJoinedChannels('atena')
       ])
       logs.info('[*] Finished cron: queueInviteUsersToChannel')
     } catch (e) {
