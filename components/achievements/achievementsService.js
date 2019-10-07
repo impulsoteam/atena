@@ -55,7 +55,7 @@ const sendEarnedMessage = async (user, achievement, interaction) => {
 
   const name = achievement.name.split(' | ')
   await sendMessageToUser(user, achievement, name[1])
-  await sendMessageToRoom(user, achievement, name[1], interaction)
+  // await sendMessageToRoom(user, achievement, name[1], interaction)
 }
 
 const sendMessageToUser = async (user, achievement, name) => {
