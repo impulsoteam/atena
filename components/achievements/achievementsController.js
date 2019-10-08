@@ -1,8 +1,10 @@
 import { driver } from '@rocket.chat/sdk'
+import Interaction from '../interactions/interaction'
 import dal from './achievementsDAL'
 import utils from './achievementsUtils'
 import service from './achievementsService'
 import users from '../users'
+import config from 'config-yml'
 
 const commandIndex = async message => {
   const user = await users.findOne({ rocketId: message.u._id })
@@ -47,8 +49,32 @@ const findAllByUser = async userId => {
   })
 }
 
+const handleNextStep = async ({ nextStep, username, _id }) => {
+  const profileConfig = config['achievements-network']['profile']
+
+  const { medal, status, reputation } = profileConfig[nextStep]
+
+  const message = `:medal: @${username} obteve a conquista\
+  [${medal} | Perfil ${status} Preenchido]\
+  e ${reputation} pontos de reputação!`
+
+  Interaction.create({
+    origin: 'next',
+    type: nextStep,
+    user: _id,
+    thread: false,
+    description: config.actions.profile.name,
+    channel: 'mundão',
+    category: config.categories.network.type,
+    score: reputation
+  })
+
+  driver.sendDirectToUser(message, username)
+}
+
 export default {
   handle,
+  handleNextStep,
   commandIndex,
   findAllByUser
 }
