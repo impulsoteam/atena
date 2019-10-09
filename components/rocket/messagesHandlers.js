@@ -7,7 +7,6 @@ import commands from '../commands'
 import {
   isCommand,
   isScoreInDailyLimit,
-  isLastMessageOwner,
   canScoreAndNotLastMessageOwner,
   createReactionsMatrixFromRocketMessage
 } from './messagesUtils'
