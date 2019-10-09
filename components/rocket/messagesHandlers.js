@@ -1,10 +1,16 @@
+import config from 'config-yml'
 import User from '../users/user'
 import Message from '../models/message'
 import Reaction from '../models/reaction'
 import Score from '../models/score'
-import config from 'config-yml'
 import commands from '../commands'
-import commandUtils from '../commands/commandsUtils'
+import {
+  isCommand,
+  isScoreInDailyLimit,
+  isLastMessageOwner,
+  canScoreAndNotLastMessageOwner,
+  createReactionsMatrixFromRocketMessage
+} from './messagesUtils'
 
 export default async message => {
   const msg = await Message.findOne({ 'rocketData.messageId': message._id })
@@ -14,16 +20,6 @@ export default async message => {
   if (!msg && !message.tmid) return handleNewMessage(message, user)
   if (!msg && message.tmid) return handleReply(message, user)
   return handleReactions(message, msg)
-}
-
-const isCommand = message => {
-  const commandsList = Object.values(commandUtils.getCommandsRegex())
-  return commandsList.find(command => new RegExp(command).test(message.msg))
-}
-
-const canCreateScoreForUser = async user => {
-  const currentDatescore = await Score.currentDateTotalScore(user)
-  return currentDatescore < config.xprules.limits.daily
 }
 
 const handleCommand = (message, user) => {
@@ -47,7 +43,7 @@ const handleNewMessage = async (message, user) => {
     content: message.msg
   })
 
-  if (await canCreateScoreForUser(user._id)) {
+  if (await canScoreAndNotLastMessageOwner(user, message)) {
     Score.create({
       value: config.xprules.messages.send,
       description: 'New message',
@@ -73,7 +69,7 @@ const handleReply = async (message, user) => {
     parent: parentMessage._id
   })
 
-  if (await canCreateScoreForUser(user._id)) {
+  if (await canScoreAndNotLastMessageOwner(user, message)) {
     Score.create({
       value: config.xprules.threads.send,
       description: 'New reply sent',
@@ -83,7 +79,7 @@ const handleReply = async (message, user) => {
     })
   }
 
-  if (await canCreateScoreForUser(parentMessage.user)) {
+  if (await isScoreInDailyLimit(parentMessage.user)) {
     Score.create({
       value: config.xprules.threads.receive,
       description: 'New reply received',
@@ -120,7 +116,7 @@ const handleReactions = async (message, msg) => {
         'rocketData.username': reaction.username
       })
 
-      if (await canCreateScoreForUser(user._id)) {
+      if (await isScoreInDailyLimit(user._id)) {
         Score.create({
           value: config.xprules.reaction.send,
           user: user._id,
@@ -130,7 +126,7 @@ const handleReactions = async (message, msg) => {
         })
       }
 
-      if (await canCreateScoreForUser(msg.user)) {
+      if (await isScoreInDailyLimit(msg.user)) {
         Score.create({
           value: config.xprules.reaction.receive,
           user: msg.user,
@@ -154,20 +150,4 @@ const handleReactions = async (message, msg) => {
       ])
     })
   }
-}
-
-const createReactionsMatrixFromRocketMessage = message => {
-  const { reactions } = message
-  if (!reactions) return []
-  const keys = Object.keys(reactions)
-  const matrix = keys.map(key => {
-    return reactions[key].usernames.map(username => {
-      return {
-        username,
-        content: key
-      }
-    })
-  })
-
-  return matrix.flat()
 }

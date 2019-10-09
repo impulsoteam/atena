@@ -1,6 +1,7 @@
 limits:
   daily: 60
   flood: 5
+  time: 10
 messages:
   send: 3
 threads:
