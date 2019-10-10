@@ -1,3 +1,5 @@
+### [English Documentation](https://github.com/UniversoImpulso/atena/blob/master/docs/GITHUB_EN.md)
+
 ## Integração com Github
 O Atena possui integração com o Github, onde o usuário ganha pontos ao criar pull requests, efetuar review e ter seu pull request aprovado.
 
