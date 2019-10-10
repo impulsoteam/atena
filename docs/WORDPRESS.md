@@ -1,3 +1,5 @@
+### [English Documentation](https://github.com/UniversoImpulso/atena/blob/master/docs/WORDPRESS_EN.md)
+
 ## Integração com Wordpress
 O Atena possui integração com o Wordpress, onde o usuário ganha pontos ao publicar posts no blog.
 
@@ -11,7 +13,7 @@ Para criar um ambiente de testes para essa feature, é necessário:
 ### Instalação do Wordpress
 - Ter uma instalação wordpress (podendo ser utilizado qualquer tema). *
 
-### Instalação do plugin 
+### Instalação do plugin
 Para instalar o plugin [WP Webhooks](https://wordpress.org/plugins/wp-webhooks/), basta acessar o painel administrativo da  em `
 
 
