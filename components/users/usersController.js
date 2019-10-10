@@ -13,8 +13,16 @@ const save = user => {
   return dal.save(user)
 }
 
+const create = user => {
+  return dal.create(user)
+}
+
 const find = (query, sort, limit, skip) => {
   return dal.find(query, sort, limit, skip)
+}
+
+const aggregate = args => {
+  return dal.aggregate(args)
 }
 
 const findAll = () => {
@@ -38,29 +46,58 @@ const saveOnNewLevel = async user => {
 }
 
 const commandScore = async message => {
-  const user = await dal.findOne({ username: message.u.username })
-  if (!user) {
-    response = {
-      msg: 'Ops! Não conseguimos verificar seus pontos. :/'
-    }
-  }
-
   let response = {
-    msg: 'Ops! Você ainda não tem pontos registrados.'
+    msg: 'Ops! Não conseguimos verificar seus pontos. :/',
+    attachments: []
+  }
+  const user = await dal.findOne({ rocketId: message.u._id })
+  if (!user) return response
+  const { isCoreTeam } = user
+
+  if (isCoreTeam) {
+    const monthlyScore = await rankings.getMonthlyScoreByUser(user._id)
+    response.msg = `Olá ${
+      user.name.split(' ')[0]
+    }! Atualmente tu estás no nível ${user.level}.
+    Como tu es do coreTeam, não possues posição no ranking geral ou mensal. :/
+    Eis a sua pontuação até o momento:`
+    response.attachments.push({
+      text: `${monthlyScore} pontos de reputação no ranking mensal!`
+    })
+    response.attachments.push({
+      text: `${user.score} pontos de reputação no ranking geral!`
+    })
+    return response
   }
 
-  const position = await rankings.calculatePositionByUser(user, user.isCoreTeam)
-  if (position > 0) {
-    response = {
-      msg: `Olá ${user.name}, atualmente você está no nível ${user.level} com ${user.score} XP`,
-      attachments: [
-        {
-          text: `Ah, e você está na posição ${position} do ranking`
-        }
-      ]
-    }
+  const { monthly, general } = await rankings.calculatePositionByUser(user._id)
+
+  response.msg = `Olá ${
+    user.name.split(' ')[0]
+  }! Atualmente tu estás no nível ${user.level}.
+    Eis tua pontuação em nossos rankings:`
+
+  if (monthly.score) {
+    response.attachments.push({
+      text: `${monthly.score} pontos de reputação no ranking mensal!
+      Tu estás na posição ${monthly.position} :grin: `
+    })
+  } else {
+    response.attachments.push({
+      text: `Tu ainda não pontuaste no ranking mensal`
+    })
   }
 
+  if (general.score) {
+    response.attachments.push({
+      text: `${general.score} pontos de reputação no ranking geral!
+      Tu estás na posição ${general.position} :partying_face:`
+    })
+  } else {
+    response.attachments.push({
+      text: `Tu ainda não pontuaste no ranking geral`
+    })
+  }
   return response
 }
 
@@ -91,34 +128,37 @@ const isCoreTeam = async rocketId => {
 }
 
 const commandPro = async message => {
-  let response = {
-    msg: 'Ops! Você não tem plano pro.'
-  }
+  const rocketId = message.u._id
+  const user = await dal.findOne({ rocketId })
 
-  const user = await dal.findOne({ rocketId: message.u._id })
-  if (user.pro) {
-    const beginDate = user.proBeginAt
-      ? moment(user.proBeginAt).format('DD/MM/YYYY')
-      : 'Sem data definida'
+  const msg =
+    user.pro || user.level >= 3
+      ? `Olá ${user.name}, você possui um plano pro.`
+      : 'Ops! Você não possui plano pro'
 
-    const finishDate = user.proFinishAt
-      ? moment(user.proFinishAt).format('DD/MM/YYYY')
-      : 'Sem data definida'
+  const beginDate = user.proBeginAt
+    ? moment(user.proBeginAt).format('DD/MM/YYYY')
+    : 'Sem data definida'
 
-    response = {
-      msg: `Olá ${user.name}, você tem um plano pro.`,
-      attachments: [
-        {
-          text: `Início do Plano: ${beginDate}`
-        },
-        {
-          text: `Fim do Plano: ${finishDate}`
-        }
-      ]
+  let finishDate = user.proFinishAt
+    ? moment(user.proFinishAt).format('DD/MM/YYYY')
+    : 'Sem data definida'
+
+  let attachments = [
+    { text: `Início do plano: ${beginDate}` },
+    { text: `Fim do plano: ${finishDate}` }
+  ]
+
+  if (user.level >= 3) {
+    attachments[1] = {
+      text: `Sem prazo para finalizar enquanto você estiver no level 3 ou superior`
     }
+    attachments.push({
+      text: `Atualmente você está no level ${user.level}`
+    })
   }
 
-  return response
+  return user.pro || user.level >= 3 ? { msg, attachments } : { msg }
 }
 
 const commandUserInfos = async message => {
@@ -146,7 +186,7 @@ const commandUserInfos = async message => {
         text: `*Nível*: ${user.level}`
       },
       {
-        text: `*XP*: ${user.score}`
+        text: `*Reputação*: ${user.score}`
       },
       {
         text: user.pro
@@ -171,47 +211,16 @@ const receiveProPlan = data => {
   return service.receiveProPlan(data)
 }
 
-const getProBeginDate = (user, plan) => {
-  return service.getProBeginDate(user, plan)
+const getProBeginDate = data => {
+  return service.getProBeginDate(data)
 }
 
-const getProFinishDate = (user, plan) => {
-  return service.getProFinishDate(user, plan)
+const getProFinishDate = data => {
+  return service.getProFinishDate(data)
 }
 
 const updatePro = async user => {
   return service.updatePro(user)
-}
-
-const findUsersWithSlack = async (req, res) => {
-  try {
-    return service.findUsersWithSlack()
-  } catch (e) {
-    errors._throw(file, 'findUsersWithSlack', e)
-  }
-}
-
-const findRocketUsersByName = async name => {
-  try {
-    return service.findRocketUsersByName(name)
-  } catch (err) {
-    errors._throw(file, 'findRocketUserByName', e)
-  }
-}
-
-const transferScore = async (userId, type, score) => {
-  let user
-  try {
-    if (type === 'slack') {
-      user = await service.transferScoreToSlackUser(userId, score)
-    } else if (type === 'rocket') {
-      user = await service.transferScoreToRocketUser(userId, score)
-    }
-  } catch (e) {
-    errors._throw(file, 'transferScore', e)
-  }
-
-  return user
 }
 
 const getMostActives = async (begin, end) => {
@@ -228,11 +237,13 @@ const getUserProfileByUuid = async uuid => {
 
 export default {
   save,
+  create,
   find,
   findAll,
   findOne,
   findOneAndUpdate,
   findInactivities,
+  aggregate,
   updateScore,
   commandScore,
   commandPro,
@@ -244,9 +255,6 @@ export default {
   getProBeginDate,
   getProFinishDate,
   updatePro,
-  findUsersWithSlack,
-  findRocketUsersByName,
-  transferScore,
   getMostActives,
   sendPoints,
   saveOnNewLevel,

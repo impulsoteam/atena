@@ -2,7 +2,7 @@ const getCommandsText = () => {
   return [
     {
       text:
-        'Digite *!meuspontos* para verificar teus pontos de experiência e nível!'
+        'Digite *!meuspontos* para verificar teus pontos de reputação e nível!'
     },
     { text: 'Digite *!minhasconquistas* para verificar tuas conquistas!' },
     {
@@ -22,7 +22,7 @@ const getCommandsText = () => {
 const getCoreTeamCommandsText = () => {
   return [
     {
-      text: `Digite ${'`!darpontos`'} ${'`@nome-usuario`'} ${'`pontos`'} ${'`motivo`'} para dar pontos ao usuário. `
+      text: `Digite ${'`!darpontos`'} ${'`@nome-usuario`'} ${'`pontos`'} ${'`motivo`'} para dar pontos de reputação ao usuário. `
     },
     {
       text: `Digite ${'`!checkinfos`'} ${'`@nome-usuario`'} para checar dados relevantes do usuário. `
@@ -42,7 +42,8 @@ const getCommandsRegex = () => {
     checkInfos: /^!checkinfos/g,
     openSource: /^!opensource$/g,
     openSourceAddRepository: /^!addrepositorio[ \d\w]*$/g,
-    openSourceRemoveRepositoryUser: /^!removerepositoriousuario[ \d\w @a-z-A-Z]*$/g
+    openSourceRemoveRepositoryUser: /^!removerepositoriousuario[ \d\w @a-z-A-Z]*$/g,
+    sendMessageThroughAtena: /^!hey\s(([@#][\w\d-]+\s?)+\s?)\n.+$/gm
   }
 }
 

@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import config from 'config-yml'
 import dal from './interactionsDAL'
 import github from '../github'
@@ -115,27 +117,70 @@ const changeUserId = async (limit = 1000, skip = 0) => {
   return { total: usersId.length, users: usersId }
 }
 
-const findByDate = async (year, month) => {
-  return dal.aggregate([
+const findByDate = async ({ date, limit, page }) => {
+  const formatedDate = date || moment().toDate()
+  return await dal.aggregate([
     {
       $match: {
         date: {
-          $lt: new Date(year, month, 1),
-          $gte: new Date(year, month - 1, 1)
-        },
-        score: { $gt: 0 }
+          $gte: moment(formatedDate)
+            .startOf('month')
+            .toDate(),
+          $lt: moment(formatedDate)
+            .endOf('month')
+            .toDate()
+        }
       }
     },
     {
       $group: {
-        _id: { user: '$user' },
-        date: { $first: '$date' },
-        totalScore: { $sum: '$score' }
+        _id: '$user',
+        score: { $sum: '$score' }
       }
     },
     {
-      $sort: { totalScore: -1 }
-    }
+      $match: {
+        score: { $gt: 0 }
+      }
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'user'
+      }
+    },
+    {
+      $match: {
+        'user.isCoreTeam': false,
+        'user.rocketId': { $ne: null }
+      }
+    },
+    {
+      $sort: { score: -1 }
+    },
+    {
+      $unwind: '$user'
+    },
+    {
+      $addFields: {
+        _id: '$user._id',
+        rocketId: '$user.rocketId',
+        name: '$user.name',
+        avatar: '$user.avatar',
+        level: '$user.level',
+        uuid: '$user.uuid',
+        username: '$user.username'
+      }
+    },
+    {
+      $project: {
+        user: 0
+      }
+    },
+    { $skip: page && limit ? parseInt(page) * parseInt(limit || 50) : 0 },
+    { $limit: parseInt(limit) || 99999 }
   ])
 }
 

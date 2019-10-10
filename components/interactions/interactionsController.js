@@ -12,12 +12,11 @@ const saveManual = data => {
 const handle = async data => {
   moduleController = service.getModuleController(data)
   const interaction = await service.normalize(data, moduleController)
+  const user = await moduleController.findOrCreateUser(interaction)
+  interaction.user = user._id
 
   const countingScore = await service.hasScore(moduleController, interaction)
   if (!countingScore) interaction.score = 0
-
-  const user = await moduleController.findOrCreateUser(interaction)
-  interaction.user = user._id
 
   await service.onSaveInteraction(interaction, user)
 
@@ -25,8 +24,8 @@ const handle = async data => {
   return dal.save(interaction)
 }
 
-const findByDate = async (year, month) => {
-  return service.findByDate(year, month)
+const findByDate = async data => {
+  return service.findByDate(data)
 }
 
 const getLastMessage = userId => {
@@ -35,6 +34,10 @@ const getLastMessage = userId => {
 
 const findOne = query => {
   return dal.findOne(query)
+}
+
+const aggregate = query => {
+  return dal.aggregate(query)
 }
 
 const changeUserId = (limit, skip) => {
@@ -62,6 +65,7 @@ const messageExists = messageId => {
 }
 
 export default {
+  aggregate,
   findByDate,
   getLastMessage,
   saveManual,

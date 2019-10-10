@@ -3,6 +3,7 @@ import users from '../users'
 import errors from '../errors'
 import workers from '../workers'
 import interactions from '../interactions'
+import achievements from '../achievements'
 
 const file = 'Next | Controller'
 
@@ -10,6 +11,7 @@ const handleUser = async data => {
   try {
     let isNew = false
     let user = await service.findOrCreateUser(data)
+    const previousStep = user.nextStep
     if (!user.name) isNew = true
 
     user.rocketId = data.rocket_chat.id
@@ -20,10 +22,13 @@ const handleUser = async data => {
     user.avatar = data.photo_url
     user.uuid = data.uuid
     user.pro = users.receiveProPlan(data)
-    user.proBeginAt = users.getProBeginDate(user, data)
-    user.proFinishAt = users.getProFinishDate(user, data)
+    user.proBeginAt = users.getProBeginDate(data)
+    user.proFinishAt = users.getProFinishDate(data)
+    user.nextStep = data.step
 
     user = await users.save(user)
+    if (user.nextStep && user.nextStep !== previousStep)
+      achievements.handleNextStep(user)
 
     if (isNew) {
       await users.saveOnNewLevel(user)

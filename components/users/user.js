@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import api from '../axios'
 
 const userSchema = new mongoose.Schema({
   avatar: {
@@ -29,6 +30,10 @@ const userSchema = new mongoose.Schema({
     default: 0
   },
   slackId: {
+    type: String,
+    required: false
+  },
+  nextStep: {
     type: String,
     required: false
   },
@@ -117,7 +122,14 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('save', function(next) {
   this.lastUpdate = Date.now()
+  this.wasNew = this.isNew
   next()
+})
+
+userSchema.post('save', function() {
+  if (this.wasNew) {
+    api.onboardingApi.sendOnboardingMessage(this.username)
+  }
 })
 
 export default mongoose.model('User', userSchema)
