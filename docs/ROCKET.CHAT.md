@@ -14,8 +14,6 @@ De posse dos novos dados (usuário, senha, token e id), você deve alterar o arq
 ```sh
 ROCKET_BOT_USER={usuario}
 ROCKET_BOT_PASS={senha}
-ROCKET_USER_TOKEN={bot-token}
-ROCKET_USER_ID={bot-id}
 ```
 
 - Apontar sua aplicação para o ambiente de staging, substituindo os valores abaixo:
