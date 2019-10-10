@@ -1,3 +1,5 @@
+### [English Documentation](https://github.com/UniversoImpulso/atena/blob/master/docs/ROCKET.CHAT_EN.md)
+
 ## Configurando Rocket.Chat
 Temos um servidor de staging do Rocket.Chat para testes e para a integração com este ambiente, você precisará de dois usuários:
 1. Um usuário para logar na aplicação com perfil `bot` e ficar escutando as interações que ocorrem no chat.
