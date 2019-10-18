@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  nextStep: {
+    type: String,
+    required: false
+  },
   rocketId: {
     type: String,
     required: false
