@@ -136,15 +136,11 @@ userSchema.post('remove', async function() {
   const UsersLevelsHistoryModel = mongoose.model('UserLevelHistory')
   const userId = this._id
   try {
-    const achievements = await AchievementsModel.deleteMany({ user: userId })
-    const level = await AchievementsLevelModel.deleteMany({
-      user: userId
-    })
-    const interactions = await InteractionsModel.deleteMany({ user: userId })
-    const logins = await LoginsModel.deleteMany({ user: userId })
-    const history = await UsersLevelsHistoryModel.deleteMany({ user: userId })
-
-    return { achievements, level, interactions, logins, history }
+    await AchievementsModel.deleteMany({ user: userId })
+    await AchievementsLevelModel.deleteMany({ user: userId })
+    await InteractionsModel.deleteMany({ user: userId })
+    await LoginsModel.deleteMany({ user: userId })
+    await UsersLevelsHistoryModel.deleteMany({ user: userId })
   } catch (error) {
     errors._throw('User Schema', 'removeUser', error)
   }
