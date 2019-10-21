@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import errors from '../errors'
 import api from '../axios'
 
 const userSchema = new mongoose.Schema({
@@ -125,6 +126,27 @@ userSchema.pre('save', function(next) {
 userSchema.post('save', function() {
   if (this.wasNew) {
     api.onboardingApi.sendOnboardingMessage(this.username)
+  }
+})
+userSchema.post('remove', async function() {
+  const AchievementsModel = mongoose.model('Achievement')
+  const AchievementsLevelModel = mongoose.model('AchievementLevel')
+  const InteractionsModel = mongoose.model('Interaction')
+  const LoginsModel = mongoose.model('Login')
+  const UsersLevelsHistoryModel = mongoose.model('UserLevelHistory')
+  const userId = this._id
+  try {
+    const achievements = await AchievementsModel.deleteMany({ user: userId })
+    const level = await AchievementsLevelModel.deleteMany({
+      user: userId
+    })
+    const interactions = await InteractionsModel.deleteMany({ user: userId })
+    const logins = await LoginsModel.deleteMany({ user: userId })
+    const history = await UsersLevelsHistoryModel.deleteMany({ user: userId })
+
+    return { achievements, level, interactions, logins, history }
+  } catch (error) {
+    errors._throw('User Schema', 'removeUser', error)
   }
 })
 

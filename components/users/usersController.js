@@ -236,37 +236,19 @@ const getUserProfileByUuid = async uuid => {
   return service.getUserProfileByUuid(uuid)
 }
 
-const remove = async ({ uuid }) => {
-  const AchievementsModel = mongoose.model('Achievement')
-  const AchievementsLevelModel = mongoose.model('AchievementLevel')
-  const InteractionsModel = mongoose.model('Interaction')
-  const LoginsModel = mongoose.model('Login')
-  const UsersLevelsHistoryModel = mongoose.model('UserLevelHistory')
+const removeUser = async ({ uuid }) => {
   const UsersModel = mongoose.model('User')
-
-  try {
-    const { _id } = await UsersModel.findOne({ uuid })
-
-    const achievements = await AchievementsModel.deleteMany({ user: _id })
-    const level = await AchievementsLevelModel.deleteMany({
-      user: _id
-    })
-    const interactions = await InteractionsModel.deleteMany({ user: _id })
-    const logins = await LoginsModel.deleteMany({ user: _id })
-    const history = await UsersLevelsHistoryModel.deleteMany({ user: _id })
-    const user = await UsersModel.deleteOne({ uuid })
-
-    return { achievements, level, interactions, logins, history, user }
-  } catch (error) {
-    return JSON.stringify(error)
-  }
+  return await UsersModel.findOne({ uuid }, function(err, user) {
+    if (err) errors._throw(file, 'removeUser', err)
+    user.remove()
+  })
 }
 
 export default {
   save,
   create,
   find,
-  remove,
+  removeUser,
   findAll,
   findOne,
   findOneAndUpdate,

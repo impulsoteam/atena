@@ -9,10 +9,11 @@ const file = 'Next | Controller'
 const handleUser = async data => {
   if (data.status === 'archived') {
     try {
-      const success = await users.remove(data)
-      return success
+      await users.removeUser(data)
+      return
     } catch (error) {
       errors._throw(file, 'handleUser', error)
+      return
     }
   }
   try {
