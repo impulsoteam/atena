@@ -110,7 +110,7 @@ const getLastScoreToIncrease = ratings => {
   const rating = ratings
     .reverse()
     .find(rating => rating.ranges.every(range => range.earnedDate))
-  return rating.xp || 0
+  return (rating && rating.xp) || 0
 }
 
 const isNewAchievement = achievement => {
