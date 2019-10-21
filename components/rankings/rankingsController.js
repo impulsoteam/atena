@@ -16,7 +16,7 @@ const sendToChannel = async () => {
 
   if (ranking.error || ranking.length < 5) return
   let response = {
-    msg: `Saiba quem são as pessoas que mais me orgulham no Olímpio pela interação.
+    msg: `Saiba quem são as pessoas que mais me orgulham no Olimpo pela interação.
 Essas nobres pessoas têm se destacado em meu templo:`,
     attachments: []
   }
