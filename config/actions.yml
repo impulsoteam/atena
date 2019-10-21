@@ -25,3 +25,5 @@ blog:
   type: 'blog'
   article: 'Postagens'
   comment: 'Comentários'
+profile:
+  name: newStep
