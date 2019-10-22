@@ -238,10 +238,12 @@ const getUserProfileByUuid = async uuid => {
 }
 
 const removeUserByUuid = async uuid => {
-  return await UserModel.findOne({ uuid }, function(err, user) {
-    if (err) errors._throw(file, 'removeUser', err)
-    user.remove()
-  })
+  try {
+    const user = await UserModel.findOne({ uuid })
+    return user.remove()
+  } catch (error) {
+    errors._throw(file, 'removeUserByUuid', error)
+  }
 }
 
 export default {
