@@ -9,13 +9,9 @@ const file = 'Next | Controller'
 
 const handleUser = async data => {
   if (data.status === 'archived') {
-    try {
-      await users.removeUser(data)
-      return
-    } catch (error) {
+    return await users.removeUserByUuid(data.uuid).catch(error => {
       errors._throw(file, 'handleUser', error)
-      return
-    }
+    })
   }
   try {
     let isNew = false

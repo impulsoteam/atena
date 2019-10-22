@@ -9,6 +9,7 @@ import errors from '../errors'
 import interactions from '../interactions'
 
 const file = 'Users | Controller'
+const UserModel = mongoose.model('User')
 
 const save = user => {
   return dal.save(user)
@@ -236,9 +237,8 @@ const getUserProfileByUuid = async uuid => {
   return service.getUserProfileByUuid(uuid)
 }
 
-const removeUser = async ({ uuid }) => {
-  const UsersModel = mongoose.model('User')
-  return await UsersModel.findOne({ uuid }, function(err, user) {
+const removeUserByUuid = async uuid => {
+  return await UserModel.findOne({ uuid }, function(err, user) {
     if (err) errors._throw(file, 'removeUser', err)
     user.remove()
   })
@@ -248,7 +248,7 @@ export default {
   save,
   create,
   find,
-  removeUser,
+  removeUserByUuid,
   findAll,
   findOne,
   findOneAndUpdate,

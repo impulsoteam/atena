@@ -133,18 +133,15 @@ userSchema.post('save', function() {
   }
 })
 userSchema.post('remove', async function() {
-  const AchievementsModel = mongoose.model('Achievement')
-  const AchievementsLevelModel = mongoose.model('AchievementLevel')
-  const InteractionsModel = mongoose.model('Interaction')
-  const LoginsModel = mongoose.model('Login')
-  const UsersLevelsHistoryModel = mongoose.model('UserLevelHistory')
-  const userId = this._id
+  const user = this._id
   try {
-    await AchievementsModel.deleteMany({ user: userId })
-    await AchievementsLevelModel.deleteMany({ user: userId })
-    await InteractionsModel.deleteMany({ user: userId })
-    await LoginsModel.deleteMany({ user: userId })
-    await UsersLevelsHistoryModel.deleteMany({ user: userId })
+    await Promise.all([
+      mongoose.model('Achievement').deleteMany({ user }),
+      mongoose.model('AchievementLevel').deleteMany({ user }),
+      mongoose.model('Interaction').deleteMany({ user }),
+      mongoose.model('Login').deleteMany({ user }),
+      mongoose.model('UserLevelHistory').deleteMany({ user })
+    ])
   } catch (error) {
     errors._throw('User Schema', 'removeUser', error)
   }
