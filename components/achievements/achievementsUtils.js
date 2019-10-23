@@ -222,6 +222,16 @@ const generateNewRatings = achievements => {
       )
     }
 
+    if (!current.name && achievement.ratings[4].ranges[4].earnedDate) {
+      current = {
+        name: achievement.name,
+        rating: achievement.ratings[4].name,
+        xp: achievement.ratings[4].xp,
+        range: achievement.ratings[4].ranges[4].name,
+        total: achievement.ratings[4].ranges[4].value
+      }
+    }
+
     currentRating++
   }
 
