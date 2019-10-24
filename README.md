@@ -1,6 +1,6 @@
-<img src="https://s3-sa-east-1.amazonaws.com/assets.impulso.network/images/impulsonetwork-logo.svg" style="width: 350px">
-
 # Atena v.0.2
+
+<img src="https://s3-sa-east-1.amazonaws.com/assets.impulso.network/images/impulsonetwork-logo.svg" style="width: 350px">
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6b19092045904984b19c4775927d10b1)](https://app.codacy.com/app/impulsonetwork/atena?utm_source=github.com&utm_medium=referral&utm_content=impulsonetwork/atena&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://dev.azure.com/universoimpulso/Atena/_apis/build/status/universoimpulso.atena)](https://dev.azure.com/universoimpulso/Atena/_build/latest?definitionId=4)
@@ -8,71 +8,72 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/universoimpulso.svg?style=social&label=Follow)](https://twitter.com/UniversoImpulso)
 
-## [English Documentation](README_EN.md)
+[Documentação em Português](docs/README_PT_BR.md)
 
-A Atena é uma iniciativa da Impulso Network em colaboração com vários Impulsers, com o objetivo de promover o engajamento e recompensar as atividades e esforços de cada pessoa na Impulso. Nele você poderá adquirir Pontos de Experiência (XP) através da execução de diversas atividades e com base nesses dois fatores os Impulsers receberão níveis e conquistas, reconhecendo o esforço despendido nas atividades.
+Atena is an initiative of the impulse in collaboration with several Impulsers, with the objective to promote the engagement and to reward the activities and efforts of each person in the Impulse. In it you will be able to acquire Reputation Points through the execution of several activities and based on these two factors, the Impulsers will receive levels and achievements recognizing the effort expended in the activities.
 
-## Integrações
+## Integrations
 
-A Atena hoje possui integrações com:
+Atena has integrations with:
 
 - [Rocket.Chat](https://rocket.chat/)
 - [Github](https://github.com)
 - [Worpress](https://br.wordpress.org/)
 
-## Configuração
+## Setup
 
-Segue um passo-a-passo da configuração mínima que você precisa para obter o Atena em execução:
+Here is a walkthrough of the minimum configuration you need to get Atena running:
 
-### Configuração inicial
+### Initial setup
 
-- Ter instalado o [Mongodb](https://docs.mongodb.com/manual/installation/)
-- Ter instalado o [Yarn](https://yarnpkg.com/lang/pt-br/)
+- Have installed [Mongodb](https://docs.mongodb.com/manual/installation/)
+- Have installed [Yarn](https://yarnpkg.com/lang/pt-br/)
 
-### Desenvolvimento
+### Development
 
-- Faça um [`fork`](docs/FORK.md) do projeto para a tua conta
-- Então, faça o `clone`:
+- [`Fork`](docs/FORK.md) the project to your account
+
+- Then, make a `clone`:
 
 ```sh
 > git clone https://github.com/{sua-conta}/atena
 ```
 
-- Navegue até a pasta de destino onde fez o clone do projeto:
+- Navigate to the destination folder where you clone the project:
 
 ```sh
 > cd atena/
 ```
 
-- Instale as dependências utilizando o `yarn`:
+- Install the dependencies using `yarn`:
 
 ```sh
 > yarn -i
 ```
 
-- Adicionar referências remotas da Atena:
+- Add remote references from Atena:
 
 ```sh
 > git remote add upstream https://github.com/universoimpulso/atena
 ```
 
-- Criar o arquivo `.env` na raiz do projeto com as suas configurações copiando e renomeando o arquivo `.env.example` e, posteriormente, alterando alguns valores citados abaixo.
+- Create a `.env` file at the root of the project by copying and renaming the `.env.example` file and subsequently changing some values ​​cited below:
 
-### Configurando a integração com Rocket.Chat
+### Configuring Rocket.Chat Integration
 
-Para utilizar a integração do Rocket.Chat, siga os passos da documentação, clicando [aqui](docs/ROCKET.CHAT.md).
+To use Rocket.Chat integration, follow the documentation steps by clicking [here](docs/ROCKET.CHAT.md).
 
-### Configurando a integração com Github
+### Configuring Github Integration
 
-Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](docs/ROCKET.CHAT.md).
+To use Github integration, follow the documentation steps by clicking [here](docs/GITHUB.md).
 
-### Configurando a integração com Wordpress
+### Configuring Wordpress Integration
 
-Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](docs/WORDPRESS.md).
+To use Wordpress integration, follow the documentation steps by clicking [here](docs/WORDPRESS.md).
 
-### Executando em ambiente de desenvolvimento
+### Running in development environment
 
-- Inicie o servidor utilizando o seguinte comando:
+Start the server using the following command:
 
 ```sh
 > yarn start:dev
@@ -80,40 +81,40 @@ Para utilizar a integração do Github, siga os passos da documentação, clican
 
 ### Debug
 
-Caso deseje usar um debug, em um terminal inicie o servidor com o seguinte comando:
+If you want to use a debug, start the server with the following command:
 
 ```sh
 > yarn start:dev:debug
 ```
 
-Rode o node inspect em outra janela de terminal:
+### Run node inspect in another terminal:
 
 ```sh
 > node-inspect localhost:9229
 ```
 
-## Contribuindo
+## Contributing
 
-O principal objetivo deste repositório é continuar a evoluir o Atena, tornando-o mais rápido e fácil de usar.
+The main purpose of this repository is to continue to evolve Atena, making it faster and easier to use.
 
-O desenvolvimento da Atena acontece a céu aberto no GitHub, e somos gratos à comunidade por contribuir com correções de bugs e melhorias. Leia abaixo para saber como você pode participar da melhoria da Atena e da Impulso network.
+Athena's is a open-source project, and we are grateful to the community for contributing with bug fixes and improvements. Read more to learn how you can participate in improving Athena and the Impulso network.
 
-[![w](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/0)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/0) [![w](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/1)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/1)[![w](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/2)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/2)[![w](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/3)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/3)[![w](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/4)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/4)[![w](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/5)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/5)[![w](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/6)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/6)[![w](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/7)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/7)
+[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/0)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/0) [![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/1)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/1)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/2)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/2)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/3)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/3)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/4)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/4)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/5)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/5)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/6)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/6)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/7)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/7)
 
-### [Código de Conduta](docs/CODE_OF_CONDUCT.md)
+### [Code of Conduct](docs/CODE_OF_CONDUCT.md)
 
-A Impulso Network adotou um Código de Conduta que esperamos que os participantes do projeto sigam. Por favor, leia [Código de Conduta](docs/CODE_OF_CONDUCT.md) para que você possa entender quais ações serão e não serão toleradas.
+Impulso Network has adopted a Code of Conduct to guide our participants. Please read [Code of Conduct](docs/CODE_OF_CONDUCT.md) for more infos.
 
-### [Guia de Contribuição](docs/CONTRIBUTING.md)
+### [Contribution Guide](docs/CONTRIBUTING.md)
 
-Leia nosso [guia de contribuição](docs/CONTRIBUTING.md) para conhecer nosso processo de desenvolvimento, como propor correções de erros e melhorias, e como construir e testar suas alterações no Atena.
+Read our [contribution guide](docs/CONTRIBUTING.md) to learn about our development process, how to propose bug,fixes and improvements, and how to build and test your changes in Atena.
 
-## Comunidade
+## Community
 
-Todos os comentários e sugestões são bem-vindas e podem ser feitas via Issues no Github ou lá no Slack!
+All comments and suggestions are welcome and can be made via Issues on Github or on [RocketChat](https://chat.impulso.network/)!
 
-💬 Junte-se a comunidade em [Impulso Network](https://impulso.network)
+💬 Join the community in [Impulso Network](https://impulso.network)
 
 ## License
 
-Este projeto está licenciado sob a licença MIT - consulte o arquivo [LICENSE.md](LICENSE.md) para obter detalhes.
+This project is licensed under the MIT license - see the [LICENSE](LICENSE.md) file for details.
