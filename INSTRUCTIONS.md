@@ -38,3 +38,4 @@ _Obs.: o ngrok muda constantemente a url_
 
 -   Crie uma conta
 -   Adicione o código de rastreio `UA-{number}` no arquivo `.env`
+
