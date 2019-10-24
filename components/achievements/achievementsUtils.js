@@ -173,6 +173,7 @@ const getActiveRange = ranges => {
 }
 
 export const getCurrentRating = achievement => {
+  const maxRating = achievement.ratings[4]
   let current = {}
   let range
 
@@ -188,6 +189,16 @@ export const getCurrentRating = achievement => {
         total: range.value
       }
       break
+    }
+  }
+
+  if (!current.name && maxRating.ranges[4].earnedDate) {
+    current = {
+      name: achievement.name,
+      rating: maxRating.name,
+      xp: maxRating.xp,
+      range: maxRating.ranges[4].name,
+      total: maxRating.ranges[4].value
     }
   }
 
