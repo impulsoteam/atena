@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import errors from '../errors'
 import api from '../axios'
 
 const userSchema = new mongoose.Schema({
@@ -129,6 +130,20 @@ userSchema.pre('save', function(next) {
 userSchema.post('save', function() {
   if (this.wasNew) {
     api.onboardingApi.sendOnboardingMessage(this.username)
+  }
+})
+userSchema.post('remove', async function() {
+  const user = this._id
+  try {
+    await Promise.all([
+      mongoose.model('Achievement').deleteMany({ user }),
+      mongoose.model('AchievementLevel').deleteMany({ user }),
+      mongoose.model('Interaction').deleteMany({ user }),
+      mongoose.model('Login').deleteMany({ user }),
+      mongoose.model('UserLevelHistory').deleteMany({ user })
+    ])
+  } catch (error) {
+    errors._throw('User Schema', 'removeUser', error)
   }
 })
 

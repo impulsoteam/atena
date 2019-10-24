@@ -8,6 +8,11 @@ import achievements from '../achievements'
 const file = 'Next | Controller'
 
 const handleUser = async data => {
+  if (data.status === 'archived') {
+    return users.removeUserByUuid(data.uuid).catch(error => {
+      errors._throw(file, 'handleUser', error)
+    })
+  }
   try {
     let isNew = false
     let user = await service.findOrCreateUser(data)
