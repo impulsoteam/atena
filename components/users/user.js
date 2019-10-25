@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     default: 1
   },
+  stacks: {
+    type: Array,
+    required: false
+  },
   score: {
     type: Number,
     required: true,
