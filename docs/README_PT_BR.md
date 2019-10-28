@@ -1,6 +1,6 @@
 # Atena v.0.2
 
-<img src="https://s3-sa-east-1.amazonaws.com/assets.impulso.network/images/impulsonetwork-logo.svg" style="width: 350px">
+<img src="https://s3-sa-east-1.amazonaws.com/assets.impulso.network/images/impulsonetwork-logo.svg" style="width: 100%">
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6b19092045904984b19c4775927d10b1)](https://app.codacy.com/app/impulsonetwork/atena?utm_source=github.com&utm_medium=referral&utm_content=impulsonetwork/atena&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://dev.azure.com/universoimpulso/Atena/_apis/build/status/universoimpulso.atena)](https://dev.azure.com/universoimpulso/Atena/_build/latest?definitionId=4)
@@ -31,7 +31,7 @@ Segue um passo-a-passo da configuração mínima que você precisa para obter o 
 
 ### Desenvolvimento
 
-- Faça um [`fork`](docs/FORK.md) do projeto para a tua conta
+- Faça um [`fork`](docs/FORK_PT_BR.md) do projeto para a tua conta
 - Então, faça o `clone`:
 
 ```sh
@@ -60,15 +60,15 @@ Segue um passo-a-passo da configuração mínima que você precisa para obter o 
 
 ### Configurando a integração com Rocket.Chat
 
-Para utilizar a integração do Rocket.Chat, siga os passos da documentação, clicando [aqui](docs/ROCKET.CHAT.md).
+Para utilizar a integração do Rocket.Chat, siga os passos da documentação, clicando [aqui](docs/ROCKET.CHAT_PT_BR.md).
 
 ### Configurando a integração com Github
 
-Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](docs/GITHUB.md).
+Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](docs/GITHUB_PT_BR.md).
 
 ### Configurando a integração com Wordpress
 
-Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](docs/WORDPRESS.md).
+Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](docs/WORDPRESS_PT_BR.md).
 
 ### Executando em ambiente de desenvolvimento
 
@@ -104,9 +104,9 @@ O desenvolvimento da Atena acontece a céu aberto no GitHub, e somos gratos à c
 
 A Impulso Network adotou um Código de Conduta que esperamos que os participantes do projeto sigam. Por favor, leia [Código de Conduta](docs/CODE_OF_CONDUCT.md) para que você possa entender quais ações serão e não serão toleradas.
 
-### [Guia de Contribuição](docs/CONTRIBUTING.md)
+### [Guia de Contribuição](docs/CONTRIBUTING_PT_BR.md)
 
-Leia nosso [guia de contribuição](docs/CONTRIBUTING.md) para conhecer nosso processo de desenvolvimento, como propor correções de erros e melhorias, e como construir e testar suas alterações no Atena.
+Leia nosso [guia de contribuição](docs/CONTRIBUTING_PT_BR.md) para conhecer nosso processo de desenvolvimento, como propor correções de erros e melhorias, e como construir e testar suas alterações no Atena.
 
 ## Comunidade
 

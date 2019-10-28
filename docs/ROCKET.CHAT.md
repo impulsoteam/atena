@@ -1,26 +1,26 @@
-# Configurando Rocket.Chat
+# Setting up the Rocket.Chat
 
-Temos um servidor de staging do Rocket.Chat para testes e para a integração com este ambiente, você precisará de dois usuários:
+We have a Rocket.Chat staging server for testing. For integration with this environment, you will need two users:
 
-1. Um usuário para logar na aplicação com perfil `bot` e ficar escutando as interações que ocorrem no chat.
-2. Outro usuário com perfil `user` para logar na API do Rocket.Chat pela Atena e, assim, obter dados de outros usuários e disparar mensagens privadas e em chats.
+1. A user to log into the application with profile `bot` and listen to the interactions that occur in chat.
+2. Another user with profile `user` to log in to the Rocket.Chat API to get data from other users and trigger chat and private messages.
 
-## Criando os usuários
+## Creating users
 
-Para solicitar a criação de seus usuários em nosso ambiente staging, basta acessar o seguinte [formulário](https://impulsowork.typeform.com/to/nnIHqr) e se cadastrar.
+To request the creation of your users in our staging environment, access the following [form](https://impulsowork.typeform.com/to/nnIHqr).
 
-Após o cadastro você deverá receber um email com dados das contas.
+After registration you should receive an email with account data.
 
-## Alteração de variáveis de ambiente
+## Changing environment variables
 
-De posse dos novos dados (usuário, senha, token e id), você deve alterar o arquivo `.env` na raiz do projeto:
+- With the new data (user and password), you must change the `.env` file in the project root:
 
 ```sh
-ROCKET_BOT_USER={usuario}
-ROCKET_BOT_PASS={senha}
+ROCKET_BOT_USER={user}
+ROCKET_BOT_PASS={password}
 ```
 
-- Apontar sua aplicação para o ambiente de staging, substituindo os valores abaixo:
+- Set your application to the staging environment by replacing the values below:
 
 ```sh
 ROCKET_HOST=staging.chat.impulso.network

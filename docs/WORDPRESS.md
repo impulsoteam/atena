@@ -1,26 +1,24 @@
-# Integração com Wordpress
+# Wordpress Integration
 
-O Atena possui integração com o Wordpress, onde o usuário ganha pontos ao publicar posts no blog.
+Atena has integration with Wordpress, where users earn reputation by posting blog posts.
 
-## Criando um ambiente para testes
+## Creating a test environment
 
-Para criar um ambiente de testes para essa feature, é necessário:
+To create a test environment for this feature, you must:
 
-- [Instalar uma aplicação Wordpress](#instalacao-do-wordpress)
-- [Instalar o plugin WP Webhooks].
-- Em `Configurações` > `WP Webhooks` > `Settings`, habilite `Send Data On New Post`, `Send Data On Post Update` e salve.
-- Depois vá em `Configurações` > `WP Webhooks` > `Send Data`, adicione em `Send Data On New Post` e em `Send Data On Post Update` a url `http://{sua-url-da-atena}/blog`
+- [Install a Wordpress Application](#wordpress-install)
+- [Install the WP Webhooks plugin](#plugin)
+- In `Settings` > `WP Webhooks` > `Settings`, enable `Send Data On New Post`, `Send Data On Post Update` and save.
+- Then go to `Settings` > `WP Webhooks` > `Send Data`, add `Send Data On New Post` and `Send Data On Post Update` to url `http://{your-atena-url}/blog`
 
 ### Instalação do Wordpress
 
-- Ter uma instalação wordpress (podendo ser utilizado qualquer tema). *
+- Have a wordpress installation, any theme can be used.
 
-### Instalação do plugin
+### Plugin Installation
 
-Para instalar o plugin [WP Webhooks](https://wordpress.org/plugins/wp-webhooks/), basta acessar o painel administrativo da  em `
+To install the plugin [WP Webhooks](https://wordpress.org/plugins/wp-webhooks/), just go to the admin panel;
 
-BLOG_API_URL
+After that, just create a post and post it to score.
 
-Após isso, basta criar um post e publicá-lo para pontuar.
-
-> \* Caso tenha dúvidas sobre como instalar o Wordpress localmente, você pode seguir este [tutorial](https://codex.wordpress.org/pt-br:Instalando_o_WordPress).
+> If you have questions about installing Wordpress locally, you can follow this [tutorial](https://codex.wordpress.org/).

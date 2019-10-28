@@ -1,6 +1,6 @@
 # Atena v.0.2
 
-<img src="https://s3-sa-east-1.amazonaws.com/assets.impulso.network/images/impulsonetwork-logo.svg" style="width: 350px">
+<img src="https://s3-sa-east-1.amazonaws.com/assets.impulso.network/images/impulsonetwork-logo.svg" style="width: 100%">
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6b19092045904984b19c4775927d10b1)](https://app.codacy.com/app/impulsonetwork/atena?utm_source=github.com&utm_medium=referral&utm_content=impulsonetwork/atena&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://dev.azure.com/universoimpulso/Atena/_apis/build/status/universoimpulso.atena)](https://dev.azure.com/universoimpulso/Atena/_build/latest?definitionId=4)
@@ -36,7 +36,7 @@ Here is a walkthrough of the minimum configuration you need to get Atena running
 - Then, make a `clone`:
 
 ```sh
-> git clone https://github.com/{sua-conta}/atena
+> git clone https://github.com/{your account}/atena
 ```
 
 - Navigate to the destination folder where you clone the project:

@@ -1,5 +1,3 @@
-# [English Documentation](https://github.com/UniversoImpulso/atena/blob/master/docs/FORK_EN.md)
+# Adding a `fork`
 
-## Criando um `fork`
-
-Para criar um `fork`, basta no canto superior direito clicar no botão `fork`.
+To create your `fork` click on `fork` button on upper right corner.

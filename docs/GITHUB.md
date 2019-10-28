@@ -1,49 +1,49 @@
-# Integração com Github
+# Github Integration
 
-O Atena possui integração com o Github, onde o usuário ganha pontos ao criar pull requests, efetuar review e ter seu pull request aprovado.
+Atena has integration with Github, where the user earns reputation by creating pull requests, reviewing and having their pull request approved.
 
-## Criando um ambiente para testes
+## Creating a test environment
 
-Para rodar um ambiente de testes do github será necessário:
+To run a github test environment you will need:
 
-- [Criar um repositório para testes](#criacao-de-repositorio)
-- [Configurar um webhook para escutar eventos](#configuracao-de-webhook)
-- [Criar um OAuth App para autenticação na aplicação](#criacao-de-oauth-app)
-- [Adicionar permissão para o app acessar sua conta](#adicionar-permissao-para-o-app)
+- [Create a test repository](###criacao-de-repositorio)
+- [Set up a webhook to listen events](#configuracao-de-webhook)
+- [Create an OAuth App for in-app authentication](#criacao-de-oauth-app)
+- [Add permission to access your account](#adicionar-permissao-para-o-app)
 
-### Criação de repositório
+### Repository creation
 
-Basta criar um repositório em sua conta para testes com qualquer conteúdo.
+Just create a repository in your account for testing with any content.
 
-> Esse repositório servirá apenas para testar a criação de Pull Requests, merge de Pull Requests e criação de Issues, por isso seu conteúdo não terá relevância.
+> This repository will only serve for testing PR, PR merge, and Issues, so its content will have no relevance.
 
-### Configuração de Webook
+### Set up Webook
 
-Acesse seu repositório de testes e vá em `Settings` > `Webhooks`, clique em `Add webhook` no canto superior direito e adicione os seguintes dados:
+Go to your test repository and go to `Settings`>` Webhooks`,  click `Add webhook` in the upper right corner and add the following data:
 
-- **Payload URL**: `http://{sua-url-da-atena}/github/events`
+- **Payload URL**: `http://{your atena url}/github/events`
 - **Content type**: *application/json*
 - **Which events would you like to trigger this webhook?**: *Send me everything.*
-- Habilite a opção **Active**
+- Enable the option **Active**
 
-### Criação de OAuth App
+### OAuth App Creation
 
-Para criar um app para efetuar seus testes:
+To create an app to run your tests:
 
-- Clique [aqui](https://github.com/settings/applications/new) ou acesse sua conta no github, vá em `Settings` > `Developer settings` > `OAuth Apps` e clique em `New OAuth application` no canto superior direito.
+- Click [here](https://github.com/settings/applications/new) or sign in to your github account, go to `Settings` > `Developer settings` >`OAuth Apps` and click`New OAuth application` at the top right corner.
 
-- Ao criar o app, configure o endereço de `Authorization callback URL` apontando para a Atena: `http://{sua-url-da-atena}/github/callback`
+- When creating the app, set the `Authorization callback URL` address by pointing to Athena:`http://{your atena url}/github/callback`
 
-## Configuração de variáveis de ambiente
+## Setting environment variables
 
-Após criar seu app de teste, você de configurar as variáveis de ambiente no arquivo `.env` na raiz do projeto com os dados gerados:
+After you create your test app, set the environment variables in the `.env` file in the project root with the generated data:
 
 ```sh
 GITHUB_CLIENT_ID={oauthapp-client-id}
 GITHUB_CLIENT_SECRET={oauthapp-client-secret}
-GITHUB_REPOSITORIES={repositorio-id}
+GITHUB_REPOSITORIES={repo-id}
 ```
 
-## Adicionar permissão para o app
+## Add app permission
 
-Para participar e receber pontuação, envie uma mensagem em qualquer canal no [Rocket.Chat](staging.chat.impulso.network) da Impulso com o comando *`!opensource`* e siga as instruções.
+To participate and receive reputarion, send a message on any channel on [Rocket.Chat](staging.chat.impulso.network) with the command `!opensource` and follow the instructions.
