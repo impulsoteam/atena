@@ -2,7 +2,7 @@
   "name": "atena",
   "version": "0.2.1",
   "description": "app to integrate slack with analytics",
-  "main": "index.js",
+  "main": "./src/index.js",
   "license": "MIT",
   "homepage": "https://github.com/UniversoImpulso/atena#readme",
   "repository": {
@@ -21,10 +21,10 @@
   ],
   "scripts": {
     "format": "prettier --write \"**/*.js\"",
-    "start": "babel-node index.js",
-    "start:prod": "babel-node index.js",
-    "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node index.js",
-    "start:dev:debug": "npm run format && set NODE_ENV=development && nodemon --exec babel-node --inspect-brk index.js",
+    "start": "babel-node ./src/index.js",
+    "start:prod": "babel-node ./src/index.js",
+    "start:dev": "npm run format && set NODE_ENV=development && nodemon --exec babel-node ./src/index.js",
+    "start:dev:debug": "npm run format && set NODE_ENV=development && nodemon --exec babel-node --inspect-brk ./src/index.js",
     "lint": "npm run format && eslint \"**/*.js\" --ignore-pattern node_modules/ --ignore-pattern coverage/",
     "test:coverage": "set NODE_ENV=test && jest --coverage --forceExit --detectOpenHandles",
     "test": "set NODE_ENV=test  && jest --forceExit --detectOpenHandles",
