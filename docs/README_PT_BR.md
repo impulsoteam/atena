@@ -116,4 +116,4 @@ Todos os comentários e sugestões são bem-vindas e podem ser feitas via Issues
 
 ## License
 
-Este projeto está licenciado sob a licença MIT - consulte o arquivo [LICENSE](LICENSE.md) para obter detalhes.
+Este projeto está licenciado sob a licença MIT - consulte o arquivo [LICENSE](../LICENSE.md) para obter detalhes.
