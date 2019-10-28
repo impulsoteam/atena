@@ -87,7 +87,7 @@ If you want to use a debug, start the server with the following command:
 > yarn start:dev:debug
 ```
 
-### Run node inspect in another terminal:
+### Run node inspect in another terminal
 
 ```sh
 > node-inspect localhost:9229

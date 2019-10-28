@@ -31,7 +31,7 @@ Segue um passo-a-passo da configuração mínima que você precisa para obter o 
 
 ### Desenvolvimento
 
-- Faça um [`fork`](docs/FORK_PT_BR.md) do projeto para a tua conta
+- Faça um [`fork`](FORK_PT_BR.md) do projeto para a tua conta
 - Então, faça o `clone`:
 
 ```sh
@@ -60,15 +60,15 @@ Segue um passo-a-passo da configuração mínima que você precisa para obter o 
 
 ### Configurando a integração com Rocket.Chat
 
-Para utilizar a integração do Rocket.Chat, siga os passos da documentação, clicando [aqui](docs/ROCKET.CHAT_PT_BR.md).
+Para utilizar a integração do Rocket.Chat, siga os passos da documentação, clicando [aqui](ROCKET.CHAT_PT_BR.md).
 
 ### Configurando a integração com Github
 
-Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](docs/GITHUB_PT_BR.md).
+Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](GITHUB_PT_BR.md).
 
 ### Configurando a integração com Wordpress
 
-Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](docs/WORDPRESS_PT_BR.md).
+Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](WORDPRESS_PT_BR.md).
 
 ### Executando em ambiente de desenvolvimento
 
@@ -100,13 +100,13 @@ O desenvolvimento da Atena acontece a céu aberto no GitHub, e somos gratos à c
 
 [![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/0)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/0) [![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/1)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/1)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/2)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/2)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/3)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/3)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/4)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/4)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/5)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/5)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/6)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/6)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/7)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/7)
 
-### [Código de Conduta](docs/CODE_OF_CONDUCT.md)
+### [Código de Conduta](CODE_OF_CONDUCT.md)
 
-A Impulso Network adotou um Código de Conduta que esperamos que os participantes do projeto sigam. Por favor, leia [Código de Conduta](docs/CODE_OF_CONDUCT.md) para que você possa entender quais ações serão e não serão toleradas.
+A Impulso Network adotou um Código de Conduta que esperamos que os participantes do projeto sigam. Por favor, leia [Código de Conduta](CODE_OF_CONDUCT.md) para que você possa entender quais ações serão e não serão toleradas.
 
-### [Guia de Contribuição](docs/CONTRIBUTING_PT_BR.md)
+### [Guia de Contribuição](CONTRIBUTING_PT_BR.md)
 
-Leia nosso [guia de contribuição](docs/CONTRIBUTING_PT_BR.md) para conhecer nosso processo de desenvolvimento, como propor correções de erros e melhorias, e como construir e testar suas alterações no Atena.
+Leia nosso [guia de contribuição](CONTRIBUTING_PT_BR.md) para conhecer nosso processo de desenvolvimento, como propor correções de erros e melhorias, e como construir e testar suas alterações no Atena.
 
 ## Comunidade
 
