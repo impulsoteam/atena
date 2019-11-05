@@ -10,11 +10,11 @@
 
 [Documentação em Português](docs/README_PT_BR.md)
 
-Atena is an initiative of the impulse in collaboration with several Impulsers, with the objective to promote the engagement and to reward the activities and efforts of each person in the Impulse. In it you will be able to acquire Reputation Points through the execution of several activities and based on these two factors, the Impulsers will receive levels and achievements recognizing the effort expended in the activities.
+Atena is an initiative of Impulso Network in collaboration with several Impulsers, in order to promote the engagement and reward the activities and efforts of each person on Impulso Network. Here you can gain Experience Points (XP) by performing various activities and based on these two factors Impulsers will receive levels and achievements, recognizing the effort expended on the activities.
 
 ## Integrations
 
-Atena has integrations with:
+Atena today has integrations with:
 
 - [Rocket.Chat](https://rocket.chat/)
 - [Github](https://github.com)
@@ -22,7 +22,7 @@ Atena has integrations with:
 
 ## Setup
 
-Here is a walkthrough of the minimum configuration you need to get Atena running:
+Here is a step-by-step minimum configuration that you need to get the Atena running::
 
 ### Initial setup
 
@@ -31,7 +31,7 @@ Here is a walkthrough of the minimum configuration you need to get Atena running
 
 ### Development
 
-- [`Fork`](docs/FORK.md) the project to your account
+- Make a project [`fork`](docs/FORK.md) to your account
 
 - Then, make a `clone`:
 
@@ -57,7 +57,7 @@ Here is a walkthrough of the minimum configuration you need to get Atena running
 > git remote add upstream https://github.com/universoimpulso/atena
 ```
 
-- Create a `.env` file at the root of the project by copying and renaming the `.env.example` file and subsequently changing some values ​​cited below:
+- Create a `.env` file at the root of the project by copying and renaming the `.env.example` file and later changing some values ​​cited below:
 
 ### Configuring Rocket.Chat Integration
 
@@ -97,7 +97,7 @@ If you want to use a debug, start the server with the following command:
 
 The main purpose of this repository is to continue to evolve Atena, making it faster and easier to use.
 
-Athena's is a open-source project, and we are grateful to the community for contributing with bug fixes and improvements. Read more to learn how you can participate in improving Athena and the Impulso network.
+Atena is a open-source project, and we are grateful to the community for contributing with bug fixes and improvements. Read more to learn how you can participate in improving Atena and the Impulso network.
 
 [![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/0)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/0) [![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/1)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/1)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/2)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/2)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/3)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/3)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/4)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/4)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/5)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/5)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/6)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/6)[![user](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/images/7)](https://sourcerer.io/fame/goldblade/impulsonetwork/atena/links/7)
 
@@ -107,7 +107,7 @@ Impulso Network has adopted a Code of Conduct to guide our participants. Please 
 
 ### [Contribution Guide](docs/CONTRIBUTING.md)
 
-Read our [contribution guide](docs/CONTRIBUTING.md) to learn about our development process, how to propose bug,fixes and improvements, and how to build and test your changes in Atena.
+Read our [contribution guide](docs/CONTRIBUTING.md) to learn about our development process, how to propose bug fixes and improvements, and how to build and test your changes in Atena.
 
 ## Community
 
