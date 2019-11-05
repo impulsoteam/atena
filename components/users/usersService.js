@@ -117,6 +117,7 @@ const updateScore = async (user, score) => {
 
 const onChangeLevel = async user => {
   if (user.level !== user.previousLevel) {
+    rocket.updateLevelRole(user)
     saveOnNewLevel(user)
     next.sendUserLevelToQueue(user)
   }

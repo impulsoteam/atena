@@ -1,6 +1,7 @@
 import { driver, api } from '@rocket.chat/sdk'
 import { getOr } from 'lodash/fp'
 import moment from 'moment-timezone'
+import config from 'config-yml'
 import service from './rocketService'
 import errors from '../errors'
 import logs from '../logs'
@@ -196,6 +197,19 @@ const inviteUserToNotJoinedChannels = async username => {
 
   return Promise.all(promises)
 }
+const updateLevelRole = async ({ level, rocketId }) => {
+  const badges = config.levelrules.levels_badges
+  const { user } = await api.get(`users.info?userId=${rocketId}`)
+
+  const roles = user.roles.filter(role => !badges.includes(role))
+  let newRole = badges[level - 1] || badges[0]
+  roles.push(newRole)
+
+  api.post(`users.update`, {
+    userId: rocketId,
+    data: { roles }
+  })
+}
 
 export default {
   sendMessageToUser,
@@ -210,5 +224,6 @@ export default {
   isFlood,
   auth,
   inviteUserToNotJoinedChannels,
+  updateLevelRole,
   exec
 }
