@@ -9,3 +9,14 @@ levels_range:
   - 1699
   - 2749
   - 4450
+levels_badges:
+  - levelOne
+  - levelTwo
+  - levelThree
+  - levelFour
+  - levelFive
+  - levelSix
+  - levelSeven
+  - levelEight
+  - levelNine
+  - levelTen
