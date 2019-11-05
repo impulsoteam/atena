@@ -32,7 +32,7 @@ To create an app to run your tests:
 
 - Click [here](https://github.com/settings/applications/new) or sign in to your github account, go to `Settings` > `Developer settings` >`OAuth Apps` and click`New OAuth application` at the top right corner.
 
-- When creating the app, set the `Authorization callback URL` address by pointing to Athena:`http://{your atena url}/github/callback`
+- When creating the app, set the `Authorization callback URL` address by pointing to Athena:`http://{atena url}/github/callback`
 
 ## Setting environment variables
 
