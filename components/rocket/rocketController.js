@@ -197,6 +197,7 @@ const inviteUserToNotJoinedChannels = async username => {
 
   return Promise.all(promises)
 }
+
 const updateLevelRole = async ({ level, rocketId }) => {
   const badges = config.levelrules.levels_badges
   const { user } = await api.get(`users.info?userId=${rocketId}`)
