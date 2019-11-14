@@ -18,7 +18,7 @@ Atena has integrations with:
 
 - [Rocket.Chat](https://rocket.chat/)
 - [Github](https://github.com)
-- [Worpress](https://br.wordpress.org/)
+- [Wordpress](https://br.wordpress.org/)
 
 ## Setup
 
