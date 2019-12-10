@@ -22,7 +22,7 @@ const getCommandsText = () => {
 const getCoreTeamCommandsText = () => {
   return [
     {
-      text: `Digite ${'`!darpontos`'} ${'`@lista @usuários`'} ${'`pontos`'} ${'`motivo`'} para dar pontos de reputação ao usuário. `
+      text: `Digite \`!darpontos\` \`@lista @usuários\` \`pontos\` \`motivo\` para dar pontos de reputação ao usuário. `
     },
     {
       text: `Digite ${'`!checkinfos`'} ${'`@nome-usuario`'} para checar dados relevantes do usuário. `
