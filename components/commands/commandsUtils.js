@@ -13,8 +13,13 @@ const getCommandsText = () => {
         'Digite *!rankinggeral* e veja o ranking geral e a tua posição nele!'
     },
     {
-      text:
-        'Digite *!ranking* e veja o ranking do mês atual e tua posição nele! Além disso, podes escolher um mês específico ao adicionar um número de 1 à 12 após o comando! Ex: !ranking 2 para o mês de Fevereiro.'
+      text: `Digite *!ranking* e veja o ranking do mês atual e tua posição nele!
+        Além disso, podes escolher um mês e/ou ano específico.
+        Basta adicionar um número de 1 à 12 para o mes e/ou um ano com quatro dígitos!
+        Ficou com duvida? basta seguir os exemplos abaixo:
+        *!ranking* para o ranking do mês e ano atual;
+        *!ranking 2* para o mês de Fevereiro deste ano.
+        *!ranking 2 2018* para o mês de Fevereiro de 2018.`
     }
   ]
 }
@@ -32,7 +37,7 @@ const getCoreTeamCommandsText = () => {
 
 const getCommandsRegex = () => {
   return {
-    ranking: /^!ranking[ 1234567890]*$/g,
+    ranking: /^!ranking/g,
     rankingGeral: /^!rankinggeral$/g,
     myPoints: /^!meuspontos$/g,
     myAchievements: /^!minhasconquistas$/g,

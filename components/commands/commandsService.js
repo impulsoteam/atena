@@ -14,7 +14,7 @@ const getCommandMessage = async message => {
   } else if (regex.rankingGeral.test(message.msg)) {
     response = await rankings.commandGeneral(message)
   } else if (regex.ranking.test(message.msg)) {
-    response = await rankings.commandByMonth(message)
+    response = await rankings.commandByDate(message)
   } else if (regex.myAchievements.test(message.msg)) {
     await achievements.commandIndex(message)
   } else if (regex.isPro.test(message.msg)) {
