@@ -17,7 +17,7 @@ const getCommandsText = () => {
         Além disso, podes escolher um mês e/ou ano específico.
         Basta adicionar um número de 1 à 12 para o mes e/ou um ano com quatro dígitos!
         Ficou com duvida? basta seguir os exemplos abaixo:
-        *!ranking* para o ranking do mês e ano atual;
+        *!ranking* para o ranking do mês e ano atual.
         *!ranking 2* para o mês de Fevereiro deste ano.
         *!ranking 2 2018* para o mês de Fevereiro de 2018.`
     }
