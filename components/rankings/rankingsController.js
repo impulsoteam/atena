@@ -94,7 +94,7 @@ const commandGeneral = async message => {
 }
 
 const commandByDate = async message => {
-  const { date, monthName } = await utils.getDateFromMessage(message)
+  const { date, monthName } = utils.getDateFromMessage(message)
   const user = await users.findOne({ rocketId: message.u._id })
   const ranking = await interactions.findByDate({ date })
   return service.generateRankingMessage({ ranking, user, monthName })

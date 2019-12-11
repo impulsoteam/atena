@@ -1,14 +1,14 @@
 import moment from 'moment'
 
-const getDateFromMessage = async ({ msg }) => {
+const getDateFromMessage = ({ msg }) => {
   let year = moment().format('YYYY')
   let month = moment().format('M')
   const [, monthFromMessage, yearFromMessage] = msg.trim().split(' ')
 
-  if (await isValidMonth(monthFromMessage)) {
+  if (isValidMonth(monthFromMessage)) {
     month = monthFromMessage
   }
-  if (await isValidYear(yearFromMessage)) {
+  if (isValidYear(yearFromMessage)) {
     year = yearFromMessage
   }
   return {
@@ -30,15 +30,9 @@ const getDate = async ({ year, month }) => {
   }
 }
 
-const isValidMonth = async month => {
-  const isValid = /(^0?[1-9]$)|(^1[0-2]$)/
-  return isValid.test(month)
-}
+const isValidMonth = month => /(^0?[1-9]$)|(^1[0-2]$)/.test(month)
 
-const isValidYear = async year => {
-  const isValid = /^20((1[8-9])|([2-9][0-9]))$/
-  return isValid.test(year)
-}
+const isValidYear = year => /^20(1[8-9]|[2-9][0-9])$/.test(year)
 
 const getMonthName = number => {
   const names = [
