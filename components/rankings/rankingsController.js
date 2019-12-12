@@ -93,8 +93,8 @@ const commandGeneral = async message => {
   return await service.generateRankingMessage({ ranking, user })
 }
 
-const commandByMonth = async message => {
-  const { date, monthName } = await utils.getDateFromMessage(message)
+const commandByDate = async message => {
+  const { date, monthName } = utils.getDateFromMessage(message)
   const user = await users.findOne({ rocketId: message.u._id })
   const ranking = await interactions.findByDate({ date })
   return service.generateRankingMessage({ ranking, user, monthName })
@@ -166,7 +166,7 @@ export default {
   calculatePositionByUser,
   getMonthlyScoreByUser,
   commandGeneral,
-  commandByMonth,
+  commandByDate,
   getGeneralRanking,
   getMonthlyRanking,
   sendToChannel
