@@ -27,7 +27,7 @@ const getCommandsText = () => {
 const getCoreTeamCommandsText = () => {
   return [
     {
-      text: `Digite ${'`!darpontos`'} ${'`@nome-usuario`'} ${'`pontos`'} ${'`motivo`'} para dar pontos de reputação ao usuário. `
+      text: `Digite \`!darpontos\` \`@lista @usuários\` \`pontos\` \`motivo\` para dar pontos de reputação ao usuário. `
     },
     {
       text: `Digite ${'`!checkinfos`'} ${'`@nome-usuario`'} para checar dados relevantes do usuário. `
@@ -43,7 +43,7 @@ const getCommandsRegex = () => {
     myAchievements: /^!minhasconquistas$/g,
     isPro: /^!pro$/g,
     commands: /^!comandos$/g,
-    sendPoints: /^!darpontos/g,
+    sendPoints: /^!darpontos\s(([@][\w\d-]+\s?)+\s?)\s(\d{1,5})\s"([\w\d\s]+)"$/g,
     checkInfos: /^!checkinfos/g,
     openSource: /^!opensource$/g,
     openSourceAddRepository: /^!addrepositorio[ \d\w]*$/g,
