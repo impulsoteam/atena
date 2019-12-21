@@ -1,7 +1,8 @@
 import errors from '../errors'
+import User from '../users/user'
 import users from '../users'
 import ranking from '../rankings'
-import rankingUtils from '../rankings/rankingsUtils'
+import achievements from '../achievements'
 
 const file = 'Miner | Controller'
 
@@ -72,9 +73,20 @@ const getMostActiveUsers = async (begin, end) => {
   return response
 }
 
+const getUserInfos = async uuid => {
+  try {
+    const user = await User.findOne({ uuid }, { score: 1, level: 1 })
+    const rankings = await ranking.calculatePositionByUser(user._id)
+    const userAchievements = await achievements.findAllByUser(user._id)
+    return { user, rankings, userAchievements }
+  } catch (error) {
+    throw error
+  }
+}
 export default {
   getGeneralRanking,
   getMonthlyRanking,
+  getUserInfos,
   getAllUsers,
   getMostActiveUsers
 }

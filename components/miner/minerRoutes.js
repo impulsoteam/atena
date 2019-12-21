@@ -28,4 +28,14 @@ router.get('/mostactive', async (req, res) => {
   return res.json(result)
 })
 
+router.get('/user/infos/:uuid', async (req, res) => {
+  try {
+    const response = await miner.getUserInfos(req.params.uuid)
+    return res.json(response)
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ message: `Error while fetch data for ${req.params.uuid}` })
+  }
+})
 export default router
