@@ -103,9 +103,16 @@ const commandByDate = async message => {
 const getMonthlyPositionByUser = async userId => {
   const ranking = await interactions.findByDate({})
   const index = ranking.findIndex(user => user._id.toString() == userId)
+
+  if (index === -1)
+    return {
+      position: 0,
+      score: 0
+    }
+
   return {
-    position: index === -1 ? null : index + 1,
-    score: ranking[index].score || null
+    position: index + 1,
+    score: ranking[index].score
   }
 }
 const getMonthlyScoreByUser = async userId => {
@@ -147,8 +154,15 @@ const getGeneralPositionByUser = async userId => {
     { $sort: { score: -1 } }
   ])
   const index = ranking.findIndex(user => user._id.toString() == userId)
+
+  if (index === -1)
+    return {
+      position: 0,
+      score: 0
+    }
+
   return {
-    position: index === -1 ? null : index + 1,
+    position: index + 1,
     score: ranking[index].score
   }
 }
