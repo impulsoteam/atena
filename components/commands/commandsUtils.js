@@ -43,7 +43,7 @@ const getCommandsRegex = () => {
     myAchievements: /^!minhasconquistas$/g,
     isPro: /^!pro$/g,
     commands: /^!comandos$/g,
-    sendPoints: /^!darpontos\s(([@][\w\d-]+\s?)+\s?)\s(\d{1,5})\s"([\w\d\s]+)"$/g,
+    sendPoints: /^!darpontos\s(([@][\w\d-]+\s?)+\s?)\s(\d{1,5})\s"(.*?)"$/g,
     checkInfos: /^!checkinfos/g,
     openSource: /^!opensource$/g,
     openSourceAddRepository: /^!addrepositorio[ \d\w]*$/g,
