@@ -13,11 +13,11 @@ const sendToChannel = async () => {
   if (!roomname || !JSON.parse(isEnabled)) return
 
   const ranking = await interactions.findByDate({ limit: 5 })
+  const { monthName } = await utils.getDate({})
 
   if (ranking.error || ranking.length < 5) return
   let response = {
-    msg: `Saiba quem são as pessoas que mais me orgulham no Olimpo pela interação.
-Essas nobres pessoas têm se destacado em meu templo:`,
+    msg: `Saiba quem são as pessoas que mais me orgulham no Olimpo pela interação. Essas nobres pessoas têm se destacado em meu templo em ${monthName}:`,
     attachments: []
   }
 
