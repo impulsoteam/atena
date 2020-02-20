@@ -68,6 +68,12 @@ const runAPI = async () => {
 }
 
 const runBot = async (handleMessages, handleUserStatus) => {
+  console.log({
+    username: process.env.ROCKET_BOT_USER,
+    password: process.env.ROCKET_BOT_PASS,
+    host: process.env.ROCKET_HOST,
+    ssl: process.env.ROCKET_SSL
+  })
   await driver.connect({
     host: process.env.ROCKET_HOST,
     useSsl:
