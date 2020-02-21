@@ -48,7 +48,7 @@
     "@rocket.chat/sdk": "^0.2.9-2",
     "ajv": "6.5.3",
     "amqplib": "^0.5.3",
-    "amqplib-as-promised": "^3.15.1",
+    "amqplib-as-promised": "^4.0.0",
     "axios": "^0.18.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.0.1",
