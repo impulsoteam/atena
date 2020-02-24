@@ -54,20 +54,8 @@ const handleUser = async data => {
   }
 }
 
-const sendToQueue = user => {
-  const data = {
-    uuid: user.uuid,
-    current_plan: {
-      name: user.level > 2 ? 'Atena - Level' : 'Atena - Cargo',
-      begin_at: user.proBeginAt,
-      finish_at: user.proFinishAt
-    }
-  }
-
-  return workers.publish(data)
-}
-
 const sendUserLevelToQueue = user => {
+  if (!user.uuid) return
   const data = {
     type: 'level_change',
     uuid: user.uuid,
