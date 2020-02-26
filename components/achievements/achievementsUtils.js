@@ -27,7 +27,8 @@ const isValidAction = interaction => {
 const isValidReaction = interaction => {
   return (
     interaction.action !== config.actions.reaction.type ||
-    (isPositiveReaction(interaction) || isAtenaReaction(interaction))
+    isPositiveReaction(interaction) ||
+    isAtenaReaction(interaction)
   )
 }
 
