@@ -67,6 +67,5 @@ const sendUserLevelToQueue = user => {
 
 export default {
   handleUser,
-  sendToQueue,
   sendUserLevelToQueue
 }
