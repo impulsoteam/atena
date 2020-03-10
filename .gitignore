@@ -1,0 +1,10 @@
+node_modules/
+*.log
+.DS_Store
+coverage
+.git/
+.next/
+.vscode
+.env*
+build/
+dump.rdb
