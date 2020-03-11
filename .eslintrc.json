@@ -1,31 +1,25 @@
 {
-  "plugins": ["prettier"],
-  "extends": ["prettier"],
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "modules": true,
-      "experimentalObjectRestSpread": true
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "extends": [
+        "standard", "prettier"
+    ],
+    "plugins": ["prettier"],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "rules": {
+        "prettier/prettier": "error",
+        "class-methods-use-this": "off",
+        "no-param-reassign": "off",
+        "camelcase":"off",
+        "no-unused-vars":["error", {"argsIgnorePattern": "next"}]
     }
-  },
-  "env": {
-    "es6": true,
-    "node": true,
-    "browser": true,
-    "jest": true
-  },
-  "rules": {
-    "strict": 0,
-    "no-console": "off",
-    "indent": ["error", 2, {
-      "ImportDeclaration": "first",
-      "MemberExpression": 1,
-      "SwitchCase": 1
-    }],
-    "prettier/prettier": "error"
-  }
 }
-
-
