@@ -1,11 +1,11 @@
 export default {
   dailyLimit: 60,
-  flood: 1,
+  flood: 60,
   message: {
     send: 3
   },
   thread: {
-    send: 2,
+    send: 3,
     receive: 1
   }
 }

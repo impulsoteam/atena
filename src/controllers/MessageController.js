@@ -18,9 +18,18 @@ class MessageController {
         { 'provider.messageId': provider.messageId },
         { user: user.uuid, ...payload }
       )
-
-      ScoreController.handleMessage({ payload, message, user })
-      AchievementController.messageSended(user)
+      console.log(message)
+      if (message.__v === 1) {
+        const updatedUser = await ScoreController.handleMessage({
+          payload,
+          message,
+          user
+        })
+        await AchievementController.messageSended({
+          user: updatedUser,
+          message
+        })
+      }
     } catch (error) {
       LogController.sendNotify({
         type: 'error',
@@ -41,7 +50,7 @@ class MessageController {
       )
 
       LogController.sendNotify({
-        file: 'controllers/MessageController.handle',
+        file: 'controllers/MessageController.saveUnownedMessage',
         resume: `Unable to find user.`,
         details: {
           content,

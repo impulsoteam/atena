@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "dev:debug": "nodemon --inspect src/server.js"
+    "dev:debug": "nodemon --inspect src/server.js",
+    "test": "jest"
   },
   "dependencies": {
     "@rocket.chat/sdk": "^0.2.9-2",
@@ -16,17 +17,25 @@
     "slack-notify": "^0.1.7"
   },
   "devDependencies": {
+    "@sucrase/jest-plugin": "^2.0.0",
+    "@types/jest": "^25.1.4",
     "@types/mongoose": "^5.7.3",
+    "babel-jest": "^25.1.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
+    "factory-girl": "^5.0.4",
+    "faker": "^4.1.0",
+    "jest": "^25.1.0",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
-    "sucrase": "^3.12.1"
+    "sucrase": "^3.12.1",
+    "supertest": "^4.0.2"
   }
 }

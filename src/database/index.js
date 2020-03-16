@@ -27,5 +27,6 @@ class Database {
     })
   }
 }
-
+const ac = new Database()
+console.log(new Database())
 export default new Database()

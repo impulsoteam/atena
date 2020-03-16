@@ -1,21 +1,22 @@
 // import Message from '../models/Message'
 // import User from '../models/User'
-import LogController from '../controllers/LogController'
+import LogController from './LogController'
+import ScoreController from './ScoreController'
 import moment from 'moment'
 import User from '../models/User'
 import { messageSended } from '../config/achievements'
 
 class AchievementController {
-  async messageSended(user) {
+  async messageSended({ user, message }) {
     try {
       const medals = messageSended()
       const [currentAchievement] = user.achievements.filter(
         ({ name }) => name === 'messageSended'
       )
-
       if (!currentAchievement)
         return this.createAchievement({
           user,
+          message,
           newAchievement: medals[0],
           nextAchievement: medals[1]
         })
@@ -28,6 +29,7 @@ class AchievementController {
         })
         return this.updateAchievement({
           user,
+          message,
           nextAchievement,
           newAchievement
         })
@@ -35,6 +37,7 @@ class AchievementController {
       const othersAchievements = user.achievements.filter(
         ({ name }) => name !== 'messageSended'
       )
+
       await User.updateOne({
         uuid: user.uuid,
         achievements: [...othersAchievements, currentAchievement]
@@ -72,8 +75,8 @@ class AchievementController {
     return { newAchievement, nextAchievement }
   }
 
-  async createAchievement({ user, newAchievement, nextAchievement }) {
-    const { name, medal, target, range, score } = newAchievement
+  async createAchievement({ user, message, newAchievement, nextAchievement }) {
+    const { name, medal, range, score } = newAchievement
     const achievement = {
       name,
       medal,
@@ -82,15 +85,22 @@ class AchievementController {
       nextTarget: nextAchievement.target,
       earnedIn: moment().toDate()
     }
-    await User.updateOne(
+
+    const updatedUser = await User.findOneAndUpdate(
       { uuid: user.uuid },
       { achievements: [...user.achievements, achievement] }
     )
-    // todo create score
+
+    ScoreController.handleAchievement({
+      achievement,
+      user: updatedUser,
+      message,
+      score
+    })
   }
 
-  async updateAchievement({ user, newAchievement, nextAchievement }) {
-    const { name, medal, target, range, score } = newAchievement
+  async updateAchievement({ user, message, newAchievement, nextAchievement }) {
+    const { name, medal, range, score } = newAchievement
     const achievement = {
       name,
       medal,
@@ -102,12 +112,16 @@ class AchievementController {
     const othersAchievements = user.achievements.filter(
       ({ name }) => name !== 'messageSended'
     )
-    await User.updateOne(
+    const updatedUser = await User.findOneAndUpdate(
       { uuid: user.uuid },
       { achievements: [...othersAchievements, achievement] }
     )
-
-    // todo create score
+    ScoreController.handleAchievement({
+      achievement,
+      user: updatedUser,
+      message,
+      score
+    })
   }
 }
 

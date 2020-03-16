@@ -1,10 +1,10 @@
 import express from 'express'
 
 import routes from '../src/routes'
-import './database'
+import a from './database'
 import { connect as driverRocketchat } from './services/rocketchat/driver'
 import { connect as apiRocketchat } from './services/rocketchat/api'
-
+console.log(a)
 class App {
   constructor() {
     this.server = express()

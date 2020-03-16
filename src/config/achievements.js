@@ -36,6 +36,30 @@ export const messageSended = () => {
   return formatAchievement({ name: 'messageSended', medals })
 }
 
+export const levelsList = () => {
+  const badges = [
+    'levelOne',
+    'levelTwo',
+    'levelThree',
+    'levelFour',
+    'levelFive',
+    'levelSix',
+    'levelSeven',
+    'levelEight',
+    'levelNine',
+    'levelTen'
+  ]
+  // const scores = [50, 100, 150, 250, 400, 650, 1050, 1700, 2780, null]
+  const scores = [8, 16, 24, 32, 40, 48, 56, 64, 72, null]
+
+  return badges.map((badge, index) => ({
+    name: 'userLevel',
+    badge,
+    level: index + 1,
+    scoreToNextLevel: scores[index]
+  }))
+}
+
 export const types = {
   messageSended: 'MESSAGE_SENDED'
 }
