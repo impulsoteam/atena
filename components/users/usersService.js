@@ -52,15 +52,12 @@ const getProFinishDate = data => {
 
 const updatePro = async user => {
   const canBePro = user.level > 2 || (await hasProRole(user))
-  const wasPro = user.pro
 
   if (canBePro) {
     user = await setProPlan(user)
   } else {
     user = await removeProPlan(user)
   }
-
-  if (canBePro !== wasPro) next.sendToQueue(user)
 
   return user
 }
