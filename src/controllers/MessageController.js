@@ -13,12 +13,18 @@ class MessageController {
       })
 
       if (!user) return this.saveUnownedMessage(payload)
-
+      console.log(payload)
       const message = await Message.findOneAndUpdate(
         { 'provider.messageId': provider.messageId },
-        { user: user.uuid, ...payload }
+        { user: user.uuid, ...payload },
+        {
+          runValidators: true,
+          upsert: true,
+          setDefaultsOnInsert: true,
+          new: true
+        }
       )
-      console.log(message)
+      console.log('-=-=-=-=-=-=-=-', message)
       if (message.__v === 1) {
         const updatedUser = await ScoreController.handleMessage({
           payload,

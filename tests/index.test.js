@@ -4,13 +4,12 @@ import Message, { providers } from '../src/models/Message'
 import Reaction from '../src/models/Reaction'
 import Score from '../src/models/Score'
 import User from '../src/models/User'
-import { connect } from './utils'
 
+import './utils'
 import MessageController from '../src/controllers/MessageController'
 
 let connection, user
 beforeAll(async () => {
-  connection = await connect('atenaTest')
   await Message.deleteMany({})
   await Reaction.deleteMany({})
   await Score.deleteMany({})
@@ -18,9 +17,7 @@ beforeAll(async () => {
   user = await factory.create('User')
 })
 
-afterAll(async () => {
-  await connection.disconnect()
-})
+afterAll(async () => {})
 
 describe('new message', () => {
   it('should save message and update score', async () => {

@@ -8,17 +8,17 @@ class Database {
     this.init()
   }
 
-  init() {
+  async init() {
     mongoose.plugin(schema => {
-      schema.pre('findOneAndUpdate', this.setOptions)
-      schema.pre('updateMany', this.setOptions)
-      schema.pre('updateOne', this.setOptions)
-      schema.pre('update', this.setOptions)
+      schema.pre('findOneAndUpdate', this.setDefaults)
+      schema.pre('updateMany', this.setDefaults)
+      schema.pre('updateOne', this.setDefaults)
+      schema.pre('update', this.setDefaults)
     })
     mongoose.connect(MONGODB_URI, mongoConfig)
   }
 
-  setOptions() {
+  setDefaults() {
     this.setOptions({
       runValidators: true,
       upsert: true,
@@ -27,6 +27,5 @@ class Database {
     })
   }
 }
-const ac = new Database()
-console.log(new Database())
+
 export default new Database()
