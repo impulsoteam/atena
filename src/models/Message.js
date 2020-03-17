@@ -82,4 +82,13 @@ messageSchema.pre('findOneAndUpdate', function() {
   update.$inc.__v = 1
 })
 
+messageSchema.statics.createOrUpdate = async function(query, payload) {
+  return this.findOneAndUpdate(query, payload, {
+    runValidators: true,
+    upsert: true,
+    setDefaultsOnInsert: true,
+    new: true
+  })
+}
+
 export default mongoose.model('Message', messageSchema)

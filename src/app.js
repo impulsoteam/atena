@@ -1,9 +1,9 @@
 import express from 'express'
 import routes from '../src/routes'
-import './database/Mongo'
+import Mongo from './database/Mongo'
 import { connect as driverRocketchat } from './services/rocketchat/driver'
 import { connect as apiRocketchat } from './services/rocketchat/api'
-
+const { MONGODB_URI } = process.env
 class App {
   constructor() {
     this.server = express()
@@ -23,6 +23,7 @@ class App {
   async services() {
     driverRocketchat()
     apiRocketchat()
+    Mongo.init(MONGODB_URI)
   }
 }
 

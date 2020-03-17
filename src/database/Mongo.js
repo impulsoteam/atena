@@ -1,30 +1,24 @@
 import mongoose from 'mongoose'
 import mongoConfig from '../config/mongodb'
 
-const { MONGODB_URI } = process.env
-
 class Database {
-  constructor() {
-    this.init()
-  }
-
-  async init() {
+  async init(mongoUri) {
     mongoose.plugin(schema => {
       schema.pre('findOneAndUpdate', this.setDefaults)
       schema.pre('updateMany', this.setDefaults)
       schema.pre('updateOne', this.setDefaults)
       schema.pre('update', this.setDefaults)
     })
-    mongoose.connect(MONGODB_URI, mongoConfig)
+    mongoose.connect(mongoUri, mongoConfig)
   }
 
   setDefaults() {
-    this.setOptions({
+    return {
       runValidators: true,
       upsert: true,
       setDefaultsOnInsert: true,
       new: true
-    })
+    }
   }
 }
 
