@@ -13,11 +13,11 @@ const sendToChannel = async () => {
   if (!roomname || !JSON.parse(isEnabled)) return
 
   const ranking = await interactions.findByDate({ limit: 5 })
+  const { monthName } = await utils.getDate({})
 
   if (ranking.error || ranking.length < 5) return
   let response = {
-    msg: `Saiba quem são as pessoas que mais me orgulham no Olimpo pela interação.
-Essas nobres pessoas têm se destacado em meu templo:`,
+    msg: `Saiba quem são as pessoas que mais me orgulham no Olimpo pela interação. Essas nobres pessoas têm se destacado em meu templo em ${monthName}:`,
     attachments: []
   }
 
@@ -93,8 +93,8 @@ const commandGeneral = async message => {
   return await service.generateRankingMessage({ ranking, user })
 }
 
-const commandByMonth = async message => {
-  const { date, monthName } = await utils.getDateFromMessage(message)
+const commandByDate = async message => {
+  const { date, monthName } = utils.getDateFromMessage(message)
   const user = await users.findOne({ rocketId: message.u._id })
   const ranking = await interactions.findByDate({ date })
   return service.generateRankingMessage({ ranking, user, monthName })
@@ -103,9 +103,16 @@ const commandByMonth = async message => {
 const getMonthlyPositionByUser = async userId => {
   const ranking = await interactions.findByDate({})
   const index = ranking.findIndex(user => user._id.toString() == userId)
+
+  if (index === -1)
+    return {
+      position: 0,
+      score: 0
+    }
+
   return {
-    position: index === -1 ? null : index + 1,
-    score: ranking[index].score || null
+    position: index + 1,
+    score: ranking[index].score
   }
 }
 const getMonthlyScoreByUser = async userId => {
@@ -147,8 +154,15 @@ const getGeneralPositionByUser = async userId => {
     { $sort: { score: -1 } }
   ])
   const index = ranking.findIndex(user => user._id.toString() == userId)
+
+  if (index === -1)
+    return {
+      position: 0,
+      score: 0
+    }
+
   return {
-    position: index === -1 ? null : index + 1,
+    position: index + 1,
     score: ranking[index].score
   }
 }
@@ -166,7 +180,7 @@ export default {
   calculatePositionByUser,
   getMonthlyScoreByUser,
   commandGeneral,
-  commandByMonth,
+  commandByDate,
   getGeneralRanking,
   getMonthlyRanking,
   sendToChannel

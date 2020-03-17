@@ -99,24 +99,25 @@ export const generateStorytelling = (level, username) => {
 
     Atena surge, podes perceber que a quantidade de frames do vídeo melhorou consideravelmente, ela agora parece quase viva. Mas ainda parece um filme quadro-a-quadro. Eis que sai uma voz da tua máquina, com uma qualidade equivalente a um mp3 dos anos 2000, mas ao menos agora consegues identificá-la como uma voz feminina.
 
-    “Tenho uma boa nova para ti! Hoje chegaste a um hall exclusivo, onde pouquíssimas pessoas chegaram! Por tudo que realizaste até hoje, a ti será conferido o título de *Master* e, com ele, todas a honras e responsabilidades...”
+    “Tenho uma boa nova para ti! Hoje chegaste a um hall exclusivo, onde pouquíssimas pessoas chegaram! Por tudo que realizaste até hoje, a ti será conferido o título de Master e, com ele, todas a honras e responsabilidades...”
 
     A voz de Atena começa a falhar e o texto começa a surgir novamente na tua tela. Atena parece um tanto transtornada pela voz ter falhado.
 
-    “Hrmf… É uma pena… continuemos por este método! … honras e responsabilidades! Como outrora, providenciarei que a notícia seja espalhada pelos quatro cantos da terra! A partir de já, tua vantagem em relação ao *Critério de Desempate em oportunidades da impulso passa a categoria Prata* - isso te dará uma vantagem ainda maior quando chegar o momento oportuno! E agora, tua missão...”
+    “Hrmf… É uma pena… continuemos por este método! … honras e responsabilidades! Como outrora, providenciarei que a notícia seja espalhada pelos quatro cantos da terra! A partir de já, tua vantagem em relação ao Critério de Desempate em oportunidades da impulso passa a categoria Prata - isso te dará uma vantagem ainda maior quando chegar o momento oportuno! E ao nosso Clube de Benefícios Ouro, que te garantirão acesso a uma infinidade de novos benefícios! E agora, tua missão...”
 
     Atena, então, assume uma expressão séria e te encara - tudo ainda com aspecto de slideshow.
 
     “Se as missões do grau Fellow eram difíceis, agora estime as de nível Master! Muahahaha! Sem mais delongas, para esta missão…”
 
-    “... terás que… relaxar! hahaha! Fizeste muito até então e mereces, enfim, um bom descanso! Para isso, te pedirei que estejas em *pelo menos dois canais não técnicos do nosso chat*! Já deves ter visto algo deste tipo. Alguns tratam de investimentos, outros de jogos, filmes e etc, os temas são diversos, apenas escolhe o que mais te agradar e vai!”
+    “... terás que… relaxar! hahaha! Fizeste muito até então e mereces, enfim, um bom descanso! Para isso, te pedirei que estejas em pelo menos dois canais não técnicos do nosso chat! Já deves ter visto algo deste tipo. Alguns tratam de investimentos, outros de jogos, filmes e etc, os temas são diversos, apenas escolhe o que mais te agradar e vai!”
 
     “Aproveita bem o teu descanso, mas não vacila. Ainda precisarás obter a reputação necessária para avançar! A boa notícia é que a participação nos canais não técnicos também conta! Bom descanso e até a próxima!”
 
     Tua tela esmaece mais uma vez e Atena desaparece enquanto sorri para você.
 
-    - Acabaste de alcançar o *Nível 7* e o Título de *Master* 🏵️🏵️🏵️;
-    - e *Obtiveste as Recompensas*: Critério de Desempate Prata;`,
+    - Acabaste de alcançar o Nível 7 e o Título de Master 🏵️🏵️🏵️;
+
+    - e Obtiveste as Recompensas: Critério de Desempate Prata e Acesso ao Clube de Benefícios Ouro;`,
 
     levelEight: `Eis que se inicia uma música suave na tua speaker, mas você tem certeza que não deu play em qualquer som. Segundos após, a tua imagem esmaece, novamente, e surge Atena.
 

@@ -6,10 +6,10 @@ Por favor, note que temos um código de conduta, por favor, siga-o em todas as s
 
 ## Processo de Pull Request
 
-1.  Assegure-se de que quaisquer dependências de instalação ou build sejam removidas antes de submeter para review.
-2.  Atualize o [README] (README.md) com detalhes de alterações na interface, isso inclui novas variáveis ​​de ambiente, portas expostas, locais de arquivos úteis e parâmetros do contêiner.
-3.  Aumentar os números de versão em qualquer arquivo de exemplo e o [README] (README.md) para a nova versão que esta solicitação de extração representaria. O esquema de versionamento que usamos é [SemVer] (http://semver.org/).
-4.  Você pode mesclar pull request uma vez que você tenha o review de dois outros desenvolvedores/revisores, ou se você não tiver permissão para fazer isso, você pode solicitar o segundo revisor para mesclar para você.
+1. Assegure-se de que quaisquer dependências de instalação ou build sejam removidas antes de submeter para review.
+2. Atualize o [README](README.md) com detalhes de alterações na interface, isso inclui novas variáveis ​​de ambiente, portas expostas, locais de arquivos úteis e parâmetros do contêiner.
+3. Aumentar os números de versão em qualquer arquivo de exemplo e o [README](README.md) para a nova versão que esta solicitação de extração representaria. O esquema de versionamento que usamos é [SemVer](http://semver.org/)
+4. Você pode mesclar pull request uma vez que você tenha o review de dois outros desenvolvedores/revisores, ou se você não tiver permissão para fazer isso, você pode solicitar o segundo revisor para mesclar para você.
 
 ## Código de conduta
 
@@ -23,19 +23,19 @@ Exemplos de comportamento que contribuem para criar um ambiente positivo
 
 incluir:
 
-*   Uso de linguagem acolhedora e inclusiva
-*   Ser respeitoso com diferentes pontos de vista e experiências
-*   Graciosamente aceitando críticas construtivas
-*   Focando no que é melhor para a comunidade
-*   Mostrando empatia para com outros membros da comunidade
+* Uso de linguagem acolhedora e inclusiva
+* Ser respeitoso com diferentes pontos de vista e experiências
+* Graciosamente aceitando críticas construtivas
+* Focando no que é melhor para a comunidade
+* Mostrando empatia para com outros membros da comunidade
 
 Exemplos de comportamento inaceitável pelos participantes:
 
-*   O uso de linguagem ou imagens de cunho sexual
-*   Trolagem, insultos, comentários depreciativos e ataques pessoais ou políticos 
-*   Assédio público ou privado
-*   Publicação de informações privadas de outras pessoas, como endereço físico ou eletrônico, sem permissão explícita
-*   Outra conduta que poderia razoavelmente ser considerada inadequada em um ambiente profissional
+* O uso de linguagem ou imagens de cunho sexual
+* Trolagem, insultos, comentários depreciativos e ataques pessoais ou políticos
+* Assédio público ou privado
+* Publicação de informações privadas de outras pessoas, como endereço físico ou eletrônico, sem permissão explícita
+* Outra conduta que poderia razoavelmente ser considerada inadequada em um ambiente profissional
 
 ### Nossas Responsabilidades
 

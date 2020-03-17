@@ -495,23 +495,19 @@ level:
       II: 10
     xp: 11
 profile:
-  linkedin_linked:
-    status: '20%'
-    medal: 'Bronze'
-    reputation: 5
-  location_and_phone_filled:
-    status: '40%'
+  recently_signedin:
+    status: '25%'
     medal: 'Prata'
-    reputation: 10
-  area_selected:
-    status: '60%'
+    reputation: 5
+  stacks_filled:
+    status: '50%'
     medal: 'Ouro'
     reputation: 10
-  area_details:
-    status: '80%'
+  seniority_filled:
+    status: '75%'
     medal: 'Platina'
     reputation: 15
   completed:
     status: '100%'
     medal: 'Diamante'
-    reputation: 20
+    reputation: 60

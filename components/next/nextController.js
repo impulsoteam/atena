@@ -8,6 +8,11 @@ import achievements from '../achievements'
 const file = 'Next | Controller'
 
 const handleUser = async data => {
+  if (data.status === 'archived') {
+    return users.removeUserByUuid(data.uuid).catch(error => {
+      errors._throw(file, 'handleUser', error)
+    })
+  }
   try {
     let isNew = false
     let user = await service.findOrCreateUser(data)
@@ -21,6 +26,7 @@ const handleUser = async data => {
     user.username = data.rocket_chat.username
     user.avatar = data.photo_url
     user.uuid = data.uuid
+    user.stacks = data.stacks
     user.pro = users.receiveProPlan(data)
     user.proBeginAt = users.getProBeginDate(data)
     user.proFinishAt = users.getProFinishDate(data)
@@ -48,20 +54,8 @@ const handleUser = async data => {
   }
 }
 
-const sendToQueue = user => {
-  const data = {
-    uuid: user.uuid,
-    current_plan: {
-      name: user.level > 2 ? 'Atena - Level' : 'Atena - Cargo',
-      begin_at: user.proBeginAt,
-      finish_at: user.proFinishAt
-    }
-  }
-
-  return workers.publish(data)
-}
-
 const sendUserLevelToQueue = user => {
+  if (!user.uuid) return
   const data = {
     type: 'level_change',
     uuid: user.uuid,
@@ -73,6 +67,5 @@ const sendUserLevelToQueue = user => {
 
 export default {
   handleUser,
-  sendToQueue,
   sendUserLevelToQueue
 }

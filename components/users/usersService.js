@@ -8,11 +8,11 @@ import users from '../users'
 import usersLevelsHistory from '../usersLevelsHistory'
 import achievementsLevel from '../achievementsLevel'
 import achievements from '../achievements'
+import commandUtils from '../commands/commandsUtils'
 import messages from '../messages'
 import errors from '../errors'
 import interactions from '../interactions'
 import rankings from '../rankings'
-import usersUtils from './usersUtils'
 
 const file = 'Users | Controller'
 
@@ -52,15 +52,12 @@ const getProFinishDate = data => {
 
 const updatePro = async user => {
   const canBePro = user.level > 2 || (await hasProRole(user))
-  const wasPro = user.pro
 
   if (canBePro) {
     user = await setProPlan(user)
   } else {
     user = await removeProPlan(user)
   }
-
-  if (canBePro !== wasPro) next.sendToQueue(user)
 
   return user
 }
@@ -117,6 +114,7 @@ const updateScore = async (user, score) => {
 
 const onChangeLevel = async user => {
   if (user.level !== user.previousLevel) {
+    rocket.updateLevelRole(user)
     saveOnNewLevel(user)
     next.sendUserLevelToQueue(user)
   }
@@ -144,11 +142,15 @@ const sendPoints = async data => {
       }
     }
 
-    const sendedUser = await utils.getSendedPointsUser(msg)
-    const points = await utils.getSendedPointsValue(msg)
-    const reason = await utils.getSendedPointsReason(msg)
+    const regex = commandUtils.getCommandsRegex()
+    const [, userList, , points, reason] = regex.sendPoints.exec(msg)
 
-    if (!sendedUser || !points || !reason) {
+    const usernames = userList
+      .trim()
+      .split(' ')
+      .map(username => username.substr(1))
+
+    if (!usernames || !points || !reason) {
       return {
         msg: `Ops! Tem algo *errado* no seu comando. Tente desta forma:
 				${'`!darpontos`'} ${'`@nome-usuario`'} ${'`pontos`'} ${'`"motivo"`'}
@@ -156,34 +158,44 @@ const sendPoints = async data => {
       }
     }
 
-    if (sendedUser === u.username) {
-      return {
-        msg: `Ops! *Não podes* dar pontos para ti mesmo.`
-      }
+    const response = {
+      msg: 'Eis o resultado do seu comando: ',
+      attachments: []
     }
-
-    const user = await users.findOne({ username: sendedUser })
-    if (!user) {
-      return {
-        msg: `Ops! Usuário *${sendedUser}* não encontrado.`
-      }
-    }
-
-    const updatedScore = await users.updateScore(user, points)
-    let response = {
-      msg: 'Opa, aconteceu algo inesperado. Tua pontuação não foi enviada!'
-    }
-
-    if (updatedScore) {
-      const message = {
-        msg: `Acabaste de receber *${points} pontos* de reputação por *${reason}*.`
+    for (const username of usernames) {
+      if (username === u.username) {
+        response.attachments.push({
+          text: `Ops! *Não podes* dar pontos para ti mesmo.`
+        })
+        continue
       }
 
-      messages.sendToUser(message, user.username)
-
-      response = {
-        msg: `Sucesso! Enviaste *${points} pontos* de reputação para *${user.name}*!`
+      const user = await users.findOne({ username })
+      if (!user) {
+        response.attachments.push({
+          text: `Ops! Usuário *${username}* não encontrado.`
+        })
+        continue
       }
+
+      const updatedScore = await users.updateScore(user, points)
+      if (!updatedScore) {
+        response.attachments.push({
+          text: `Opa, aconteceu algo inesperado. A pontuação de ${username} não foi enviada!`
+        })
+        continue
+      }
+
+      messages.sendToUser(
+        {
+          msg: `Acabaste de receber *${points} pontos* de reputação por *${reason}*.`
+        },
+        user.username
+      )
+
+      response.attachments.push({
+        text: `Sucesso! Enviaste *${points} pontos* de reputação para *${user.name}*!`
+      })
 
       await interactions.saveManual({
         score: points,

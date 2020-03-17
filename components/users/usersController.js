@@ -1,4 +1,5 @@
 import moment from 'moment-timezone'
+import mongoose from 'mongoose'
 import utils from './usersUtils'
 import dal from './usersDAL'
 import service from './usersService'
@@ -8,6 +9,7 @@ import errors from '../errors'
 import interactions from '../interactions'
 
 const file = 'Users | Controller'
+const UserModel = mongoose.model('User')
 
 const save = user => {
   return dal.save(user)
@@ -235,10 +237,20 @@ const getUserProfileByUuid = async uuid => {
   return service.getUserProfileByUuid(uuid)
 }
 
+const removeUserByUuid = async uuid => {
+  try {
+    const user = await UserModel.findOne({ uuid })
+    return user.remove()
+  } catch (error) {
+    errors._throw(file, 'removeUserByUuid', error)
+  }
+}
+
 export default {
   save,
   create,
   find,
+  removeUserByUuid,
   findAll,
   findOne,
   findOneAndUpdate,

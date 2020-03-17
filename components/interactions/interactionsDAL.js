@@ -1,5 +1,5 @@
+import moment from 'moment'
 import model from './interaction'
-import { _today } from '../../helpers'
 
 const save = interaction => {
   return model(interaction).save()
@@ -26,7 +26,9 @@ const findAllFromToday = userId => {
     .find({
       user: userId,
       date: {
-        $gte: _today.start
+        $gte: moment()
+          .startOf('day')
+          .toDate()
       }
     })
     .exec()
