@@ -60,7 +60,7 @@
     "config-yml": "^0.10.2",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
-    "dotenv": "^6.0.0",
+    "dotenv": "^8.2.0",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "filereader": "^0.10.3",
