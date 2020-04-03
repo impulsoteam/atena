@@ -13,7 +13,7 @@ class MessageController {
       })
 
       if (!user) return this.saveUnownedMessage(payload)
-      console.log(payload)
+
       const message = await Message.createOrUpdate(
         {
           'provider.messageId': provider.messageId

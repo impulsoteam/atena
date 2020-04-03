@@ -37,7 +37,7 @@ class LevelController {
       }
 
     currentStatus.score += scoreGained
-    console.log(currentStatus.score, currentStatus.scoreToNextLevel)
+
     if (currentStatus.score >= currentStatus.scoreToNextLevel) {
       for (const { level, scoreToNextLevel } of levels) {
         if (level > currentStatus.level) {

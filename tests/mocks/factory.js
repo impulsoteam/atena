@@ -91,6 +91,10 @@ factory.define('messagePayload', 'messagePayload', () => ({
   reactions: [],
   createdAt: faker.date.past(2),
   updatedAt: moment().toDate(),
+  previousMessage: {
+    user: faker.internet.password(),
+    createdAt: faker.date.past(2)
+  },
   provider: {
     name: faker.random.arrayElement(Object.values(providers)),
     messageId: faker.internet.password(),

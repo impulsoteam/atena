@@ -7,7 +7,7 @@ export const connect = async () => {
   try {
     await driver.connect()
 
-    await driver.login()
+    const botId = await driver.login()
 
     await driver.subscribeToMessages()
     driver.reactToMessages((error, message, messageOptions) => {
@@ -18,6 +18,9 @@ export const connect = async () => {
           resume: 'Received error instead of message',
           details: error
         })
+
+      if (message.u._id === botId) return
+
       handlePayload({ message, messageOptions })
     })
 
