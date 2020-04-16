@@ -5,6 +5,7 @@ import ScoreController from './ScoreController'
 import moment from 'moment'
 import User from '../models/User'
 import { messageSended } from '../config/achievements'
+import BotController from './BotController'
 
 class AchievementController {
   async messageSended({ user, message }) {
@@ -38,7 +39,7 @@ class AchievementController {
         ({ name }) => name !== 'messageSended'
       )
 
-      await User.updateOne({
+      await User.updateAchievements({
         uuid: user.uuid,
         achievements: [...othersAchievements, currentAchievement]
       })
@@ -76,27 +77,42 @@ class AchievementController {
   }
 
   async createAchievement({ user, message, newAchievement, nextAchievement }) {
-    const { name, medal, range, score } = newAchievement
-    const achievement = {
-      name,
-      medal,
-      range,
-      currentValue: 1,
-      nextTarget: nextAchievement.target,
-      earnedIn: moment().toDate()
+    try {
+      const { name, medal, range, score } = newAchievement
+      const achievement = {
+        name,
+        medal,
+        range,
+        currentValue: 1,
+        nextTarget: nextAchievement.target,
+        earnedIn: moment().toDate()
+      }
+
+      const updatedUser = await User.updateAchievements({
+        uuid: user.uuid,
+        achievements: [...user.achievements, achievement]
+      })
+
+      const payload = this.generateMessage(newAchievement)
+      BotController.sendMessageToUser({
+        provider: message.provider.name,
+        message: payload,
+        username: user[message.provider.name].username
+      })
+      ScoreController.handleAchievement({
+        achievement,
+        user: updatedUser,
+        provider: message.provider,
+        score
+      })
+    } catch (error) {
+      LogController.sendNotify({
+        type: 'error',
+        file: 'controllers/AchievementController',
+        resume: 'Unexpected error in method createAchievement',
+        details: error
+      })
     }
-
-    const updatedUser = await User.findOneAndUpdate(
-      { uuid: user.uuid },
-      { achievements: [...user.achievements, achievement] }
-    )
-
-    ScoreController.handleAchievement({
-      achievement,
-      user: updatedUser,
-      message,
-      score
-    })
   }
 
   async updateAchievement({ user, message, newAchievement, nextAchievement }) {
@@ -112,16 +128,26 @@ class AchievementController {
     const othersAchievements = user.achievements.filter(
       ({ name }) => name !== 'messageSended'
     )
-    const updatedUser = await User.findOneAndUpdate(
-      { uuid: user.uuid },
-      { achievements: [...othersAchievements, achievement] }
-    )
+    const updatedUser = await User.updateAchievements({
+      uuid: user.uuid,
+      achievements: [...othersAchievements, achievement]
+    })
+    const payload = this.generateMessage(newAchievement)
+    BotController.sendMessageToUser({
+      provider: message.provider.name,
+      message: payload,
+      username: user[message.provider.name].username
+    })
     ScoreController.handleAchievement({
       achievement,
       user: updatedUser,
-      message,
+      provider: message.provider,
       score
     })
+  }
+
+  generateMessage({ translatedName, range, translatedMedal }) {
+    return `🏅 Você obteve a conquista [${translatedMedal} ${range} | ${translatedName}]!`
   }
 }
 

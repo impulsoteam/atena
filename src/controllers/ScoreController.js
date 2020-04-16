@@ -1,9 +1,11 @@
 import LogController from './LogController'
 import moment from 'moment'
 import Score, { scoreTypes } from '../models/Score'
-import scoreRules from '../config/score'
-import LevelController from './LevelController'
+import { scoreRules, levelsList } from '../config/score'
 
+import User from '../models/User'
+import BotController from './BotController'
+import { generateStorytelling } from '../assets/storytelling'
 class ScoreController {
   async handleMessage({ payload, message, user }) {
     try {
@@ -13,14 +15,14 @@ class ScoreController {
         ? scoreTypes.threadAnswered
         : scoreTypes.messageSent
 
-      const score =
+      const scoreEarned =
         description === scoreTypes.messageSent
           ? scoreRules.message.send
           : scoreRules.thread.send
 
       await Score.create({
         user: user.uuid,
-        score,
+        score: scoreEarned,
         description,
         details: {
           provider: message.provider.name,
@@ -28,7 +30,24 @@ class ScoreController {
           room: message.provider.room
         }
       })
-      return await LevelController.update({ score, user })
+
+      const { level, score } = this.getValues({ user, scoreEarned })
+
+      if (user.level.value < level.value) {
+        const { provider } = message
+        const username = user[provider.name].username
+
+        BotController.sendMessageToUser({
+          provider: message.provider.name,
+          message: generateStorytelling({
+            username,
+            level: level.value
+          }),
+          username
+        })
+      }
+
+      return await User.updateScore({ uuid: user.uuid, score, level })
     } catch (error) {
       LogController.sendNotify({
         type: 'error',
@@ -39,20 +58,52 @@ class ScoreController {
     }
   }
 
-  async handleAchievement({ achievement, user, message, score }) {
+  getValues({ user, scoreEarned }) {
+    const levels = levelsList()
+    const score = {
+      value: user.score.value + scoreEarned,
+      lastUpdate: moment()
+    }
+
+    const [updatedLevel] = levels.filter(
+      ({ range }) => range[0] <= score.value && range[1] >= score.value
+    )
+    const level =
+      updatedLevel.level !== user.level.value
+        ? {
+            value: updatedLevel.level,
+            scoreToNextLevel: updatedLevel.scoreToNextLevel,
+            lastUpdate: moment()
+          }
+        : user.level
+    return { level, score }
+  }
+
+  async handleAchievement({ achievement, user, provider, score: scoreEarned }) {
     try {
       await Score.create({
         user: user.uuid,
-        score,
+        score: scoreEarned,
         description: scoreTypes.newAchievement,
         details: {
-          provider: message.provider.name,
+          provider: provider.name,
           achievement: achievement.name,
           medal: achievement.medal,
           range: achievement.range
         }
       })
-      await LevelController.update({ score, user })
+      const { level, score } = this.getValues({ user, scoreEarned })
+
+      if (user.level.value < level.value) {
+        const username = user[provider.name].username
+        const message = generateStorytelling({
+          username,
+          level: level.value
+        })
+        BotController.sendMessageToUser({ provider, message, username })
+      }
+
+      return await User.updateScore({ uuid: user.uuid, score, level })
     } catch (error) {
       LogController.sendNotify({
         type: 'error',

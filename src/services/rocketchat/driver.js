@@ -44,3 +44,33 @@ export const connect = async () => {
     })
   }
 }
+
+export const sendMessage = ({ room, username, message }) => {
+  username && sendMessageToUser({ user: username, message })
+  room && sendMessageToRoom({ room, message })
+}
+
+const sendMessageToUser = async ({ message, user }) => {
+  try {
+    await driver.sendDirectToUser(message, user)
+  } catch (error) {
+    LogController.sendNotify({
+      type: 'error',
+      file: 'services/rocketchat.connect',
+      resume: 'Error while connecting',
+      details: error
+    })
+  }
+}
+const sendMessageToRoom = async (message, room) => {
+  try {
+    return await driver.sendToRoom(message, room)
+  } catch (error) {
+    LogController.sendNotify({
+      type: 'error',
+      file: 'services/rocketchat.connect',
+      resume: 'Error while connecting',
+      details: error
+    })
+  }
+}

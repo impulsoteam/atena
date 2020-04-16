@@ -17,10 +17,24 @@ const userSchema = new mongoose.Schema(
     },
     isCoreTeam: {
       type: Boolean,
-      required: true,
       default: false
     },
     achievements: Array,
+    score: {
+      value: {
+        type: Number,
+        default: 0
+      },
+      lastUpdate: Date
+    },
+    level: {
+      value: {
+        type: Number,
+        default: 0
+      },
+      scoreToNextLevel: Number,
+      lastUpdate: Date
+    },
     rocketchat: {
       id: String,
       name: String,
@@ -51,6 +65,32 @@ const userSchema = new mongoose.Schema(
     timestamps: true
   }
 )
+
+userSchema.statics.updateAchievements = async function({ uuid, achievements }) {
+  return this.findOneAndUpdate(
+    { uuid },
+    { achievements },
+    {
+      runValidators: true,
+      upsert: true,
+      setDefaultsOnInsert: true,
+      new: true
+    }
+  )
+}
+
+userSchema.statics.updateScore = async function({ uuid, score, level }) {
+  return this.findOneAndUpdate(
+    { uuid },
+    { score, level },
+    {
+      runValidators: true,
+      upsert: true,
+      setDefaultsOnInsert: true,
+      new: true
+    }
+  )
+}
 
 // userSchema.post('save', function() {
 //   if (this.wasNew) {

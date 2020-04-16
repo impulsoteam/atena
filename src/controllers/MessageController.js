@@ -27,6 +27,7 @@ class MessageController {
           message,
           user
         })
+
         await AchievementController.messageSended({
           user: updatedUser,
           message
@@ -46,10 +47,7 @@ class MessageController {
     try {
       const { content, provider } = payload
 
-      await Message.findOneAndUpdate(
-        { 'provider.messageId': provider.messageId },
-        payload
-      )
+      await Message.create(payload)
 
       LogController.sendNotify({
         file: 'controllers/MessageController.saveUnownedMessage',
