@@ -1,7 +1,13 @@
 import { Router } from 'express'
 
-import ImpulserController from './controllers/ImpulserController'
+import UserController from './controllers/UserController'
 import RankingController from './controllers/RankingsController'
+import LevelHistory from './models/LevelHistory'
+import Message from './models/Message'
+import User from './models/User'
+import Reaction from './models/Reaction'
+import Score from './models/Score'
+
 const routes = new Router()
 
 routes.get('/', async (req, res) => {
@@ -11,8 +17,17 @@ routes.get('/', async (req, res) => {
 })
 
 routes.post('/', (req, res) => {
-  ImpulserController.create(req.body)
+  UserController.create(req.body)
   return res.status(201).json({ message: 'ok' })
+})
+
+routes.put('/', async (req, res) => {
+  await LevelHistory.deleteMany({})
+  await Message.deleteMany({})
+  await User.deleteMany({})
+  await Reaction.deleteMany({})
+  await Score.deleteMany({})
+  return res.json({ message: 'ok' })
 })
 
 export default routes

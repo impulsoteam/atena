@@ -1,5 +1,5 @@
 import { api } from '@rocket.chat/sdk'
-
+import { levelsList } from '../../config/score'
 import LogController from '../../controllers/LogController'
 
 export const connect = async () => {
@@ -26,5 +26,28 @@ export const getPreviousMessage = async ({ roomId }) => {
   return {
     user: u._id,
     createdAt: ts
+  }
+}
+
+export const updateBadge = async ({ level, id }) => {
+  try {
+    const badges = levelsList().map(({ badge }) => badge)
+    const { user } = await api.get(`users.info?userId=${id}`)
+
+    const roles = user.roles.filter(role => !badges.includes(role))
+    const newRole = badges[level - 1] || badges[0]
+    roles.push(newRole)
+
+    await api.post(`users.update`, {
+      userId: id,
+      data: { roles }
+    })
+  } catch (error) {
+    LogController.sendNotify({
+      type: 'error',
+      file: 'services/rocketchat/api - updateBadge',
+      resume: 'Unexpected error',
+      details: error
+    })
   }
 }

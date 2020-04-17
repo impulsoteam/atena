@@ -3,6 +3,7 @@ import routes from '../src/routes'
 import Mongo from './database/Mongo'
 import { connect as driverRocketchat } from './services/rocketchat/driver'
 import { connect as apiRocketchat } from './services/rocketchat/api'
+import { connect as amqp } from './services/amqp'
 const { MONGODB_URI } = process.env
 class App {
   constructor() {
@@ -23,6 +24,7 @@ class App {
   async services() {
     driverRocketchat()
     apiRocketchat()
+    amqp()
     Mongo.init(MONGODB_URI)
   }
 }

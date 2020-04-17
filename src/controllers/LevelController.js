@@ -1,73 +1,44 @@
-// import { levelsList } from '../config/achievements'
-// import BotController from './BotController'
-// import { generateStorytelling } from '../assets/storytelling'
-// import moment from 'moment'
-// import User from '../models/User'
+import LogController from './LogController'
+import LevelHistory from '../models/LevelHistory'
+import { updateBadge as updateRocketchatBadge } from '../services/rocketchat/api'
+import { publish } from '../services/amqp'
 
-// class LevelController {
-//   async update({ provider, score, user }) {
-//     const [currentStatus = { level: 0 }] = user.achievements.filter(
-//       ({ name }) => name === 'userLevel'
-//     )
+const providers = [
+  { name: 'rocketchat', service: payload => updateRocketchatBadge(payload) }
+]
 
-//     const updatedStatus = this.updateStatus({ currentStatus, score })
+class LevelController {
+  async handle({ user, previousLevel }) {
+    try {
+      LevelHistory.create({
+        uuid: user.uuid,
+        level: {
+          previous: previousLevel,
+          current: user.level.value
+        }
+      })
+      this.updateBadges(user)
+      publish({
+        type: 'level_change',
+        uuid: user.uuid,
+        level: user.level.value
+      })
+    } catch (error) {
+      LogController.sendNotify({
+        type: 'error',
+        file: 'controllers/LevelController.store',
+        resume: 'Unexpected error',
+        details: error
+      })
+    }
+  }
 
-//     const othersAchievements = user.achievements.filter(
-//       ({ name }) => name !== 'userLevel'
-//     )
+  updateBadges(user) {
+    for (const { name, service } of providers) {
+      if (user[name] && user[name].id)
+        service({ id: user[name].id, level: user.level.value })
+    }
+  }
+}
 
-//     if (currentStatus.level < updatedStatus.level) {
-//       const username = user[provider].username
-//       const message = generateStorytelling({
-//         username,
-//         level: updatedStatus.level
-//       })
-//       BotController.sendMessageToUser({ provider, message, username })
-//     }
-
-//     return User.updateAchievements({
-//       uuid: user.uuid,
-//       achievements: [...othersAchievements, updatedStatus]
-//     })
-//   }
-
-//   updateStatus({ currentStatus, score: scoreGained }) {
-//     const levels = levelsList()
-
-//     if (!currentStatus.level)
-//       return {
-//         name: levels[0].name,
-//         level: 1,
-//         score: scoreGained,
-//         scoreToNextLevel: levels[0].scoreToNextLevel,
-//         earnedIn: moment().toDate()
-//       }
-
-//     const newStatus = Object.assign({}, currentStatus)
-
-//     newStatus.score += scoreGained
-
-//     if (newStatus.score >= newStatus.scoreToNextLevel) {
-//       for (const { level, scoreToNextLevel } of levels) {
-//         if (level > newStatus.level) {
-//           newStatus.level = level
-//           newStatus.earnedIn = moment().toDate()
-//           newStatus.scoreToNextLevel = scoreToNextLevel
-//           break
-//         }
-//       }
-
-//       // if (newStatus.score <= scoreToNextLevel && level !== newStatus.level) {
-//       //   const newAchievement = levels[index - 1]
-
-//       //   newStatus.level = newAchievement.level
-//       //   newStatus.earnedIn = moment().toDate()
-//       //   newStatus.scoreToNextLevel = scoreToNextLevel
-//       //   break
-//       // }
-//     }
-//     return newStatus
-//   }
-// }
-
-// export default new LevelController()
+export default new LevelController()

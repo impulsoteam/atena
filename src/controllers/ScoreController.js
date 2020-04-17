@@ -2,10 +2,10 @@ import LogController from './LogController'
 import moment from 'moment'
 import Score, { scoreTypes } from '../models/Score'
 import { scoreRules, levelsList } from '../config/score'
-
 import User from '../models/User'
 import BotController from './BotController'
 import { generateStorytelling } from '../assets/storytelling'
+import LevelController from './LevelController'
 class ScoreController {
   async handleMessage({ payload, message, user }) {
     try {
@@ -33,6 +33,11 @@ class ScoreController {
 
       const { level, score } = this.getValues({ user, scoreEarned })
 
+      const updatedUser = await User.updateScore({
+        uuid: user.uuid,
+        score,
+        level
+      })
       if (user.level.value < level.value) {
         const { provider } = message
         const username = user[provider.name].username
@@ -45,9 +50,14 @@ class ScoreController {
           }),
           username
         })
+
+        LevelController.handle({
+          user: updatedUser,
+          previousLevel: user.level.value
+        })
       }
 
-      return await User.updateScore({ uuid: user.uuid, score, level })
+      return updatedUser
     } catch (error) {
       LogController.sendNotify({
         type: 'error',
@@ -94,16 +104,30 @@ class ScoreController {
       })
       const { level, score } = this.getValues({ user, scoreEarned })
 
+      const updatedUser = await User.updateScore({
+        uuid: user.uuid,
+        score,
+        level
+      })
       if (user.level.value < level.value) {
         const username = user[provider.name].username
         const message = generateStorytelling({
           username,
           level: level.value
         })
-        BotController.sendMessageToUser({ provider, message, username })
+        BotController.sendMessageToUser({
+          provider: provider.name,
+          message,
+          username
+        })
+
+        LevelController.handle({
+          user: updatedUser,
+          previousLevel: user.level.value
+        })
       }
 
-      return await User.updateScore({ uuid: user.uuid, score, level })
+      return updatedUser
     } catch (error) {
       LogController.sendNotify({
         type: 'error',

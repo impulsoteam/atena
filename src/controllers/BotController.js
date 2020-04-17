@@ -1,18 +1,24 @@
-import { sendMessage as rocketchat } from '../services/rocketchat/driver'
+import { sendMessage as sendRocketchatMessage } from '../services/rocketchat/driver'
+import LogController from './LogController'
 
+const providers = {
+  rocketchat: payload => sendRocketchatMessage(payload)
+}
 class BotController {
-  constructor() {
-    this.rocketchat = rocketchat
-  }
+  sendMessageToUser({ provider, message, username }) {
+    const service = providers[provider]
 
-  async sendMessageToUser({ provider, message, username }) {
-    console.log(provider)
-    // console.log(rocketchat)
-    // console.log(this)
-    // console.log(this[provider])
-
-    rocketchat({ message, username })
+    if (service) {
+      service({ message, username })
+    } else {
+      LogController.sendNotify({
+        type: 'error',
+        file: 'controllers/BotController.sendMessageToUser',
+        resume: `Unable to find service to provider ${provider}`,
+        details: { provider, username }
+      })
+    }
   }
 }
 
-export default new BotController({ rocketchat })
+export default new BotController()

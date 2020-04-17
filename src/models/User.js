@@ -4,7 +4,9 @@ const userSchema = new mongoose.Schema(
   {
     uuid: {
       type: String,
-      required: false
+      required: true,
+      unique: true,
+      text: true
     },
     name: {
       type: String,
@@ -13,7 +15,14 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: false
+      required: true,
+      unique: true,
+      text: true
+    },
+    avatar: {
+      type: String,
+      required: true,
+      text: true
     },
     isCoreTeam: {
       type: Boolean,
@@ -45,26 +54,26 @@ const userSchema = new mongoose.Schema(
     },
     google: {
       id: String
-    },
-    pro: {
-      isPro: {
-        type: Boolean,
-        default: false
-      },
-      beginAt: {
-        type: Date,
-        required: false
-      },
-      finishAt: {
-        type: Date,
-        required: false
-      }
     }
   },
   {
     timestamps: true
   }
 )
+
+userSchema.statics.createOrUpdate = async function(payload) {
+  const alreadyExists = await this.findOne({ uuid: payload.uuid })
+
+  if (alreadyExists) {
+    return this.findOneAndUpdate({ uuid: payload.uuid }, payload, {
+      runValidators: true,
+      new: true
+    })
+  } else {
+    const user = await this.create(payload)
+    return { newUser: true, user }
+  }
+}
 
 userSchema.statics.updateAchievements = async function({ uuid, achievements }) {
   return this.findOneAndUpdate(
@@ -92,11 +101,6 @@ userSchema.statics.updateScore = async function({ uuid, score, level }) {
   )
 }
 
-// userSchema.post('save', function() {
-//   if (this.wasNew) {
-//     api.onboardingApi.sendOnboardingMessage(this.username)
-//   }
-// })
 // userSchema.post('remove', async function() {
 //   const user = this._id
 //   try {
