@@ -12,8 +12,7 @@ export const connect = async () => {
     await driver.subscribeToMessages()
     driver.reactToMessages((error, message, messageOptions) => {
       if (error)
-        return LogController.sendNotify({
-          type: 'error',
+        return LogController.sendError({
           file: 'services/rocketchat/driver.js - reactToMessages',
           resume: 'Received error instead of message',
           details: error
@@ -36,12 +35,7 @@ export const connect = async () => {
       handleUserStatus({ rocketId, username, status })
     })
   } catch (error) {
-    LogController.sendNotify({
-      type: 'error',
-      file: 'services/rocketchat.connect',
-      resume: 'Error while connecting',
-      details: error
-    })
+    LogController.sendError(error)
   }
 }
 
@@ -54,23 +48,13 @@ const sendMessageToUser = async ({ message, user }) => {
   try {
     await driver.sendDirectToUser(message, user)
   } catch (error) {
-    LogController.sendNotify({
-      type: 'error',
-      file: 'services/rocketchat.connect',
-      resume: 'Error while connecting',
-      details: error
-    })
+    LogController.sendError(error)
   }
 }
 const sendMessageToRoom = async (message, room) => {
   try {
     return await driver.sendToRoom(message, room)
   } catch (error) {
-    LogController.sendNotify({
-      type: 'error',
-      file: 'services/rocketchat.connect',
-      resume: 'Error while connecting',
-      details: error
-    })
+    LogController.sendError(error)
   }
 }

@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const levelHistorySchema = new mongoose.Schema(
   {
-    uuid: {
+    user: {
       type: String,
       required: true
     },

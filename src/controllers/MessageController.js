@@ -18,7 +18,7 @@ class MessageController {
         {
           'provider.messageId': provider.messageId
         },
-        payload
+        { user: user.uuid, ...payload }
       )
 
       if (message.__v === 1) {
@@ -34,12 +34,7 @@ class MessageController {
         })
       }
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/MessageController.handle',
-        resume: 'Unexpected error in MessageController.handle',
-        details: error
-      })
+      LogController.sendError(error)
     }
   }
 
@@ -49,8 +44,8 @@ class MessageController {
 
       await Message.create(payload)
 
-      LogController.sendNotify({
-        file: 'controllers/MessageController.saveUnownedMessage',
+      LogController.sendError({
+        file: 'MessageController.saveUnownedMessage',
         resume: `Unable to find user.`,
         details: {
           content,
@@ -58,12 +53,7 @@ class MessageController {
         }
       })
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/MessageController',
-        resume: 'Unexpected error in MessageController.saveUnownedMessage',
-        details: error
-      })
+      LogController.sendError(error)
     }
   }
 }

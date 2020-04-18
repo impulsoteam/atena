@@ -8,14 +8,6 @@ class UserController {
     this.validProviders = ['rocketchat']
   }
 
-  async create(payload) {
-    try {
-      await User.create(payload)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   async handle(payload) {
     try {
       const { newUser, user } = await User.createOrUpdate(payload)
@@ -31,25 +23,26 @@ class UserController {
         }
       }
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/UserController.handle',
-        resume: 'Unexpected error',
-        details: error
-      })
+      LogController.sendError(error)
     }
   }
 
   async delete(payload) {
     try {
-      console.log(payload)
-    } catch (error) {
+      const result = await User.deleteUserData(payload.uuid)
+
+      if (result.notFound) return
       LogController.sendNotify({
-        type: 'error',
         file: 'controllers/UserController.delete',
-        resume: 'Unexpected error',
-        details: error
+        resume: `User data removed`,
+        details: {
+          uuid: payload.uuid,
+          email: payload.email,
+          result
+        }
       })
+    } catch (error) {
+      LogController.sendError(error)
     }
   }
 }

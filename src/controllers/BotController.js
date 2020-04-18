@@ -11,9 +11,8 @@ class BotController {
     if (service) {
       service({ message, username })
     } else {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/BotController.sendMessageToUser',
+      LogController.sendError({
+        file: 'BotController.sendMessageToUser',
         resume: `Unable to find service to provider ${provider}`,
         details: { provider, username }
       })

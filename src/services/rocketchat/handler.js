@@ -25,12 +25,7 @@ export const handlePayload = async ({ message, messageOptions }) => {
       ReactionController.handle(payload)
     }
   } catch (error) {
-    LogController.sendNotify({
-      type: 'error',
-      file: 'services/rocketchat/message.js',
-      resume: 'Error in handlePayload',
-      details: error
-    })
+    LogController.sendError(error)
   }
 }
 

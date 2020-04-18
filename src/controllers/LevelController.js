@@ -11,7 +11,7 @@ class LevelController {
   async handle({ user, previousLevel }) {
     try {
       LevelHistory.create({
-        uuid: user.uuid,
+        user: user.uuid,
         level: {
           previous: previousLevel,
           current: user.level.value
@@ -24,12 +24,7 @@ class LevelController {
         level: user.level.value
       })
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/LevelController.store',
-        resume: 'Unexpected error',
-        details: error
-      })
+      LogController.sendError(error)
     }
   }
 

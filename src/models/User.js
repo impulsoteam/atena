@@ -101,19 +101,23 @@ userSchema.statics.updateScore = async function({ uuid, score, level }) {
   )
 }
 
-// userSchema.post('remove', async function() {
-//   const user = this._id
-//   try {
-//     await Promise.all([
-//       mongoose.model('Achievement').deleteMany({ user }),
-//       mongoose.model('AchievementLevel').deleteMany({ user }),
-//       mongoose.model('Interaction').deleteMany({ user }),
-//       mongoose.model('Login').deleteMany({ user }),
-//       mongoose.model('UserLevelHistory').deleteMany({ user })
-//     ])
-//   } catch (error) {
-//     errors._throw('User Schema', 'removeUser', error)
-//   }
-// })
+userSchema.statics.deleteUserData = async function(uuid) {
+  const { deletedCount } = await this.deleteOne({ uuid })
+  if (deletedCount) {
+    const scores = await mongoose.model('Score').deleteMany({ user: uuid })
+    const messages = await mongoose.model('Message').deleteMany({ user: uuid })
+
+    const reactions = await mongoose
+      .model('Reaction')
+      .deleteMany({ user: uuid })
+
+    const levels = await mongoose
+      .model('LevelHistory')
+      .deleteMany({ user: uuid })
+
+    return { scores, reactions, messages, levels }
+  }
+  return { notFound: true }
+}
 
 export default mongoose.model('User', userSchema)

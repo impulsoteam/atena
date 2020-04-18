@@ -8,39 +8,61 @@ slack.onError = function(err) {
 }
 
 class LogController {
-  sendNotify({ type, file, resume, details }) {
-    const text =
-      type === 'error'
-        ? new Pretty().withoutColors().render(details)
-        : JSON.stringify(details, null, '  ')
-
-    this.sendSlackMessage({ type, file, resume, details, text })
-
-    console.log(new Pretty().render(details), {
-      type,
-      file,
-      resume,
-      details
-    })
+  sendNotify({ file, resume, details }) {
+    const text = JSON.stringify(details, null, '  ')
+    const attachments = [
+      {
+        fallback: 'Error while rendering message',
+        pretext: `*${file}*`,
+        title: resume.replace(/  +/g, ''),
+        color: '#3498db',
+        text: `${'```'}${text}${'```'}`,
+        ts: moment().format('X')
+      }
+    ]
+    this.sendSlackMessage(attachments)
+    console.log({ file, resume, details })
   }
 
-  sendSlackMessage({ type, file, resume, details, text }) {
+  sendError(error) {
+    const text =
+      error instanceof Error
+        ? new Pretty().withoutColors().render(error)
+        : JSON.stringify(error, null, 2)
+
+    const attachments = [
+      {
+        fallback: 'Error while rendering message',
+        color: '#e74c3c',
+        text: `${'```'}${text}${'```'}`,
+        ts: moment().format('X')
+      }
+    ]
+
+    this.sendSlackMessage(attachments)
+
+    console.log(error instanceof Error ? new Pretty().render(error) : error)
+  }
+
+  sendSlackMessage(attachments) {
     slack.send({
       channel: SLACK_CHANNEL,
       icon_url: 'https://impulsowork.slack.com/services/BLA0E0RA5',
       username: `Atena - [${NODE_ENV}]`,
-      attachments: [
-        {
-          fallback: 'Error while rendering message',
-          pretext: `*${file}*`,
-          title: resume ? resume.replace(/  +/g, '') : 'unknown error',
-          color: type === 'error' ? '#e74c3c' : '#3498db',
-          text: details ? `${'```'}${text}${'```'}` : null,
-          ts: moment().format('X')
-        }
-      ]
+      attachments
     })
   }
 }
 
 export default new LogController()
+// throw new Error(
+//   JSON.stringify(
+//     {
+//       file: 'controllers/UserController.delete',
+//       resume: `User data removed`,
+//       details: payload
+//     },
+//     null,
+//     2
+//   )
+// )

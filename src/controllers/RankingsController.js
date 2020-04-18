@@ -27,12 +27,7 @@ class RankingController {
 
       return ranking
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/RankingController.getGeneralRanking',
-        resume: 'Unexpected error in RankingController.getGeneralRanking',
-        details: error
-      })
+      LogController.sendError(error)
       return { message: `Não foi possível buscar o ranking`, error }
     }
   }

@@ -3,74 +3,47 @@ import chalk from 'chalk'
 import LogController from '../../controllers/LogController'
 import { handlePayload } from './handler'
 
-const { CLOUDAMQP_URL } = process.env
+const {
+  AMQP_URL: amqpUrl,
+  QUEUE_IN: queueIn,
+  QUEUE_OUT: queueOut
+} = process.env
 
 let channel
 
 export const connect = async () => {
-  const queues = ['atena.in']
   try {
-    const connection = new Connection(CLOUDAMQP_URL)
+    const connection = new Connection(amqpUrl)
     await connection.init()
     channel = await connection.createChannel()
 
-    for (const queue of queues) {
-      await channel.assertQueue(queue, { durable: true })
-      console.log(`${chalk.green('✓')} [*] ${queue} successfully asserted`)
+    await channel.assertExchange(queueOut, 'fanout', { durable: false })
+    console.log(`${chalk.green('✓')} [*] ${queueOut} successfully exchanged`)
 
-      await channel.consume(
-        queue,
-        msg => {
-          const { properties, content } = msg
-          const data = JSON.parse(content.toString())
-          handlePayload({ data, properties })
-          // todo wtf is this?
-          // channel.ack(msg)
-        },
-        { noAck: true }
-      )
-      console.log('%s [*] Awaiting messages on', chalk.green('✓'), queue)
-    }
+    await channel.assertQueue(queueIn, { durable: true })
+    console.log(`${chalk.green('✓')} [*] ${queueIn} successfully asserted`)
+
+    await channel.consume(
+      queueIn,
+      msg => {
+        const { properties, content } = msg
+
+        const data = JSON.parse(content.toString())
+        handlePayload({ data, properties })
+      },
+      { noAck: true }
+    )
+    console.log('%s [*] Awaiting messages on', chalk.green('✓'), queueIn)
   } catch (error) {
-    return LogController.sendNotify({
-      type: 'error',
-      file: 'nextApp/index.js - connect',
-      resume: 'Error while connecting in amqp',
-      details: error
-    })
+    LogController.sendError(error)
   }
 }
 
-// export const publish = async payload => {
-//   const queue = 'atena.out'
-//   const message = Buffer.from(JSON.stringify(payload))
-//   try {
-//     await channel.sendToQueue(queue, message, {})
-//   } catch (error) {
-//     LogController.sendNotify({
-//       type: 'error',
-//       file: 'nextApp/index.js - publish',
-//       resume: `Error while publishing message in ${queue}`,
-//       details: error
-//     })
-//   }
-// }
-
 export const publish = async payload => {
-  console.log(payload)
-  // const queue = 'atena.out'
-  // const message = Buffer.from(JSON.stringify(payload))
-  // const options = { persistent: false }
-  // try {
-  //   await channel.assertExchange(queue, 'fanout', { durable: false })
-  //   await channel.sendToQueue(queue, message, options)
-  //   await channel.publish(queue, '', message, options)
-  // } catch (error) {
-  //   LogController.sendNotify({
-  //     type: 'error',
-  //     file: 'nextApp/index.js - publish',
-  //     resume: `Error while publishing message in ${queue}`,
-  //     details: error
-  //   })
-  // }
+  const message = Buffer.from(JSON.stringify(payload))
+  try {
+    await channel.sendToQueue(queueOut, message, {})
+  } catch (error) {
+    LogController.sendError(error)
+  }
 }

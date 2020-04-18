@@ -4,14 +4,9 @@ import LogController from '../../controllers/LogController'
 
 export const connect = async () => {
   try {
-    await api.login() // todo
+    await api.login()
   } catch (error) {
-    LogController.sendNotify({
-      type: 'error',
-      file: 'services/rocketchat/api - connect',
-      resume: 'Error while connecting',
-      details: error
-    })
+    LogController.sendError(error)
   }
 }
 
@@ -43,11 +38,6 @@ export const updateBadge = async ({ level, id }) => {
       data: { roles }
     })
   } catch (error) {
-    LogController.sendNotify({
-      type: 'error',
-      file: 'services/rocketchat/api - updateBadge',
-      resume: 'Unexpected error',
-      details: error
-    })
+    LogController.sendError(error)
   }
 }

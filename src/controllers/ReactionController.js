@@ -28,12 +28,7 @@ class ReactionController {
         this.saveReactions(reactionsAdded)
       }
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/ReactionController.handle',
-        resume: 'Unexpected error in ReactionController.handle',
-        details: error
-      })
+      LogController.sendError(error)
     }
   }
 

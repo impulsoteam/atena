@@ -59,12 +59,7 @@ class ScoreController {
 
       return updatedUser
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/ScoreController.handleMessage',
-        resume: 'Unexpected error in ScoreController.handleMessage',
-        details: error
-      })
+      LogController.sendError(error)
     }
   }
 
@@ -129,12 +124,7 @@ class ScoreController {
 
       return updatedUser
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/ScoreController.handleAchievement',
-        resume: 'Unexpected error in ScoreController.handleAchievement',
-        details: error
-      })
+      LogController.sendError(error)
     }
   }
 
@@ -142,12 +132,7 @@ class ScoreController {
     try {
       // AchievementController.scoreUpdated({})
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/ScoreController.handleReaction',
-        resume: 'Unexpected error in ScoreController.handleReaction',
-        details: error
-      })
+      LogController.sendError(error)
     }
   }
 

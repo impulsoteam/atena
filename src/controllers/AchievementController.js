@@ -44,12 +44,7 @@ class AchievementController {
         achievements: [...othersAchievements, currentAchievement]
       })
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/AchievementController',
-        resume: 'Unexpected error in method handle',
-        details: error
-      })
+      LogController.sendError(error)
     }
   }
 
@@ -106,12 +101,7 @@ class AchievementController {
         score
       })
     } catch (error) {
-      LogController.sendNotify({
-        type: 'error',
-        file: 'controllers/AchievementController',
-        resume: 'Unexpected error in method createAchievement',
-        details: error
-      })
+      LogController.sendError(error)
     }
   }
 

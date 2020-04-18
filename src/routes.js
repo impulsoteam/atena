@@ -1,6 +1,5 @@
 import { Router } from 'express'
 
-import UserController from './controllers/UserController'
 import RankingController from './controllers/RankingsController'
 import LevelHistory from './models/LevelHistory'
 import Message from './models/Message'
@@ -17,7 +16,6 @@ routes.get('/', async (req, res) => {
 })
 
 routes.post('/', (req, res) => {
-  UserController.create(req.body)
   return res.status(201).json({ message: 'ok' })
 })
 
