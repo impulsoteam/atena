@@ -288,21 +288,21 @@ export default class CommandUtils {
         continue
       }
 
-      const updatedScore = await ScoreController.handleManualScore({
-        user: gifted,
-        provider: provider.name,
-        payload: {
-          user: gifted.uuid,
-          score: points,
-          description: scoreTypes.manual,
-          details: {
-            provider: provider.name,
-            sender: user.uuid
+      try {
+        await ScoreController.handleManualScore({
+          user: gifted,
+          provider: provider.name,
+          payload: {
+            user: gifted.uuid,
+            score: points,
+            description: scoreTypes.manual,
+            details: {
+              provider: provider.name,
+              sender: user.uuid
+            }
           }
-        }
-      })
-
-      if (!updatedScore) {
+        })
+      } catch (error) {
         response.attachments.push({
           text: `Opa, aconteceu algo inesperado. A pontuação de ${username} não foi enviada!`
         })

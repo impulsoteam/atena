@@ -1,4 +1,6 @@
 export const scoreRules = {
+  daysOfInactivity: 14,
+  inactivityScore: -2,
   dailyLimit: 60,
   flood: 60,
   message: {
@@ -10,7 +12,7 @@ export const scoreRules = {
   }
 }
 
-export const levelsList = () => {
+export const levels = (() => {
   const badges = [
     'levelOne',
     'levelTwo',
@@ -23,17 +25,17 @@ export const levelsList = () => {
     'levelNine',
     'levelTen'
   ]
-  // const scores = [50, 100, 150, 250, 400, 650, 1050, 1700, 2780, null]
-  const scores = [8, 16, 24, 32, 40, 48, 56, 64, 72, null]
+  // const scores = [50, 100, 150, 250, 400, 650, 1050, 1700, 2780]
+  const scores = [8, 16, 24, 32, 40, 48, 56, 64, 72]
 
   return badges.map((badge, index) => {
     const min = scores[index - 1] || 0
-    const max = scores[index] ? scores[index] - 1 : 9999
+    const max = scores[index] ? scores[index] - 1 : 99999
     return {
       badge,
       level: index + 1,
-      range: [min, max],
-      scoreToNextLevel: scores[index]
+      currentRange: { min, max },
+      scoreToNextLevel: scores[index] || 99999
     }
   })
-}
+})()

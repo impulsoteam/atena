@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import routes from '../src/routes'
 import Mongo from './database/Mongo'
+import { exec as jobs } from './jobs'
 import { connect as driverRocketchat } from './services/rocketchat/driver'
 import { connect as apiRocketchat } from './services/rocketchat/api'
 import { connect as amqp } from './services/amqp'
@@ -27,6 +28,7 @@ class App {
     driverRocketchat()
     apiRocketchat()
     amqp()
+    jobs()
     Mongo.init(MONGODB_URI)
   }
 }

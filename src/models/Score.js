@@ -8,6 +8,7 @@ export const scoreTypes = {
   messageSent: 'messageSent',
   threadAnswered: 'threadAnswered',
   newAchievement: 'newAchievement',
+  inactivity: 'inactivity',
   manual: 'manual'
 }
 const scoreSchema = new mongoose.Schema(
@@ -38,6 +39,46 @@ const scoreSchema = new mongoose.Schema(
     timestamps: true
   }
 )
+scoreSchema.statics.getDailyScore = async function(uuid) {
+  const [{ score }] = await this.aggregate([
+    {
+      $match: {
+        user: uuid,
+        $and: [
+          {
+            createdAt: {
+              $gte: moment()
+                .startOf('day')
+                .toDate()
+            }
+          },
+          {
+            createdAt: {
+              $lte: moment()
+                .endOf('day')
+                .toDate()
+            }
+          }
+        ]
+      }
+    },
+    {
+      $group: {
+        _id: '',
+        score: { $sum: '$score' }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        score: '$score'
+      }
+    }
+  ])
+
+  return score
+}
+
 scoreSchema.statics.findAllByMonth = async function({ date, limit, page }) {
   const formattedDate = date || moment().toDate()
   return this.aggregate([

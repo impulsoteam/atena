@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import moment from 'moment'
 
 const userSchema = new mongoose.Schema(
   {
@@ -39,6 +40,10 @@ const userSchema = new mongoose.Schema(
       },
       scoreToNextLevel: Number,
       lastUpdate: Date
+    },
+    lastInteraction: {
+      type: Date,
+      default: moment().toDate()
     },
     rocketchat: {
       id: String,
@@ -90,7 +95,7 @@ userSchema.statics.updateAchievements = async function({ uuid, achievements }) {
 userSchema.statics.updateScore = async function({ uuid, score, level }) {
   return this.findOneAndUpdate(
     { uuid },
-    { score, level },
+    { score, level, lastInteraction: moment().toDate() },
     {
       runValidators: true,
       upsert: true,

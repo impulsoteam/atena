@@ -1,10 +1,12 @@
 import LogController from './LogController'
 import LevelHistory from '../models/LevelHistory'
+import { generateStorytelling } from '../assets/storytelling'
 import { updateBadge as updateRocketchatBadge } from '../services/rocketchat/api'
 import { publish } from '../services/amqp'
+import BotController from './BotController'
 
 const providers = [
-  { name: 'rocketchat', service: payload => updateRocketchatBadge(payload) }
+  { provider: 'rocketchat', service: payload => updateRocketchatBadge(payload) }
 ]
 
 class LevelController {
@@ -23,6 +25,25 @@ class LevelController {
         uuid: user.uuid,
         level: user.level.value
       })
+
+      if (user.level.value > previousLevel) {
+        for (const { provider } of providers) {
+          const username = user[provider] && user[provider].username
+
+          if (!username) continue
+
+          const message = generateStorytelling({
+            username,
+            level: user.level.value
+          })
+
+          BotController.sendMessageToUser({
+            provider,
+            message,
+            username
+          })
+        }
+      }
     } catch (error) {
       LogController.sendError(error)
     }
