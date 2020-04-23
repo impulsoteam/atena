@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import routes from '../src/routes'
 import Mongo from './database/Mongo'
 import { connect as driverRocketchat } from './services/rocketchat/driver'
@@ -15,6 +16,7 @@ class App {
 
   middlewares() {
     this.server.use(express.json())
+    this.server.use(cors())
   }
 
   routes() {

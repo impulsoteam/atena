@@ -18,7 +18,7 @@ export const connect = async () => {
           details: error
         })
 
-      if (message.u._id === botId) return
+      if (message.u._id === botId || message.t) return
 
       handlePayload({ message, messageOptions })
     })
@@ -31,17 +31,18 @@ export const connect = async () => {
     userStatusCollection.reactiveQuery({}).on('change', function(_id) {
       const query = userStatusCollection.reactiveQuery({ _id }).result[0]
         .args[0]
-      const [rocketId, username, status] = query
-      handleUserStatus({ rocketId, username, status })
+
+      const [id] = query
+      handleUserStatus(id)
     })
   } catch (error) {
     LogController.sendError(error)
   }
 }
 
-export const sendMessage = ({ room, username, message }) => {
+export const sendMessage = ({ channel, username, message }) => {
   username && sendMessageToUser({ user: username, message })
-  room && sendMessageToRoom({ room, message })
+  channel && sendMessageToRoom({ channel, message })
 }
 
 const sendMessageToUser = async ({ message, user }) => {
@@ -51,9 +52,9 @@ const sendMessageToUser = async ({ message, user }) => {
     LogController.sendError(error)
   }
 }
-const sendMessageToRoom = async (message, room) => {
+const sendMessageToRoom = async ({ message, channel }) => {
   try {
-    return await driver.sendToRoom(message, room)
+    return await driver.sendToRoom(message, channel)
   } catch (error) {
     LogController.sendError(error)
   }

@@ -55,14 +55,3 @@ class LogController {
 }
 
 export default new LogController()
-// throw new Error(
-//   JSON.stringify(
-//     {
-//       file: 'controllers/UserController.delete',
-//       resume: `User data removed`,
-//       details: payload
-//     },
-//     null,
-//     2
-//   )
-// )

@@ -41,3 +41,12 @@ export const updateBadge = async ({ level, id }) => {
     LogController.sendError(error)
   }
 }
+
+export const getUserInfo = async id => {
+  try {
+    const { user } = await api.get(`users.info?userId=${id}`)
+    return user
+  } catch (error) {
+    LogController.sendError(error)
+  }
+}

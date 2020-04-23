@@ -5,24 +5,20 @@ const userSchema = new mongoose.Schema(
     uuid: {
       type: String,
       required: true,
-      unique: true,
-      text: true
+      unique: true
     },
     name: {
       type: String,
-      required: true,
-      text: true
+      required: true
     },
     email: {
       type: String,
       required: true,
-      unique: true,
-      text: true
+      unique: true
     },
     avatar: {
       type: String,
-      required: true,
-      text: true
+      required: true
     },
     isCoreTeam: {
       type: Boolean,
@@ -46,7 +42,10 @@ const userSchema = new mongoose.Schema(
     },
     rocketchat: {
       id: String,
-      name: String,
+      username: String
+    },
+    slack: {
+      id: String,
       username: String
     },
     linkedin: {

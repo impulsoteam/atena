@@ -1,11 +1,14 @@
 import moment from 'moment'
 
+import User from '../../models/User'
+import Login from '../../models/Login'
 import { providers } from '../../models/Message'
+import { removeEmptyValues } from '../../utils'
 import CommandController from '../../controllers/CommandController'
 import ReactionController from '../../controllers/ReactionController'
 import MessageController from '../../controllers/MessageController'
 import LogController from '../../controllers/LogController'
-import { getPreviousMessage } from './api'
+import { getPreviousMessage, getUserInfo } from './api'
 
 export const handlePayload = async ({ message, messageOptions }) => {
   try {
@@ -29,8 +32,41 @@ export const handlePayload = async ({ message, messageOptions }) => {
   }
 }
 
-export const handleUserStatus = ({ rocketId, username, status }) => {
-  console.log({ rocketId, username, status })
+export const handleUserStatus = async id => {
+  try {
+    const provider = providers.rocketchat
+    const userInfo = await getUserInfo(id)
+
+    if (userInfo.roles.includes('bot')) return
+
+    const user = await User.findOne({ [`${provider}.id`]: id })
+
+    if (!user) {
+      return LogController.sendError({
+        file: 'services.rocketchat - handleUserStatus',
+        resume: `Unable to find user ${id}`,
+        details: userInfo
+      })
+    }
+
+    const status =
+      userInfo.statusConnection === 'offline' ? 'offline' : 'online'
+
+    const lastUserLogin = await Login.findOne({ user: user.uuid }).sort({
+      createdAt: -1
+    })
+
+    if (!lastUserLogin) {
+      await Login.create({ status, user: user.uuid, provider })
+      return
+    }
+
+    if (lastUserLogin.status === status) return
+
+    await Login.create({ status, user: user.uuid, provider })
+  } catch (error) {
+    LogController.sendError(error)
+  }
 }
 
 const formatPayload = ({ message, messageOptions }) => {
@@ -44,22 +80,24 @@ const formatPayload = ({ message, messageOptions }) => {
       threadCount: message.tcount || 0,
       reactionCount: reactions.length,
       reactions,
+      mentions: message.mentions,
+      channels: message.channels,
+
       provider: {
         name: providers.rocketchat,
         messageId: message._id,
+        parentId: message.tmid,
         room: {
           id: message.rid,
           name: messageOptions.roomName
         },
         user: {
           id: message.u._id,
-          username: message.u.username,
-          name: message.u.name
+          username: message.u.username
         }
       }
     }
-    if (message.tmid) payload.provider.parentId = message.tmid
-    // todo
+    removeEmptyValues(payload)
     return payload
   } catch (error) {
     throw Error(error)

@@ -18,6 +18,20 @@ class BotController {
       })
     }
   }
+
+  sendMessageToChannel({ provider, message, channel }) {
+    const service = providers[provider]
+
+    if (service) {
+      service({ message, channel })
+    } else {
+      LogController.sendError({
+        file: 'BotController.sendMessageToChannel',
+        resume: `Unable to find service to provider ${provider}`,
+        details: { provider, channel }
+      })
+    }
+  }
 }
 
 export default new BotController()

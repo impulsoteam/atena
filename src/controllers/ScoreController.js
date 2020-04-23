@@ -63,27 +63,6 @@ class ScoreController {
     }
   }
 
-  getValues({ user, scoreEarned }) {
-    const levels = levelsList()
-    const score = {
-      value: user.score.value + scoreEarned,
-      lastUpdate: moment()
-    }
-
-    const [updatedLevel] = levels.filter(
-      ({ range }) => range[0] <= score.value && range[1] >= score.value
-    )
-    const level =
-      updatedLevel.level !== user.level.value
-        ? {
-            value: updatedLevel.level,
-            scoreToNextLevel: updatedLevel.scoreToNextLevel,
-            lastUpdate: moment()
-          }
-        : user.level
-    return { level, score }
-  }
-
   async handleAchievement({ achievement, user, provider, score: scoreEarned }) {
     try {
       await Score.create({
@@ -128,11 +107,40 @@ class ScoreController {
     }
   }
 
-  async handleReaction() {
+  async handleManualScore({ payload, user, provider }) {
     try {
-      // AchievementController.scoreUpdated({})
+      await Score.create(payload)
+      const { level, score } = this.getValues({
+        user,
+        scoreEarned: payload.score
+      })
+
+      const updatedUser = await User.updateScore({
+        uuid: user.uuid,
+        score,
+        level
+      })
+      if (user.level.value < level.value) {
+        const username = user[provider].username
+        const message = generateStorytelling({
+          username,
+          level: level.value
+        })
+        BotController.sendMessageToUser({
+          provider,
+          message,
+          username
+        })
+
+        LevelController.handle({
+          user: updatedUser,
+          previousLevel: user.level.value
+        })
+      }
+      return updatedUser
     } catch (error) {
       LogController.sendError(error)
+      return false
     }
   }
 
@@ -186,6 +194,27 @@ class ScoreController {
     ])
 
     return result.length ? result[0].score : 0
+  }
+
+  getValues({ user, scoreEarned }) {
+    const levels = levelsList()
+    const score = {
+      value: user.score.value + scoreEarned,
+      lastUpdate: moment()
+    }
+
+    const [updatedLevel] = levels.filter(
+      ({ range }) => range[0] <= score.value && range[1] >= score.value
+    )
+    const level =
+      updatedLevel && updatedLevel.level !== user.level.value
+        ? {
+            value: updatedLevel.level,
+            scoreToNextLevel: updatedLevel.scoreToNextLevel,
+            lastUpdate: moment()
+          }
+        : user.level
+    return { level, score }
   }
 }
 

@@ -52,7 +52,7 @@ class ReactionController {
       const { provider } = reaction
       const user = await User.findOne({
         [`${provider.name}.username`]: provider.username
-      }) // todo
+      })
       if (user) reaction.user = user.uuid
       await Reaction.create(reaction)
     }
