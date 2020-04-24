@@ -3,7 +3,7 @@ import moment from 'moment'
 import scoreSchema from './schema'
 
 scoreSchema.statics.getDailyScore = async function(uuid) {
-  const [{ score }] = await this.aggregate([
+  const result = await this.aggregate([
     {
       $match: {
         user: uuid,
@@ -39,7 +39,7 @@ scoreSchema.statics.getDailyScore = async function(uuid) {
     }
   ])
 
-  return score
+  return result[0] && result[0].score ? result[0].score : 0
 }
 
 scoreSchema.statics.findAllByMonth = async function({ date, limit, page }) {

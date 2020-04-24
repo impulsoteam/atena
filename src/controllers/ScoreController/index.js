@@ -1,6 +1,7 @@
 import LogController from '../LogController'
 import User from '../../models/User'
-import Score, { scoreTypes } from '../../models/Score'
+import Score from '../../models/Score'
+import { scoreTypes } from '../../models/Score/schema'
 import { scoreRules } from '../../config/score'
 import ScoreUtils from './utils'
 import moment from 'moment'

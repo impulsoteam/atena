@@ -298,7 +298,8 @@ export default class CommandUtils {
             description: scoreTypes.manual,
             details: {
               provider: provider.name,
-              sender: user.uuid
+              sender: user.uuid,
+              reason
             }
           }
         })

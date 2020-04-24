@@ -30,6 +30,7 @@ export default new mongoose.Schema(
       provider: String,
       messageId: String,
       sender: String,
+      reason: String,
       room: Object,
       achievement: String,
       medal: String,
