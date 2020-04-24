@@ -2,7 +2,7 @@ import moment from 'moment'
 
 import User from '../../models/User'
 import Login from '../../models/Login'
-import { providers } from '../../models/Message'
+import { providers } from '../../models/Message/schema'
 import { removeEmptyValues } from '../../utils'
 import CommandController from '../../controllers/CommandController'
 import ReactionController from '../../controllers/ReactionController'

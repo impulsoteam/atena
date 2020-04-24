@@ -1,44 +1,7 @@
 import mongoose from 'mongoose'
 import moment from 'moment'
-export const providers = {
-  rocketchat: 'rocketchat'
-}
+import scoreSchema from './schema'
 
-export const scoreTypes = {
-  messageSent: 'messageSent',
-  threadAnswered: 'threadAnswered',
-  newAchievement: 'newAchievement',
-  inactivity: 'inactivity',
-  manual: 'manual'
-}
-const scoreSchema = new mongoose.Schema(
-  {
-    score: {
-      type: Number,
-      required: true
-    },
-    description: {
-      type: String,
-      enum: Object.values(scoreTypes)
-    },
-    user: {
-      type: String,
-      required: true
-    },
-    details: {
-      provider: String,
-      messageId: String,
-      sender: String,
-      room: Object,
-      achievement: String,
-      medal: String,
-      range: String
-    }
-  },
-  {
-    timestamps: true
-  }
-)
 scoreSchema.statics.getDailyScore = async function(uuid) {
   const [{ score }] = await this.aggregate([
     {

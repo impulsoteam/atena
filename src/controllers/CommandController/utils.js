@@ -1,6 +1,6 @@
 import moment from 'moment'
 import User from '../../models/User'
-import { scoreTypes } from '../../models/Score'
+import { scoreTypes } from '../../models/Score/schema'
 import { messageSended } from '../../config/achievements'
 import RankingController from '../RankingController'
 import ScoreController from '../ScoreController'

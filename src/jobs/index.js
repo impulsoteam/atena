@@ -13,12 +13,12 @@ const sendMonthlyRankingToChannel = () => {
   )
 }
 
-const queueInviteUsersToChannel = () => {
-  cron.schedule('0 3 * * *', async () => inviteUserToNotJoinedChannels())
+const inviteUsersToChannel = () => {
+  cron.schedule('0 0 * * *', async () => inviteUserToNotJoinedChannels())
 }
 
 export const exec = () => {
   chatInactivities()
   sendMonthlyRankingToChannel()
-  queueInviteUsersToChannel()
+  inviteUsersToChannel()
 }
