@@ -6,8 +6,8 @@ import { handlePayload } from './handler'
 
 const {
   AMQP_URL: amqpUrl,
-  QUEUE_IN: queueIn,
-  QUEUE_OUT: queueOut
+  AMQP_QUEUE_IN: queueIn,
+  AMQP_QUEUE_OUT: queueOut
 } = process.env
 
 let channel
