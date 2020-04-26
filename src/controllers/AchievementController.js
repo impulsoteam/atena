@@ -1,11 +1,10 @@
-// import Message from '../models/Message'
-// import User from '../models/User'
+import moment from 'moment'
+
+import { messageSended } from '../config/achievements'
+import User from '../models/User'
+import BotController from './BotController'
 import LogController from './LogController'
 import ScoreController from './ScoreController'
-import moment from 'moment'
-import User from '../models/User'
-import { messageSended } from '../config/achievements'
-import BotController from './BotController'
 
 class AchievementController {
   async messageSended({ user, message }) {

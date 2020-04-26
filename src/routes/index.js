@@ -1,4 +1,5 @@
 import { Router } from 'express'
+
 import apiRoutes from './api'
 import minerRoutes from './miner'
 

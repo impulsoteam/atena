@@ -1,7 +1,6 @@
-// import Message from '../models/Message'
-import User from '../models/User'
-import Reaction from '../models/Reaction'
 import LogController from '../controllers/LogController'
+import Reaction from '../models/Reaction'
+import User from '../models/User'
 
 class ReactionController {
   async handle(payload) {

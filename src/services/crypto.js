@@ -1,4 +1,5 @@
 import crypto from 'crypto-js'
+
 import LogController from '../controllers/LogController'
 
 const salt = process.env.ATENA_CRYPTO_SALT

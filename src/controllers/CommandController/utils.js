@@ -1,10 +1,11 @@
 import moment from 'moment'
-import User from '../../models/User'
-import { scoreTypes } from '../../models/Score/schema'
+
 import { messageSended } from '../../config/achievements'
+import { scoreTypes } from '../../models/Score/schema'
+import User from '../../models/User'
+import BotController from '../BotController'
 import RankingController from '../RankingController'
 import ScoreController from '../ScoreController'
-import BotController from '../BotController'
 
 export default class CommandUtils {
   getCommandsText({ isCoreTeam }) {

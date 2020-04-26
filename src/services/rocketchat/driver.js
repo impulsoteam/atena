@@ -37,6 +37,7 @@ export const connect = async () => {
     })
   } catch (error) {
     LogController.sendError(error)
+    process.exit(1)
   }
 }
 

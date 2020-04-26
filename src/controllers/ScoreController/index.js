@@ -1,10 +1,11 @@
-import LogController from '../LogController'
-import User from '../../models/User'
+import moment from 'moment'
+
+import { scoreRules } from '../../config/score'
 import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
-import { scoreRules } from '../../config/score'
+import User from '../../models/User'
+import LogController from '../LogController'
 import ScoreUtils from './utils'
-import moment from 'moment'
 
 class ScoreController extends ScoreUtils {
   async handleMessage({ payload, message, user }) {

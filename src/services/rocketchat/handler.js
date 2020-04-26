@@ -1,13 +1,13 @@
 import moment from 'moment'
 
-import User from '../../models/User'
+import CommandController from '../../controllers/CommandController'
+import LogController from '../../controllers/LogController'
+import MessageController from '../../controllers/MessageController'
+import ReactionController from '../../controllers/ReactionController'
 import Login from '../../models/Login'
 import { providers } from '../../models/Message/schema'
+import User from '../../models/User'
 import { removeEmptyValues } from '../../utils'
-import CommandController from '../../controllers/CommandController'
-import ReactionController from '../../controllers/ReactionController'
-import MessageController from '../../controllers/MessageController'
-import LogController from '../../controllers/LogController'
 import { getPreviousMessage, getUserInfo } from './api'
 
 export const handlePayload = async ({ message, messageOptions }) => {

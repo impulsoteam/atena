@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+
 import messageSchema from './schema'
 
 messageSchema.pre('findOneAndUpdate', function() {

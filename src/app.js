@@ -1,12 +1,13 @@
-import express from 'express'
 import cors from 'cors'
+import express from 'express'
+
 import routes from '../src/routes'
-import Mongo from './database/Mongo'
+import { connect as atenaDataBase } from './databases/atena'
 import { exec as jobs } from './jobs'
-import { connect as driverRocketchat } from './services/rocketchat/driver'
-import { connect as apiRocketchat } from './services/rocketchat/api'
 import { connect as amqp } from './services/amqp'
-const { MONGODB_URI } = process.env
+import { connect as apiRocketchat } from './services/rocketchat/api'
+import { connect as driverRocketchat } from './services/rocketchat/driver'
+
 class App {
   constructor() {
     this.server = express()
@@ -25,11 +26,11 @@ class App {
   }
 
   async services() {
-    driverRocketchat()
-    apiRocketchat()
     amqp()
     jobs()
-    Mongo.init(MONGODB_URI)
+    atenaDataBase()
+    apiRocketchat()
+    driverRocketchat()
   }
 }
 

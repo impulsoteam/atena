@@ -1,8 +1,9 @@
 import moment from 'moment'
+
 import { scoreRules, levels } from '../../config/score'
-import LevelController from '../LevelController'
 import Score from '../../models/Score'
 import User from '../../models/User'
+import LevelController from '../LevelController'
 
 export default class ScoreUtils {
   async messageCannotScore({ payload, message }) {

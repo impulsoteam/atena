@@ -1,7 +1,8 @@
 import moment from 'moment'
-import RankingController from './RankingController'
+
 import { sendMessage as sendRocketchatMessage } from '../services/rocketchat/driver'
 import LogController from './LogController'
+import RankingController from './RankingController'
 
 const providers = {
   rocketchat: payload => sendRocketchatMessage(payload)

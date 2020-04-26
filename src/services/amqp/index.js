@@ -1,5 +1,6 @@
 import { Connection } from 'amqplib-as-promised'
 import chalk from 'chalk'
+
 import LogController from '../../controllers/LogController'
 import { handlePayload } from './handler'
 
@@ -36,6 +37,7 @@ export const connect = async () => {
     console.log('%s [*] Awaiting messages on', chalk.green('✓'), queueIn)
   } catch (error) {
     LogController.sendError(error)
+    process.exit(1)
   }
 }
 

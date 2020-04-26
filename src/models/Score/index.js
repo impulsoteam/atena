@@ -1,5 +1,6 @@
-import mongoose from 'mongoose'
 import moment from 'moment'
+import mongoose from 'mongoose'
+
 import scoreSchema from './schema'
 
 scoreSchema.statics.getDailyScore = async function(uuid) {

@@ -1,4 +1,5 @@
 import { Router } from 'express'
+
 import RankingController from '../controllers/RankingController'
 import UserController from '../controllers/UserController'
 

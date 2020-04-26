@@ -1,5 +1,5 @@
-import User from '../../models/User'
 import Score from '../../models/Score'
+import User from '../../models/User'
 import LogController from '../LogController'
 import RankingUtils from './utils'
 

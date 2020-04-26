@@ -7,7 +7,7 @@
     "extends": [
         "standard", "prettier"
     ],
-    "plugins": ["prettier"],
+    "plugins": ["prettier", "eslint-plugin-import-helpers"],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
@@ -21,6 +21,19 @@
         "class-methods-use-this": "off",
         "no-param-reassign": "off",
         "camelcase":"off",
-        "no-unused-vars":["error", {"argsIgnorePattern": "next"}]
+        "no-unused-vars":["error", {"argsIgnorePattern": "next"}],
+        "import/no-absolute-path": "off",
+        "import-helpers/order-imports": [
+          "warn",
+          {
+            "newlinesBetween": "always",
+            "groups": [
+              "module",
+              "/^@shared/",
+              ["parent", "sibling", "index"]
+            ],
+            "alphabetize": { "order": "asc", "ignoreCase": true }
+          }
+        ]
     }
 }

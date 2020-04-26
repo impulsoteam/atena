@@ -1,12 +1,12 @@
-import factory from './mocks/factory'
 import faker from 'faker'
+
+import MessageController from '../src/controllers/MessageController'
 import Message, { providers } from '../src/models/Message'
 import Reaction from '../src/models/Reaction'
 import Score from '../src/models/Score'
 import User from '../src/models/User'
-
 import './utils'
-import MessageController from '../src/controllers/MessageController'
+import factory from './mocks/factory'
 
 let user
 beforeAll(async () => {

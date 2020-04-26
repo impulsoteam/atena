@@ -1,9 +1,10 @@
-import axios from 'axios'
 import { api } from '@rocket.chat/sdk'
+import axios from 'axios'
+import moment from 'moment'
+
+import User from '../models/User'
 import { encrypt } from '../services/crypto'
 import LogController from './LogController'
-import User from '../models/User'
-import moment from 'moment'
 
 class SessionController {
   async linkedin(code) {

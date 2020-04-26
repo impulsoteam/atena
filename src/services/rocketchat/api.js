@@ -1,18 +1,20 @@
 import { api } from '@rocket.chat/sdk'
+
 import { levelsList } from '../../config/score'
+import LogController from '../../controllers/LogController'
 import {
   getUserInfoByUsername,
   getChannelsList,
   getUserChannelsList,
   inviteUserToChannel
 } from '../axios'
-import LogController from '../../controllers/LogController'
 
 export const connect = async () => {
   try {
     await api.login()
   } catch (error) {
     LogController.sendError(error)
+    process.exit(1)
   }
 }
 

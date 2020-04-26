@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
-import mongoConfig from '../src/config/mongodb'
 
-const { MONGODB_URI } = process.env
+import mongoConfig from '../src/config/mongodb'
 
 class Database {
   constructor() {

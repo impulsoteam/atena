@@ -1,9 +1,9 @@
-import RankingController from '../RankingController'
-import BotController from '../BotController'
-import User from '../../models/User'
-import LogController from '../LogController'
-import CommandUtils from './utils'
 import Score from '../../models/Score'
+import User from '../../models/User'
+import BotController from '../BotController'
+import LogController from '../LogController'
+import RankingController from '../RankingController'
+import CommandUtils from './utils'
 
 class CommandController extends CommandUtils {
   constructor() {

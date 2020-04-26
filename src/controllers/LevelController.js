@@ -1,9 +1,9 @@
-import LogController from './LogController'
-import LevelHistory from '../models/LevelHistory'
 import { generateStorytelling } from '../assets/storytelling'
-import { updateBadge as updateRocketchatBadge } from '../services/rocketchat/api'
+import LevelHistory from '../models/LevelHistory'
 import { publish } from '../services/amqp'
+import { updateBadge as updateRocketchatBadge } from '../services/rocketchat/api'
 import BotController from './BotController'
+import LogController from './LogController'
 
 const providers = [
   { provider: 'rocketchat', service: payload => updateRocketchatBadge(payload) }

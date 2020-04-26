@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { decrypt } from '../services/crypto'
 
 import RankingController from '../controllers/RankingController'
 import SessionController from '../controllers/SessionController'
 import UserController from '../controllers/UserController'
+import { decrypt } from '../services/crypto'
 
 const router = new Router()
 

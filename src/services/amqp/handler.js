@@ -1,5 +1,5 @@
-import UserController from '../../controllers/UserController'
 import LogController from '../../controllers/LogController'
+import UserController from '../../controllers/UserController'
 
 export const handlePayload = ({ data, properties }) => {
   const types = {

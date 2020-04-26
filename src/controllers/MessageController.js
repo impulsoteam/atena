@@ -1,8 +1,8 @@
 import Message from '../models/Message'
 import User from '../models/User'
+import AchievementController from './AchievementController'
 import LogController from './LogController'
 import ScoreController from './ScoreController'
-import AchievementController from './AchievementController'
 
 class MessageController {
   async handle(payload) {

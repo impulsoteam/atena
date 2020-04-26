@@ -1,7 +1,7 @@
-import User from '../models/User'
-import LogController from './LogController'
-import BotController from './BotController'
 import { onboardingMessage } from '../assets/onboarding'
+import User from '../models/User'
+import BotController from './BotController'
+import LogController from './LogController'
 import RankingController from './RankingController'
 
 class UserController {
