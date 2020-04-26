@@ -7,4 +7,5 @@ coverage
 .vscode/
 .env*
 build/
+dist
 dump.rdb

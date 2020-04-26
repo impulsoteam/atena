@@ -1,9 +1,9 @@
 import cors from 'cors'
 import express from 'express'
 
-import routes from '../src/routes'
 import { connect as atenaDataBase } from './databases/atena'
 import { exec as jobs } from './jobs'
+import routes from './routes'
 import { connect as amqp } from './services/amqp'
 import { connect as apiRocketchat } from './services/rocketchat/api'
 import { connect as driverRocketchat } from './services/rocketchat/driver'
