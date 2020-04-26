@@ -88,23 +88,8 @@ export default class CommandUtils {
   }
 
   generateRankingMessage({ ranking, user, monthName }) {
-    if (!user) {
-      return {
-        msg:
-          'Opa, algo está errado :/\nTente novamente ou mande uma mensagem lá no canal #duvidas'
-      }
-    }
-
-    if (!ranking) {
-      return { msg: 'Ops. Não conseguimos gerar o ranking nesse momento. :/' }
-    }
-
-    if (ranking.length < 5) {
-      return {
-        msg:
-          'Ops. Ainda não temos dados suficientes para gerar o ranking neste momento. :/'
-      }
-    }
+    if (!ranking || ranking.length < 5)
+      return 'Ops. Ainda não temos dados suficientes para gerar o ranking neste momento. :/'
 
     const type = monthName ? `de ${monthName}` : 'geral'
 
@@ -149,12 +134,7 @@ export default class CommandUtils {
   }
 
   async generateUserScoresMessage(user) {
-    const response = {
-      msg: 'Ops! Não conseguimos verificar seus pontos. :/',
-      attachments: []
-    }
-
-    if (!user) return response
+    const response = {}
 
     if (user.isCoreTeam) {
       const { score } = await RankingController.getMonthlyPositionByUser(
@@ -210,13 +190,7 @@ export default class CommandUtils {
   }
 
   generateAchievementsMessage(user) {
-    const response = {
-      msg:
-        'Opa, algo está errado :/\nTente novamente ou mande uma mensagem lá no canal #duvidas',
-      attachments: []
-    }
-
-    if (!user) return response
+    const response = {}
 
     if (!user.achievements.length) {
       response.msg = 'Ops! Você ainda não tem conquistas registradas. :('

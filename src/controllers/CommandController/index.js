@@ -20,19 +20,36 @@ class CommandController extends CommandUtils {
     }
   }
 
-  handle(payload) {
+  async handle(payload) {
+    const { provider } = payload
+    const user = await User.findOne({
+      [`${provider.name}.id`]: provider.user.id
+    })
+
+    if (!user) {
+      LogController.sendError({
+        file: 'CommandController.handle',
+        resume: `Unable to find user.`,
+        details: payload
+      })
+      return BotController.sendMessageToUser({
+        provider: provider.name,
+        message:
+          'Opa, algo está errado :/\nTente novamente ou mande uma mensagem lá no canal #duvidas',
+        username: provider.user.username
+      })
+    }
+
     const command = payload.content.split(' ')[0]
-    this.commands[command](payload)
+    this.commands[command]({ user, ...payload })
   }
 
-  async monthlyRanking({ provider, content }) {
+  async monthlyRanking({ user, provider, content }) {
     try {
       const { date, monthName } = super.getDateFromMessage(content)
 
       const ranking = await Score.findAllByMonth({ date })
-      const user = await User.findOne({
-        [`${provider.name}.id`]: provider.user.id
-      })
+
       const message = super.generateRankingMessage({
         user,
         ranking,
@@ -48,12 +65,10 @@ class CommandController extends CommandUtils {
     }
   }
 
-  async generalRanking({ provider }) {
+  async generalRanking({ user, provider }) {
     try {
       const ranking = await RankingController.getGeneralRanking({})
-      const user = await User.findOne({
-        [`${provider.name}.id`]: provider.user.id
-      })
+
       const message = super.generateRankingMessage({
         user,
         ranking
@@ -68,11 +83,7 @@ class CommandController extends CommandUtils {
     }
   }
 
-  async userScore({ provider }) {
-    const user = await User.findOne({
-      [`${provider.name}.id`]: provider.user.id
-    })
-
+  async userScore({ user, provider }) {
     const message = await super.generateUserScoresMessage(user)
 
     BotController.sendMessageToUser({
@@ -82,11 +93,7 @@ class CommandController extends CommandUtils {
     })
   }
 
-  async userAchievements({ provider }) {
-    const user = await User.findOne({
-      [`${provider.name}.id`]: provider.user.id
-    })
-
+  async userAchievements({ user, provider }) {
     const message = super.generateAchievementsMessage(user)
 
     BotController.sendMessageToUser({
@@ -96,11 +103,7 @@ class CommandController extends CommandUtils {
     })
   }
 
-  async sendCommands({ provider }) {
-    const user = await User.findOne({
-      [`${provider.name}.id`]: provider.user.id
-    })
-
+  async sendCommands({ user, provider }) {
     const message = super.getCommandsText(user)
     BotController.sendMessageToUser({
       provider: provider.name,
@@ -109,11 +112,7 @@ class CommandController extends CommandUtils {
     })
   }
 
-  async checkInfos({ provider, content }) {
-    const user = await User.findOne({
-      [`${provider.name}.id`]: provider.user.id
-    })
-
+  async checkInfos({ user, provider, content }) {
     const userBeingVerified = await User.findOne({
       [`${provider.name}.username`]: content
         .trim()
@@ -130,11 +129,7 @@ class CommandController extends CommandUtils {
     })
   }
 
-  async sendMessage({ provider, mentions, channels, content }) {
-    const user = await User.findOne({
-      [`${provider.name}.id`]: provider.user.id
-    })
-
+  async sendMessage({ user, provider, mentions, channels, content }) {
     if (!user.isCoreTeam) {
       return BotController.sendMessageToUser({
         provider: provider.name,
@@ -164,11 +159,7 @@ class CommandController extends CommandUtils {
     }
   }
 
-  async handleGivePoints({ provider, content }) {
-    const user = await User.findOne({
-      [`${provider.name}.id`]: provider.user.id
-    })
-
+  async handleGivePoints({ user, provider, content }) {
     if (!user.isCoreTeam) {
       return BotController.sendMessageToUser({
         provider: provider.name,
