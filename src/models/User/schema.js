@@ -1,5 +1,32 @@
 import mongoose from 'mongoose'
 
+const achievement = {
+  name: {
+    type: String,
+    required: true
+  },
+  medal: {
+    type: String,
+    enum: ['bronze', 'silver', 'gold', 'platinum', 'diamond']
+  },
+  range: {
+    type: String,
+    enum: ['I', 'II', 'III', 'IV', 'V']
+  },
+  currentValue: {
+    type: Number,
+    required: true
+  },
+  nextTarget: {
+    type: Number,
+    required: true
+  },
+  earnedIn: {
+    type: Date,
+    required: true
+  }
+}
+
 export default new mongoose.Schema(
   {
     uuid: {
@@ -24,7 +51,7 @@ export default new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    achievements: Array,
+    achievements: [achievement],
     score: {
       value: {
         type: Number,

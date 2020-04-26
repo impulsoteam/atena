@@ -59,7 +59,3 @@ export const messageSended = () => {
     medals
   })
 }
-
-export const types = {
-  messageSended: 'MESSAGE_SENDED'
-}

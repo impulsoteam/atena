@@ -135,7 +135,7 @@ export default class CommandUtils {
   }
 
   async generateUserScoresMessage(user) {
-    const response = {}
+    const response = { msg: '', attachments: [] }
 
     if (user.isCoreTeam) {
       const { score } = await RankingController.getMonthlyPositionByUser(
@@ -191,7 +191,7 @@ export default class CommandUtils {
   }
 
   generateAchievementsMessage(user) {
-    const response = {}
+    const response = { msg: '', attachments: [] }
 
     if (!user.achievements.length) {
       response.msg = 'Ops! Você ainda não tem conquistas registradas. :('

@@ -21,27 +21,31 @@ class CommandController extends CommandUtils {
   }
 
   async handle(payload) {
-    const { provider } = payload
-    const user = await User.findOne({
-      [`${provider.name}.id`]: provider.user.id
-    })
+    try {
+      const { provider } = payload
+      const user = await User.findOne({
+        [`${provider.name}.id`]: provider.user.id
+      })
 
-    if (!user) {
-      LogController.sendError({
-        file: 'CommandController.handle',
-        resume: `Unable to find user.`,
-        details: payload
-      })
-      return BotController.sendMessageToUser({
-        provider: provider.name,
-        message:
-          'Opa, algo está errado :/\nTente novamente ou mande uma mensagem lá no canal #duvidas',
-        username: provider.user.username
-      })
+      if (!user) {
+        LogController.sendError({
+          file: 'CommandController.handle',
+          resume: `Unable to find user.`,
+          details: payload
+        })
+        return BotController.sendMessageToUser({
+          provider: provider.name,
+          message:
+            'Opa, algo está errado :/\nTente novamente ou mande uma mensagem lá no canal #duvidas',
+          username: provider.user.username
+        })
+      }
+
+      const command = payload.content.split(' ')[0]
+      this.commands[command]({ user, ...payload })
+    } catch (error) {
+      LogController.sendError(error)
     }
-
-    const command = payload.content.split(' ')[0]
-    this.commands[command]({ user, ...payload })
   }
 
   async monthlyRanking({ user, provider, content }) {
@@ -84,112 +88,136 @@ class CommandController extends CommandUtils {
   }
 
   async userScore({ user, provider }) {
-    const message = await super.generateUserScoresMessage(user)
+    try {
+      const message = await super.generateUserScoresMessage(user)
 
-    BotController.sendMessageToUser({
-      provider: provider.name,
-      message,
-      username: provider.user.username
-    })
-  }
-
-  async userAchievements({ user, provider }) {
-    const message = super.generateAchievementsMessage(user)
-
-    BotController.sendMessageToUser({
-      provider: provider.name,
-      message,
-      username: provider.user.username
-    })
-  }
-
-  async sendCommands({ user, provider }) {
-    const message = super.getCommandsText(user)
-    BotController.sendMessageToUser({
-      provider: provider.name,
-      message,
-      username: provider.user.username
-    })
-  }
-
-  async checkInfos({ user, provider, content }) {
-    const userBeingVerified = await User.findOne({
-      [`${provider.name}.username`]: content
-        .trim()
-        .split(' ')[1]
-        .substr(1)
-    })
-
-    const message = super.getUserInfosText({ user, userBeingVerified })
-
-    BotController.sendMessageToUser({
-      provider: provider.name,
-      message,
-      username: provider.user.username
-    })
-  }
-
-  async sendMessage({ user, provider, mentions, channels, content }) {
-    if (!user.isCoreTeam) {
-      return BotController.sendMessageToUser({
-        provider: provider.name,
-        message: 'Opa, não tens acesso a esta operação.',
-        username: provider.user.username
-      })
-    }
-    const message = content
-      .split('\n')
-      .slice(1)
-      .join('\n')
-
-    for (const { username } of mentions) {
       BotController.sendMessageToUser({
         provider: provider.name,
         message,
-        username
+        username: provider.user.username
       })
+    } catch (error) {
+      LogController.sendError(error)
     }
+  }
 
-    for (const { name } of channels) {
-      BotController.sendMessageToChannel({
+  async userAchievements({ user, provider }) {
+    try {
+      const message = super.generateAchievementsMessage(user)
+
+      BotController.sendMessageToUser({
         provider: provider.name,
         message,
-        channel: name
+        username: provider.user.username
       })
+    } catch (error) {
+      LogController.sendError(error)
+    }
+  }
+
+  async sendCommands({ user, provider }) {
+    try {
+      const message = super.getCommandsText(user)
+      BotController.sendMessageToUser({
+        provider: provider.name,
+        message,
+        username: provider.user.username
+      })
+    } catch (error) {
+      LogController.sendError(error)
+    }
+  }
+
+  async checkInfos({ user, provider, content }) {
+    try {
+      const userBeingVerified = await User.findOne({
+        [`${provider.name}.username`]: content
+          .trim()
+          .split(' ')[1]
+          .substr(1)
+      })
+
+      const message = super.getUserInfosText({ user, userBeingVerified })
+
+      BotController.sendMessageToUser({
+        provider: provider.name,
+        message,
+        username: provider.user.username
+      })
+    } catch (error) {
+      LogController.sendError(error)
+    }
+  }
+
+  async sendMessage({ user, provider, mentions, channels, content }) {
+    try {
+      if (!user.isCoreTeam) {
+        return BotController.sendMessageToUser({
+          provider: provider.name,
+          message: 'Opa, não tens acesso a esta operação.',
+          username: provider.user.username
+        })
+      }
+      const message = content
+        .split('\n')
+        .slice(1)
+        .join('\n')
+
+      for (const { username } of mentions) {
+        BotController.sendMessageToUser({
+          provider: provider.name,
+          message,
+          username
+        })
+      }
+
+      for (const { name } of channels) {
+        BotController.sendMessageToChannel({
+          provider: provider.name,
+          message,
+          channel: name
+        })
+      }
+    } catch (error) {
+      LogController.sendError(error)
     }
   }
 
   async handleGivePoints({ user, provider, content }) {
-    if (!user.isCoreTeam) {
-      return BotController.sendMessageToUser({
-        provider: provider.name,
-        message: 'Opa, não tens acesso a esta operação.',
-        username: provider.user.username
-      })
+    try {
+      if (!user.isCoreTeam) {
+        return BotController.sendMessageToUser({
+          provider: provider.name,
+          message: 'Opa, não tens acesso a esta operação.',
+          username: provider.user.username
+        })
+      }
+
+      const regex = /^!darpontos\s(([@][\w\d-]+\s?)+\s?)\s(\d{1,5})\s"(.*?)"$/g
+
+      const [, userList, , points, reason] = regex.exec(content)
+
+      const usernames = userList
+        .trim()
+        .split(' ')
+        .map(username => username.substr(1))
+
+      if (!usernames || !points || !reason) {
+        return BotController.sendMessageToUser({
+          provider: provider.name,
+          message: {
+            msg: `Ops! Tem algo *errado* no seu comando. Tente desta forma:
+          ${'`!darpontos`'} ${'`@nome-usuário`'} ${'`pontos`'} ${'`"motivo"`'}
+          Ah! E o motivo deve estar entre aspas!`
+          },
+          username: provider.user.username
+        })
+      }
+
+      super.givePoints({ user, usernames, provider, points, reason })
+    } catch (error) {
+      LogController.sendError(error)
     }
-
-    const regex = /^!darpontos\s(([@][\w\d-]+\s?)+\s?)\s(\d{1,5})\s"(.*?)"$/g
-
-    const [, userList, , points, reason] = regex.exec(content)
-
-    const usernames = userList
-      .trim()
-      .split(' ')
-      .map(username => username.substr(1))
-
-    if (!usernames || !points || !reason) {
-      return BotController.sendMessageToUser({
-        provider: provider.name,
-        message: {
-          msg: `Ops! Tem algo *errado* no seu comando. Tente desta forma:
-            ${'`!darpontos`'} ${'`@nome-usuário`'} ${'`pontos`'} ${'`"motivo"`'}
-            Ah! E o motivo deve estar entre aspas!`
-        },
-        username: provider.user.username
-      })
-    }
-
-    super.givePoints({ user, usernames, provider, points, reason })
   }
 }
 

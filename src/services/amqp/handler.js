@@ -1,5 +1,6 @@
 import LogController from '../../controllers/LogController'
 import UserController from '../../controllers/UserController'
+import { removeEmptyValues } from '../../utils'
 
 export const handlePayload = ({ data, properties }) => {
   const types = {
@@ -31,11 +32,12 @@ const handleUser = async data => {
       rocketchat: {
         id: rocket_chat.id,
         username: rocket_chat.username
-      }
+      },
+      linkedin: { id: linkedin.uid },
+      google: { id: google.uid }
     }
-    !!linkedin.uid && (user.linkedin = { id: linkedin.uid })
-    !!google.uid && (user.google = { id: google.uid })
 
+    removeEmptyValues(user)
     UserController.handle(user)
   } catch (error) {
     LogController.sendError(error)
