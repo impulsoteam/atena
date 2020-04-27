@@ -6,6 +6,7 @@ import { handlePayload } from './handler'
 
 const {
   AMQP_URL: amqpUrl,
+  AMQP_BIND: bind,
   AMQP_QUEUE_IN: queueIn,
   AMQP_QUEUE_OUT: queueOut
 } = process.env
@@ -23,7 +24,7 @@ export const connect = async () => {
 
     await channel.assertQueue(queueIn, { durable: true })
     console.log(`${chalk.green('✓')} [*] ${queueIn} successfully asserted`)
-
+    await channel.bindQueue(queueIn, bind)
     await channel.consume(
       queueIn,
       msg => {
@@ -42,9 +43,10 @@ export const connect = async () => {
 }
 
 export const publish = async payload => {
+  const queueOpts = { persistent: false }
   const message = Buffer.from(JSON.stringify(payload))
   try {
-    await channel.sendToQueue(queueOut, message, {})
+    await channel.publish(queueOut, '', message, queueOpts)
   } catch (error) {
     LogController.sendError(error)
   }
