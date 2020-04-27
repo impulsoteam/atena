@@ -102,32 +102,6 @@ class RankingController extends RankingUtils {
       score: ranking[index].score.value
     }
   }
-
-  // async getMonthlyScoreByUser(uuid) {
-  //   const [{ score }] = await Score.aggregate([
-  //     {
-  //       $match: {
-  //         user: uuid,
-  //         date: {
-  //           $gte: moment()
-  //             .startOf('month')
-  //             .toDate(),
-  //           $lt: moment()
-  //             .endOf('month')
-  //             .toDate()
-  //         }
-  //       }
-  //     },
-  //     {
-  //       $group: {
-  //         _id: null,
-  //         score: { $sum: '$score' }
-  //       }
-  //     }
-  //   ])
-
-  //   return score
-  // }
 }
 
 export default new RankingController()

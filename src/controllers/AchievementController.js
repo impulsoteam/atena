@@ -71,7 +71,6 @@ class AchievementController {
   }
 
   async createAchievement({ user, message, newAchievement, nextAchievement }) {
-    console.log('-=-=-=-=-=-=-=-=-update')
     try {
       const { name, medal, range, score } = newAchievement
       const achievement = {
@@ -106,7 +105,6 @@ class AchievementController {
   }
 
   async updateAchievement({ user, message, newAchievement, nextAchievement }) {
-    console.log('-=-=-=-=-=-=-=-=-update')
     const { name, medal, range, score } = newAchievement
     const achievement = {
       name,
