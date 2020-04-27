@@ -1,6 +1,6 @@
 import { api } from '@rocket.chat/sdk'
 
-import { levelsList } from '../../config/score'
+import { levels } from '../../config/score'
 import LogController from '../../controllers/LogController'
 import {
   getUserInfoByUsername,
@@ -34,7 +34,7 @@ export const getPreviousMessage = async ({ roomId }) => {
 
 export const updateBadge = async ({ level, id }) => {
   try {
-    const badges = levelsList().map(({ badge }) => badge)
+    const badges = levels.map(({ badge }) => badge)
     const { user } = await api.get(`users.info?userId=${id}`)
 
     const roles = user.roles.filter(role => !badges.includes(role))

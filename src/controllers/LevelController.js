@@ -50,9 +50,9 @@ class LevelController {
   }
 
   updateBadges(user) {
-    for (const { name, service } of providers) {
-      if (user[name] && user[name].id)
-        service({ id: user[name].id, level: user.level.value })
+    for (const { provider, service } of providers) {
+      if (user[provider] && user[provider].id)
+        service({ id: user[provider].id, level: user.level.value })
     }
   }
 }
