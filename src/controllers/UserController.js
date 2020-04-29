@@ -35,7 +35,7 @@ class UserController {
       if (result.notFound) return
       LogController.sendNotify({
         file: 'controllers/UserController.delete',
-        resume: `User data removed`,
+        resume: 'User data removed',
         details: {
           uuid: payload.uuid,
           email: payload.email,

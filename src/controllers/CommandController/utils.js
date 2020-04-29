@@ -82,9 +82,7 @@ export default class CommandUtils {
     const fullDate = moment(`${year}/${month}`, 'YYYY/MM').toDate()
     return {
       date: fullDate,
-      monthName: moment(fullDate)
-        .locale('pt')
-        .format('MMMM')
+      monthName: moment(fullDate).locale('pt').format('MMMM')
     }
   }
 

@@ -131,10 +131,7 @@ class CommandController extends CommandUtils {
   async checkInfos({ user, provider, content }) {
     try {
       const userBeingVerified = await User.findOne({
-        [`${provider.name}.username`]: content
-          .trim()
-          .split(' ')[1]
-          .substr(1)
+        [`${provider.name}.username`]: content.trim().split(' ')[1].substr(1)
       })
 
       const message = super.getUserInfosText({ user, userBeingVerified })
@@ -158,10 +155,7 @@ class CommandController extends CommandUtils {
           username: provider.user.username
         })
       }
-      const message = content
-        .split('\n')
-        .slice(1)
-        .join('\n')
+      const message = content.split('\n').slice(1).join('\n')
 
       for (const { username } of mentions) {
         BotController.sendMessageToUser({
