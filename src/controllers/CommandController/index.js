@@ -189,7 +189,8 @@ class CommandController extends CommandUtils {
 
       const regex = /^!darpontos\s(([@][\w\d-]+\s?)+\s?)\s(\d{1,5})\s"(.*?)"$/g
 
-      const [, userList, , points, reason] = regex.exec(content)
+      const [, userList, , stringPoints, reason] = regex.exec(content)
+      const points = parseInt(stringPoints)
 
       const usernames = userList
         .trim()
