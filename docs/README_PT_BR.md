@@ -68,7 +68,7 @@ Para utilizar a integração do Github, siga os passos da documentação, clican
 
 ### Configurando a integração com Wordpress
 
-Para utilizar a integração do Github, siga os passos da documentação, clicando [aqui](WORDPRESS_PT_BR.md).
+Para utilizar a integração do Wordpress, siga os passos da documentação, clicando [aqui](WORDPRESS_PT_BR.md).
 
 ### Executando em ambiente de desenvolvimento
 
@@ -110,7 +110,7 @@ Leia nosso [guia de contribuição](CONTRIBUTING_PT_BR.md) para conhecer nosso p
 
 ## Comunidade
 
-Todos os comentários e sugestões são bem-vindas e podem ser feitas via Issues no Github ou lá no [RocketChat](https://chat.impulso.network/)!
+Todos os comentários e sugestões são bem-vindos e podem ser feitos via Issues no Github ou lá no [RocketChat](https://chat.impulso.network/)!
 
 💬 Junte-se a comunidade em [Impulso Network](https://impulso.network)
 
