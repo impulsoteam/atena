@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 import messageSchema from './schema'
 
-messageSchema.pre('findOneAndUpdate', function() {
+messageSchema.pre('findOneAndUpdate', function () {
   const update = this.getUpdate()
   if (update.__v != null) {
     delete update.__v
@@ -20,7 +20,7 @@ messageSchema.pre('findOneAndUpdate', function() {
   update.$inc.__v = 1
 })
 
-messageSchema.statics.createOrUpdate = async function(query, payload) {
+messageSchema.statics.createOrUpdate = async function (query, payload) {
   return this.findOneAndUpdate(query, payload, {
     runValidators: true,
     upsert: true,

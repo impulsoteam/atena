@@ -35,7 +35,7 @@ class UserController {
       if (result.notFound) return
       LogController.sendNotify({
         file: 'controllers/UserController.delete',
-        resume: `User data removed`,
+        resume: 'User data removed',
         details: {
           uuid: payload.uuid,
           email: payload.email,
@@ -150,13 +150,27 @@ class UserController {
     const general = await RankingController.getGeneralPositionByUser(uuid)
     const monthly = await RankingController.getMonthlyPositionByUser(uuid)
 
+    const types = {
+      messageSended: 'network.message.sended',
+      reactionSended: 'network.reaction.sended',
+      reactionReceived: 'network.reaction.received'
+    }
+
+    const medals = {
+      bronze: 'bronze',
+      silver: 'prata',
+      gold: 'ouro',
+      platinum: 'platina',
+      diamond: 'diamante'
+    }
+
     return {
       user: { level: user.level.value, score: user.score.value },
       rankings: { general, monthly },
       userAchievements: user.achievements.map(achievement => ({
-        type: achievement.name,
+        type: types[achievement.name],
         name: achievement.name,
-        medal: achievement.medal,
+        medal: medals[achievement.medal],
         tier: achievement.range,
         score: achievement.currentValue,
         maxScore: achievement.nextTarget

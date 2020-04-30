@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 
 import userSchema from './schema'
 
-userSchema.statics.createOrUpdate = async function(payload) {
+userSchema.statics.createOrUpdate = async function (payload) {
   const alreadyExists = await this.findOne({ uuid: payload.uuid })
 
   if (alreadyExists) {
@@ -17,7 +17,10 @@ userSchema.statics.createOrUpdate = async function(payload) {
   }
 }
 
-userSchema.statics.updateAchievements = async function({ uuid, achievements }) {
+userSchema.statics.updateAchievements = async function ({
+  uuid,
+  achievements
+}) {
   return this.findOneAndUpdate(
     { uuid },
     { achievements },
@@ -30,7 +33,7 @@ userSchema.statics.updateAchievements = async function({ uuid, achievements }) {
   )
 }
 
-userSchema.statics.updateScore = async function({ uuid, score, level }) {
+userSchema.statics.updateScore = async function ({ uuid, score, level }) {
   return this.findOneAndUpdate(
     { uuid },
     { score, level, lastInteraction: moment().toDate() },
@@ -43,7 +46,7 @@ userSchema.statics.updateScore = async function({ uuid, score, level }) {
   )
 }
 
-userSchema.statics.deleteUserData = async function(uuid) {
+userSchema.statics.deleteUserData = async function (uuid) {
   const { deletedCount } = await this.deleteOne({ uuid })
   if (deletedCount) {
     const scores = await mongoose.model('Score').deleteMany({ user: uuid })
