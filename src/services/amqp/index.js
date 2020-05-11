@@ -43,7 +43,7 @@ export const connect = async () => {
 }
 
 export const publish = async payload => {
-  const queueOpts = { persistent: false }
+  const queueOpts = { persistent: false, type: payload.type }
   const message = Buffer.from(JSON.stringify(payload))
   try {
     await channel.publish(queueOut, '', message, queueOpts)
