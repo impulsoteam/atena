@@ -48,133 +48,16 @@ class UserController {
   }
 
   async getProfile(uuid) {
-    try {
-      if (!uuid) return { error: 'UUID não enviado' }
-
-      const user = await User.findOne({ uuid })
-      if (!user) return { error: 'Usuário não encontrado' }
-      const types = {
-        messageSended: {
-          name: 'Network | Mensagens Enviadas',
-          type: 'network.message.sended'
-        }
-      }
-      const medals = {
-        bronze: 'Bronze',
-        silver: 'Prata',
-        gold: 'Ouro',
-        platinum: 'Platina',
-        diamond: 'Diamante'
-      }
-
-      const allAchievements = user.achievements.map(
-        ({ name, medal, range, currentValue, nextTarget }) => ({
-          type: types[name].type,
-          name: types[name].name,
-          medal: medals[medal],
-          tier: range,
-          score: currentValue,
-          maxScore: nextTarget
-        })
-      )
-
-      const response = {
-        name: user.name,
-        avatar: user.avatar,
-        level: user.level.value,
-        score: user.score.value,
-        userAchievements: [
-          {
-            name: 'Network',
-            achievements: allAchievements
-          }
-        ]
-      }
-
-      if (user.isCoreTeam) {
-        response.generalPosition = 'coreTeam'
-        response.monthlyPosition = 'coreTeam'
-      } else {
-        const general = await RankingController.getGeneralPositionByUser(
-          user.uuid
-        )
-        const monthly = await RankingController.getMonthlyPositionByUser(
-          user.uuid
-        )
-        response.generalPosition = general.position
-        response.monthlyPosition = monthly.position
-      }
-
-      return response
-    } catch (error) {
-      LogController.sendError(error)
-      return { error: 'Unable to search for user' }
-    }
-  }
-
-  async getEveryoneWhoScored() {
-    try {
-      const users = await User.find({ 'score.value': { $gt: 0 } })
-
-      const response = users.map(
-        ({
-          uuid,
-          name,
-          email,
-          rocketchat,
-          isCoreTeam,
-          level,
-          score,
-          createdAt
-        }) => ({
-          uuid: uuid,
-          name: name,
-          email: email,
-          username: rocketchat.username,
-          isCoreTeam: isCoreTeam,
-          level: level.value,
-          score: score.value,
-          createdAt: createdAt
-        })
-      )
-      return response
-    } catch (error) {
-      LogController.sendError(error)
-      return { error: 'Could not generate user list' }
-    }
-  }
-
-  async getUserInfos(uuid) {
     const user = await User.findOne({ uuid })
-    if (!user) return { error: 'Unable to find user' }
+
+    if (!user) throw new Error(`Unable to find ${uuid}`)
     const general = await RankingController.getGeneralPositionByUser(uuid)
     const monthly = await RankingController.getMonthlyPositionByUser(uuid)
-
-    const types = {
-      messageSended: 'network.message.sended',
-      reactionSended: 'network.reaction.sended',
-      reactionReceived: 'network.reaction.received'
-    }
-
-    const medals = {
-      bronze: 'bronze',
-      silver: 'prata',
-      gold: 'ouro',
-      platinum: 'platina',
-      diamond: 'diamante'
-    }
 
     return {
       user: { level: user.level.value, score: user.score.value },
       rankings: { general, monthly },
-      userAchievements: user.achievements.map(achievement => ({
-        type: types[achievement.name],
-        name: achievement.name,
-        medal: medals[achievement.medal],
-        tier: achievement.range,
-        score: achievement.currentValue,
-        maxScore: achievement.nextTarget
-      }))
+      achievements: user.achievements
     }
   }
 }

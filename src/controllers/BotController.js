@@ -38,38 +38,47 @@ class BotController {
   }
 
   async sendMonthlyRankingToChannel() {
-    const ranking = await RankingController.getMonthlyRanking({ limit: 5 })
-    if (ranking.message || ranking.length < 5) return
+    try {
+      const { ranking } = await RankingController.getMonthlyRanking({
+        offset: 0,
+        size: 5
+      })
+      if (ranking.length < 5) return
 
-    const channels = process.env.DEFAULT_CHANNELS.split('|')
-    const monthName = moment().locale('pt').format('MMMM')
-    const message = {
-      msg: `Saiba quem são as pessoas que mais me orgulham no Olimpo pela interação. Essas nobres pessoas têm se destacado em meu templo em ${monthName}:`,
-      attachments: []
-    }
-
-    message.attachments = ranking.map((user, index) => {
-      return {
-        text: `${index + 1}º lugar está *${user.name}* com *${
-          user.score
-        }* pontos de reputação e nível *${user.level}*`
+      const channels = process.env.DEFAULT_CHANNELS.split('|')
+      const monthName = moment()
+        .locale('pt')
+        .format('MMMM')
+      const message = {
+        msg: `Saiba quem são as pessoas que mais me orgulham no Olimpo pela interação. Essas nobres pessoas têm se destacado em meu templo em ${monthName}:`,
+        attachments: []
       }
-    })
 
-    for (const provider of Object.keys(providers)) {
-      for (const channel of channels) {
-        const service = providers[provider]
+      message.attachments = ranking.map((user, index) => {
+        return {
+          text: `${index + 1}º lugar está *${user.name}* com *${
+            user.score
+          }* pontos de reputação e nível *${user.level}*`
+        }
+      })
 
-        if (service) {
-          service({ message, channel })
-        } else {
-          LogController.sendError({
-            file: 'BotController.sendMessageToChannel',
-            resume: `Unable to find service to provider ${provider}`,
-            details: { provider, channel }
-          })
+      for (const provider of Object.keys(providers)) {
+        for (const channel of channels) {
+          const service = providers[provider]
+
+          if (service) {
+            service({ message, channel })
+          } else {
+            LogController.sendError({
+              file: 'BotController.sendMessageToChannel',
+              resume: `Unable to find service to provider ${provider}`,
+              details: { provider, channel }
+            })
+          }
         }
       }
+    } catch (error) {
+      LogController.sendError(error)
     }
   }
 }
