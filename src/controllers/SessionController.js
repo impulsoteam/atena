@@ -23,7 +23,9 @@ class SessionController {
         avatar: user.avatar || '',
         uuid: user.uuid || '',
         isCoreTeam: user.isCoreTeam || false,
-        expireAt: moment().add(expireAt, 'minutes').format()
+        expireAt: moment()
+          .add(expireAt, 'minutes')
+          .format()
       }
 
       const token = await encrypt(data)
@@ -52,7 +54,9 @@ class SessionController {
           avatar: user.avatar,
           uuid: user.uuid,
           isCoreTeam: user.isCoreTeam,
-          expireAt: moment().add(expireAt, 'minutes').format()
+          expireAt: moment()
+            .add(expireAt, 'minutes')
+            .format()
         }
 
         const token = await encrypt(data)

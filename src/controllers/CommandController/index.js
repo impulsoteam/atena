@@ -52,7 +52,11 @@ class CommandController extends CommandUtils {
     try {
       const { date, monthName } = super.getDateFromMessage(content)
 
-      const ranking = await Score.findAllByMonth({ date })
+      const { ranking } = await Score.findAllByMonth({
+        date,
+        offset: 0,
+        size: 99999
+      })
 
       const message = super.generateRankingMessage({
         user,
@@ -71,7 +75,10 @@ class CommandController extends CommandUtils {
 
   async generalRanking({ user, provider }) {
     try {
-      const ranking = await RankingController.getGeneralRanking({})
+      const { ranking } = await RankingController.getGeneralRanking({
+        offset: 0,
+        size: 99999
+      })
 
       const message = super.generateRankingMessage({
         user,
@@ -131,7 +138,10 @@ class CommandController extends CommandUtils {
   async checkInfos({ user, provider, content }) {
     try {
       const userBeingVerified = await User.findOne({
-        [`${provider.name}.username`]: content.trim().split(' ')[1].substr(1)
+        [`${provider.name}.username`]: content
+          .trim()
+          .split(' ')[1]
+          .substr(1)
       })
 
       const message = super.getUserInfosText({ user, userBeingVerified })
@@ -155,7 +165,10 @@ class CommandController extends CommandUtils {
           username: provider.user.username
         })
       }
-      const message = content.split('\n').slice(1).join('\n')
+      const message = content
+        .split('\n')
+        .slice(1)
+        .join('\n')
 
       for (const { username } of mentions) {
         BotController.sendMessageToUser({

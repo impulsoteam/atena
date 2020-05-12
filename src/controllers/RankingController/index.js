@@ -1,69 +1,48 @@
 import Score from '../../models/Score'
 import User from '../../models/User'
-import LogController from '../LogController'
 import RankingUtils from './utils'
 
 class RankingController extends RankingUtils {
-  async getMonthlyRanking({ year, month, limit, page }) {
-    const { date, monthName } = await this.getDate({ year, month })
-
-    try {
-      const ranking = await Score.findAllByMonth({ date, limit, page })
-      if (!ranking.length) {
-        return {
-          message: `Ops! Ainda ninguém pontuou em ${monthName}. =/`
-        }
-      }
-
-      if (ranking.length < 3) {
-        return {
-          message: `Ops! Ranking incompleto em ${monthName}. =/`
-        }
-      }
-
-      return ranking
-    } catch (error) {
-      LogController.sendError(error)
-      return { message: `Não foi possível buscar o ranking`, error }
-    }
+  async getMonthlyRanking({ year, month, offset, size }) {
+    const { date } = await this.getDate({ year, month })
+    const response = await Score.findAllByMonth({ date, offset, size })
+    return response
   }
 
-  async getGeneralRanking({ page, limit }) {
-    try {
-      const ranking = await User.aggregate([
-        {
-          $match: {
-            isCoreTeam: false,
-            'score.value': { $gt: 0 }
-          }
-        },
-        { $sort: { 'score.value': -1 } },
-        {
-          $project: {
-            _id: 0,
-            rocketId: '$rocketchat.id',
-            name: 1,
-            avatar: 1,
-            score: '$score.value',
-            level: '$level.value',
-            uuid: 1,
-            username: '$rocketchat.username'
-          }
-        },
+  async getGeneralRanking({ offset, size }) {
+    const ranking = await User.aggregate([
+      {
+        $match: {
+          isCoreTeam: false,
+          'score.value': { $gt: 0 }
+        }
+      },
+      { $sort: { 'score.value': -1 } },
+      {
+        $project: {
+          _id: 0,
+          rocketchat: 1,
+          name: 1,
+          avatar: 1,
+          score: '$score.value',
+          level: '$level.value',
+          uuid: 1
+        }
+      },
+      { $skip: parseInt(offset) },
+      { $limit: parseInt(size) }
+    ])
 
-        { $skip: page ? parseInt(page) * parseInt(limit || 50) : 0 },
-        { $limit: parseInt(limit) || 99999 }
-      ])
+    const total = await User.countDocuments({
+      isCoreTeam: false,
+      'score.value': { $gt: 0 }
+    })
 
-      return ranking
-    } catch (error) {
-      LogController.sendError(error)
-      return { message: `Não foi possível buscar o ranking`, error }
-    }
+    return { total, ranking }
   }
 
   async getMonthlyPositionByUser(uuid) {
-    const ranking = await Score.findAllByMonth({})
+    const { ranking } = await Score.findAllByMonth({ offset: 0, size: 99999 })
     const index = ranking.findIndex(user => user.uuid === uuid)
 
     if (index === -1)
