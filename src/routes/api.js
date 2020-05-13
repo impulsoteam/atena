@@ -2,23 +2,9 @@ import { Router } from 'express'
 
 import LogController from '../controllers/LogController'
 import RankingController from '../controllers/RankingController'
-import SessionController from '../controllers/SessionController'
 import UserController from '../controllers/UserController'
-import { decrypt } from '../services/crypto'
+
 const router = new Router()
-
-router.post('/auth', async (req, res) => {
-  const { user, password } = await decrypt(req.body.data)
-
-  const result = await SessionController.rocketchat(user, password)
-  return result.error ? res.status(500).json(result) : res.json(result)
-})
-
-router.post('/auth/linkedin', async (req, res) => {
-  const result = await SessionController.linkedin(req.body.code)
-
-  return result.error ? res.status(500).json(result) : res.json(result)
-})
 
 router.get('/ranking/general', async (req, res) => {
   try {
