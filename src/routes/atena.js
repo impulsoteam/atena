@@ -21,19 +21,17 @@ router.post('/auth/linkedin', async (req, res) => {
 })
 
 router.get('/ranking/general', async (req, res) => {
-  const { size, offset } = req.query
   const { ranking } = await RankingController.getGeneralRanking({
-    size,
-    offset
+    size: 20,
+    offset: 0
   })
   return res.json(ranking)
 })
 
 router.get('/ranking/monthly', async (req, res) => {
-  const { size, offset } = req.query
   const { ranking } = await RankingController.getMonthlyRanking({
-    size,
-    offset
+    size: 20,
+    offset: 0
   })
   return res.json(ranking)
 })
