@@ -21,25 +21,73 @@ router.post('/auth/linkedin', async (req, res) => {
 })
 
 router.get('/ranking/general', async (req, res) => {
-  const { page, limit } = req.query
-  const result = await RankingController.getGeneralRanking({ page, limit })
-  return res.json(result)
+  const { size, offset } = req.query
+  const { ranking } = await RankingController.getGeneralRanking({
+    size,
+    offset
+  })
+  return res.json(ranking)
 })
 
 router.get('/ranking/monthly', async (req, res) => {
-  const { year, month, page, limit } = req.query
-  const result = await RankingController.getMonthlyRanking({
-    year,
-    month,
-    page,
-    limit
+  const { size, offset } = req.query
+  const { ranking } = await RankingController.getMonthlyRanking({
+    size,
+    offset
   })
-  return res.json(result)
+  return res.json(ranking)
 })
 
 router.get('/users/:uuid/profile', async (req, res) => {
-  const result = await UserController.getProfile(req.params.uuid)
-  return res.json(result)
+  const { user, rankings } = await UserController.getProfile(req.params.uuid)
+
+  const types = {
+    messageSended: {
+      name: 'Network | Mensagens Enviadas',
+      type: 'network.message.sended'
+    }
+  }
+  const medals = {
+    bronze: 'Bronze',
+    silver: 'Prata',
+    gold: 'Ouro',
+    platinum: 'Platina',
+    diamond: 'Diamante'
+  }
+
+  const allAchievements = user.achievements.map(
+    ({ name, medal, range, currentValue, nextTarget }) => ({
+      type: types[name].type,
+      name: types[name].name,
+      medal: medals[medal],
+      tier: range,
+      score: currentValue,
+      maxScore: nextTarget
+    })
+  )
+
+  const response = {
+    name: user.name,
+    avatar: user.avatar,
+    level: user.level.value,
+    score: user.score.value,
+    userAchievements: [
+      {
+        name: 'Network',
+        achievements: allAchievements
+      }
+    ]
+  }
+
+  if (user.isCoreTeam) {
+    response.generalPosition = 'coreTeam'
+    response.monthlyPosition = 'coreTeam'
+  } else {
+    response.generalPosition = rankings.general.position
+    response.monthlyPosition = rankings.monthly.position
+  }
+
+  return res.json(response)
 })
 
 export default router
