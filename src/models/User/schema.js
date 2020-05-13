@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
 const achievement = {
+  _id: false,
   name: {
     type: String,
     required: true

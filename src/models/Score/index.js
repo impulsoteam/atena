@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 
 import scoreSchema from './schema'
 
-scoreSchema.statics.getDailyScore = async function (uuid) {
+scoreSchema.statics.getDailyScore = async function(uuid) {
   const result = await this.aggregate([
     {
       $match: {
@@ -11,12 +11,16 @@ scoreSchema.statics.getDailyScore = async function (uuid) {
         $and: [
           {
             createdAt: {
-              $gte: moment().startOf('day').toDate()
+              $gte: moment()
+                .startOf('day')
+                .toDate()
             }
           },
           {
             createdAt: {
-              $lte: moment().endOf('day').toDate()
+              $lte: moment()
+                .endOf('day')
+                .toDate()
             }
           }
         ]
@@ -39,14 +43,22 @@ scoreSchema.statics.getDailyScore = async function (uuid) {
   return result[0] && result[0].score ? result[0].score : 0
 }
 
-scoreSchema.statics.findAllByMonth = async function ({ date, limit, page }) {
+scoreSchema.statics.findAllByMonth = async function({ date, offset, size }) {
   const formattedDate = date || moment().toDate()
-  return this.aggregate([
+
+  const startDate = moment(formattedDate)
+    .startOf('month')
+    .toDate()
+  const endDate = moment(formattedDate)
+    .endOf('month')
+    .toDate()
+
+  const query = [
     {
       $match: {
         createdAt: {
-          $gte: moment(formattedDate).startOf('month').toDate(),
-          $lt: moment(formattedDate).endOf('month').toDate()
+          $gte: startDate,
+          $lt: endDate
         }
       }
     },
@@ -60,7 +72,12 @@ scoreSchema.statics.findAllByMonth = async function ({ date, limit, page }) {
       $match: {
         score: { $gt: 0 }
       }
-    },
+    }
+  ]
+  const count = await this.aggregate([...query, { $count: 'count' }])
+
+  const ranking = await this.aggregate([
+    ...query,
     {
       $lookup: {
         from: 'users',
@@ -82,12 +99,11 @@ scoreSchema.statics.findAllByMonth = async function ({ date, limit, page }) {
     },
     {
       $addFields: {
-        rocketId: '$user.rocketchat.id',
         name: '$user.name',
         avatar: '$user.avatar',
         level: '$user.level.value',
         uuid: '$user.uuid',
-        username: '$user.rocketchat.username'
+        rocketchat: '$user.rocketchat'
       }
     },
     {
@@ -95,9 +111,13 @@ scoreSchema.statics.findAllByMonth = async function ({ date, limit, page }) {
         user: 0
       }
     },
-    { $skip: page && limit ? parseInt(page) * parseInt(limit || 50) : 0 },
-    { $limit: parseInt(limit) || 99999 }
+    { $skip: parseInt(offset) },
+    { $limit: parseInt(size) }
   ])
+
+  const total = count.length ? count[0].count : 0
+
+  return { total, ranking }
 }
 
 export default mongoose.model('Score', scoreSchema)

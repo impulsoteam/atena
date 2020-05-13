@@ -2,6 +2,7 @@ import moment from 'moment'
 
 import { messageSended } from '../config/achievements'
 import User from '../models/User'
+import { publish } from '../services/amqp'
 import BotController from './BotController'
 import LogController from './LogController'
 import ScoreController from './ScoreController'
@@ -82,22 +83,12 @@ class AchievementController {
         earnedIn: moment().toDate()
       }
 
-      const updatedUser = await User.updateAchievements({
-        uuid: user.uuid,
-        achievements: [...user.achievements, achievement]
-      })
-
-      const payload = this.generateMessage(newAchievement)
-      BotController.sendMessageToUser({
-        provider: message.provider.name,
-        message: payload,
-        username: user[message.provider.name].username
-      })
-      ScoreController.handleAchievement({
-        achievement,
-        user: updatedUser,
+      this.handleAchievementChange({
+        user,
+        score,
         provider: message.provider,
-        score
+        newAchievement: achievement,
+        othersAchievements: user.achievements
       })
     } catch (error) {
       LogController.sendError(error)
@@ -117,25 +108,58 @@ class AchievementController {
     const othersAchievements = user.achievements.filter(
       ({ name }) => name !== 'messageSended'
     )
-    const updatedUser = await User.updateAchievements({
-      uuid: user.uuid,
-      achievements: [...othersAchievements, achievement]
-    })
-    const payload = this.generateMessage(newAchievement)
-    BotController.sendMessageToUser({
-      provider: message.provider.name,
-      message: payload,
-      username: user[message.provider.name].username
-    })
-    ScoreController.handleAchievement({
-      achievement,
-      user: updatedUser,
+
+    this.handleAchievementChange({
+      user,
+      score,
       provider: message.provider,
-      score
+      newAchievement: achievement,
+      othersAchievements
     })
   }
 
-  generateMessage({ translatedName, range, translatedMedal }) {
+  async handleAchievementChange({
+    user,
+    score,
+    provider,
+    newAchievement,
+    othersAchievements
+  }) {
+    try {
+      const updatedUser = await User.updateAchievements({
+        uuid: user.uuid,
+        achievements: [...othersAchievements, newAchievement]
+      })
+
+      const payload = this.generateMessage(newAchievement)
+      BotController.sendMessageToUser({
+        provider: provider.name,
+        message: payload,
+        username: user[provider.name].username
+      })
+      ScoreController.handleAchievement({
+        achievement: newAchievement,
+        user: updatedUser,
+        provider,
+        score
+      })
+      publish({
+        type: 'achievement',
+        uuid: user.uuid,
+        achievement: newAchievement
+      })
+    } catch (error) {
+      LogController.sendError(error)
+    }
+  }
+
+  generateMessage(achievement) {
+    const { translatedMedal, range, translatedName } = messageSended().find(
+      ({ name, medal, range }) =>
+        name === achievement.name &&
+        medal === achievement.medal &&
+        range === achievement.range
+    )
     return `🏅 Você obteve a conquista [${translatedMedal} ${range} | ${translatedName}]!`
   }
 }
