@@ -152,7 +152,7 @@ export default class CommandUtils {
       })
 
       response.attachments.push({
-        text: `${user.score} pontos de reputação no ranking geral!`
+        text: `${user.score.value} pontos de reputação no ranking geral!`
       })
 
       return response
