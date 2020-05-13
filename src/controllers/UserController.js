@@ -55,9 +55,8 @@ class UserController {
     const monthly = await RankingController.getMonthlyPositionByUser(uuid)
 
     return {
-      user: { level: user.level.value, score: user.score.value },
-      rankings: { general, monthly },
-      achievements: user.achievements
+      user,
+      rankings: { general, monthly }
     }
   }
 }
