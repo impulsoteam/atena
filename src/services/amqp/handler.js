@@ -64,8 +64,6 @@ const handleEvent = async data => {
     'Atena'
   ]
 
-  console.log(data)
-
   const { properties, impulser_uuid, time } = data
 
   if (!properties.name || !products.includes(properties.name)) return
