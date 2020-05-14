@@ -82,10 +82,10 @@ class ScoreController extends ScoreUtils {
         .duration(currentInteraction.diff(lastInteraction))
         .asHours()
 
-      if (pastHours < scoreRules.clickOnProductLimit) return user
+      if (pastHours < scoreRules.clickOnProduct.limit) return user
     }
 
-    const score = scoreRules.clickOnProductScore
+    const score = scoreRules.clickOnProduct.score
 
     await Score.create({
       user: user.uuid,

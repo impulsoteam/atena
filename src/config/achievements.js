@@ -110,6 +110,11 @@ export const messageProviders = provider => {
   return providers[provider] || defaultProvider
 }
 
+export const achievementTypes = {
+  messageSended: 'messageSended',
+  clickOnProduct: 'clickOnProduct'
+}
+
 export default function getAchievementValues(type) {
   const types = { messageSended, clickOnProduct }
   if (type.includes('|')) {
