@@ -1,8 +1,9 @@
 import { achievementTypes } from '../../config/achievements'
-import AchievementController from '../../controllers/AchievementController'
 import LogController from '../../controllers/LogController'
 import ScoreController from '../../controllers/ScoreController'
 import UserController from '../../controllers/UserController'
+import User from '../../models/User'
+import { sendInteractionToQueue } from '../../services/queue'
 import { removeEmptyValues } from '../../utils'
 
 export const handlePayload = ({ data, properties }) => {
@@ -63,6 +64,8 @@ const handleEvent = async data => {
     'Atena'
   ]
 
+  console.log(data)
+
   const { properties, impulser_uuid, time } = data
 
   if (!properties.name || !products.includes(properties.name)) return
@@ -84,10 +87,14 @@ const handleEvent = async data => {
     time
   }
 
-  const user = await ScoreController.handleClickOnProduct(payload)
-  AchievementController.handle({
-    user,
-    achievementType,
-    provider: 'impulser.app'
-  })
+  const user = await User.findOne({ uuid: payload.uuid })
+
+  if (!user) {
+    return sendInteractionToQueue.add(payload, {
+      delay: 600000,
+      removeOnComplete: true
+    })
+  }
+
+  ScoreController.handleClickOnProduct(payload)
 }

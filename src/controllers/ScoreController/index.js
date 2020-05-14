@@ -4,6 +4,7 @@ import { scoreRules } from '../../config/score'
 import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
+import AchievementController from '../AchievementController'
 import LogController from '../LogController'
 import ScoreUtils from './utils'
 
@@ -58,7 +59,15 @@ class ScoreController extends ScoreUtils {
   }
 
   async handleClickOnProduct(payload) {
-    const { product, description, provider, uuid, time } = payload
+    const {
+      achievementType,
+      product,
+      description,
+      provider,
+      uuid,
+      time
+    } = payload
+
     const user = await User.findOne({ uuid })
 
     if (!user)
@@ -82,7 +91,12 @@ class ScoreController extends ScoreUtils {
         .duration(currentInteraction.diff(lastInteraction))
         .asHours()
 
-      if (pastHours < scoreRules.clickOnProduct.limit) return user
+      if (pastHours < scoreRules.clickOnProduct.limit)
+        return AchievementController.handle({
+          user,
+          achievementType,
+          provider: provider.name
+        })
     }
 
     const score = scoreRules.clickOnProduct.score
@@ -97,7 +111,12 @@ class ScoreController extends ScoreUtils {
       }
     })
 
-    return await this.updateUserScore({ user, scoreEarned: score })
+    const updatedUser = await this.updateUserScore({ user, scoreEarned: score })
+    AchievementController.handle({
+      user: updatedUser,
+      achievementType,
+      provider: provider.name
+    })
   }
 
   async handleManualScore({ payload, user }) {
