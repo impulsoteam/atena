@@ -28,9 +28,10 @@ class MessageController {
           user
         })
 
-        await AchievementController.messageSended({
+        await AchievementController.handle({
           user: updatedUser,
-          message
+          achievementType: 'messageSended',
+          provider: payload.provider.name
         })
       }
     } catch (error) {

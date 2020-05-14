@@ -1,6 +1,8 @@
 export const scoreRules = {
   daysOfInactivity: 14,
   inactivityScore: -2,
+  clickOnProductLimit: 24,
+  clickOnProductScore: 2,
   dailyLimit: 60,
   flood: 60,
   message: {

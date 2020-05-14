@@ -44,17 +44,60 @@ class ScoreController extends ScoreUtils {
         score: scoreEarned,
         description: scoreTypes.newAchievement,
         details: {
-          provider: provider.name,
+          provider,
           achievement: achievement.name,
           medal: achievement.medal,
           range: achievement.range
         }
       })
 
-      return await this.updateUserScore({ user, scoreEarned })
+      await this.updateUserScore({ user, scoreEarned })
     } catch (error) {
       LogController.sendError(error)
     }
+  }
+
+  async handleClickOnProduct(payload) {
+    const { product, description, provider, uuid, time } = payload
+    const user = await User.findOne({ uuid })
+
+    if (!user)
+      return LogController.sendError({
+        file: 'ScoreController.handleClickOnProduct',
+        resume: `Unable to find user`,
+        details: { payload }
+      })
+
+    const lastScore = await Score.findOne({
+      user: uuid,
+      description,
+      'details.product': product
+    })
+
+    if (lastScore) {
+      const currentInteraction = moment(time).utc()
+      const lastInteraction = moment(lastScore.createdAt)
+
+      const pastHours = moment
+        .duration(currentInteraction.diff(lastInteraction))
+        .asHours()
+
+      if (pastHours < scoreRules.clickOnProductLimit) return user
+    }
+
+    const score = scoreRules.clickOnProductScore
+
+    await Score.create({
+      user: user.uuid,
+      score,
+      description,
+      details: {
+        provider: provider.name,
+        product
+      }
+    })
+
+    return await this.updateUserScore({ user, scoreEarned: score })
   }
 
   async handleManualScore({ payload, user }) {
