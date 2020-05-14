@@ -1,3 +1,4 @@
+import { achievementTypes } from '../../config/achievements'
 import AchievementController from '../../controllers/AchievementController'
 import LogController from '../../controllers/LogController'
 import ScoreController from '../../controllers/ScoreController'
@@ -73,12 +74,12 @@ const handleEvent = async data => {
       details: { payload: data }
     })
 
-  const achievementType = `clickOnProduct | ${properties.name}`
+  const achievementType = `${achievementTypes.clickOnProduct} | ${properties.name}`
   const payload = {
     uuid: impulser_uuid,
     achievementType,
     provider: { name: 'impulser.app' },
-    description: 'clickOnProduct',
+    description: achievementTypes.clickOnProduct,
     product: properties.name,
     time
   }
