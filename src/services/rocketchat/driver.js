@@ -28,7 +28,7 @@ export const connect = async () => {
       'stream-notify-logged'
     )
 
-    userStatusCollection.reactiveQuery({}).on('change', function(_id) {
+    userStatusCollection.reactiveQuery({}).on('change', function (_id) {
       const query = userStatusCollection.reactiveQuery({ _id }).result[0]
         .args[0]
 
