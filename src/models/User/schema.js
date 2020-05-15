@@ -6,6 +6,16 @@ const achievement = {
     type: String,
     required: true
   },
+  displayNames: {
+    medal: {
+      type: String,
+      enum: ['Bronze', 'Prata', 'Ouro', 'Platina', 'Diamante']
+    },
+    achievement: {
+      type: String,
+      required: true
+    }
+  },
   medal: {
     type: String,
     enum: ['bronze', 'silver', 'gold', 'platinum', 'diamond']

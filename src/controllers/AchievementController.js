@@ -73,11 +73,13 @@ class AchievementController {
 
   async createAchievement({ user, provider, achievementRanges }) {
     try {
-      const { name, medal, range, score } = achievementRanges[0]
+      const { name, medal, range, score, displayNames } = achievementRanges[0]
+
       const achievement = {
         name,
         medal,
         range,
+        displayNames,
         currentValue: 1,
         nextTarget: achievementRanges[1].target,
         earnedIn: moment().toDate()
@@ -87,7 +89,6 @@ class AchievementController {
         user,
         score,
         provider,
-        achievementRanges,
         newAchievement: achievement,
         othersAchievements: user.achievements
       })
@@ -100,15 +101,15 @@ class AchievementController {
     user,
     provider,
     achievementType,
-    achievementRanges,
     nextAchievement,
     newAchievement
   }) {
-    const { name, medal, range, score } = newAchievement
+    const { name, medal, range, score, displayNames } = newAchievement
     const achievement = {
       name,
       medal,
       range,
+      displayNames,
       currentValue: newAchievement.target,
       nextTarget: nextAchievement.target,
       earnedIn: moment().toDate()
@@ -121,7 +122,6 @@ class AchievementController {
       user,
       score,
       provider,
-      achievementRanges,
       newAchievement: achievement,
       othersAchievements
     })
@@ -132,7 +132,6 @@ class AchievementController {
     score,
     provider,
     newAchievement,
-    achievementRanges,
     othersAchievements
   }) {
     try {
@@ -141,10 +140,7 @@ class AchievementController {
         achievements: [...othersAchievements, newAchievement]
       })
 
-      const message = this.generateMessage({
-        newAchievement,
-        achievementRanges
-      })
+      const message = this.generateMessage(newAchievement)
 
       const providerOrDefault = messageProviders(provider)
       BotController.sendMessageToUser({
@@ -169,14 +165,8 @@ class AchievementController {
     }
   }
 
-  generateMessage({ achievementRanges, newAchievement }) {
-    const { translatedMedal, range, translatedName } = achievementRanges.find(
-      ({ name, medal, range }) =>
-        name === newAchievement.name &&
-        medal === newAchievement.medal &&
-        range === newAchievement.range
-    )
-    return `🏅 Você obteve a conquista [${translatedMedal} ${range} | ${translatedName}]!`
+  generateMessage({ displayNames, range }) {
+    return `🏅 Você obteve a conquista [${displayNames.medal} ${range} | ${displayNames.achievement}]!`
   }
 }
 

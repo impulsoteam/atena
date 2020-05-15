@@ -60,12 +60,12 @@ class ScoreController extends ScoreUtils {
 
   async handleClickOnProduct(payload) {
     const {
-      achievementType,
-      product,
-      description,
-      provider,
+      time,
       uuid,
-      time
+      product,
+      provider,
+      description,
+      achievementType
     } = payload
 
     const user = await User.findOne({ uuid })
@@ -107,7 +107,8 @@ class ScoreController extends ScoreUtils {
       description,
       details: {
         provider: provider.name,
-        product
+        product,
+        occurredAt: moment(time).utc()
       }
     })
 

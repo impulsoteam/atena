@@ -1,7 +1,8 @@
-import { achievementTypes } from '../../config/achievements'
+import { products } from '../../config/achievements/clickOnProduct'
 import LogController from '../../controllers/LogController'
 import ScoreController from '../../controllers/ScoreController'
 import UserController from '../../controllers/UserController'
+import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
 import { sendInteractionToQueue } from '../../services/queue'
 import { removeEmptyValues } from '../../utils'
@@ -50,23 +51,10 @@ const handleUser = async data => {
 }
 
 const handleEvent = async data => {
-  const products = [
-    'Chat',
-    'Eventos Externos',
-    'Meetups Internos',
-    'Oportunidades',
-    'Impulso TV',
-    'Blog',
-    'Curadoria',
-    'Clube de Benefícios',
-    'Comunidades.tech',
-    'Communup',
-    'Atena'
-  ]
-
   const { properties, impulser_uuid, time } = data
 
-  if (!properties.name || !products.includes(properties.name)) return
+  if (!properties.name || !Object.keys(products).includes(properties.name))
+    return
 
   if (!impulser_uuid || !time)
     return LogController.sendError({
@@ -75,13 +63,13 @@ const handleEvent = async data => {
       details: { payload: data }
     })
 
-  const achievementType = `${achievementTypes.clickOnProduct} | ${properties.name}`
+  const achievementType = products[properties.name]
   const payload = {
     uuid: impulser_uuid,
     achievementType,
     provider: { name: 'impulser.app' },
-    description: achievementTypes.clickOnProduct,
-    product: properties.name,
+    description: scoreTypes.clickOnProduct,
+    product: achievementType,
     time
   }
 
