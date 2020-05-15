@@ -49,7 +49,7 @@ export const clickOnProduct = name => {
   const [product] = Object.entries(products).find(([, type]) => type === name)
 
   return {
-    displayAchievement: `Clique em Produtos - ${product}`,
+    displayAchievement: `Clique em ${product}`,
     medals,
     name
   }
