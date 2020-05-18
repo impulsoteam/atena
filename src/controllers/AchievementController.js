@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import { messageSended } from '../config/achievements'
+import getAchievementValues, { messageProviders } from '../config/achievements'
 import User from '../models/User'
 import { publish } from '../services/amqp'
 import BotController from './BotController'
@@ -8,35 +8,35 @@ import LogController from './LogController'
 import ScoreController from './ScoreController'
 
 class AchievementController {
-  async messageSended({ user, message }) {
+  async handle({ user, achievementType, provider }) {
     try {
-      const medals = messageSended()
+      const achievementRanges = getAchievementValues(achievementType)
       const [currentAchievement] = user.achievements.filter(
-        ({ name }) => name === 'messageSended'
+        ({ name }) => name === achievementType
       )
-      if (!currentAchievement)
-        return this.createAchievement({
-          user,
-          message,
-          newAchievement: medals[0],
-          nextAchievement: medals[1]
-        })
+
+      if (!currentAchievement) {
+        return this.createAchievement({ user, provider, achievementRanges })
+      }
 
       currentAchievement.currentValue++
       if (currentAchievement.currentValue === currentAchievement.nextTarget) {
         const { newAchievement, nextAchievement } = this.getAchievements({
-          medals,
+          achievementRanges,
           currentAchievement
         })
         return this.updateAchievement({
           user,
-          message,
+          provider,
+          newAchievement,
           nextAchievement,
-          newAchievement
+          achievementType,
+          achievementRanges
         })
       }
+
       const othersAchievements = user.achievements.filter(
-        ({ name }) => name !== 'messageSended'
+        ({ name }) => name !== achievementType
       )
 
       await User.updateAchievements({
@@ -48,12 +48,12 @@ class AchievementController {
     }
   }
 
-  getAchievements({ medals, currentAchievement }) {
+  getAchievements({ achievementRanges, currentAchievement }) {
     let newAchievement, nextAchievement, nextIndex
 
-    for (const [index, currentRange] of medals.entries()) {
+    for (const [index, currentRange] of achievementRanges.entries()) {
       if (nextIndex !== undefined) {
-        nextAchievement = medals[nextIndex]
+        nextAchievement = achievementRanges[nextIndex]
         break
       }
 
@@ -63,7 +63,7 @@ class AchievementController {
         medal === currentAchievement.medal &&
         range === currentAchievement.range
       ) {
-        newAchievement = medals[index + 1]
+        newAchievement = achievementRanges[index + 1]
         nextIndex = index + 2
       }
     }
@@ -71,22 +71,24 @@ class AchievementController {
     return { newAchievement, nextAchievement }
   }
 
-  async createAchievement({ user, message, newAchievement, nextAchievement }) {
+  async createAchievement({ user, provider, achievementRanges }) {
     try {
-      const { name, medal, range, score } = newAchievement
+      const { name, medal, range, score, displayNames } = achievementRanges[0]
+
       const achievement = {
         name,
         medal,
         range,
+        displayNames,
         currentValue: 1,
-        nextTarget: nextAchievement.target,
+        nextTarget: achievementRanges[1].target,
         earnedIn: moment().toDate()
       }
 
       this.handleAchievementChange({
         user,
         score,
-        provider: message.provider,
+        provider,
         newAchievement: achievement,
         othersAchievements: user.achievements
       })
@@ -95,24 +97,31 @@ class AchievementController {
     }
   }
 
-  async updateAchievement({ user, message, newAchievement, nextAchievement }) {
-    const { name, medal, range, score } = newAchievement
+  async updateAchievement({
+    user,
+    provider,
+    achievementType,
+    nextAchievement,
+    newAchievement
+  }) {
+    const { name, medal, range, score, displayNames } = newAchievement
     const achievement = {
       name,
       medal,
       range,
+      displayNames,
       currentValue: newAchievement.target,
       nextTarget: nextAchievement.target,
       earnedIn: moment().toDate()
     }
     const othersAchievements = user.achievements.filter(
-      ({ name }) => name !== 'messageSended'
+      ({ name }) => name !== achievementType
     )
 
     this.handleAchievementChange({
       user,
       score,
-      provider: message.provider,
+      provider,
       newAchievement: achievement,
       othersAchievements
     })
@@ -131,12 +140,15 @@ class AchievementController {
         achievements: [...othersAchievements, newAchievement]
       })
 
-      const payload = this.generateMessage(newAchievement)
+      const message = this.generateMessage(newAchievement)
+
+      const providerOrDefault = messageProviders(provider)
       BotController.sendMessageToUser({
-        provider: provider.name,
-        message: payload,
-        username: user[provider.name].username
+        provider: providerOrDefault,
+        message,
+        username: user[providerOrDefault].username
       })
+
       ScoreController.handleAchievement({
         achievement: newAchievement,
         user: updatedUser,
@@ -153,14 +165,8 @@ class AchievementController {
     }
   }
 
-  generateMessage(achievement) {
-    const { translatedMedal, range, translatedName } = messageSended().find(
-      ({ name, medal, range }) =>
-        name === achievement.name &&
-        medal === achievement.medal &&
-        range === achievement.range
-    )
-    return `🏅 Você obteve a conquista [${translatedMedal} ${range} | ${translatedName}]!`
+  generateMessage({ displayNames, range }) {
+    return `🏅 Você obteve a conquista [${displayNames.medal} ${range} | ${displayNames.achievement}]!`
   }
 }
 

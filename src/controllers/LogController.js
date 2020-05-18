@@ -3,7 +3,7 @@ import Pretty from 'pretty-error'
 
 const { SLACK_LOG, SLACK_CHANNEL, NODE_ENV } = process.env
 const slack = require('slack-notify')(SLACK_LOG)
-slack.onError = function(err) {
+slack.onError = function (err) {
   console.log('API error:', err)
 }
 

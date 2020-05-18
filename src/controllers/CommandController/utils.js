@@ -82,9 +82,7 @@ export default class CommandUtils {
     const fullDate = moment(`${year}/${month}`, 'YYYY/MM').toDate()
     return {
       date: fullDate,
-      monthName: moment(fullDate)
-        .locale('pt')
-        .format('MMMM')
+      monthName: moment(fullDate).locale('pt').format('MMMM')
     }
   }
 
@@ -97,7 +95,7 @@ export default class CommandUtils {
     const response = {
       msg: `Olá ${
         user.name.split(' ')[0]
-        }! Veja as primeiras pessoas do ranking ${type}:`,
+      }! Veja as primeiras pessoas do ranking ${type}:`,
       attachments: []
     }
 
@@ -107,7 +105,7 @@ export default class CommandUtils {
       ({ uuid, level, score, name }, index) => ({
         text: `${index + 1}º lugar está ${
           uuid === user.uuid ? 'você' : name
-          } com ${score} pontos de reputação, no nível ${level}`
+        } com ${score} pontos de reputação, no nível ${level}`
       })
     )
 
@@ -143,7 +141,7 @@ export default class CommandUtils {
       )
       response.msg = `Olá ${
         user.name.split(' ')[0]
-        }! Atualmente tu estás no nível ${user.level.value}.
+      }! Atualmente tu estás no nível ${user.level.value}.
         Como tu es do coreTeam, não possues posição no ranking geral ou mensal. :/
         Eis a sua pontuação até o momento:`
 
@@ -163,7 +161,7 @@ export default class CommandUtils {
 
     response.msg = `Olá ${
       user.name.split(' ')[0]
-      }! Atualmente tu estás no nível ${user.level.value}.
+    }! Atualmente tu estás no nível ${user.level.value}.
       Eis tua pontuação em nossos rankings:`
 
     if (monthly.score) {
@@ -200,7 +198,7 @@ export default class CommandUtils {
 
     response.msg = `Olá ${
       user.name.split(' ')[0]
-      }, eis aqui as conquistas que solicitou:`
+    }, eis aqui as conquistas que solicitou:`
 
     for (const achievement of user.achievements) {
       const current = messageSended().find(

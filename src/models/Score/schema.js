@@ -8,6 +8,7 @@ export const scoreTypes = {
   messageSent: 'messageSent',
   threadAnswered: 'threadAnswered',
   newAchievement: 'newAchievement',
+  clickOnProduct: 'clickOnProduct',
   inactivity: 'inactivity',
   manual: 'manual'
 }
@@ -34,7 +35,8 @@ export default new mongoose.Schema(
       room: Object,
       achievement: String,
       medal: String,
-      range: String
+      range: String,
+      product: String
     }
   },
   {

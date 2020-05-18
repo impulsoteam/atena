@@ -4,6 +4,7 @@ import { scoreRules } from '../../config/score'
 import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
+import AchievementController from '../AchievementController'
 import LogController from '../LogController'
 import ScoreUtils from './utils'
 
@@ -44,17 +45,79 @@ class ScoreController extends ScoreUtils {
         score: scoreEarned,
         description: scoreTypes.newAchievement,
         details: {
-          provider: provider.name,
+          provider,
           achievement: achievement.name,
           medal: achievement.medal,
           range: achievement.range
         }
       })
 
-      return await this.updateUserScore({ user, scoreEarned })
+      await this.updateUserScore({ user, scoreEarned })
     } catch (error) {
       LogController.sendError(error)
     }
+  }
+
+  async handleClickOnProduct(payload) {
+    const {
+      time,
+      uuid,
+      product,
+      provider,
+      description,
+      achievementType
+    } = payload
+
+    const user = await User.findOne({ uuid })
+
+    if (!user)
+      return LogController.sendError({
+        file: 'ScoreController.handleClickOnProduct',
+        resume: `Unable to find user`,
+        details: { payload }
+      })
+
+    const lastScore = await Score.findOne({
+      user: uuid,
+      description,
+      'details.product': product
+    })
+
+    if (lastScore) {
+      const currentInteraction = moment(time).utc()
+      const lastInteraction = moment(lastScore.createdAt)
+
+      const pastHours = moment
+        .duration(currentInteraction.diff(lastInteraction))
+        .asHours()
+
+      if (pastHours < scoreRules.clickOnProduct.limit)
+        return AchievementController.handle({
+          user,
+          achievementType,
+          provider: provider.name
+        })
+    }
+
+    const score = scoreRules.clickOnProduct.score
+
+    await Score.create({
+      user: user.uuid,
+      score,
+      description,
+      details: {
+        provider: provider.name,
+        product,
+        occurredAt: moment(time).utc()
+      }
+    })
+
+    const updatedUser = await this.updateUserScore({ user, scoreEarned: score })
+    AchievementController.handle({
+      user: updatedUser,
+      achievementType,
+      provider: provider.name
+    })
   }
 
   async handleManualScore({ payload, user }) {

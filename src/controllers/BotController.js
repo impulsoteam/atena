@@ -46,9 +46,7 @@ class BotController {
       if (ranking.length < 5) return
 
       const channels = process.env.DEFAULT_CHANNELS.split('|')
-      const monthName = moment()
-        .locale('pt')
-        .format('MMMM')
+      const monthName = moment().locale('pt').format('MMMM')
       const message = {
         msg: `Saiba quem são as pessoas que mais me orgulham no Olimpo pela interação. Essas nobres pessoas têm se destacado em meu templo em ${monthName}:`,
         attachments: []

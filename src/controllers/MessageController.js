@@ -1,9 +1,9 @@
+import { achievementTypes } from '../config/achievements'
 import Message from '../models/Message'
 import User from '../models/User'
 import AchievementController from './AchievementController'
 import LogController from './LogController'
 import ScoreController from './ScoreController'
-
 class MessageController {
   async handle(payload) {
     try {
@@ -28,9 +28,10 @@ class MessageController {
           user
         })
 
-        await AchievementController.messageSended({
+        await AchievementController.handle({
           user: updatedUser,
-          message
+          achievementType: achievementTypes.messageSended,
+          provider: payload.provider.name
         })
       }
     } catch (error) {

@@ -20,6 +20,7 @@
     "@rocket.chat/sdk": "^0.2.9-2",
     "amqplib-as-promised": "^4.0.0",
     "axios": "^0.19.2",
+    "bull": "^3.14.0",
     "chalk": "^4.0.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
