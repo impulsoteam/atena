@@ -41,7 +41,7 @@ export const clickOnProduct = name => {
     {
       name: 'diamond',
       displayMedal: 'Diamante',
-      targets: [2017, 2400, 2817, 3267, 3750, 999999],
+      targets: [2017, 2400, 2817, 3267, 3750, null],
       score: 25
     }
   ]

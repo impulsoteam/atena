@@ -28,10 +28,7 @@ const achievement = {
     type: Number,
     required: true
   },
-  nextTarget: {
-    type: Number,
-    required: true
-  },
+  nextTarget: Number,
   earnedIn: {
     type: Date,
     required: true
