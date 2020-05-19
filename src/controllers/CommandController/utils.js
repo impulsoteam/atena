@@ -207,7 +207,9 @@ export default class CommandUtils {
     } of user.achievements) {
       response.attachments.push({
         text: `*${displayNames.achievement}*:
-          \n Você é ${displayNames.medal} ${range} com ${currentValue}/${nextTarget}.`
+          \n Você é ${displayNames.medal} ${range} com ${currentValue}${
+          nextTarget ? `/${nextTarget}` : ''
+        }.`
       })
     }
 
