@@ -1,6 +1,5 @@
 import moment from 'moment'
 
-import { messageSended } from '../../config/achievements'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
 import BotController from '../BotController'
@@ -200,17 +199,15 @@ export default class CommandUtils {
       user.name.split(' ')[0]
     }, eis aqui as conquistas que solicitou:`
 
-    for (const achievement of user.achievements) {
-      const current = messageSended().find(
-        ranking =>
-          ranking.medal === achievement.medal &&
-          ranking.range === achievement.range
-      )
-
-      const { translatedName, translatedMedal, range } = current
+    for (const {
+      displayNames,
+      range,
+      currentValue,
+      nextTarget
+    } of user.achievements) {
       response.attachments.push({
-        text: `*${translatedName}*:
-          \n Você é ${translatedMedal} ${range} com ${achievement.currentValue}/${achievement.nextTarget}.`
+        text: `*${displayNames.achievement}*:
+          \n Você é ${displayNames.medal} ${range} com ${currentValue}/${nextTarget}.`
       })
     }
 
