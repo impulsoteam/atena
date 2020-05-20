@@ -70,7 +70,7 @@ export default new mongoose.Schema(
     level: {
       value: {
         type: Number,
-        default: 0
+        default: 1
       },
       scoreToNextLevel: Number,
       lastUpdate: Date
