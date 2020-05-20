@@ -27,7 +27,7 @@ export const messageSended = () => {
     {
       name: 'diamond',
       displayMedal: 'Diamante',
-      targets: [1008, 1200, 1408, 1633, 1875, 999999],
+      targets: [1008, 1200, 1408, 1633, 1875, null],
       score: 25
     }
   ]

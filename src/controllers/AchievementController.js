@@ -20,7 +20,10 @@ class AchievementController {
       }
 
       currentAchievement.currentValue++
-      if (currentAchievement.currentValue === currentAchievement.nextTarget) {
+      if (
+        currentAchievement.nextTarget &&
+        currentAchievement.nextTarget === currentAchievement.currentValue
+      ) {
         const { newAchievement, nextAchievement } = this.getAchievements({
           achievementRanges,
           currentAchievement
