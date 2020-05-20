@@ -39,31 +39,6 @@ router.get('/ranking/monthly', async (req, res) => {
 router.get('/users/:uuid/profile', async (req, res) => {
   const { user, rankings } = await UserController.getProfile(req.params.uuid)
 
-  // const types = {
-  //   messageSended: {
-  //     name: 'Network | Mensagens Enviadas',
-  //     type: 'network.message.sended'
-  //   }
-  // }
-  // const medals = {
-  //   bronze: 'Bronze',
-  //   silver: 'Prata',
-  //   gold: 'Ouro',
-  //   platinum: 'Platina',
-  //   diamond: 'Diamante'
-  // }
-
-  // const allAchievements = user.achievements.map(
-  //   ({ name, medal, range, currentValue, nextTarget }) => ({
-  //     type: types[name].type,
-  //     name: types[name].name,
-  //     medal: medals[medal],
-  //     tier: range,
-  //     score: currentValue,
-  //     maxScore: nextTarget
-  //   })
-  // )
-
   const response = {
     name: user.name,
     avatar: user.avatar,
