@@ -24,10 +24,10 @@ export default class ScoreUtils {
       lastUpdate: moment()
     }
 
-    const currentLevel = levels.find(
-      ({ currentRange }) =>
-        currentRange.min <= score.value && currentRange.max >= score.value
-    )
+    const currentLevel = levels.find(({ currentRange }) => {
+      if (!currentRange.max) return true
+      return currentRange.min <= score.value && currentRange.max >= score.value
+    })
 
     const level =
       currentLevel.level !== user.level.value

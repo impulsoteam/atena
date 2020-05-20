@@ -33,12 +33,12 @@ export const levels = (() => {
 
   return badges.map((badge, index) => {
     const min = scores[index - 1] || 0
-    const max = scores[index] ? scores[index] - 1 : 99999
+    const max = scores[index] ? scores[index] - 1 : null
     return {
       badge,
       level: index + 1,
       currentRange: { min, max },
-      scoreToNextLevel: scores[index] || 99999
+      scoreToNextLevel: scores[index] || null
     }
   })
 })()
