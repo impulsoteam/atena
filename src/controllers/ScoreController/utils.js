@@ -2,6 +2,7 @@ import moment from 'moment'
 
 import { scoreRules, levels } from '../../config/score'
 import Score from '../../models/Score'
+import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
 import LevelController from '../LevelController'
 
@@ -16,6 +17,33 @@ export default class ScoreUtils {
     const scoreOfTheDay = await Score.getDailyScore(message.user)
 
     return scoreOfTheDay >= scoreRules.dailyLimit
+  }
+
+  async reactionSendedCannotScore({ reaction, payload }) {
+    const isSameUser =
+      payload.provider.user.username === reaction.provider.username
+
+    const alreadyReactOnMessage = await Score.findOne({
+      description: scoreTypes.reactionSended,
+      'details.messageId': reaction.provider.messageId,
+      user: reaction.user
+    })
+
+    return isSameUser || !!alreadyReactOnMessage
+  }
+
+  async reactionReceivedCannotScore({ receiver, reaction, payload }) {
+    const isSameUser =
+      payload.provider.user.username === reaction.provider.username
+
+    const alreadyScoreOnReaction = await Score.findOne({
+      description: scoreTypes.reactionReceived,
+      'details.messageId': reaction.provider.messageId,
+      'details.sender': reaction.user,
+      user: receiver.uuid
+    })
+
+    return isSameUser || !!alreadyScoreOnReaction
   }
 
   async updateUserScore({ user, scoreEarned }) {

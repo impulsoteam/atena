@@ -1,6 +1,8 @@
 import moment from 'moment'
 
+import { achievementTypes } from '../../config/achievements'
 import { scoreRules } from '../../config/score'
+import Reaction from '../../models/Reaction'
 import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
@@ -36,6 +38,83 @@ class ScoreController extends ScoreUtils {
     } catch (error) {
       LogController.sendError(error)
     }
+  }
+
+  async handleReaction({ reaction, payload, alreadyAchieved }) {
+    const { name, user } = payload.provider
+
+    const sender = await User.findOne({
+      [`${name}.username`]: reaction.provider.username
+    })
+    if (sender)
+      this.scoreReactionSended({ sender, reaction, payload, alreadyAchieved })
+
+    const receiver = await User.findOne({ [`${name}.username`]: user.username })
+    if (receiver)
+      this.scoreReactionReceived({
+        receiver,
+        reaction,
+        payload,
+        alreadyAchieved
+      })
+  }
+
+  async scoreReactionSended(data) {
+    const { sender, reaction, payload, alreadyAchieved } = data
+
+    if (await this.reactionSendedCannotScore({ reaction, payload })) return
+    await Score.create({
+      user: sender.uuid,
+      score: scoreRules.reaction.send,
+      description: scoreTypes.reactionSended,
+      details: {
+        provider: reaction.provider.name,
+        messageId: reaction.provider.messageId,
+        content: reaction.content
+      }
+    })
+    const updatedSender = await this.updateUserScore({
+      user: sender,
+      scoreEarned: scoreRules.reaction.send
+    })
+
+    if (!alreadyAchieved)
+      AchievementController.handle({
+        user: updatedSender,
+        achievementType: achievementTypes.reactionSended,
+        provider: reaction.provider.name
+      })
+  }
+
+  async scoreReactionReceived(data) {
+    const { receiver, reaction, payload, alreadyAchieved } = data
+
+    if (await this.reactionReceivedCannotScore({ receiver, reaction, payload }))
+      return
+
+    await Score.create({
+      user: receiver.uuid,
+      score: scoreRules.reaction.receive,
+      description: scoreTypes.reactionReceived,
+      details: {
+        provider: reaction.provider.name,
+        messageId: reaction.provider.messageId,
+        content: reaction.content,
+        sender: reaction.user
+      }
+    })
+
+    const updatedReceiver = await this.updateUserScore({
+      user: receiver,
+      scoreEarned: scoreRules.reaction.receive
+    })
+
+    if (!alreadyAchieved)
+      AchievementController.handle({
+        user: updatedReceiver,
+        achievementType: achievementTypes.reactionReceived,
+        provider: reaction.provider.name
+      })
   }
 
   async handleAchievement({ achievement, user, provider, score: scoreEarned }) {
@@ -152,6 +231,63 @@ class ScoreController extends ScoreUtils {
     } catch (error) {
       LogController.sendError(error)
     }
+  }
+
+  async removeScoreFromReaction({ reaction, payload }) {
+    const { deletedCount } = await Score.deleteMany({
+      description: scoreTypes.reactionSended,
+      'details.messageId': reaction.provider.messageId,
+      'details.content': reaction.content,
+      user: reaction.user
+    })
+
+    if (!deletedCount) return
+
+    await Score.deleteMany({
+      description: scoreTypes.reactionReceived,
+      'details.messageId': reaction.provider.messageId,
+      'details.content': reaction.content,
+      'details.sender': reaction.user
+    })
+    const { name, user } = payload.provider
+
+    const sender = await User.findOne({
+      [`${name}.username`]: reaction.provider.username
+    })
+
+    const updatedSender = await this.updateUserScore({
+      user: sender,
+      scoreEarned: -scoreRules.reaction.send
+    })
+
+    const receiver = await User.findOne({
+      [`${name}.username`]: user.username
+    })
+    const updatedReceiver = await this.updateUserScore({
+      user: receiver,
+      scoreEarned: -scoreRules.reaction.receive
+    })
+
+    const reactionsOnMessage = await Reaction.find({
+      'provider.messageId': reaction.provider.messageId,
+      user: reaction.user
+    })
+
+    if (!reactionsOnMessage[0]) return
+
+    this.scoreReactionSended({
+      sender: updatedSender,
+      reaction: reactionsOnMessage[0],
+      payload,
+      alreadyAchieved: true
+    })
+
+    this.scoreReactionReceived({
+      receiver: updatedReceiver,
+      reaction: reactionsOnMessage[0],
+      payload,
+      alreadyAchieved: true
+    })
   }
 }
 

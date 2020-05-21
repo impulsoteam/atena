@@ -1,6 +1,7 @@
 import LogController from '../controllers/LogController'
 import Reaction from '../models/Reaction'
 import User from '../models/User'
+import ScoreController from './ScoreController'
 
 class ReactionController {
   async handle(payload) {
@@ -16,7 +17,7 @@ class ReactionController {
           mostReactions: reactionsSaved,
           lessReactions: reactions
         })
-        this.removeReactions(reactionsRemoved)
+        this.removeReactions({ reactionsRemoved, payload })
       }
 
       if (reactionsSaved.length < reactions.length) {
@@ -24,7 +25,7 @@ class ReactionController {
           mostReactions: reactions,
           lessReactions: reactionsSaved
         })
-        this.saveReactions(reactionsAdded)
+        this.saveReactions({ reactionsAdded, payload })
       }
     } catch (error) {
       LogController.sendError(error)
@@ -46,20 +47,24 @@ class ReactionController {
     return reactions
   }
 
-  async saveReactions(reactionsAdded) {
+  async saveReactions({ reactionsAdded, payload }) {
     for (const reaction of reactionsAdded) {
       const { provider } = reaction
       const user = await User.findOne({
         [`${provider.name}.username`]: provider.username
       })
+
       if (user) reaction.user = user.uuid
+
       await Reaction.create(reaction)
+      ScoreController.handleReaction({ reaction, payload })
     }
   }
 
-  async removeReactions(reactionsRemoved) {
+  async removeReactions({ reactionsRemoved, payload }) {
     for (const reaction of reactionsRemoved) {
       await Reaction.deleteOne({ _id: reaction._id })
+      ScoreController.removeScoreFromReaction({ reaction, payload })
     }
   }
 }

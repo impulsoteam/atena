@@ -1,5 +1,7 @@
 import { clickOnProduct } from './clickOnProduct'
 import { messageSended } from './messageSended'
+import { reactionReceived } from './reactionReceived'
+import { reactionSended } from './reactionSended'
 
 const ranges = ['I', 'II', 'III', 'IV', 'V', 'VI']
 
@@ -35,6 +37,8 @@ export const messageProviders = provider => {
 
 export const achievementTypes = {
   messageSended: 'messageSended',
+  reactionSended: 'reactionSended',
+  reactionReceived: 'reactionReceived',
   clickOnProduct: 'clickOnProduct',
   chatAccess: 'chatAccess',
   externalEventsAccess: 'externalEventsAccess',
@@ -51,7 +55,12 @@ export const achievementTypes = {
 
 export default function getAchievementValues(type) {
   const name = type.includes('Access') ? 'clickOnProduct' : type
-  const achievements = { messageSended, clickOnProduct }
+  const achievements = {
+    messageSended,
+    reactionSended,
+    reactionReceived,
+    clickOnProduct
+  }
 
   const ranges = achievements[name](type)
 

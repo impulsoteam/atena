@@ -6,6 +6,8 @@ export const providers = {
 
 export const scoreTypes = {
   messageSent: 'messageSent',
+  reactionSended: 'reactionSended',
+  reactionReceived: 'reactionReceived',
   threadAnswered: 'threadAnswered',
   newAchievement: 'newAchievement',
   clickOnProduct: 'clickOnProduct',
@@ -30,6 +32,7 @@ export default new mongoose.Schema(
     details: {
       provider: String,
       messageId: String,
+      content: String,
       sender: String,
       reason: String,
       room: Object,
