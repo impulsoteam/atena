@@ -8,6 +8,7 @@ export const scoreTypes = {
   messageSent: 'messageSent',
   reactionSended: 'reactionSended',
   reactionReceived: 'reactionReceived',
+  reactionRemoved: 'reactionRemoved',
   threadAnswered: 'threadAnswered',
   newAchievement: 'newAchievement',
   clickOnProduct: 'clickOnProduct',

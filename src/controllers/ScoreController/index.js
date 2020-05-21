@@ -41,80 +41,103 @@ class ScoreController extends ScoreUtils {
   }
 
   async handleReaction({ reaction, payload, alreadyAchieved }) {
-    const { name, user } = payload.provider
+    try {
+      const { name, user } = payload.provider
 
-    const sender = await User.findOne({
-      [`${name}.username`]: reaction.provider.username
-    })
-    if (sender)
-      this.scoreReactionSended({ sender, reaction, payload, alreadyAchieved })
-
-    const receiver = await User.findOne({ [`${name}.username`]: user.username })
-    if (receiver)
-      this.scoreReactionReceived({
-        receiver,
-        reaction,
-        payload,
-        alreadyAchieved
+      const sender = await User.findOne({
+        [`${name}.username`]: reaction.provider.username
       })
+      if (sender)
+        this.scoreReactionSended({ sender, reaction, payload, alreadyAchieved })
+
+      const receiver = await User.findOne({
+        [`${name}.username`]: user.username
+      })
+      if (receiver)
+        this.scoreReactionReceived({
+          receiver,
+          reaction,
+          payload,
+          alreadyAchieved
+        })
+    } catch (error) {
+      LogController.sendError(error)
+    }
   }
 
   async scoreReactionSended(data) {
-    const { sender, reaction, payload, alreadyAchieved } = data
+    try {
+      const { sender, reaction, payload, alreadyAchieved } = data
 
-    if (await this.reactionSendedCannotScore({ reaction, payload })) return
-    await Score.create({
-      user: sender.uuid,
-      score: scoreRules.reaction.send,
-      description: scoreTypes.reactionSended,
-      details: {
-        provider: reaction.provider.name,
-        messageId: reaction.provider.messageId,
-        content: reaction.content
-      }
-    })
-    const updatedSender = await this.updateUserScore({
-      user: sender,
-      scoreEarned: scoreRules.reaction.send
-    })
+      if (await this.reactionSendedCannotScore({ reaction, payload })) return
+      await Score.create({
+        user: sender.uuid,
+        score: scoreRules.reaction.send,
+        description: scoreTypes.reactionSended,
+        details: {
+          provider: reaction.provider.name,
+          messageId: reaction.provider.messageId,
+          content: reaction.content
+        }
+      })
+      const updatedSender = await this.updateUserScore({
+        user: sender,
+        scoreEarned: scoreRules.reaction.send
+      })
 
-    if (!alreadyAchieved)
+      const cannotAchieve = await this.reactionSendedCannotAchieve({ reaction })
+      if (alreadyAchieved || cannotAchieve) return
+
       AchievementController.handle({
         user: updatedSender,
         achievementType: achievementTypes.reactionSended,
         provider: reaction.provider.name
       })
+    } catch (error) {
+      LogController.sendError(error)
+    }
   }
 
   async scoreReactionReceived(data) {
-    const { receiver, reaction, payload, alreadyAchieved } = data
+    try {
+      const { receiver, reaction, payload, alreadyAchieved } = data
 
-    if (await this.reactionReceivedCannotScore({ receiver, reaction, payload }))
-      return
+      if (
+        await this.reactionReceivedCannotScore({ receiver, reaction, payload })
+      )
+        return
 
-    await Score.create({
-      user: receiver.uuid,
-      score: scoreRules.reaction.receive,
-      description: scoreTypes.reactionReceived,
-      details: {
-        provider: reaction.provider.name,
-        messageId: reaction.provider.messageId,
-        content: reaction.content,
-        sender: reaction.user
-      }
-    })
+      await Score.create({
+        user: receiver.uuid,
+        score: scoreRules.reaction.receive,
+        description: scoreTypes.reactionReceived,
+        details: {
+          provider: reaction.provider.name,
+          messageId: reaction.provider.messageId,
+          content: reaction.content,
+          sender: reaction.user
+        }
+      })
 
-    const updatedReceiver = await this.updateUserScore({
-      user: receiver,
-      scoreEarned: scoreRules.reaction.receive
-    })
+      const updatedReceiver = await this.updateUserScore({
+        user: receiver,
+        scoreEarned: scoreRules.reaction.receive
+      })
 
-    if (!alreadyAchieved)
+      const cannotAchieve = await this.reactionReceiveCannotAchieve({
+        uuid: updatedReceiver.uuid,
+        reaction
+      })
+
+      if (alreadyAchieved || cannotAchieve) return
       AchievementController.handle({
         user: updatedReceiver,
         achievementType: achievementTypes.reactionReceived,
         provider: reaction.provider.name
       })
+    } catch (error) {
+      LogController.sendError(error)
+    }
   }
 
   async handleAchievement({ achievement, user, provider, score: scoreEarned }) {
@@ -234,60 +257,103 @@ class ScoreController extends ScoreUtils {
   }
 
   async removeScoreFromReaction({ reaction, payload }) {
-    const { deletedCount } = await Score.deleteMany({
-      description: scoreTypes.reactionSended,
-      'details.messageId': reaction.provider.messageId,
-      'details.content': reaction.content,
-      user: reaction.user
-    })
+    try {
+      const { deletedCount } = await Score.deleteMany({
+        description: scoreTypes.reactionSended,
+        'details.messageId': reaction.provider.messageId,
+        'details.content': reaction.content,
+        user: reaction.user
+      })
 
-    if (!deletedCount) return
+      if (!deletedCount) return
 
-    await Score.deleteMany({
-      description: scoreTypes.reactionReceived,
-      'details.messageId': reaction.provider.messageId,
-      'details.content': reaction.content,
-      'details.sender': reaction.user
-    })
-    const { name, user } = payload.provider
+      await Score.deleteMany({
+        description: scoreTypes.reactionReceived,
+        'details.messageId': reaction.provider.messageId,
+        'details.content': reaction.content,
+        'details.sender': reaction.user
+      })
+      const { name, user } = payload.provider
 
-    const sender = await User.findOne({
-      [`${name}.username`]: reaction.provider.username
-    })
+      const sender = await User.findOne({
+        [`${name}.username`]: reaction.provider.username
+      })
 
-    const updatedSender = await this.updateUserScore({
-      user: sender,
-      scoreEarned: -scoreRules.reaction.send
-    })
+      const updatedSender = await this.updateUserScore({
+        user: sender,
+        scoreEarned: -scoreRules.reaction.send
+      })
 
-    const receiver = await User.findOne({
-      [`${name}.username`]: user.username
-    })
-    const updatedReceiver = await this.updateUserScore({
-      user: receiver,
-      scoreEarned: -scoreRules.reaction.receive
-    })
+      const receiver = await User.findOne({
+        [`${name}.username`]: user.username
+      })
+      const updatedReceiver = await this.updateUserScore({
+        user: receiver,
+        scoreEarned: -scoreRules.reaction.receive
+      })
 
-    const reactionsOnMessage = await Reaction.find({
-      'provider.messageId': reaction.provider.messageId,
-      user: reaction.user
-    })
+      const reactionsOnMessage = await Reaction.find({
+        'provider.messageId': reaction.provider.messageId,
+        user: reaction.user
+      })
 
-    if (!reactionsOnMessage[0]) return
+      if (!reactionsOnMessage[0])
+        return this.scoreReactionRemoved({ sender, receiver, reaction })
 
-    this.scoreReactionSended({
-      sender: updatedSender,
-      reaction: reactionsOnMessage[0],
-      payload,
-      alreadyAchieved: true
-    })
+      this.scoreReactionSended({
+        sender: updatedSender,
+        reaction: reactionsOnMessage[0],
+        payload,
+        alreadyAchieved: true
+      })
 
-    this.scoreReactionReceived({
-      receiver: updatedReceiver,
-      reaction: reactionsOnMessage[0],
-      payload,
-      alreadyAchieved: true
-    })
+      this.scoreReactionReceived({
+        receiver: updatedReceiver,
+        reaction: reactionsOnMessage[0],
+        payload,
+        alreadyAchieved: true
+      })
+    } catch (error) {
+      LogController.sendError(error)
+    }
+  }
+
+  async scoreReactionRemoved({ sender, receiver, reaction }) {
+    try {
+      const options = {
+        runValidators: true,
+        upsert: true,
+        setDefaultsOnInsert: true,
+        new: true
+      }
+
+      const receiverPayload = {
+        user: receiver.uuid,
+        score: 0,
+        description: scoreTypes.reactionRemoved,
+        details: {
+          provider: reaction.provider.name,
+          messageId: reaction.provider.messageId,
+
+          sender: reaction.user
+        }
+      }
+
+      const senderPayload = {
+        user: sender.uuid,
+        score: 0,
+        description: scoreTypes.reactionRemoved,
+        details: {
+          provider: reaction.provider.name,
+          messageId: reaction.provider.messageId
+        }
+      }
+
+      await Score.findOneAndUpdate(senderPayload, senderPayload, options)
+      await Score.findOneAndUpdate(receiverPayload, receiverPayload, options)
+    } catch (error) {
+      LogController.sendError(error)
+    }
   }
 }
 
