@@ -46,6 +46,26 @@ export default class ScoreUtils {
     return isSameUser || !!alreadyScoreOnReaction
   }
 
+  async reactionSendedCannotAchieve({ reaction }) {
+    const cannotAchieve = await Score.findOne({
+      description: scoreTypes.reactionRemoved,
+      user: reaction.user,
+      'details.messageId': reaction.provider.messageId
+    })
+
+    return !!cannotAchieve
+  }
+
+  async reactionReceiveCannotAchieve({ uuid, reaction }) {
+    const cannotAchieve = await Score.findOne({
+      description: scoreTypes.reactionRemoved,
+      user: uuid,
+      'details.messageId': reaction.provider.messageId
+    })
+
+    return !!cannotAchieve
+  }
+
   async updateUserScore({ user, scoreEarned }) {
     const score = {
       value: user.score.value + scoreEarned,
