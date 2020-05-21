@@ -18,6 +18,21 @@ export default class ScoreUtils {
     return scoreOfTheDay >= scoreRules.dailyLimit
   }
 
+  async checkReactionSended({ sender, reaction, payload }) {
+    const isSameUser =
+      payload.provider.user.username === reaction.provider.username
+
+    const scoreOfTheDay = await Score.getDailyScore(sender.uuid)
+
+    const canScore = scoreOfTheDay < scoreRules.dailyLimit
+
+    return { canScore, isSameUser }
+  }
+
+  checkReactionReceived({ payload, reaction }) {
+    return payload.provider.user.username === reaction.provider.username
+  }
+
   async updateUserScore({ user, scoreEarned }) {
     const score = {
       value: user.score.value + scoreEarned,

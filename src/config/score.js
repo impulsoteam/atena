@@ -10,6 +10,10 @@ export const scoreRules = {
   message: {
     send: 3
   },
+  reaction: {
+    send: 2,
+    receive: 3
+  },
   thread: {
     send: 3,
     receive: 1

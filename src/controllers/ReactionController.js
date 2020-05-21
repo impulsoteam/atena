@@ -1,9 +1,11 @@
 import LogController from '../controllers/LogController'
 import Reaction from '../models/Reaction'
 import User from '../models/User'
+import ScoreController from './ScoreController'
 
 class ReactionController {
   async handle(payload) {
+    console.log({ payload })
     try {
       const { provider, reactions } = payload
 
@@ -24,7 +26,7 @@ class ReactionController {
           mostReactions: reactions,
           lessReactions: reactionsSaved
         })
-        this.saveReactions(reactionsAdded)
+        this.saveReactions({ reactionsAdded, payload })
       }
     } catch (error) {
       LogController.sendError(error)
@@ -46,14 +48,17 @@ class ReactionController {
     return reactions
   }
 
-  async saveReactions(reactionsAdded) {
+  async saveReactions({ reactionsAdded, payload }) {
     for (const reaction of reactionsAdded) {
       const { provider } = reaction
       const user = await User.findOne({
         [`${provider.name}.username`]: provider.username
       })
+
       if (user) reaction.user = user.uuid
+
       await Reaction.create(reaction)
+      ScoreController.handleReaction({ reaction, payload })
     }
   }
 
