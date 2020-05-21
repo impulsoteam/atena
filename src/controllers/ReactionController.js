@@ -5,7 +5,6 @@ import ScoreController from './ScoreController'
 
 class ReactionController {
   async handle(payload) {
-    console.log({ payload })
     try {
       const { provider, reactions } = payload
 
@@ -18,7 +17,7 @@ class ReactionController {
           mostReactions: reactionsSaved,
           lessReactions: reactions
         })
-        this.removeReactions(reactionsRemoved)
+        this.removeReactions({ reactionsRemoved, payload })
       }
 
       if (reactionsSaved.length < reactions.length) {
@@ -62,9 +61,10 @@ class ReactionController {
     }
   }
 
-  async removeReactions(reactionsRemoved) {
+  async removeReactions({ reactionsRemoved, payload }) {
     for (const reaction of reactionsRemoved) {
       await Reaction.deleteOne({ _id: reaction._id })
+      ScoreController.removeScoreFromReaction({ reaction, payload })
     }
   }
 }
