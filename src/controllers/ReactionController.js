@@ -48,23 +48,31 @@ class ReactionController {
   }
 
   async saveReactions({ reactionsAdded, payload }) {
-    for (const reaction of reactionsAdded) {
-      const { provider } = reaction
-      const user = await User.findOne({
-        [`${provider.name}.username`]: provider.username
-      })
+    try {
+      for (const reaction of reactionsAdded) {
+        const { provider } = reaction
+        const user = await User.findOne({
+          [`${provider.name}.username`]: provider.username
+        })
 
-      if (user) reaction.user = user.uuid
+        if (user) reaction.user = user.uuid
 
-      await Reaction.create(reaction)
-      ScoreController.handleReaction({ reaction, payload })
+        await Reaction.create(reaction)
+        ScoreController.handleReaction({ reaction, payload })
+      }
+    } catch (error) {
+      LogController.sendError(error)
     }
   }
 
   async removeReactions({ reactionsRemoved, payload }) {
-    for (const reaction of reactionsRemoved) {
-      await Reaction.deleteOne({ _id: reaction._id })
-      ScoreController.removeScoreFromReaction({ reaction, payload })
+    try {
+      for (const reaction of reactionsRemoved) {
+        await Reaction.deleteOne({ _id: reaction._id })
+        ScoreController.removeScoreFromReaction({ reaction, payload })
+      }
+    } catch (error) {
+      LogController.sendError(error)
     }
   }
 }
