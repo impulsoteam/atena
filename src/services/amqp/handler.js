@@ -7,47 +7,54 @@ import User from '../../models/User'
 import { sendInteractionToQueue } from '../../services/queue'
 import { removeEmptyValues } from '../../utils'
 
-export const handlePayload = ({ data, properties }) => {
-  const types = {
-    Impulser: handleUser,
-    'Ahoy::Event': handleEvent
+export const handlePayload = async ({ message, channel }) => {
+  try {
+    const { content, properties } = message
+    const data = JSON.parse(content.toString())
+    const types = {
+      Impulser: handleUser,
+      'Ahoy::Event': handleEvent
+    }
+
+    const service = types[properties.type]
+
+    if (service) await service(data)
+  } catch (error) {
+    LogController.sendError(error)
+  } finally {
+    console.log('ack now...')
+    channel.ack(message)
   }
-  const service = types[properties.type]
-  service && service(data)
 }
 
 const handleUser = async data => {
   if (data.status === 'archived') return UserController.delete(data)
 
-  try {
-    const {
-      uuid,
-      fullname,
-      email,
-      rocket_chat,
-      linkedin,
-      google,
-      photo_url
-    } = data
+  const {
+    uuid,
+    fullname,
+    email,
+    rocket_chat,
+    linkedin,
+    google,
+    photo_url
+  } = data
 
-    const user = {
-      uuid,
-      name: fullname,
-      email,
-      avatar: photo_url,
-      rocketchat: {
-        id: rocket_chat.id,
-        username: rocket_chat.username
-      },
-      linkedin: { id: linkedin.uid },
-      google: { id: google.uid }
-    }
-
-    removeEmptyValues(user)
-    UserController.handle(user)
-  } catch (error) {
-    LogController.sendError(error)
+  const user = {
+    uuid,
+    name: fullname,
+    email,
+    avatar: photo_url,
+    rocketchat: {
+      id: rocket_chat.id,
+      username: rocket_chat.username
+    },
+    linkedin: { id: linkedin.uid },
+    google: { id: google.uid }
   }
+
+  removeEmptyValues(user)
+  return UserController.handle(user)
 }
 
 const handleEvent = async data => {
@@ -81,6 +88,5 @@ const handleEvent = async data => {
       removeOnComplete: true
     })
   }
-
-  ScoreController.handleClickOnProduct(payload)
+  await ScoreController.handleClickOnProduct(payload)
 }

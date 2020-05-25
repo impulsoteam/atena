@@ -25,15 +25,8 @@ export const connect = async () => {
     await channel.assertQueue(queueIn, { durable: true })
     console.log(`${chalk.green('✓')} [*] ${queueIn} successfully asserted`)
     await channel.bindQueue(queueIn, bind)
-    await channel.consume(
-      queueIn,
-      msg => {
-        const { properties, content } = msg
-
-        const data = JSON.parse(content.toString())
-        handlePayload({ data, properties })
-      },
-      { noAck: true }
+    await channel.consume(queueIn, message =>
+      handlePayload({ message, channel })
     )
     console.log('%s [*] Awaiting messages on', chalk.green('✓'), queueIn)
   } catch (error) {

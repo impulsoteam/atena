@@ -1,5 +1,6 @@
 import Queue from 'bull'
 
+import LogController from '../../controllers/LogController'
 import ScoreController from '../../controllers/ScoreController'
 
 const sendInteractionToQueue = new Queue(
@@ -8,8 +9,13 @@ const sendInteractionToQueue = new Queue(
 )
 
 sendInteractionToQueue.process(async function (job, done) {
-  ScoreController.handleClickOnProduct(job.data)
-  done(null, 'interaction send to be processed')
+  try {
+    await ScoreController.handleClickOnProduct(job.data)
+  } catch (error) {
+    LogController.sendError(error)
+  } finally {
+    done(null, 'interaction send to be processed')
+  }
 })
 
 export { sendInteractionToQueue }
