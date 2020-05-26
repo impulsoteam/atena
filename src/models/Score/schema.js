@@ -40,7 +40,8 @@ export default new mongoose.Schema(
       achievement: String,
       medal: String,
       range: String,
-      product: String
+      product: String,
+      occurredAt: Date
     }
   },
   {

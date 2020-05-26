@@ -18,22 +18,15 @@ export const connect = async () => {
     const connection = new Connection(amqpUrl)
     await connection.init()
     channel = await connection.createChannel()
-
+    channel.prefetch(1)
     await channel.assertExchange(queueOut, 'fanout', { durable: false })
     console.log(`${chalk.green('✓')} [*] ${queueOut} successfully exchanged`)
 
     await channel.assertQueue(queueIn, { durable: true })
     console.log(`${chalk.green('✓')} [*] ${queueIn} successfully asserted`)
     await channel.bindQueue(queueIn, bind)
-    await channel.consume(
-      queueIn,
-      msg => {
-        const { properties, content } = msg
-
-        const data = JSON.parse(content.toString())
-        handlePayload({ data, properties })
-      },
-      { noAck: true }
+    await channel.consume(queueIn, message =>
+      handlePayload({ message, channel })
     )
     console.log('%s [*] Awaiting messages on', chalk.green('✓'), queueIn)
   } catch (error) {
