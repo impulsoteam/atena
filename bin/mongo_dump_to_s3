@@ -5,14 +5,14 @@ set -o pipefail
 export AWS_ACCESS_KEY_ID=$BACKUP_S3_KEY
 export AWS_SECRET_ACCESS_KEY=$BACKUP_S3_SECRET
 
-mongodump --uri ${BACKUP_URI} -o "/tmp/dump"
+mongodump --uri $MONGOBD_URI -o "/tmp/dump"
 tar czf "/tmp/dump.tar.gz" "/tmp/dump"
 
 BACKUP_FILE_NAME="${BACKUP_APP_NAME}-$(date '+%Y-%m-%d_%H_%M').tar.gz"
 
 S3_PATH="${BACKUP_S3_BUCKET}/${BACKUP_APP_NAME}/${BACKUP_FILE_NAME}"
 
-aws s3 cp /tmp/dump.tar.gz s3://${S3_PATH}
+aws s3 cp /tmp/dump.tar.gz s3://$S3_PATH
 
 rm "/tmp/dump.tar.gz"
 rm -rf "/tmp/dump"
