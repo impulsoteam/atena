@@ -22,7 +22,6 @@ export const handlePayload = async ({ message, channel }) => {
   } catch (error) {
     LogController.sendError(error)
   } finally {
-    console.log('ack now...')
     channel.ack(message)
   }
 }
