@@ -9,7 +9,9 @@ export const products = {
   'Clube de Benefícios': 'benefitsClubAccess',
   'Comunidades.tech': 'ctechAccess',
   Communup: 'communupAccess',
-  Atena: 'atenaAccess'
+  Atena: 'atenaAccess',
+  'E-mail @impulso.network': 'impulsoEmailAccess',
+  Ajuda: 'helpAccess'
 }
 
 export const clickOnProduct = name => {
