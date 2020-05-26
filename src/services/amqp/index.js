@@ -18,7 +18,7 @@ export const connect = async () => {
     const connection = new Connection(amqpUrl)
     await connection.init()
     channel = await connection.createChannel()
-
+    channel.prefetch(1)
     await channel.assertExchange(queueOut, 'fanout', { durable: false })
     console.log(`${chalk.green('✓')} [*] ${queueOut} successfully exchanged`)
 
