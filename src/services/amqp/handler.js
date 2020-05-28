@@ -71,15 +71,20 @@ const handleEvent = async data => {
 
   const achievementType = products[properties.name]
   const payload = {
-    uuid: impulser_uuid,
+    scoreType: scoreTypes.clickOnProduct,
     achievementType,
-    provider: { name: 'impulser.app' },
-    description: scoreTypes.clickOnProduct,
-    product: achievementType,
-    time
+    queries: {
+      user: { uuid: impulser_uuid },
+      details: { 'details.product': achievementType }
+    },
+    details: {
+      provider: 'impulser.app',
+      product: achievementType,
+      occurredAt: time
+    }
   }
 
-  const user = await User.findOne({ uuid: payload.uuid })
+  const user = await User.findOne(payload.query)
 
   if (!user) {
     return sendInteractionToQueue.add(payload, {
@@ -87,5 +92,5 @@ const handleEvent = async data => {
       removeOnComplete: true
     })
   }
-  await ScoreController.handleClickOnProduct(payload)
+  await ScoreController.handleExternalInteraction(payload)
 }
