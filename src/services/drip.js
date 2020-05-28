@@ -5,17 +5,42 @@ import { scoreTypes } from '../models/Score/schema'
 
 export const handleEvent = async (req, res) => {
   try {
-    const { event, data, occurred_at } = req.body
+    const { data, occurred_at } = req.body
     const { subscriber, properties } = data
-    const { source, email_id, email_subject, email_name } = properties
+    const {
+      source,
+      email_id,
+      email_subject,
+      email_name,
+      email_type
+    } = properties
+
+    if (email_type !== 'Broadcast')
+      return res.json({ message: 'Email not eligible for scoring' })
 
     const dripEvents = {
-      'subscriber.opened_email': {
+      'newsletter impulso network': {
         scoreType: scoreTypes.newsletterRead,
         achievementType: achievementTypes.newslettersRead
       }
     }
-    const { scoreType, achievementType } = dripEvents[event]
+
+    let scoreType, achievementType
+
+    for (const [event, types] of Object.entries(dripEvents)) {
+      const emailName = email_name.toLowerCase()
+
+      if (emailName.includes(event)) {
+        scoreType = types.scoreType
+        achievementType = types.achievementType
+
+        break
+      }
+    }
+
+    if (!scoreType || !achievementType)
+      return res.json({ message: 'Email not eligible for scoring' })
+
     await ScoreController.handleExternalInteraction({
       scoreType,
       achievementType,
