@@ -229,6 +229,61 @@ class ScoreController extends ScoreUtils {
     }
   }
 
+  async handleExternalInteraction(payload) {
+    try {
+      const { scoreType, achievementType, query, details } = payload
+
+      const user = await User.findOne(query)
+      if (!user) return
+
+      const lastScore = await Score.findOne({
+        user: user.uuid,
+        description: scoreType
+      }).sort({ 'details.occurredAt': -1 })
+
+      if (lastScore) {
+        const lastInteraction = moment(lastScore.details.occurredAt)
+
+        const pastHours = moment
+          .duration(moment(details.occurredAt).diff(lastInteraction))
+          .asHours()
+
+        if (pastHours < scoreRules[scoreType].limit)
+          return await AchievementController.handle({
+            user,
+            achievementType,
+            provider: details.provider
+          })
+      }
+
+      const score = scoreRules[scoreType].score
+
+      await Score.create({
+        user: user.uuid,
+        score,
+        description: scoreType,
+        details
+      })
+
+      const updatedUser = await this.updateUserScore({
+        user,
+        scoreEarned: score
+      })
+
+      await AchievementController.handle({
+        user: updatedUser,
+        achievementType,
+        provider: details.provider
+      })
+    } catch (error) {
+      LogController.sendError({
+        file: 'ScoreController.handleEmailEvent',
+        resume: error.toString(),
+        details: { error, payload }
+      })
+    }
+  }
+
   async handleManualScore({ payload, user }) {
     try {
       await Score.create(payload)
