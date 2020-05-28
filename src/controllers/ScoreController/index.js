@@ -162,14 +162,15 @@ class ScoreController extends ScoreUtils {
 
   async handleExternalInteraction(payload) {
     try {
-      const { scoreType, achievementType, query, details } = payload
+      const { scoreType, achievementType, queries, details } = payload
 
-      const user = await User.findOne(query)
+      const user = await User.findOne(queries.user)
       if (!user) return
 
       const lastScore = await Score.findOne({
         user: user.uuid,
-        description: scoreType
+        description: scoreType,
+        ...queries.details
       }).sort({ 'details.occurredAt': -1 })
 
       if (lastScore) {

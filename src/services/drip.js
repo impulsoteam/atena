@@ -44,7 +44,10 @@ export const handleEvent = async (req, res) => {
     await ScoreController.handleExternalInteraction({
       scoreType,
       achievementType,
-      query: { email: subscriber.email },
+      queries: {
+        user: { email: subscriber.email },
+        details: { 'details.email.subject': email_subject }
+      },
       details: {
         email: {
           id: email_id,
