@@ -73,7 +73,10 @@ const handleEvent = async data => {
   const payload = {
     scoreType: scoreTypes.clickOnProduct,
     achievementType,
-    query: { uuid: impulser_uuid },
+    queries: {
+      user: { uuid: impulser_uuid },
+      details: { 'details.product': achievementType }
+    },
     details: {
       provider: 'impulser.app',
       product: achievementType,
