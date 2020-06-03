@@ -8,7 +8,7 @@
     "dev:debug": "nodemon --inspect src/server.js",
     "build": "sucrase ./src -d ./dist -t imports",
     "start": "node dist/server.js",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "lint": "eslint ./"
   },
   "husky": {

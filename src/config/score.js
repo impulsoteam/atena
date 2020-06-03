@@ -9,6 +9,13 @@ export const scoreRules = {
     score: 2,
     limit: 168
   },
+  profileCompleteness: {
+    20: 5,
+    40: 10,
+    60: 15,
+    80: 20,
+    100: 25
+  },
   dailyLimit: 60,
   flood: 60,
   message: {

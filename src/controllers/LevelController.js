@@ -1,6 +1,6 @@
 import { generateStorytelling } from '../assets/storytelling'
 import LevelHistory from '../models/LevelHistory'
-import { publish } from '../services/amqp'
+import { publishToEnlistment } from '../services/amqp'
 import { updateBadge as updateRocketchatBadge } from '../services/rocketchat/api'
 import BotController from './BotController'
 import LogController from './LogController'
@@ -20,7 +20,7 @@ class LevelController {
         }
       })
       this.updateBadges(user)
-      publish({
+      publishToEnlistment({
         type: 'level_change',
         uuid: user.uuid,
         level: user.level.value

@@ -2,7 +2,7 @@ import moment from 'moment'
 
 import getAchievementValues, { messageProviders } from '../config/achievements'
 import User from '../models/User'
-import { publish } from '../services/amqp'
+import { publishToEnlistment } from '../services/amqp'
 import BotController from './BotController'
 import LogController from './LogController'
 import ScoreController from './ScoreController'
@@ -158,7 +158,7 @@ class AchievementController {
         provider,
         score
       })
-      publish({
+      publishToEnlistment({
         type: 'achievement',
         uuid: user.uuid,
         achievement: newAchievement

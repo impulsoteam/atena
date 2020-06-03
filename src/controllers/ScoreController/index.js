@@ -349,6 +349,63 @@ class ScoreController extends ScoreUtils {
       LogController.sendError(error)
     }
   }
+
+  async handleProfileCompleteness(payload) {
+    try {
+      const { uuid, completeness, provider } = payload
+
+      let user = await User.findOne({ uuid })
+
+      if (!user)
+        return LogController.sendError({
+          file: 'ScoreController.handleEmailEvent',
+          resume: `Unable to find user by uuid`,
+          details: { payload }
+        })
+
+      if (user.profileCompleteness.total >= completeness.total)
+        return await User.updateOne(
+          { uuid: user.uuid },
+          { profileCompleteness: completeness }
+        )
+
+      const previousScores = await Score.find({
+        user: user.uuid,
+        description: scoreTypes.profileCompleteness
+      })
+
+      const { profileCompleteness } = scoreRules
+
+      for (const [percentage, score] of Object.entries(profileCompleteness)) {
+        if (completeness.total < parseInt(percentage)) break
+
+        const hasPreviousScore = previousScores.find(
+          ({ details }) => parseInt(percentage) === details.percentage
+        )
+
+        if (!hasPreviousScore) {
+          await Score.create({
+            user: user.uuid,
+            score,
+            description: scoreTypes.profileCompleteness,
+            details: {
+              provider,
+              percentage
+            }
+          })
+
+          user = await this.updateUserScore({ user, scoreEarned: score })
+        }
+      }
+
+      await User.updateOne(
+        { uuid: user.uuid },
+        { profileCompleteness: completeness }
+      )
+    } catch (error) {
+      LogController.sendError(error)
+    }
+  }
 }
 
 export default new ScoreController()
