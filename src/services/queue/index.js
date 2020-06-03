@@ -1,6 +1,5 @@
 import Queue from 'bull'
 
-import AchievementController from '../../controllers/AchievementController'
 import LogController from '../../controllers/LogController'
 import ScoreController from '../../controllers/ScoreController'
 
@@ -26,7 +25,7 @@ sendInteractionToQueue.process(async function (job, done) {
 
 sendProfileCompletenessToQueue.process(async function (job, done) {
   try {
-    await AchievementController.handleProfileCompleteness(job.data)
+    await ScoreController.handleProfileCompleteness(job.data)
   } catch (error) {
     LogController.sendError(error)
   } finally {
