@@ -1,12 +1,13 @@
 import moment from 'moment'
 
-import { achievementTypes } from '../../config/achievements'
+import { achievementTypes, messageProviders } from '../../config/achievements'
 import { scoreRules } from '../../config/score'
 import Reaction from '../../models/Reaction'
 import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
 import AchievementController from '../AchievementController'
+import BotController from '../BotController'
 import LogController from '../LogController'
 import ScoreUtils from './utils'
 
@@ -345,6 +346,72 @@ class ScoreController extends ScoreUtils {
 
       await Score.findOneAndUpdate(senderPayload, senderPayload, options)
       await Score.findOneAndUpdate(receiverPayload, receiverPayload, options)
+    } catch (error) {
+      LogController.sendError(error)
+    }
+  }
+
+  async handleProfileCompleteness(payload) {
+    try {
+      const { uuid, completeness, provider } = payload
+
+      let user = await User.findOne({ uuid })
+
+      if (!user)
+        return LogController.sendError({
+          file: 'ScoreController.handleEmailEvent',
+          resume: `Unable to find user by uuid`,
+          details: { payload }
+        })
+
+      if (user.profileCompleteness.total >= completeness.total)
+        return await User.updateOne(
+          { uuid: user.uuid },
+          { profileCompleteness: completeness }
+        )
+
+      const previousScores = await Score.find({
+        user: user.uuid,
+        description: scoreTypes.profileCompleteness
+      })
+
+      const { profileCompleteness } = scoreRules
+
+      for (const [percentage, score] of Object.entries(profileCompleteness)) {
+        if (completeness.total < parseInt(percentage)) break
+
+        const hasPreviousScore = previousScores.find(
+          ({ details }) => parseInt(percentage) === details.percentage
+        )
+
+        if (!hasPreviousScore) {
+          await Score.create({
+            user: user.uuid,
+            score,
+            description: scoreTypes.profileCompleteness,
+            details: {
+              provider,
+              percentage
+            }
+          })
+
+          user = await this.updateUserScore({ user, scoreEarned: score })
+
+          const message = this.getProfileCompletenessMessage(percentage)
+
+          const providerOrDefault = messageProviders(provider)
+          BotController.sendMessageToUser({
+            provider: providerOrDefault,
+            message,
+            username: user[providerOrDefault].username
+          })
+        }
+      }
+
+      await User.updateOne(
+        { uuid: user.uuid },
+        { profileCompleteness: completeness }
+      )
     } catch (error) {
       LogController.sendError(error)
     }

@@ -8,6 +8,11 @@ const sendInteractionToQueue = new Queue(
   process.env.REDIS_URL
 )
 
+const sendProfileCompletenessToQueue = new Queue(
+  'sendProfileCompletenessToQueue',
+  process.env.REDIS_URL
+)
+
 sendInteractionToQueue.process(async function (job, done) {
   try {
     await ScoreController.handleExternalInteraction(job.data)
@@ -18,4 +23,14 @@ sendInteractionToQueue.process(async function (job, done) {
   }
 })
 
-export { sendInteractionToQueue }
+sendProfileCompletenessToQueue.process(async function (job, done) {
+  try {
+    await ScoreController.handleProfileCompleteness(job.data)
+  } catch (error) {
+    LogController.sendError(error)
+  } finally {
+    done(null, 'interaction send to be processed')
+  }
+})
+
+export { sendInteractionToQueue, sendProfileCompletenessToQueue }

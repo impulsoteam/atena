@@ -7,7 +7,7 @@ import User from '../../models/User'
 import { sendInteractionToQueue } from '../../services/queue'
 import { removeEmptyValues } from '../../utils'
 
-export const handlePayload = async ({ message, channel }) => {
+export const handle = async ({ message, channel }) => {
   try {
     const { content, properties } = message
     const data = JSON.parse(content.toString())
