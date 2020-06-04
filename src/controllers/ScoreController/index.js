@@ -1,12 +1,13 @@
 import moment from 'moment'
 
-import { achievementTypes } from '../../config/achievements'
+import { achievementTypes, messageProviders } from '../../config/achievements'
 import { scoreRules } from '../../config/score'
 import Reaction from '../../models/Reaction'
 import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
 import AchievementController from '../AchievementController'
+import BotController from '../BotController'
 import LogController from '../LogController'
 import ScoreUtils from './utils'
 
@@ -395,6 +396,15 @@ class ScoreController extends ScoreUtils {
           })
 
           user = await this.updateUserScore({ user, scoreEarned: score })
+
+          const message = this.getProfileCompletenessMessage(percentage)
+
+          const providerOrDefault = messageProviders(provider)
+          BotController.sendMessageToUser({
+            provider: providerOrDefault,
+            message,
+            username: user[providerOrDefault].username
+          })
         }
       }
 
