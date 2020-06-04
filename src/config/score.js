@@ -5,6 +5,10 @@ export const scoreRules = {
     limit: 24,
     score: 2
   },
+  newsletterRead: {
+    score: 2,
+    limit: 168
+  },
   dailyLimit: 60,
   flood: 60,
   message: {

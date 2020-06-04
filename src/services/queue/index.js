@@ -10,7 +10,7 @@ const sendInteractionToQueue = new Queue(
 
 sendInteractionToQueue.process(async function (job, done) {
   try {
-    await ScoreController.handleClickOnProduct(job.data)
+    await ScoreController.handleExternalInteraction(job.data)
   } catch (error) {
     LogController.sendError(error)
   } finally {

@@ -1,5 +1,6 @@
 import { clickOnProduct } from './clickOnProduct'
 import { messageSended } from './messageSended'
+import { newslettersRead } from './newslettersRead'
 import { reactionReceived } from './reactionReceived'
 import { reactionSended } from './reactionSended'
 
@@ -36,21 +37,22 @@ export const messageProviders = provider => {
 }
 
 export const achievementTypes = {
-  messageSended: 'messageSended',
-  reactionSended: 'reactionSended',
-  reactionReceived: 'reactionReceived',
-  clickOnProduct: 'clickOnProduct',
-  chatAccess: 'chatAccess',
-  externalEventsAccess: 'externalEventsAccess',
-  internalMeetupsAccess: 'internalMeetupsAccess',
-  opportunitiesAccess: 'opportunitiesAccess',
-  impulsoTVAccess: 'impulsoTVAccess',
-  blogAccess: 'blogAccess',
-  curationAccess: 'curationAccess',
+  atenaAccess: 'atenaAccess',
   benefitsClubAccess: 'benefitsClubAccess',
+  blogAccess: 'blogAccess',
+  chatAccess: 'chatAccess',
+  clickOnProduct: 'clickOnProduct',
+  curationAccess: 'curationAccess',
   ctechAccess: 'ctechAccess',
   communupAccess: 'communupAccess',
-  atenaAccess: 'atenaAccess'
+  externalEventsAccess: 'externalEventsAccess',
+  impulsoTVAccess: 'impulsoTVAccess',
+  internalMeetupsAccess: 'internalMeetupsAccess',
+  messageSended: 'messageSended',
+  newslettersRead: 'newslettersRead',
+  reactionReceived: 'reactionReceived',
+  reactionSended: 'reactionSended',
+  opportunitiesAccess: 'opportunitiesAccess'
 }
 
 export default function getAchievementValues(type) {
@@ -59,7 +61,8 @@ export default function getAchievementValues(type) {
     messageSended,
     reactionSended,
     reactionReceived,
-    clickOnProduct
+    clickOnProduct,
+    newslettersRead
   }
 
   const ranges = achievements[name](type)
