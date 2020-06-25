@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import { onboardingMessage } from '../assets/onboarding'
 import User from '../models/User'
 import { sendBatchOfUsersToDrip } from '../services/drip'
@@ -93,7 +95,8 @@ class UserController {
           ranking_monthly_score: user.score,
           ranking_general_position:
             general.findIndex(({ uuid }) => uuid === user.uuid) + 1,
-          ranking_general_score: score.value
+          ranking_general_score: score.value,
+          atena_updated_at: moment().toDate()
         }
 
         if (achievements.length) {
