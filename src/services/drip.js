@@ -3,6 +3,12 @@ import LogController from '../controllers/LogController'
 import ScoreController from '../controllers/ScoreController'
 import { scoreTypes } from '../models/Score/schema'
 
+const { DRIP_API_KEY, DRIP_ACCOUNT_ID } = process.env
+const client = require('drip-nodejs')({
+  token: DRIP_API_KEY,
+  accountId: DRIP_ACCOUNT_ID
+})
+
 export const handleEvent = async (req, res) => {
   try {
     const { data, occurred_at } = req.body
@@ -68,4 +74,24 @@ export const handleEvent = async (req, res) => {
       details: { payload: req.body }
     })
   }
+}
+
+export const sendBatchOfUsersToDrip = subscribers => {
+  const batch = {
+    batches: [{ subscribers }]
+  }
+
+  client.updateBatchSubscribers(batch, errors => {
+    if (errors) {
+      LogController.sendError({
+        file: 'services/drip.js - handleEvent',
+        resume: errors.toString(),
+        details: {
+          firstUser: subscribers[0],
+          lastUser: subscribers[subscribers.length - 1],
+          total: subscribers.length
+        }
+      })
+    }
+  })
 }

@@ -1,5 +1,7 @@
 import { onboardingMessage } from '../assets/onboarding'
 import User from '../models/User'
+import { sendBatchOfUsersToDrip } from '../services/drip'
+import { sleep } from '../utils'
 import BotController from './BotController'
 import LogController from './LogController'
 import RankingController from './RankingController'
@@ -57,6 +59,67 @@ class UserController {
     return {
       user,
       rankings: { general, monthly }
+    }
+  }
+
+  async sendUsersToDrip() {
+    try {
+      const totalUsers = await User.countDocuments({})
+      const { ranking: monthly } = await RankingController.getMonthlyRanking({
+        offset: 0,
+        size: totalUsers
+      })
+
+      const { ranking: general } = await RankingController.getGeneralRanking({
+        offset: 0,
+        size: totalUsers
+      })
+
+      let subscribers = []
+      const sendBatch = async () => {
+        sendBatchOfUsersToDrip(subscribers)
+        subscribers = []
+        await sleep(1000)
+      }
+
+      for (const [position, user] of Object.entries(monthly)) {
+        const { email, score, level, achievements } = await User.findOne({
+          uuid: user.uuid
+        })
+
+        const customFields = {
+          atena_level: level.value,
+          ranking_monthly_position: parseInt(position) + 1,
+          ranking_monthly_score: user.score,
+          ranking_general_position:
+            general.findIndex(({ uuid }) => uuid === user.uuid) + 1,
+          ranking_general_score: score.value
+        }
+
+        if (achievements.length) {
+          const { name, medal, range } = achievements.sort(
+            (a, b) => b.earnedIn - a.earnedIn
+          )[0]
+          customFields.last_achievements = `${name} - ${medal} - ${range}`
+        }
+
+        subscribers.push({
+          email: email,
+          custom_fields: customFields
+        })
+
+        if (subscribers.length === 999) await sendBatch()
+      }
+
+      await sendBatch()
+
+      LogController.sendNotify({
+        file: 'controllers/UserController.sendUsersToDrip',
+        resume: 'Job done!',
+        details: { usersUpdated: totalUsers }
+      })
+    } catch (error) {
+      LogController.sendError(error)
     }
   }
 }
