@@ -6,6 +6,16 @@ const achievement = {
     type: String,
     required: true
   },
+  displayNames: {
+    medal: {
+      type: String,
+      enum: ['Bronze', 'Prata', 'Ouro', 'Platina', 'Diamante']
+    },
+    achievement: {
+      type: String,
+      required: true
+    }
+  },
   medal: {
     type: String,
     enum: ['bronze', 'silver', 'gold', 'platinum', 'diamond']
@@ -18,10 +28,7 @@ const achievement = {
     type: Number,
     required: true
   },
-  nextTarget: {
-    type: Number,
-    required: true
-  },
+  nextTarget: Number,
   earnedIn: {
     type: Date,
     required: true
@@ -53,6 +60,24 @@ export default new mongoose.Schema(
       default: false
     },
     achievements: [achievement],
+    profileCompleteness: {
+      personal: {
+        type: Number,
+        default: 0
+      },
+      knowledge: {
+        type: Number,
+        default: 0
+      },
+      professional: {
+        type: Number,
+        default: 0
+      },
+      total: {
+        type: Number,
+        default: 0
+      }
+    },
     score: {
       value: {
         type: Number,
@@ -63,7 +88,7 @@ export default new mongoose.Schema(
     level: {
       value: {
         type: Number,
-        default: 0
+        default: 1
       },
       scoreToNextLevel: Number,
       lastUpdate: Date

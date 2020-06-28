@@ -61,15 +61,24 @@ factory.define('Score', Score, () => ({
     range: faker.random.arrayElement(['I', 'II', 'III', 'IV', 'V'])
   }
 }))
+
 factory.define('User', User, () => ({
   uuid: faker.random.uuid(),
   name: faker.name.findName(),
   email: faker.internet.email(),
+  avatar: faker.image.avatar(),
   isCoreTeam: false,
   achievements: [],
+  score: { value: 0 },
+  level: { value: 1 },
+  profileCompleteness: {
+    personal: 0,
+    knowledge: 0,
+    professional: 0,
+    total: 0
+  },
   rocketchat: {
     id: faker.internet.password(),
-    name: faker.name.findName(),
     username: faker.internet.userName()
   },
   linkedin: {
@@ -77,13 +86,9 @@ factory.define('User', User, () => ({
   },
   google: {
     id: faker.internet.password()
-  },
-  pro: {
-    isPro: true,
-    beginAt: faker.date.past(),
-    finishAt: faker.date.future()
   }
 }))
+
 factory.define('messagePayload', 'messagePayload', () => ({
   content: faker.lorem.sentence(),
   threadCount: faker.random.arrayElement([0, 1, 0]),

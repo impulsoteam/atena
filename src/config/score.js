@@ -1,10 +1,29 @@
 export const scoreRules = {
   daysOfInactivity: 14,
   inactivityScore: -2,
+  clickOnProduct: {
+    limit: 24,
+    score: 2
+  },
+  newsletterRead: {
+    score: 2,
+    limit: 168
+  },
+  profileCompleteness: {
+    20: 5,
+    40: 10,
+    60: 15,
+    80: 20,
+    100: 25
+  },
   dailyLimit: 60,
   flood: 60,
   message: {
     send: 3
+  },
+  reaction: {
+    send: 2,
+    receive: 3
   },
   thread: {
     send: 3,
@@ -29,12 +48,12 @@ export const levels = (() => {
 
   return badges.map((badge, index) => {
     const min = scores[index - 1] || 0
-    const max = scores[index] ? scores[index] - 1 : 99999
+    const max = scores[index] ? scores[index] - 1 : null
     return {
       badge,
       level: index + 1,
       currentRange: { min, max },
-      scoreToNextLevel: scores[index] || 99999
+      scoreToNextLevel: scores[index] || null
     }
   })
 })()

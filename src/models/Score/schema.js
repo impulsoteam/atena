@@ -5,11 +5,17 @@ export const providers = {
 }
 
 export const scoreTypes = {
-  messageSent: 'messageSent',
-  threadAnswered: 'threadAnswered',
-  newAchievement: 'newAchievement',
+  clickOnProduct: 'clickOnProduct',
   inactivity: 'inactivity',
-  manual: 'manual'
+  manual: 'manual',
+  messageSent: 'messageSent',
+  newAchievement: 'newAchievement',
+  newsletterRead: 'newsletterRead',
+  profileCompleteness: 'profileCompleteness',
+  reactionReceived: 'reactionReceived',
+  reactionRemoved: 'reactionRemoved',
+  reactionSended: 'reactionSended',
+  threadAnswered: 'threadAnswered'
 }
 
 export default new mongoose.Schema(
@@ -27,14 +33,19 @@ export default new mongoose.Schema(
       required: true
     },
     details: {
+      email: Object,
       provider: String,
       messageId: String,
+      content: String,
       sender: String,
       reason: String,
       room: Object,
+      percentage: Number,
       achievement: String,
       medal: String,
-      range: String
+      range: String,
+      product: String,
+      occurredAt: Date
     }
   },
   {

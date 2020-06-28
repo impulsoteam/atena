@@ -8,7 +8,7 @@
     "dev:debug": "nodemon --inspect src/server.js",
     "build": "sucrase ./src -d ./dist -t imports",
     "start": "node dist/server.js",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "lint": "eslint ./"
   },
   "husky": {
@@ -20,9 +20,10 @@
     "@rocket.chat/sdk": "^0.2.9-2",
     "amqplib-as-promised": "^4.0.0",
     "axios": "^0.19.2",
+    "bull": "^3.14.0",
     "chalk": "^4.0.0",
     "cors": "^2.8.5",
-    "crypto-js": "^4.0.0",
+    "drip-nodejs": "^3.1.1",
     "express": "^4.17.1",
     "moment": "^2.24.0",
     "mongoose": "^5.9.2",
@@ -32,7 +33,7 @@
   },
   "devDependencies": {
     "@sucrase/jest-plugin": "^2.0.0",
-    "@types/jest": "^25.1.4",
+    "@types/jest": "^26.0.3",
     "@types/mongoose": "^5.7.3",
     "babel-jest": "^26.0.1",
     "eslint": "^7.0.0",
