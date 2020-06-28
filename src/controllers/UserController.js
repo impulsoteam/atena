@@ -81,7 +81,7 @@ class UserController {
       const sendBatch = async () => {
         sendBatchOfUsersToDrip(subscribers)
         subscribers = []
-        await sleep(1000)
+        await sleep(5000)
       }
 
       for (const [position, user] of Object.entries(monthly)) {
