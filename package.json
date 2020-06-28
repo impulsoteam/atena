@@ -35,7 +35,7 @@
     "@sucrase/jest-plugin": "^2.0.0",
     "@types/jest": "^26.0.3",
     "@types/mongoose": "^5.7.3",
-    "babel-jest": "^25.1.0",
+    "babel-jest": "^26.1.0",
     "eslint": "^7.0.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-config-standard": "^14.1.1",
