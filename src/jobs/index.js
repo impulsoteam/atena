@@ -20,7 +20,7 @@ const inviteUsersToChannel = () => {
 }
 
 const sendUsersToDrip = () => {
-  cron.schedule('0 2 * * *', () => UserController.sendUsersToDrip())
+  cron.schedule('0 4 * * *', () => UserController.sendUsersToDrip())
 }
 
 export const exec = () => {
