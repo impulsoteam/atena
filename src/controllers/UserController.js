@@ -79,9 +79,9 @@ class UserController {
 
       let subscribers = []
       const sendBatch = async () => {
+        await sleep(5000)
         sendBatchOfUsersToDrip(subscribers)
         subscribers = []
-        await sleep(5000)
       }
 
       for (const [position, user] of Object.entries(monthly)) {
@@ -119,7 +119,7 @@ class UserController {
       LogController.sendNotify({
         file: 'controllers/UserController.sendUsersToDrip',
         resume: 'Job done!',
-        details: { usersUpdated: totalUsers }
+        details: { usersUpdated: monthly.length }
       })
     } catch (error) {
       LogController.sendError(error)
