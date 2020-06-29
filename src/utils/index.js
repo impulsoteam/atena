@@ -5,3 +5,5 @@ export const removeEmptyValues = obj => {
       delete obj[key]
   })
 }
+
+export const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
