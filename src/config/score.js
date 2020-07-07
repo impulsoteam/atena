@@ -10,11 +10,11 @@ export const scoreRules = {
     limit: 168
   },
   profileCompleteness: {
-    20: 5,
-    40: 10,
-    60: 15,
-    80: 20,
-    100: 25
+    20: 10,
+    40: 20,
+    60: 30,
+    80: 40,
+    100: 50
   },
   dailyLimit: 60,
   flood: 60,
