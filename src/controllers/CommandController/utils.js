@@ -22,9 +22,10 @@ export default class CommandUtils {
         },
         {
           text: `Digite *!ranking* e veja o ranking do mês atual e sua posição nele!
-          Além disso, você podem também escolher um mês e/ou ano específico.
-          Basta adicionar um número de 1 à 12 para o mes e/ou um ano com quatro dígitos!
-          Ficou com duvida? basta seguir os exemplos abaixo:
+
+          Além disso, você pode também escolher um mês e/ou ano específico.
+          Basta adicionar um número de 1 à 12 para o mês e/ou um ano com quatro dígitos!
+          Ficou com dúvida? basta seguir os exemplos abaixo:
           *!ranking* para o ranking do mês e ano atual.
           *!ranking 2* para o mês de Fevereiro deste ano.
           *!ranking 2 2018* para o mês de Fevereiro de 2018.`
@@ -107,7 +108,7 @@ export default class CommandUtils {
       message = `Psiu... Você não está no ranking pois pertence ao coreTeam. :/`
     }
     if (userPosition > 0 && userPosition < 6) {
-      message = `Parabéns! Voçê está entre os 5 primeiros colocados`
+      message = `Parabéns! Você está entre os 5 primeiros colocados`
     }
     if (userPosition === 0) {
       message = `Ah, e você ainda não pontuou ${monthName ? 'este mes. ' : '.'}`
@@ -149,7 +150,7 @@ export default class CommandUtils {
 
     response.msg = `Olá ${
       user.name.split(' ')[0]
-    }! Atualmente você está no níve ${user.level.value}.
+    }! Atualmente você está no nível ${user.level.value}.
     Segue a sua pontuação em nossos rankings:`
 
     if (monthly.score) {
@@ -186,7 +187,7 @@ export default class CommandUtils {
 
     response.msg = `Olá ${
       user.name.split(' ')[0]
-    }, aqui estão as conquistas que solicitou:`
+    }, aqui estão as conquistas que você solicitou:`
 
     for (const {
       displayNames,
