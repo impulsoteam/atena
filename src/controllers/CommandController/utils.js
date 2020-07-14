@@ -44,7 +44,7 @@ export default class CommandUtils {
         {
           text: `Digite ${'`!hey`'} ${'`@nome-usuário`'} e/ou ${'`#nome-canal`'} e, na linha abaixo, a mensagem desejada para enviar uma mensagem para vários canais e/ou usuários.
 
-          Ficou com duvida? Olha esse exemplo:
+          Ficou com dúvida? Olha esse exemplo:
 
           ${'`!hey`'} ${'`@fulano-1`'} ${'`@fulano-2`'} ${'`#canal-1`'} ${'`#canal-2`'}
           Hello world!`
@@ -105,7 +105,7 @@ export default class CommandUtils {
     let message = `Ah, e você está na posição ${userPosition} do ranking`
 
     if (userPosition === 'coreTeam') {
-      message = `Psiu... Você não está no ranking pois pertence ao coreTeam. :/`
+      message = `Psiu... Você não está no ranking pois faz parte do coreTeam. :/`
     }
     if (userPosition > 0 && userPosition < 6) {
       message = `Parabéns! Você está entre os 5 primeiros colocados`
@@ -281,7 +281,7 @@ export default class CommandUtils {
       })
 
       response.attachments.push({
-        text: `Sucesso! Você *${points} pontos* de reputação para *${gifted.name}*!`
+        text: `Sucesso! Você enviou *${points} pontos* de reputação para *${gifted.name}*!`
       })
     }
     BotController.sendMessageToUser({
