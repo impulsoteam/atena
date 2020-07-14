@@ -158,7 +158,7 @@ class CommandController extends CommandUtils {
       if (!user.isCoreTeam) {
         return BotController.sendMessageToUser({
           provider: provider.name,
-          message: 'Opa, não tens acesso a esta operação.',
+          message: 'Opa, você *não tem acesso* a esta operação.',
           username: provider.user.username
         })
       }
@@ -189,7 +189,7 @@ class CommandController extends CommandUtils {
       if (!user.isCoreTeam) {
         return BotController.sendMessageToUser({
           provider: provider.name,
-          message: 'Opa, não tens acesso a esta operação.',
+          message: 'Opa, você *não tem acesso* a esta operação.',
           username: provider.user.username
         })
       }

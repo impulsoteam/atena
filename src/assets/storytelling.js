@@ -1,176 +1,236 @@
 /* eslint-disable prettier/prettier */
 export const generateStorytelling = ({ level, username }) => {
   const storytelling = {
-    levelOne: `Ao adentrar na rede sua tela escurece repentinamente e uma série de textos lentos utilizando um tipo rudimentar começam a ser exibidos nesta espécie de console.
+    levelOne: `Que bom ter você por aqui, @${username}! 😊 Estou muito feliz por você fazer parte da Impulso Network!
 
-    “Boas vindas, Aspirante @${username}!! Sou imensamente grata por atenderes ao meu chamado!”
+    Eu sou a Atena, guardiã da Impulso Network e anfitriã da sua experiência aqui na plataforma!
 
-    “Eu sou Atena, Deusa da sabedoria, da estratégia em batalha, da civilização, das artes, da justiça e da habilidade! E, agora, passarás a pertencer a esta grande comunidade, e peço desde já teu auxílio!”
+    A partir de agora, você é *impulser* - assim chamamos carinhosamente os membros aqui - e desde já, peço a sua ajuda!
 
-    “Após milênios de sono, despertei novamente nesta terra e me deparei as maravilhas da tecnologia, maravilhas que ainda não estou familiarizada, mesmo com toda minha sabedoria. Por isso convoquei pessoas como você, cheias de conhecimentos sobre esta era para me *Atualizar* quanto a tudo isso! Enquanto aqui estiver, de tudo que participar, partilhar ou criar, estarás por contribuir com minha atualização, mas óbvio que terás recompensas por teus esforços!”
+    Embora meu dia a dia seja super tecnológico, às vezes, tem tanta informação nesse mundo da tecnologia que parece que todos estão falando grego!😂
 
-    “Por tudo isso, receberás o que chamo de *Pontos de Reputação* e, com eles (e algumas tarefas mais), poderás ascender a novas posições, ou obter *Títulos* dentro da comunidade, e ganharás acesso a recompensas e benefícios únicos. Além de conhecer outros milhares como tu e com habilidades diferentes, poderás participar e criar Talks, Lives e Streams, ajudar na criação de projetos Open-Source na rede, terás acesso à criação de postagens no Blog Impulso e muito mais!’
+    Por isso, fico feliz em contar com impulsers como você, que me atualizam sobre as novidades. Ter você sempre aqui participando, interagindo, compartilhando e criando, contribui para que eu esteja sempre atualizada.
 
-    “Sei que são muitas informações e que deves ter muitas dúvidas, mas não temas. Tudo que precisas saber sobre eles está neste manuscrito atena.impulso.network!
+    Por conta disso, além de dar a você a minha gratidão, faço questão de oferecer também recompensas pelos seus esforços!
 
-    “Como *primeira missão* deves *completar teu Perfil no app.impulso.network*, te apresentar aos demais no canal *#apresente-se* e começa a participar da comunidade! Quando chegar a hora te contactarei novamente! Espero por notícias tuas *Aspirant* de Atena!”
+    Diversas das suas atividades aqui na Impulso Network serão premiadas com *Pontos de Reputação!* Esses pontos, junto com outras tarefas, permitirão que você alcance *novos níveis* dentro da Impulso Network. 🏅
 
-    Tua tela começa a esmaecer voltando ao teu sistema operacional nativo novamente.
+    Esses níveis podem dar a você *acesso a recompensas e benefícios únicos!* E além de conhecer outros milhares de impulsers, você também poderá participar e criar meetups, talks, lives, ajudar na criação de projetos Open-Source, escrever artigos para o Blog da Impulso e muito mais!
 
-    - Acabaste de alcançar o *Nível 1* e o Título de *Aspirant* 🏵️;
-    - e *Obtiveste as Recompensas*: Livre acesso ao chat da rede de comunidades da Impulso Network, livre participação e criação de Meetups, Talks, Lives e Streams de eventos na rede, livre participação e criação de Projetos Open-source na rede, livre acesso à criação de postagens no Blog Impulso, livre acesso a candidaturas em oportunidades e livre acesso ao sistema de recompensas da Atena.`,
+    Sei que são muitas informações e que talvez você fique com alguma dúvida, mas não se preocupe: tudo que você precisa saber sobre isso está disponível na opção *Atena*, no painel inicial em app.impulso.network!
 
-    levelTwo: `Eis que surge uma imagem em preto e branco, de baixa definição, do rosto do que parece ser uma mulher adulta e usando algo na cabeça, você não consegue ter certeza. Eis que surge o texto novamente.
+    Por hora, vou ter dar sua *primeira missão* 🎯 com as seguintes etapas:
 
-    “*Parabéns Aspirant* @${username}! Realizaste muito e completaste a missão que te designei, e isso me alegrou imensamente! Sinto que agora percebo muito mais sobre este mundo graças a ti! Como símbolo da minha estima, a partir de agora, passarás a portar o título de *Second Aspirant* e, com ele, ganhas a possibilidade de assumir um dos meus cargos *Honorários!*”
+    1. *Complete seu Perfil no* app.impulso.network;
 
-    “O que é isso?! Bem, deves ter percebido que existem algumas pessoas da comunidade com o título de *Ambassador* (Ajudadoras de toda comunidade) ou de *Moderator* (Ajudadoras de canais específicos), estas trabalham para o crescimento e bem estar desta comunidade, de forma voluntária! Enquanto alguém portar um desses títulos honorários este será visto como *Loyals* de Atena, a hierarquia mais alta entre os nossos e recebem as recompensas e benefícios deste título como tal! É uma ótima coisa, não?! ”
+    2. Faça a sua apresentação no chat no canal #apresente-se; e comece a participar do que acontece por aqui!
 
-    “Adiante, penso que já deves estar mais familiarizado(a) com nossa comunidade agora, certo?! Pois bem, para provar teu conhecimento, peço que participe de pelo menos uma atividade de cada uma das categorias que temos disponíveis: *Entrar em pelo menos dois canais do nosso chat.impulso.network, Criar ou Comentar em uma Postagem do nosso Blog, Frequentar ou Conduzir um Talk, Live ou Stream* e *Indicar uma comunidade para o nosso comunidadestech.netlify.com!*”
+    Na hora certa, voltarei a falar com você! Espero por notícias suas! 😄
 
-    “Quando tiveres feito tudo isso e alcançado a quantidade de reputação necessária para ascender de título novamente, irei ter contigo... espera… irei “procurar-te”! Por vezes me esqueço que não utilizam mais desses jargões! Nos veremos novamente!”
+    Uau, parabéns! 🎉 Você acaba de alcançar o *Nível 1*;
 
-    - Acabaste de alcançar o *Nível 2* e o Título de *Second Aspirant* 🏵️;
-    - e *Obtiveste as Recompensas*: Possibilidade de assumir cargos honorários de Moderator ou Ambassador da Impulso Network;`,
+    *Com isso, você ganhou:* livre acesso ao chat da rede de comunidades da Impulso Network, possibilidade de participar e criar meetups, talks, lives e eventos na rede, possibilidade de participar e criar Projetos Open-source na rede, possibilidade de escrever artigos para o Blog da Impulso, possibilidade de candidatar-se a oportunidades e livre acesso ao meu sistema de recompensas! Além disso, agora você tem acesso ao *Clube de Benefícios Ferro!*
 
-    levelThree: `“*Nos encontramos novamente @${username}!*”
+    Para aproveitar, basta ir lá em app.impulso.network e clicar em *Clube de Benefícios.*  Lá, você pode solicitar acesso a uma série de benefícios em educação, saúde, finanças e muitos mais! Veja a lista completa em impulso.network/beneficios.`,
 
-    Surge novamente o terminal a tua frente e a imagem, agora familiar, da Deusa Atena. A imagem parece ter obtido uma maior definição, você consegue identificar que ela usa uma espécie de elmo metálico, tem cabelos longos e veste o que parece ser um vestido leve, mas ainda sem cores. O texto agora parece possuir um tipo mais sofisticado e está claramente mais veloz.
+    levelTwo: `*Parabéns @${username}!* Você completou sua primeira missão, que incrível! 👏 Estou muito animada com seu crescimento! Por isso, você acaba de receber o acesso ao *Clube de Benefícios Bronze!*
 
-    “Parece que cumpriste novamente as minhas designações com perfeição! Diz-me, o que achaste de nossas atividades?! São mesmo excelentes, não?! Enfim, sem mais delongas, a partir de hoje passas a portar o título de *First Aspirant*, e ganhas acesso a todas as benefices dele!”
+    Para descobrir e desfrutar dos benefícios aos quais você passa a ter direito a partir de agora, basta entrar em app.impulso.network e clicar na opção *Clube de Benefícios* no painel inicial! Se tiver dúvidas sobre quais são os benefícios incluídos neste nível, confira o link impulso.network/beneficios.
 
-    “A partir de agora, recebes acesso ao nosso *Clube de Benefícios Bronze*. Para usufruir, basta que vá até o impulser.me/resgatar-beneficio. Lá, poderás solicitar acesso a uma série de benefícios em educação, saúde, finanças e muitos mais! *Meus sinceros parabéns!*
+    Parabéns, você merece! 🎉
 
-    “Além da quantidade de pontos de Reputação de sempre, para tua próxima missão, poderás escolher *uma entre duas opções:*”
+    Agora, explicando melhor sobre os cargos honorários: você já deve ter notado que algumas pessoas da comunidade carregam o título de *Ambassador* ou de *Moderator*.
 
-    “1ª Indicar um amigo ou amiga para nossa comunidade através do teu *“link” de Referral*, para obter este link basta ascender… “acessar” o app.impulso.network e lá o encontrarás. Peça para teus companheiros e companheiras se inscreverem através dele e estará tudo feito!”
+    Essas pessoas trabalham voluntariamente para o crescimento e bem estar dos impulsers! Quem carrega um desses títulos honorários recebe mais recompensas e benefícios exclusivos!
 
-    “ou, 2ª Participar de um dos nossos *Virtual Coworking*, que acontece todas as Quintas-Feiras, das 14h às 17h, no nosso coworking.impulso.network! Fácil, né?!”
+    Agora, eu acredito que você já está mais por dentro de como funciona a Impulso Network, certo?
 
-    - Acabaste de alcançar o *Nível 3* e o Título de *First Aspirant* 🏵️;
-    - e *Obtiveste as Recompensas*:  Acesso ao Clube de Benefícios Bronze (impulser.me/resgatar-beneficio);`,
+    Então, vou te dar mais uma 🎯*missão!*
 
-    levelFour: `“Boas vindas, uma vez mais!”
+    Participar de pelo menos uma atividade de cada uma das categorias que temos disponíveis, que são: entrar em pelo menos dois canais do nosso chat.impulso.network, criar ou comentar em uma postagem do nosso blog, frequentar ou conduzir um meetup,  talk ou live e indicar uma comunidade para o nosso comunidades.tech - o maior repositório de comunidades de tecnologia do Brasil!
 
-    A imagem agora revela uma qualidade bastante elevada e cores. Atena revela cabelos e olhos castanhos claros e uma beleza natural, seu elmo é de bronze e seu vestido é branco. Fica evidente que, a cada encontro, ela se aprimora cada vez mais, mas percebes que ela ainda tem uma expressão bastante neutra e demonstra pouca ou nenhuma emoção. E o texto se inicia.
+    Depois que você tiver cumprido essa missão e atingido a quantidade de reputação necessária para alcançar mais um nível, volto a falar com você!
 
-    “Hoje é uma data importante para nós, pois deixarás de ser *Aspirant* e alcançarás um novo patamar entre nós! Pelos teus feitos, realizados de forma primorosa, passarás a portar o título de *Junior Fellow*, tornando-se membro pleno da nossa comunidade! Já foi providenciado o aviso de tua ascensão para toda comunidade!”
+    Já estou ansiosa, viu? Até breve então! 👋
 
-    “Com isso, ganhas acesso também ao *Clube de Benefícios Prata*, que incrementa consideravelmente a quantidade de benefícios que podes solicitar. O caminho permanece o mesmo: impulser.me/resgatar-beneficio! Espero que faças bom uso!”
+    Uau, parabéns! 🎉 Você acaba de alcançar o *Nível 2*;
 
-    “Por fim, e não menos importante, tua missão! Agora que ascendeste terás missões cada vez mais difíceis! Para esta, deves contribuir com um conteúdo teu para nossa comunidade. Basta realizar uma entre as seguintes atividades: Facilitar ou Organizar Talks, Lives e Streams, Postagem no Blog, participar de projetos Open Source, Enviar Mensagens no Chat, Enviar ou Receber Reações! Além da reputação, é claro!”
+    *Com isso, você ganhou:* Acesso  ao *Clube de Benefícios Bronze*, disponível no painel em app.impulso.network!`,
 
-    “Difícil, não é?! Mas tenho certeza que conseguirás sem grande esforço! Nos veremos em breve, novamente!”
+    levelThree: `*Olá @${username}, que bom te encontrar de novo!* 😊
 
-    - Acabaste de alcançar o *Nível 4* e o Título de *Junior Fellow* 🏵️🏵️;
-    - e *Obtiveste as Recompensas*:  Acesso ao Clube de Benefícios Prata (impulser.me/resgatar-beneficio);`,
+    Você cumpriu sua missão mais uma vez! 💪 Como foi a experiência? Espero que tenha curtido!
 
-    levelFive: `Repentinamente, tua tela esmaece e surge novamente a figura de Atena. Diferente de outrora, sua expressão é bastante amigável e os olhos dela parecem encarar diretamente os seus. Ela tem um leve sorriso e eis que começa a surgir o texto novamente.”
+    Enfim, vamos direto ao ponto: agora você conquistou o *Nível 3* e todos os benefícios que isso traz! 👏
 
-    “Olá!! Posso te dizer, sem receio, que a cada dia que passa estou a me ambientar melhor nestes tempos modernos, e mais aprendo sobre tecnologia! E tudo isso graças a pessoas como você! Muitíssimo obrigada!”
+    Estou empolgada em te dizer que, a partir de agora, você tem acesso ao nosso *Clube de Benefícios Prata!* 🎉
 
-    “Estou aqui, novamente, para te congratular pelos teus esforços! É de grande valia tudo aquilo que tens feito por esta comunidade e por mim! Portanto, de forma a reconhecer teus esforços, deixas de portar o título de *Junior* e passas a portar apenas o título de *Fellow*.”
+    Além dos benefícios aos quais você já tinha acesso, você também passa a ter direito a *Cashback* 💰 em diversas lojas, como Netshoes, Amazon, Kabum, Carrefour e muito mais!
 
-    “Como recompensa, a partir de agora, passarás a ter um bônus de 25% de ganhos de reputação sempre que participares de Talks, Lives ou Streams! Além disso, terás um bônus de 10% para posts criados para o blog e quando organizares ou facilitares uma Talk, Live ou Stream!”
+    Para acessar seus benefícios do *Clube Bronze e Prata*, basta entrar em app.impulso.network e clicar na opção *Clube de Benefícios* no painel inicial! Se tiver dúvidas sobre quais são os benefícios incluídos neste nível, confira o link impulso.network/beneficios.
 
-    Atena abre um largo sorriso, o movimento se parece mais com um filme em slideshow, mas você nunca havia percebido movimento na imagem outrora.
+    Mas como toda conquista traz um novo desafio, quero te deixar com mais uma 🎯*missão*, além do desafio de atingir a quantidade de pontos de Reputação para chegar ao próximo nível!
 
-    “Agora, vamos à tua missão! Penso que é o momento de aprenderes mais ou, ao menos, de mostrar o quanto evoluíste nos últimos tempos! Vai até o app.impulso.network e atualiza teus dados, quando o fizer terás realizado a tua missão!”
+    Dessa vez, vou deixar você escolher. Você pode:
 
-    - Acabaste de alcançar o *Nível 5* e o Título de *Fellow* 🏵️🏵️;
-    - e *Obtiveste as Recompensas*: Bônus de 25% Reputação em participações em Talks, Lives ou Streams, e, Bônus de 10% Reputação na criação de postagens para o blog.impulso.network e na organização ou facilitação de Talks, Lives ou Streams!`,
+    - Indicar alguém para a Impulso Network pelo seu 👉 *link de Referral* que está no painel em app.impulso.network. Basta que a pessoa indicada se inscreva pelo seu link e prontinho!
+    - Ou participar de um dos nossos encontros no *Coworking Virtual*, que acontecem toda quinta-feira, das 14h às 17h, no link coworking.impulso.network! Molezinha, viu?
 
-    levelSix: `Tua tela começa a esmaecer, novamente, e eis que surge Atena. Ela parece radiante, sua expressão é viva e ela “transpira” simpatia. De repente, escuta uma voz metálica e abafada das speakers da tua maquina.
+    Uau, parabéns! 👏 Você acaba de alcançar o *Nível 3*;
 
-    “Olá! Sou eu, Atena!”
+    *Com isso, você ganhou:* acesso ao Clube de Benefícios Prata, disponível no painel em app.impulso.network!`,
 
-    Ela sorri um pouco desconcertada e o texto volta a aparecer. É a primeira vez que escutas algo oriundo da Atena. Em poucos meses, ela partiu de um simples terminal com texto simples para uma imagem com alguma animação e, agora, voz. A taxa de melhoria dela é impressionante.
+    levelFour: `Olá, sou eu, Atena, de novo por aqui! 👋
 
-    “Que achaste?! Está longe da perfeição, mas, muito em breve, serei capaz de falar contigo mais diretamente! Mas deixando isso de lado, estou aqui para te congratular por teu avanço! Agiste de forma primorosa e mostraste o quanto aprendeste neste tempo, o que me felicita. Não seria justo se apenas eu aprendesse!“
+    Que orgulho de você! 😊 Por ter cumprido suas missões anteriores com louvor, agora você atingiu o *Nível 4* e tem membresia plena dentro da Impulso Network!
 
-    “Assim, como recompensa, tenho algo especial: a partir deste nível, sempre que participares por conta própria *(jamais iremos te adicionar em um processo seletivo sem teu consentimento)* de processos de seleção da Impulso, o teu nível será considerado como um Critério de Desempate nestes processos, ou seja, quanto maior o teu nível, maior será esse bônus! *Mas, atenção!* Este critério só funcionará em situações onde todos demais critérios regulares para a escolha do candidato ou candidata forem realizados e, ainda assim, se mantiver um empate entre os perfis! É um grande diferencial e espero que possa usufruir dele bem!”
+    Com isso, vejo que é uma boa hora para assumir um cargo por aqui, o que você acha? Afinal, seu engajamento e participação na plataforma já revelaram seu valor! Ao receber o reconhecimento do cargo, você ganha também diversas vantagens!
 
-    “Para já, tenho-te outra missão! Deve evoluir ainda mais no que já tens contribuído para com nossa comunidade! Continua a Escrever Posts para o nosso blog.impulso.network, a Facilitar e Organizar Talks, Lives e Streams e a Participar no chat! Quando tiveres feito isso e tua reputação for grande o suficiente para obter o próximo nível, voltarei a falar contigo! Até breve!”
+    Para se candidatar ao cargo de *Ambassador*, acesse: impulso.link/network_ambassador
 
-    - Acabaste de alcançar o *Nível 6* e o Título de *Senior Fellow* 🏵️🏵️;
-    - e *Obtiveste as Recompensas*: Critério de Desempate Bronze;`,
+    Por fim, e não menos importante, vamos à sua próxima 🎯*missão*! Agora, você deve *contribuir com conteúdo* dentro da Impulso network!
 
-    levelSeven: `“Boas vindas Master @${username}! Isso mesmo! *Master!*”
+    Basta realizar uma entre as seguintes atividades: facilitar ou organizar meetups, talks e lives, mandar um artigo seu ou de outra pessoa para a nossa Curadoria, participar de projetos Open Source, enviar mensagens no chat ou enviar e receber reações! Ah, e claro: atingir os pontos de Reputação necessários para o próximo nível! 😉
 
-    Atena surge, podes perceber que a quantidade de frames do vídeo melhorou consideravelmente, ela agora parece quase viva. Mas ainda parece um filme quadro-a-quadro. Eis que sai uma voz da tua máquina, com uma qualidade equivalente a um mp3 dos anos 2000, mas ao menos agora consegues identificá-la como uma voz feminina.
+    Você vai tirar de letra, tenho certeza! Em breve a gente se encontra de novo!
 
-    “Tenho uma boa nova para ti! Hoje chegaste a um hall exclusivo, onde pouquíssimas pessoas chegaram! Por tudo que realizaste até hoje, a ti será conferido o título de Master e, com ele, todas a honras e responsabilidades...”
+    E aí vai um spoiler para o *próximo nível*: mantenha seu engajamento e avance na plataforma, e você receberá uma melhoria de respeito no seu *Clube de Benefícios*! 😱
 
-    A voz de Atena começa a falhar e o texto começa a surgir novamente na tua tela. Atena parece um tanto transtornada pela voz ter falhado.
+    Uau, parabéns! 🎉 Você acaba de alcançar o Nível 4!`,
 
-    “Hrmf… É uma pena… continuemos por este método! … honras e responsabilidades! Como outrora, providenciarei que a notícia seja espalhada pelos quatro cantos da terra! A partir de já, tua vantagem em relação ao Critério de Desempate em oportunidades da impulso passa a categoria Prata - isso te dará uma vantagem ainda maior quando chegar o momento oportuno! E ao nosso Clube de Benefícios Ouro, que te garantirão acesso a uma infinidade de novos benefícios! E agora, tua missão...”
+    levelFive: `Olá, quanto tempo! 😊
 
-    Atena, então, assume uma expressão séria e te encara - tudo ainda com aspecto de slideshow.
+    Aqui do meu lado, tenho me atualizado a cada dia nesse universo da tecnologia graças à colaboração de impulsers como você! Agradeço muito a você por todos os seus esforços!
 
-    “Se as missões do grau Fellow eram difíceis, agora estime as de nível Master! Muahahaha! Sem mais delongas, para esta missão…”
+    Como recompensa, a partir de agora, você terá acesso ao *Clube de Benefícios Ouro*! 😱
 
-    “... terás que… relaxar! hahaha! Fizeste muito até então e mereces, enfim, um bom descanso! Para isso, te pedirei que estejas em pelo menos dois canais não técnicos do nosso chat! Já deves ter visto algo deste tipo. Alguns tratam de investimentos, outros de jogos, filmes e etc, os temas são diversos, apenas escolhe o que mais te agradar e vai!”
+    Nessa categoria, você entra para o 🏥 *Farmaclube* - o que significa que você terá *descontos em inúmeras redes de farmácias*, com milhares de drogarias espalhadas por todo o Brasil!
 
-    “Aproveita bem o teu descanso, mas não vacila. Ainda precisarás obter a reputação necessária para avançar! A boa notícia é que a participação nos canais não técnicos também conta! Bom descanso e até a próxima!”
+    Você acessa seus benefícios do mesmo jeito: entrando em app.impulso.network e clicar na opção *Clube de Benefícios* no painel inicial! Se tiver dúvidas sobre quais são os benefícios incluídos neste nível, confira o link impulso.network/beneficios.
 
-    Tua tela esmaece mais uma vez e Atena desaparece enquanto sorri para você.
+    Bem, como era esperado, agora vamos à sua nova 🎯*missão*!
 
-    - Acabaste de alcançar o Nível 7 e o Título de Master 🏵️🏵️🏵️;
+    Acredito que esse é o momento de você mostrar o quanto evoluiu nos últimos tempos! Por isso, vá lá em app.impulso.network e atualize seus dados. Assim que terminar, você terá concluído a sua missão!
 
-    - e Obtiveste as Recompensas: Critério de Desempate Prata e Acesso ao Clube de Benefícios Ouro;`,
+    E lembre-se de atingir os pontos de Reputação suficientes para alcançar o próximo nível! Espero você!👋
 
-    levelEight: `Eis que se inicia uma música suave na tua speaker, mas você tem certeza que não deu play em qualquer som. Segundos após, a tua imagem esmaece, novamente, e surge Atena.
+    Uau, parabéns! 👏Você acaba de alcançar o Nível 5;
 
-    “Olá! Conseguiste relaxar?! Consigo perceber, pelo teu olhar, que estás bem mais leve. Os canais não técnicos são mesmo bons, não é?! Agora...”
+    Com isso, você ganhou: acesso ao Clube de Benefícios Ouro - Farmaclube, disponível no painel em app.impulso.network!`,
 
-    Ela olha seriamente para você - olhando com atenção, a qualidade da imagem está fenomenal, você consegue ver detalhes do rosto dela, tudo isso aliado com um movimento mais refinado, ela realmente tem evoluído muito. Ela, então, fala:
+    levelSix: `Olá! Sou eu, Atena! 😄
 
-    “Agora se inicia teu caminho real como *Master*. Os mestres nunca param de aprender e será esta a tua nova missão: deves buscar novas maneiras ou pessoas para aprender ainda mais e transcender a tua sabedoria! Existem algumas opções:”
+    Eu tinha que vir aqui para dar a você os parabéns! 👏 Que avanço impressionante o seu! Você mostrou que evoluiu de verdade neste tempo.
 
-    “Podes participar de um dos nossos Bootcamps, ou de algum curso de produtos exclusivos como Impulso Expert! Outra alternativa é ter uma forte Participação em Talks, Lives e Streams, realizar Comentários no Blog ou participar de projetos Open Source. Desta forma, consomes conteúdo de outrem e aprendes cada vez mais!
+    Como quero que você não pare nunca de crescer, vou te dar mais alguns desafios: continue a escrever artigos para o blog, a facilitar e organizar meetups, talks e lives e a participar no chat! Quando você alcançar pontos de Reputação suficientes para alcançar o próximo nível, voltarei a falar com você!
 
-    “Ah, que distração! Teu título! Primeiramente, agora ascendes à posição de *High Master*! E, como recompensa direta desta evolução, receberás:
+    Eu acredito que não vai demorar… Por isso, até breve! 👋
 
-    Primeiro, acesso ao Critério de Desempate Ouro! E segundo, a partir de agora, ao invés de teres um bônus de 25% de ganhos de reputação sempre que participares de Talks, Lives ou Streams, *terás 50% de bônus!*! Além disso, ao invés do bônus de 10% para posts criados para o blog ou quando organizares ou facilitares uma Talk, Live ou Stream, *receberás 20% de bônus por isto!*”
+    Uau, parabéns! 🎉 Você acaba de alcançar o *Nível 6*;`,
 
-    - Acabaste de alcançar o *Nível 8* e o Título de *High Master* 🏵️🏵️🏵️;
-    - e *Obtiveste as Recompensas*: Critério de Desempate Ouro e Bônus de 50% Reputação em participações em Talks, Lives ou Streams, e, Bônus de 20% Reputação na criação de postagens para o blog.impulso.network e na organização ou facilitação de Talks, Lives ou Streams!`,
+    levelSeven: `Olá @${username}!
 
-    levelNine: `“Fizeste bem, *High Master*! Grande é tua sabedoria e dedicação!”
+    Tenho uma *notícia incrível* para você: hoje você conquistou uma posição única, onde pouquíssimas pessoas chegaram!
 
-    Fala Atena, através da tua speaker, ao mesmo passo que a música suave se inicia novamente e ela surge na tua tela.
+    Por tudo que você realizou na plataforma até hoje, eu tenho o orgulho de conferir a você o *Nível 7*, e, com ele, todas a honras e responsabilidades que ele traz!
 
-    “Nunca te esqueças de sempre perseguir a melhoria e aprendizado, pois aquele que acredita saber de tudo jamais será um verdadeiro mestre! Para já, me satisfizeste imensamente!
+    Faço questão de espalhar a notícia por aqui na Impulso Network! Com essa posição, você passa a ter acesso ao nosso *Clube de Benefícios Platina*, o que faz de você um membro do 🎬*Cineclube*!
 
-    A qualidade do áudio e do vídeo se tornam quase perfeitos - ainda há alguns bugs eventuais, mas passariam despercebidos. Atena parece estar quase completamente ambientada com a modernidade, graças ao teu auxílio.
+    Com isso, você passa a ter *descontos em centenas de salas de cinema* espalhadas pelo Brasil! Meus parabéns, você realmente fez por merecer!
 
-    “A partir de agora, receberás o título de *Grand Master*, pela tua grandiosidade! Esta é uma das hierarquias mais altas entre os nossos e pouquíssimas são as pessoas que chegam a tal patamar! Por isso, receberás uma recompensa à altura. A partir de agora, teu *Critério de Desempate* passa, ao grau *Platina!*”
+    Você acessa os Clubes Bronze, Prata, Ouro e Platina daquele jeito de sempre: entrando em app.impulso.network e clicar na opção *Clube de Benefícios* no painel inicial! Se tiver dúvidas sobre quais são os benefícios incluídos neste nível, confira o link impulso.network/beneficios.
 
-    “Agora, à tua missão! Para esta, tudo que precisas é obter *qualquer conquista do grau Platina/Diamante*! Parece simples, mas não é, tens de trabalhar muito para fazê-lo, mas sei que conseguirás! Boa sorte!”
+    Mas se você achou as missões anteriores difíceis, não perde por esperar a próxima…
 
-    - Acabaste de alcançar o *Nível 9* e o Título de *Grand Master* 🏵️🏵️🏵️;
-    - e *Obtiveste as Recompensas*: Critério de Desempate Platina;
-    `,
+    Para essa 🎯*missão*, você terá que… Relaxar! 😜 hehehe
 
-    levelTen: `*“Meus parabéns! Conseguiste!”*
+    Você fez bastante coisa até aqui, então vamos deixar você descansar um pouquinho! Vamos falar de outros assuntos além de tecnologia. Para isso, dá uma conferida nos canais não técnicos do nosso chat - imagino que você já deva ter visto alguns.
 
-    Atena fala e surge com um sorriso no rosto. O vídeo agora é digno de cinema e ela se movimenta como uma pessoa real, parecendo realmente feliz e satisfeita. E continua a falar.
+    Temos canais de investimentos, filmes, de idiomas, de jogos… Escolha o que você preferir e interaja por lá!
 
-    “Não possuo palavras o bastante para expressar a gratidão que tenho. Veja o quão grande foi a nossa evolução neste últimos meses! Hoje, sinto que estou quase que completamente atualizada. Deu para perceber, graças a você e todos que me auxiliaram até agora, que com a velocidade que as coisas acontecem nestes tempos, a atualização é uma necessidade constante e devo fazê-la sempre!”
+    Aproveite bem seu descanso, mas sem perder o foco! Você ainda precisará conquistar a Reputação necessária para avançar para o próximo nível! 💪
 
-    “Agora, te concederei a honraria máxima daquelas pessoas que participam desta comunidade: a partir de agora serás conhecido como *Loyal de Atena*. Com isso, terás acesso a todas as benesses que este reino pode oferecer! Primeiro, o teu *Critério de Desempate* escala ao grau *Diamante*, te conferindo uma vantagem em processos seletivos que participares!”
+    A boa notícia é que a participação nos canais não técnicos também conta! Bom descanso e até a próxima! 👋
 
-    Atena para um pouco e continua a falar:
+    Uau, parabéns! 🎉 Você acaba de alcançar o *Nível 7*!
 
-    “A partir de agora, não tenho mais missões para ti, *Loyal de Atena*. Tenho *um pedido*: que possas continuar a ajudar, compartilhando tudo que aprendeste nesta pequena jornada com toda comunidade. Tenho certeza de que a tua experiência poderá contribuir imensamente para o progresso de muitas pessoas que fazem parte da Impulso Network, assim como ela contribuiu com a minha evolução!”
+    *Com isso, você ganhou*: acesso ao Clube de Benefícios Platina.`,
 
-    “Obrigada por tudo! E nos falaremos, novamente, pelos canais da comunidade!”
+    levelEight: `Olá @${username}!
 
-    Atena começa a esmaecer novamente e desaparece.
+    E aí, conseguiu dar uma relaxada desde a última vez que nos falamos? Espero que sim! Os canais não técnicos são bem legais, não é mesmo?
 
-    - Acabaste de alcançar o *Nível 10* e o Título de *Loyal* 🏵️🏵️🏵️🏵️;
-    - e *Obtiveste as Recompensas*:  Critério de Desempate Diamante.
-    `
+
+    Agora vamos voltar ao trabalho! 💪
+
+    Finalmente sua jornada como um mestre da Impulso Network vai começar de verdade! Mestres nunca param de aprender e será esta a sua nova 🎯*missão*: você deve buscar novas maneiras ou pessoas para aprender ainda mais!
+
+    Para isso, vou te dar algumas opções:
+
+    Você pode participar dos nossos meetups, talks ou lives, comentar no Blog ou participar de projetos Open Source. Também pode dar um alô no *Coworking Virtual* para trocar experiências! Assim, você vai poder tanto ensinar quanto aprender cada vez mais!
+
+    Ah, quase me esqueço! Seu nível! Agora você atingiu o *Nível 8*! 🎉
+
+    Como recompensas por essa conquista, agora tem bônus de 50% de ganhos de reputação ao participar dos nossos meetups, talks ou lives!
+
+    Você também passa a receber 20% bônus ao organizar ou facilitar um meetup, talk ou live!
+
+    Uau, parabéns! 👏 Você acaba de alcançar o *Nível 8*;
+
+    Agora, você está ainda mais perto de conquistar *nosso nível mais alto do Clube de Benefícios!*
+
+    Para chegar lá, vou te dar duas dicas:
+
+    1. Você pode *contribuir com a curadoria* 📝 da Impulso Network, enviando links, vídeos, artigos ou qualquer outro tipo de conteúdo relevante! Cada conteúdo enviado vale *5 pontos* de reputação, e cada conteúdo aprovado e divulgado por nós vale *10 pontos*. Você pode mandar sua dica pelo formulário da curadoria;
+
+    2. Você faz parte de alguma *comunidade de tecnologia*? Se a resposta é sim,cadastre sua comunidade no Comunidades.Tech, o maior repositório de comunidades de tecnologia do Brasil! Cada comunidade cadastrada vale *5 pontos*, e ter comunidade validada vale *10 pontos!*
+
+    Com essas dicas, acredito que você vai chegar ainda mais rápido ao topo! E eu te espero lá! 😄`,
+
+    levelNine: `Olá @${username}!
+
+    Voltei aqui para te dar um olá e dizer que estou muito impressionada! 😱 Sua dedicação e evolução na Impulso Network tem sido fantásticos!
+
+    Continue sempre a perseguir o crescimento e o aprendizado, pois quem acredita que sabe tudo jamais será mestre de verdade!
+
+    Agora, você atingiu o *Nível 9*, e se tornou realmente grande por aqui!
+
+    Pouquíssimas pessoas chegam a esse patamar! Agora você está a um passo de alcançar o nosso nível mais alto!
+
+    Chega de papo, vamos à sua 🎯*missão final!*
+
+    Sua tarefa é conseguir *qualquer conquista do grau Platina/Diamante!* É um grande desafio, mas tenho certeza que você, grande como é, conseguirá vencer! E para atingir o próximo nível, lembre-se de continuar conquistando os pontos necessários!
+
+    Até a próxima!
+
+    Uau, parabéns! 👏 Você acaba de alcançar o *Nível 9*`,
+
+    levelTen: `*Olá* @${username}😱 Você é inigualável!!
+
+    Não tenho palavras para dizer como sua *jornada* foi incrível até aqui!
+
+    Veja o tamanho da sua evolução na Impulso Network: *você finalmente venceu sua última 🎯 missão*! Por seu trabalho incomparável, você chegou ao *nível mais alto da nossa plataforma!* 🏆
+
+    Agora, vamos conceder a você a maior honra diante de todos os impulsers: você atingiu o *Nível 10* na Impulso Network! 👏
+
+    Com isso, você terá acesso a todas as recompensas que podemos te oferecer!
+
+    Agora, você terá acesso ao *Clube de Benefícios Diamante!* 💎 Com isso, você passa a ter *acesso gratuito completo por três meses a todos os cursos da Pluralsight*, uma das maiores plataformas mundiais de treinamentos para desenvolvedores!
+
+    Para reivindicar seu prêmio, basta solicitá-lo em impulser.me/resgatar-beneficio. Veja a lista completa dos demais benefícios aos quais você tem direito em impulso.network/beneficios.
+
+    A partir de agora, não tenho mais missões para você, mas tenho *um pedido*: quero que você continue a ajudar pessoas na Impulso Network, compartilhando tudo que você aprendeu nessa valiosa jornada com a gente.
+
+    Tenho certeza de que a sua experiência pode contribuir muito para o progresso de muitas pessoas que fazem parte da Impulso Network!
+
+    Obrigada pela sua participação tão importante! Vamos continuar nos falando pelos canais do nosso chat!
+
+    Uau, parabéns! 🎉 Você acaba de alcançar o *Nível 10;*
+
+    *Com isso, você ganhou:* direito ao *Clube de Benefícios Platina* e à plataforma PluralSight por três meses, solicitando pelo link impulser.me/resgatar-beneficio.
+
+    *Que jornada maravilhosa! Parabéns!*`
   }
+
   return Object.values(storytelling)[level - 1]
 }
