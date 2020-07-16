@@ -1,6 +1,7 @@
 import moment from 'moment'
 
 import { onboardingMessage } from '../assets/onboarding'
+import { levels } from '../config/score'
 import User from '../models/User'
 import { sendBatchOfUsersToDrip } from '../services/drip'
 import { sleep } from '../utils'
@@ -91,6 +92,9 @@ class UserController {
 
         const customFields = {
           atena_level: level.value,
+          score_to_next_level:
+            level.scoreToNextLevel || levels[0].scoreToNextLevel,
+          number_of_achievements: achievements.length,
           ranking_monthly_position: parseInt(position) + 1,
           ranking_monthly_score: user.score,
           ranking_general_position:
