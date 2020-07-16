@@ -1,9 +1,12 @@
 import { Router } from 'express'
 
-import { handleEvent } from '../services/drip'
+import { handleDripEvent } from '../services/drip'
 
 const router = new Router()
 
-router.post('/events', handleEvent)
+router.post('/events', (req, res) => {
+  handleDripEvent(req.body)
+  return res.json({ message: 'Event sent to be processed' })
+})
 
 export default router
