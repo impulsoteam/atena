@@ -1,7 +1,7 @@
 import { achievementTypes } from '../config/achievements'
 import LogController from '../controllers/LogController'
-import ScoreController from '../controllers/ScoreController'
 import { scoreTypes } from '../models/Score/schema'
+import { sendInteractionToQueue } from '../services/queue'
 
 const { DRIP_API_KEY, DRIP_ACCOUNT_ID } = process.env
 const client = require('drip-nodejs')({
@@ -9,9 +9,9 @@ const client = require('drip-nodejs')({
   accountId: DRIP_ACCOUNT_ID
 })
 
-export const handleEvent = async (req, res) => {
+export const handleDripEvent = async payload => {
   try {
-    const { data, occurred_at } = req.body
+    const { data, occurred_at } = payload
     const { subscriber, properties } = data
     const {
       source,
@@ -21,8 +21,7 @@ export const handleEvent = async (req, res) => {
       email_type
     } = properties
 
-    if (email_type !== 'Broadcast')
-      return res.json({ message: 'Email not eligible for scoring' })
+    if (email_type !== 'Broadcast') return
 
     const dripEvents = {
       'newsletter impulso network': {
@@ -44,10 +43,9 @@ export const handleEvent = async (req, res) => {
       }
     }
 
-    if (!scoreType || !achievementType)
-      return res.json({ message: 'Email not eligible for scoring' })
+    if (!scoreType || !achievementType) return
 
-    await ScoreController.handleExternalInteraction({
+    const interaction = {
       scoreType,
       achievementType,
       queries: {
@@ -63,15 +61,14 @@ export const handleEvent = async (req, res) => {
         provider: source,
         occurredAt: occurred_at
       }
-    })
+    }
 
-    res.json({ message: 'Event sent to be processed' })
+    sendInteractionToQueue.add(interaction, { removeOnComplete: true })
   } catch (error) {
-    res.json({ error: error.toString() })
-    LogController.sendError({
-      file: 'services/drip.js - handleEvent',
-      resume: error.toString(),
-      details: { payload: req.body }
+    LogController.sendNotify({
+      file: 'src/services/handleDripEvent',
+      error: error.toString(),
+      payload
     })
   }
 }
