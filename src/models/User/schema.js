@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 
+import { levels } from '../../config/score'
+
 const achievement = {
   _id: false,
   name: {
@@ -90,7 +92,10 @@ export default new mongoose.Schema(
         type: Number,
         default: 1
       },
-      scoreToNextLevel: Number,
+      scoreToNextLevel: {
+        type: Number,
+        default: levels[0].scoreToNextLevel
+      },
       lastUpdate: Date
     },
     lastInteraction: Date,
