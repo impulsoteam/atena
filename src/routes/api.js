@@ -42,7 +42,11 @@ router.get('/ranking/monthly', async (req, res) => {
 })
 
 router.get('/users/:uuid/profile', async (req, res) => {
-  console.log(req)
+  console.log('-==========================================')
+  console.log('-==========================================')
+  console.log(JSON.stringify(req, null, 2))
+  console.log('-==========================================')
+  console.log('-==========================================')
   try {
     const { uuid } = req.params
 
