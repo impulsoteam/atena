@@ -44,7 +44,9 @@ router.get('/ranking/monthly', async (req, res) => {
 router.get('/users/:uuid/profile', async (req, res) => {
   console.log('-==========================================')
   console.log('-==========================================')
-  console.log(JSON.stringify(req, null, 2))
+  console.log(req.get('host'))
+  console.log(req.get('origin'))
+  console.log(req.socket.remoteAddress)
   console.log('-==========================================')
   console.log('-==========================================')
   try {
