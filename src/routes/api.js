@@ -47,6 +47,7 @@ router.get('/users/:uuid/profile', async (req, res) => {
   console.log(req.get('host'))
   console.log(req.get('origin'))
   console.log(req.socket.remoteAddress)
+  console.log(req.headers)
   console.log('-==========================================')
   console.log('-==========================================')
   try {
