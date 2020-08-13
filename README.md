@@ -75,7 +75,7 @@ To use Wordpress integration, follow the documentation steps by clicking [here](
 Start the server using the following command:
 
 ```sh
-> yarn start:dev
+> yarn dev
 ```
 
 ### Debug
@@ -83,7 +83,7 @@ Start the server using the following command:
 If you want to use a debug, start the server with the following command:
 
 ```sh
-> yarn start:dev:debug
+> yarn dev:debug
 ```
 
 ### Run node inspect in another terminal

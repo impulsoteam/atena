@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  atena:
+    build: ./docker/app
+    command: yarn dev
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    container_name: atena
+    volumes:
+      - ../atena:/usr/src/app
+    depends_on:
+      - atena-mongo
+    env_file:
+      - ./.env
+
+  atena-mongo:
+    build: ./docker/mongo
+    container_name: atena-mongo
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    volumes:
+      - ../docker-volumes/mongo-atena/db/data:/data/db
+      - ../docker-volumes/mongo-atena/db/log:/var/log/mongodb
