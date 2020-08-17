@@ -9,10 +9,15 @@ const providers = {
 }
 
 class BotController {
+  getService(provider) {
+    const service = providers[provider]
+    if (!service) throw new Error('Unable to find provider')
+    return service
+  }
+
   sendMessageToChannel({ provider, message, channel }) {
     try {
-      const service = providers[provider]
-      if (!service) throw new Error('Unable to find provider')
+      const service = this.getService(provider)
 
       service({ message, channel })
     } catch (error) {
@@ -26,8 +31,7 @@ class BotController {
 
   sendMessageToUser({ provider, message, username }) {
     try {
-      const service = providers[provider]
-      if (!service) throw new Error('Unable to find provider')
+      const service = this.getService(provider)
 
       service({ message, username })
     } catch (error) {
