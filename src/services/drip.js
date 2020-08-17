@@ -1,7 +1,7 @@
 import { achievementTypes } from '../config/achievements'
-import LogController from '../controllers/LogController'
 import { scoreTypes } from '../models/Score/schema'
 import { sendInteractionToQueue } from '../services/queue'
+import { sendError } from './log'
 
 const { DRIP_API_KEY, DRIP_ACCOUNT_ID } = process.env
 const client = require('drip-nodejs')({
@@ -65,10 +65,10 @@ export const handleDripEvent = async payload => {
 
     sendInteractionToQueue.add(interaction, { removeOnComplete: true })
   } catch (error) {
-    LogController.sendNotify({
-      file: 'src/services/handleDripEvent',
-      error: error.toString(),
-      payload
+    sendError({
+      file: 'src/services - handleDripEvent',
+      payload,
+      error
     })
   }
 }
@@ -78,16 +78,12 @@ export const sendBatchOfUsersToDrip = subscribers => {
     batches: [{ subscribers }]
   }
 
-  client.updateBatchSubscribers(batch, errors => {
-    if (errors) {
-      LogController.sendError({
+  client.updateBatchSubscribers(batch, error => {
+    if (error) {
+      sendError({
         file: 'services/drip.js - handleEvent',
-        resume: errors.toString(),
-        details: {
-          firstUser: subscribers[0],
-          lastUser: subscribers[subscribers.length - 1],
-          total: subscribers.length
-        }
+        payload: subscribers,
+        error
       })
     }
   })

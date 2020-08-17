@@ -1,8 +1,8 @@
 import { Router } from 'express'
 
-import LogController from '../controllers/LogController'
 import RankingController from '../controllers/RankingController'
 import UserController from '../controllers/UserController'
+import { sendError } from '../services/log'
 
 const router = new Router()
 
@@ -16,7 +16,11 @@ router.get('/ranking/general', async (req, res) => {
     const response = await RankingController.getGeneralRanking({ offset, size })
     return res.json(response)
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'routes/api.js GET:/ranking/general',
+      payload: { ...req.query },
+      error
+    })
     res.status(500).json({ error: error.toString() })
   }
 })
@@ -36,20 +40,16 @@ router.get('/ranking/monthly', async (req, res) => {
     })
     return res.json(result)
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'routes/api.js GET:/ranking/monthly',
+      payload: { ...req.query },
+      error
+    })
     res.status(500).json({ error: error.toString() })
   }
 })
 
 router.get('/users/:uuid/profile', async (req, res) => {
-  console.log('-==========================================')
-  console.log('-==========================================')
-  console.log(req.get('host'))
-  console.log(req.get('origin'))
-  console.log(req.socket.remoteAddress)
-  console.log(req.headers)
-  console.log('-==========================================')
-  console.log('-==========================================')
   try {
     const { uuid } = req.params
 
@@ -57,7 +57,11 @@ router.get('/users/:uuid/profile', async (req, res) => {
     const result = await UserController.getProfile(uuid)
     return res.json(result)
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'routes/api.js GET:/users/:uuid/profile',
+      payload: { ...req.params },
+      error
+    })
     res.status(500).json({ error: error.toString() })
   }
 })

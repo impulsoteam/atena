@@ -3,8 +3,8 @@ import moment from 'moment'
 import getAchievementValues, { messageProviders } from '../config/achievements'
 import User from '../models/User'
 import { publishToEnlistment } from '../services/amqp'
+import { sendError } from '../services/log'
 import BotController from './BotController'
-import LogController from './LogController'
 import ScoreController from './ScoreController'
 
 class AchievementController {
@@ -47,7 +47,11 @@ class AchievementController {
         achievements: [...othersAchievements, currentAchievement]
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'src/controllers/achievement - handle',
+        payload: { user, achievementType, provider },
+        error
+      })
     }
   }
 
@@ -96,7 +100,11 @@ class AchievementController {
         othersAchievements: user.achievements
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'src/controllers/achievement - createAchievement',
+        payload: { user, provider, achievementRanges },
+        error
+      })
     }
   }
 
@@ -164,7 +172,17 @@ class AchievementController {
         achievement: newAchievement
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'src/controllers/achievement - handleAchievementChange',
+        payload: {
+          user,
+          score,
+          provider,
+          newAchievement,
+          othersAchievements
+        },
+        error
+      })
     }
   }
 

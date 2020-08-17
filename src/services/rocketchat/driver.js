@@ -1,6 +1,6 @@
 import { driver } from '@rocket.chat/sdk'
 
-import LogController from '../../controllers/LogController'
+import { sendError } from '../log'
 import { handleUserStatus, handlePayload } from './handler'
 
 export const connect = async () => {
@@ -11,12 +11,7 @@ export const connect = async () => {
 
     await driver.subscribeToMessages()
     driver.reactToMessages((error, message, messageOptions) => {
-      if (error)
-        return LogController.sendError({
-          file: 'services/rocketchat/driver.js - reactToMessages',
-          resume: 'Received error instead of message',
-          details: error
-        })
+      if (error) throw new Error('Error in driver.reactToMessages')
 
       if (message.u._id === botId || message.t) return
 
@@ -36,7 +31,10 @@ export const connect = async () => {
       handleUserStatus(id)
     })
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/rocketchat/driver.js - connect',
+      error
+    })
     process.exit(1)
   }
 }
@@ -50,13 +48,21 @@ const sendMessageToUser = async ({ message, user }) => {
   try {
     await driver.sendDirectToUser(message, user)
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/rocketchat/driver.js - sendMessage',
+      payload: { message, user },
+      error
+    })
   }
 }
 const sendMessageToRoom = async ({ message, channel }) => {
   try {
     return await driver.sendToRoom(message, channel)
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/rocketchat/driver.js - sendMessageToRoom',
+      payload: { message, channel },
+      error
+    })
   }
 }

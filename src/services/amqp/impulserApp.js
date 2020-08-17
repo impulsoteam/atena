@@ -1,7 +1,7 @@
-import LogController from '../../controllers/LogController'
 import ScoreController from '../../controllers/ScoreController'
 import User from '../../models/User'
 import { sendProfileCompletenessToQueue } from '../../services/queue'
+import { sendError } from '../log'
 
 export const handle = async ({ message, channel }) => {
   try {
@@ -15,7 +15,11 @@ export const handle = async ({ message, channel }) => {
 
     if (service) await service(data)
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/amqp/impulserApp - handle',
+      payload: { message, channel },
+      error
+    })
   } finally {
     channel.ack(message)
   }
@@ -37,6 +41,10 @@ const handleProfileCompleteness = async data => {
     }
     await ScoreController.handleProfileCompleteness(payload)
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/amqp/impulserApp - handleProfileCompleteness',
+      payload: data,
+      error
+    })
   }
 }

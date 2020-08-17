@@ -917,7 +917,7 @@ assign-symbols@^1.0.0:
   resolved "https://registry.yarnpkg.com/assign-symbols/-/assign-symbols-1.0.0.tgz#59667f41fadd4f20ccbc2bb96b8d4f7f78ec0367"
   integrity sha1-WWZ/QfrdTyDMvCu5a41Pf3jsA2c=
 
-"asteroid@github:rocketchat/asteroid":
+asteroid@rocketchat/asteroid:
   version "0.6.1"
   resolved "https://codeload.github.com/rocketchat/asteroid/tar.gz/a76a53254e381f9487aa2a9be3d874c9a2df6552"
   dependencies:
@@ -5208,6 +5208,13 @@ slack-notify@^0.1.7:
     lodash "^4.17.10"
     request "^2.51.0"
 
+slack@^11.0.2:
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/slack/-/slack-11.0.2.tgz#30f68527c5d1712b7faa3141db7716f89ac6e911"
+  integrity sha512-rv842+S+AGyZCmMMd8xPtW5DvJ9LzWTAKfxi8Gw57oYlXgcKtFuHd4nqk6lTPpRKdUGn3tx/Drd0rjQR3dQPqw==
+  dependencies:
+    tiny-json-http "^7.0.2"
+
 slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
@@ -5614,6 +5621,11 @@ throat@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/throat/-/throat-5.0.0.tgz#c5199235803aad18754a667d659b5e72ce16764b"
   integrity sha512-fcwX4mndzpLQKBS1DVYhGAcYaYt7vsHNIvQV+WXMvnow5cgjPphq5CaayLaGsjRdSCKZFNGt7/GYAuXaNOiYCA==
+
+tiny-json-http@^7.0.2:
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/tiny-json-http/-/tiny-json-http-7.2.2.tgz#40c1014780b10852bfbfc86e1ce82dfb35548f34"
+  integrity sha512-bCS8A603p5HHH7njuXwAEIJXj+/utAlnUJ2buAHry4FcbWLUCyyoG8UaJQaRJBsls9zIM4D8dxwzonh+oIEIXg==
 
 tmpl@1.0.x:
   version "1.0.4"

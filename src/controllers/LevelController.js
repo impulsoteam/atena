@@ -1,9 +1,9 @@
 import { generateStorytelling } from '../assets/storytelling'
 import LevelHistory from '../models/LevelHistory'
 import { publishToEnlistment } from '../services/amqp'
+import { sendError } from '../services/log'
 import { updateBadge as updateRocketchatBadge } from '../services/rocketchat/api'
 import BotController from './BotController'
-import LogController from './LogController'
 
 const providers = [
   { provider: 'rocketchat', service: payload => updateRocketchatBadge(payload) }
@@ -45,7 +45,11 @@ class LevelController {
         }
       }
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'src/controllers/level - handle',
+        payload: { user, previousLevel },
+        error
+      })
     }
   }
 

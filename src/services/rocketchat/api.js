@@ -1,19 +1,22 @@
 import { api } from '@rocket.chat/sdk'
 
 import { levels } from '../../config/score'
-import LogController from '../../controllers/LogController'
 import {
   getUserInfoByUsername,
   getChannelsList,
   getUserChannelsList,
   inviteUserToChannel
 } from '../axios'
+import { sendError } from '../log'
 
 export const connect = async () => {
   try {
     await api.login()
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/rocketchat/api.js - connect',
+      error
+    })
     process.exit(1)
   }
 }
@@ -46,7 +49,11 @@ export const updateBadge = async ({ level, id }) => {
       data: { roles }
     })
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/rocketchat/api.js - updateBadge',
+      payload: { level, id },
+      error
+    })
   }
 }
 
@@ -55,7 +62,11 @@ export const getUserInfo = async id => {
     const { user } = await api.get(`users.info?userId=${id}`)
     return user
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/rocketchat/api.js - getUserInfo',
+      payload: { id },
+      error
+    })
   }
 }
 
@@ -77,6 +88,9 @@ export const inviteUserToNotJoinedChannels = async () => {
       }
     }
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/rocketchat/api.js - inviteUserToNotJoinedChannels',
+      error
+    })
   }
 }

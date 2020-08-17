@@ -1,8 +1,7 @@
-import LogController from '../controllers/LogController'
 import Reaction from '../models/Reaction'
 import User from '../models/User'
+import { sendError } from '../services/log'
 import ScoreController from './ScoreController'
-
 class ReactionController {
   async handle(payload) {
     try {
@@ -28,7 +27,11 @@ class ReactionController {
         this.saveReactions({ reactionsAdded, payload })
       }
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'src/controllers/reaction - handle',
+        payload,
+        error
+      })
     }
   }
 
@@ -61,7 +64,11 @@ class ReactionController {
         ScoreController.handleReaction({ reaction, payload })
       }
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'src/controllers/reaction - saveReactions',
+        payload: { reactionsAdded, payload },
+        error
+      })
     }
   }
 
@@ -72,7 +79,11 @@ class ReactionController {
         ScoreController.removeScoreFromReaction({ reaction, payload })
       }
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'src/controllers/reaction - removeReactions',
+        payload: { reactionsRemoved, payload },
+        error
+      })
     }
   }
 }

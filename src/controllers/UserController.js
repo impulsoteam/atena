@@ -3,9 +3,9 @@ import moment from 'moment'
 import { onboardingMessage } from '../assets/onboarding'
 import User from '../models/User'
 import { sendBatchOfUsersToDrip } from '../services/drip'
+import { sendError, sendNotify } from '../services/log'
 import { sleep } from '../utils'
 import BotController from './BotController'
-import LogController from './LogController'
 import RankingController from './RankingController'
 
 class UserController {
@@ -28,7 +28,11 @@ class UserController {
         }
       }
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/UserController.handle',
+        payload,
+        error
+      })
     }
   }
 
@@ -37,7 +41,7 @@ class UserController {
       const result = await User.deleteUserData(payload.uuid)
 
       if (result.notFound) return
-      LogController.sendNotify({
+      sendNotify({
         file: 'controllers/UserController.delete',
         resume: 'User data removed',
         details: {
@@ -47,7 +51,11 @@ class UserController {
         }
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/UserController.delete',
+        payload,
+        error
+      })
     }
   }
 
@@ -118,13 +126,16 @@ class UserController {
 
       await sendBatch()
 
-      LogController.sendNotify({
+      sendNotify({
         file: 'controllers/UserController.sendUsersToDrip',
         resume: 'Job done!',
         details: { usersUpdated: monthly.length }
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/UserController.sendUsersToDrip',
+        error
+      })
     }
   }
 }
