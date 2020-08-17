@@ -29,8 +29,7 @@
     "mongoose": "^5.9.2",
     "node-cron": "^2.0.3",
     "pretty-error": "^2.1.1",
-    "slack": "^11.0.2",
-    "slack-notify": "^0.1.7"
+    "slack": "^11.0.2"
   },
   "devDependencies": {
     "@sucrase/jest-plugin": "^2.0.0",
