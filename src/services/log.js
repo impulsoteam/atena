@@ -15,7 +15,7 @@ const params = {
   channel,
   // eslint-disable-next-line camelcase
   icon_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/gt/128.jpg',
-  username: `Miner - [${nodeEnv}]`
+  username: `Atena - [${nodeEnv}]`
 }
 
 export const sendNotify = ({ file, resume, details }) => {
