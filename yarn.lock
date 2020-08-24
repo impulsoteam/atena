@@ -3834,10 +3834,10 @@ lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
 
-log-on-slack@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/log-on-slack/-/log-on-slack-1.0.6.tgz#04940ceaa8d228f87486018512c9bb720b1aac08"
-  integrity sha512-wyaVsqf3b9t+sNIfjNrKrxXF+kcjukj7PeW4ezJM8fNz4dvQbFa5TumJdiWGsk5SNAa+HrfHVIuGHs1Wijecnw==
+log-on-slack@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/log-on-slack/-/log-on-slack-1.0.7.tgz#1858a1f6627d8f9c926fcbb4b39a63dfa1bc2591"
+  integrity sha512-eCUXUdmfxC4I7k02haG2tLO/6qL3TjJICi8vrxG3mXELD8BLBTxi0vKfRO9RdKfdPw4+jkHDEl6YCU8und8jKQ==
   dependencies:
     moment "^2.27.0"
     node-fetch "^2.6.0"
