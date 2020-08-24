@@ -1,9 +1,9 @@
+import { sendError, sendNotify } from 'log-on-slack'
 import moment from 'moment'
 
 import { onboardingMessage } from '../assets/onboarding'
 import User from '../models/User'
 import { sendBatchOfUsersToDrip } from '../services/drip'
-import { sendError, sendNotify } from '../services/log'
 import { sleep } from '../utils'
 import BotController from './BotController'
 import RankingController from './RankingController'

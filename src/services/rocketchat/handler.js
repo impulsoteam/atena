@@ -1,3 +1,4 @@
+import { sendError } from 'log-on-slack'
 import moment from 'moment'
 
 import CommandController from '../../controllers/CommandController'
@@ -7,7 +8,6 @@ import Login from '../../models/Login'
 import { providers } from '../../models/Message/schema'
 import User from '../../models/User'
 import { removeEmptyValues } from '../../utils'
-import { sendError } from '../log'
 import { getPreviousMessage, getUserInfo } from './api'
 
 export const handlePayload = async ({ message, messageOptions }) => {

@@ -1,3 +1,5 @@
+import { sendError } from 'log-on-slack'
+
 import { products } from '../../config/achievements/clickOnProduct'
 import ScoreController from '../../controllers/ScoreController'
 import UserController from '../../controllers/UserController'
@@ -5,7 +7,6 @@ import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
 import { sendInteractionToQueue } from '../../services/queue'
 import { removeEmptyValues } from '../../utils'
-import { sendError } from '../log'
 
 export const handle = async ({ message, channel }) => {
   try {

@@ -1,7 +1,8 @@
+import { sendError } from 'log-on-slack'
+
 import { generateStorytelling } from '../assets/storytelling'
 import LevelHistory from '../models/LevelHistory'
 import { publishToEnlistment } from '../services/amqp'
-import { sendError } from '../services/log'
 import { updateBadge as updateRocketchatBadge } from '../services/rocketchat/api'
 import BotController from './BotController'
 

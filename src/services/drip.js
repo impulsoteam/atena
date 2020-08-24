@@ -1,7 +1,8 @@
+import { sendError } from 'log-on-slack'
+
 import { achievementTypes } from '../config/achievements'
 import { scoreTypes } from '../models/Score/schema'
 import { sendInteractionToQueue } from '../services/queue'
-import { sendError } from './log'
 
 const { DRIP_API_KEY, DRIP_ACCOUNT_ID } = process.env
 const client = require('drip-nodejs')({

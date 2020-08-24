@@ -25,11 +25,10 @@
     "cors": "^2.8.5",
     "drip-nodejs": "^3.1.1",
     "express": "^4.17.1",
+    "log-on-slack": "^1.0.6",
     "moment": "^2.24.0",
     "mongoose": "^5.9.2",
-    "node-cron": "^2.0.3",
-    "pretty-error": "^2.1.1",
-    "slack": "^11.0.2"
+    "node-cron": "^2.0.3"
   },
   "devDependencies": {
     "@sucrase/jest-plugin": "^2.0.0",

@@ -1,6 +1,7 @@
+import { sendError } from 'log-on-slack'
+
 import Score from '../../models/Score'
 import User from '../../models/User'
-import { sendError } from '../../services/log'
 import BotController from '../BotController'
 import RankingController from '../RankingController'
 import CommandUtils from './utils'

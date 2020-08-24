@@ -1,8 +1,8 @@
 import { Router } from 'express'
+import { sendError } from 'log-on-slack'
 
 import RankingController from '../controllers/RankingController'
 import UserController from '../controllers/UserController'
-import { sendError } from '../services/log'
 
 const router = new Router()
 

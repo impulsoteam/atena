@@ -1,3 +1,4 @@
+import { sendError } from 'log-on-slack'
 import moment from 'moment'
 
 import { achievementTypes, messageProviders } from '../../config/achievements'
@@ -6,7 +7,6 @@ import Reaction from '../../models/Reaction'
 import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
-import { sendError } from '../../services/log'
 import AchievementController from '../AchievementController'
 import BotController from '../BotController'
 import ScoreUtils from './utils'

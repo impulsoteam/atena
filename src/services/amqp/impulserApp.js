@@ -1,8 +1,8 @@
+import { sendError } from 'log-on-slack'
+
 import ScoreController from '../../controllers/ScoreController'
 import User from '../../models/User'
 import { sendProfileCompletenessToQueue } from '../../services/queue'
-import { sendError } from '../log'
-
 export const handle = async ({ message, channel }) => {
   try {
     const { content, properties } = message

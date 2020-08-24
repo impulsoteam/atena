@@ -1,7 +1,7 @@
+import { sendError } from 'log-on-slack'
 import mongoose from 'mongoose'
 
 import mongoConfig from '../config/mongodb'
-import { sendError } from '../services/log'
 
 const { MONGODB_URI, MONGODB_TEST_URI } = process.env
 

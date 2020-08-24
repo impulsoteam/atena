@@ -1,7 +1,8 @@
+import { sendError, sendNotify } from 'log-on-slack'
+
 import { achievementTypes } from '../config/achievements'
 import Message from '../models/Message'
 import User from '../models/User'
-import { sendError, sendNotify } from '../services/log'
 import AchievementController from './AchievementController'
 import ScoreController from './ScoreController'
 class MessageController {

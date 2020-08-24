@@ -1,7 +1,7 @@
 import { Connection } from 'amqplib-as-promised'
 import chalk from 'chalk'
+import { sendError } from 'log-on-slack'
 
-import { sendError } from '../log'
 import { handle as handleEnlistmentPayload } from './enlistment'
 import { handle as handleImpulserAppPayload } from './impulserApp'
 

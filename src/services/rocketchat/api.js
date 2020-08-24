@@ -1,4 +1,5 @@
 import { api } from '@rocket.chat/sdk'
+import { sendError } from 'log-on-slack'
 
 import { levels } from '../../config/score'
 import {
@@ -7,7 +8,6 @@ import {
   getUserChannelsList,
   inviteUserToChannel
 } from '../axios'
-import { sendError } from '../log'
 
 export const connect = async () => {
   try {

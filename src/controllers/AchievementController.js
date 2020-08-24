@@ -1,9 +1,9 @@
+import { sendError } from 'log-on-slack'
 import moment from 'moment'
 
 import getAchievementValues, { messageProviders } from '../config/achievements'
 import User from '../models/User'
 import { publishToEnlistment } from '../services/amqp'
-import { sendError } from '../services/log'
 import BotController from './BotController'
 import ScoreController from './ScoreController'
 

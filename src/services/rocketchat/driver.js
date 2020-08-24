@@ -1,6 +1,6 @@
 import { driver } from '@rocket.chat/sdk'
+import { sendError } from 'log-on-slack'
 
-import { sendError } from '../log'
 import { handleUserStatus, handlePayload } from './handler'
 
 export const connect = async () => {

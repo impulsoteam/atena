@@ -1,7 +1,7 @@
 import Queue from 'bull'
+import { sendError } from 'log-on-slack'
 
 import ScoreController from '../../controllers/ScoreController'
-import { sendError } from '../log'
 
 const sendInteractionToQueue = new Queue(
   'sendInteractionToQueue',

@@ -1,6 +1,7 @@
+import { sendError } from 'log-on-slack'
+
 import Reaction from '../models/Reaction'
 import User from '../models/User'
-import { sendError } from '../services/log'
 import ScoreController from './ScoreController'
 class ReactionController {
   async handle(payload) {
