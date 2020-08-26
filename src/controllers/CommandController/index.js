@@ -1,7 +1,8 @@
+import { sendError } from 'log-on-slack'
+
 import Score from '../../models/Score'
 import User from '../../models/User'
 import BotController from '../BotController'
-import LogController from '../LogController'
 import RankingController from '../RankingController'
 import CommandUtils from './utils'
 
@@ -28,23 +29,23 @@ class CommandController extends CommandUtils {
       })
 
       if (!user) {
-        LogController.sendError({
-          file: 'CommandController.handle',
-          resume: `Unable to find user.`,
-          details: payload
-        })
-        return BotController.sendMessageToUser({
+        BotController.sendMessageToUser({
           provider: provider.name,
           message:
             'Opa, algo está errado :/\nTente novamente ou mande uma mensagem lá no canal #duvidas',
           username: provider.user.username
         })
+        throw new Error('Unable to find user')
       }
 
       const command = payload.content.split(' ')[0]
       this.commands[command]({ user, ...payload })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/CommandController.handle',
+        payload,
+        error
+      })
     }
   }
 
@@ -69,7 +70,11 @@ class CommandController extends CommandUtils {
         username: provider.user.username
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/CommandController.monthlyRanking',
+        payload: { user, provider, content },
+        error
+      })
     }
   }
 
@@ -90,7 +95,11 @@ class CommandController extends CommandUtils {
         username: provider.user.username
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/CommandController.generalRanking',
+        payload: { user, provider },
+        error
+      })
     }
   }
 
@@ -104,7 +113,11 @@ class CommandController extends CommandUtils {
         username: provider.user.username
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/CommandController.userScore',
+        payload: { user, provider },
+        error
+      })
     }
   }
 
@@ -118,7 +131,11 @@ class CommandController extends CommandUtils {
         username: provider.user.username
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/CommandController.userAchievements',
+        payload: { user, provider },
+        error
+      })
     }
   }
 
@@ -131,7 +148,11 @@ class CommandController extends CommandUtils {
         username: provider.user.username
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/CommandController.sendCommands',
+        payload: { user, provider },
+        error
+      })
     }
   }
 
@@ -149,7 +170,11 @@ class CommandController extends CommandUtils {
         username: provider.user.username
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/CommandController.checkInfos',
+        payload: { user, provider, content },
+        error
+      })
     }
   }
 
@@ -180,7 +205,11 @@ class CommandController extends CommandUtils {
         })
       }
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/CommandController.sendMessage',
+        payload: { user, provider, mentions, channels, content },
+        error
+      })
     }
   }
 
@@ -218,7 +247,11 @@ class CommandController extends CommandUtils {
 
       super.givePoints({ user, usernames, provider, points, reason })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/CommandController.handleGivePoints',
+        payload: { user, provider, content },
+        error
+      })
     }
   }
 }

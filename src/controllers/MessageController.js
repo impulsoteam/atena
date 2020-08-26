@@ -1,8 +1,9 @@
+import { sendError, sendNotify } from 'log-on-slack'
+
 import { achievementTypes } from '../config/achievements'
 import Message from '../models/Message'
 import User from '../models/User'
 import AchievementController from './AchievementController'
-import LogController from './LogController'
 import ScoreController from './ScoreController'
 class MessageController {
   async handle(payload) {
@@ -35,26 +36,29 @@ class MessageController {
         })
       }
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'src/controllers/message - handle',
+        payload,
+        error
+      })
     }
   }
 
   async saveUnownedMessage(payload) {
     try {
-      const { content, provider } = payload
-
       await Message.create(payload)
 
-      LogController.sendError({
+      sendNotify({
         file: 'MessageController.saveUnownedMessage',
-        resume: `Unable to find user.`,
-        details: {
-          content,
-          provider
-        }
+        resume: 'Unable to find user.',
+        details: payload
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'src/controllers/message - saveUnownedMessage',
+        payload,
+        error
+      })
     }
   }
 }

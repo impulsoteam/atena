@@ -1,3 +1,4 @@
+import { sendError } from 'log-on-slack'
 import moment from 'moment'
 
 import { achievementTypes, messageProviders } from '../../config/achievements'
@@ -8,7 +9,6 @@ import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
 import AchievementController from '../AchievementController'
 import BotController from '../BotController'
-import LogController from '../LogController'
 import ScoreUtils from './utils'
 
 class ScoreController extends ScoreUtils {
@@ -37,7 +37,11 @@ class ScoreController extends ScoreUtils {
       })
       return await this.updateUserScore({ user, scoreEarned })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/ScoreController.handleMessage',
+        payload: { payload, message, user },
+        error
+      })
     }
   }
 
@@ -62,14 +66,16 @@ class ScoreController extends ScoreUtils {
           alreadyAchieved
         })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/ScoreController.handleReaction',
+        payload: { reaction, payload, alreadyAchieved },
+        error
+      })
     }
   }
 
-  async scoreReactionSended(data) {
+  async scoreReactionSended({ sender, reaction, payload, alreadyAchieved }) {
     try {
-      const { sender, reaction, payload, alreadyAchieved } = data
-
       if (await this.reactionSendedCannotScore({ reaction, payload })) return
       await Score.create({
         user: sender.uuid,
@@ -95,14 +101,21 @@ class ScoreController extends ScoreUtils {
         provider: reaction.provider.name
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/ScoreController.scoreReactionSended',
+        payload: { sender, reaction, payload, alreadyAchieved },
+        error
+      })
     }
   }
 
-  async scoreReactionReceived(data) {
+  async scoreReactionReceived({
+    receiver,
+    reaction,
+    payload,
+    alreadyAchieved
+  }) {
     try {
-      const { receiver, reaction, payload, alreadyAchieved } = data
-
       if (
         await this.reactionReceivedCannotScore({ receiver, reaction, payload })
       )
@@ -137,7 +150,11 @@ class ScoreController extends ScoreUtils {
         provider: reaction.provider.name
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/ScoreController.scoreReactionReceived',
+        payload: { receiver, reaction, payload, alreadyAchieved },
+        error
+      })
     }
   }
 
@@ -157,7 +174,11 @@ class ScoreController extends ScoreUtils {
 
       await this.updateUserScore({ user, scoreEarned })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/ScoreController.handleAchievement',
+        payload: { achievement, user, provider, score: scoreEarned },
+        error
+      })
     }
   }
 
@@ -209,10 +230,10 @@ class ScoreController extends ScoreUtils {
         provider: details.provider
       })
     } catch (error) {
-      LogController.sendError({
-        file: 'ScoreController.handleEmailEvent',
-        resume: error.toString(),
-        details: { error, payload }
+      sendError({
+        file: 'controllers/ScoreController.handleExternalInteraction',
+        payload,
+        error
       })
     }
   }
@@ -222,7 +243,11 @@ class ScoreController extends ScoreUtils {
       await Score.create(payload)
       return await this.updateUserScore({ user, scoreEarned: payload.score })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/ScoreController.handleManualScore',
+        payload: { payload, user },
+        error
+      })
     }
   }
 
@@ -247,7 +272,10 @@ class ScoreController extends ScoreUtils {
         await this.updateUserScore({ user, scoreEarned: score })
       }
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/ScoreController.scoreInactivities',
+        error
+      })
     }
   }
 
@@ -309,7 +337,11 @@ class ScoreController extends ScoreUtils {
         alreadyAchieved: true
       })
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/ScoreController.removeScoreFromReaction',
+        payload: { reaction, payload },
+        error
+      })
     }
   }
 
@@ -347,7 +379,11 @@ class ScoreController extends ScoreUtils {
       await Score.findOneAndUpdate(senderPayload, senderPayload, options)
       await Score.findOneAndUpdate(receiverPayload, receiverPayload, options)
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/ScoreController.scoreReactionRemoved',
+        payload: { sender, receiver, reaction },
+        error
+      })
     }
   }
 
@@ -357,12 +393,7 @@ class ScoreController extends ScoreUtils {
 
       let user = await User.findOne({ uuid })
 
-      if (!user)
-        return LogController.sendError({
-          file: 'ScoreController.handleEmailEvent',
-          resume: `Unable to find user by uuid`,
-          details: { payload }
-        })
+      if (!user) throw new Error('User not found')
 
       if (user.profileCompleteness.total >= completeness.total)
         return await User.updateOne(
@@ -413,7 +444,11 @@ class ScoreController extends ScoreUtils {
         { profileCompleteness: completeness }
       )
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'controllers/ScoreController.handleProfileCompleteness',
+        payload,
+        error
+      })
     }
   }
 }

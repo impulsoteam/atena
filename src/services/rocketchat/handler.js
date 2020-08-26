@@ -1,7 +1,7 @@
+import { sendError } from 'log-on-slack'
 import moment from 'moment'
 
 import CommandController from '../../controllers/CommandController'
-import LogController from '../../controllers/LogController'
 import MessageController from '../../controllers/MessageController'
 import ReactionController from '../../controllers/ReactionController'
 import Login from '../../models/Login'
@@ -28,7 +28,11 @@ export const handlePayload = async ({ message, messageOptions }) => {
       ReactionController.handle(payload)
     }
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/rochetchat/handler.js - handlePayload',
+      payload: { message, messageOptions },
+      error
+    })
   }
 }
 
@@ -40,14 +44,7 @@ export const handleUserStatus = async id => {
     if (userInfo.roles.includes('bot')) return
 
     const user = await User.findOne({ [`${provider}.id`]: id })
-
-    if (!user) {
-      return LogController.sendError({
-        file: 'services.rocketchat - handleUserStatus',
-        resume: `Unable to find user ${id}`,
-        details: userInfo
-      })
-    }
+    if (!user) throw new Error('Unable to find user')
 
     const status =
       userInfo.statusConnection === 'offline' ? 'offline' : 'online'
@@ -65,7 +62,11 @@ export const handleUserStatus = async id => {
 
     await Login.create({ status, user: user.uuid, provider })
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/rochetchat/handler.js - handleUserStatus',
+      payload: { id },
+      error
+    })
   }
 }
 

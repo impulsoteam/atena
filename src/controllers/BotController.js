@@ -1,7 +1,7 @@
+import { sendError } from 'log-on-slack'
 import moment from 'moment'
 
 import { sendMessage as sendRocketchatMessage } from '../services/rocketchat/driver'
-import LogController from './LogController'
 import RankingController from './RankingController'
 
 const providers = {
@@ -9,30 +9,36 @@ const providers = {
 }
 
 class BotController {
-  sendMessageToChannel({ provider, message, channel }) {
+  getService(provider) {
     const service = providers[provider]
+    if (!service) throw new Error('Unable to find provider')
+    return service
+  }
 
-    if (service) {
+  sendMessageToChannel({ provider, message, channel }) {
+    try {
+      const service = this.getService(provider)
+
       service({ message, channel })
-    } else {
-      LogController.sendError({
-        file: 'BotController.sendMessageToChannel',
-        resume: `Unable to find service to provider ${provider}`,
-        details: { provider, channel }
+    } catch (error) {
+      sendError({
+        file: 'src/controllers/bot - sendMessageToChannel',
+        payload: { provider, message, channel },
+        error
       })
     }
   }
 
   sendMessageToUser({ provider, message, username }) {
-    const service = providers[provider]
+    try {
+      const service = this.getService(provider)
 
-    if (service) {
       service({ message, username })
-    } else {
-      LogController.sendError({
-        file: 'BotController.sendMessageToUser',
-        resume: `Unable to find service to provider ${provider}`,
-        details: { provider, username }
+    } catch (error) {
+      sendError({
+        file: 'src/controllers/bot - sendMessageToUser',
+        payload: { provider, message, username },
+        error
       })
     }
   }
@@ -63,20 +69,14 @@ class BotController {
       for (const provider of Object.keys(providers)) {
         for (const channel of channels) {
           const service = providers[provider]
-
-          if (service) {
-            service({ message, channel })
-          } else {
-            LogController.sendError({
-              file: 'BotController.sendMessageToChannel',
-              resume: `Unable to find service to provider ${provider}`,
-              details: { provider, channel }
-            })
-          }
+          service({ message, channel })
         }
       }
     } catch (error) {
-      LogController.sendError(error)
+      sendError({
+        file: 'src/controllers/bot - sendMonthlyRankingToChannel',
+        error
+      })
     }
   }
 }

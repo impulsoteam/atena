@@ -1,7 +1,7 @@
 import { Connection } from 'amqplib-as-promised'
 import chalk from 'chalk'
+import { sendError } from 'log-on-slack'
 
-import LogController from '../../controllers/LogController'
 import { handle as handleEnlistmentPayload } from './enlistment'
 import { handle as handleImpulserAppPayload } from './impulserApp'
 
@@ -26,7 +26,10 @@ export const connect = async () => {
 
     return channel
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/amqp/index.js - connect',
+      error
+    })
     process.exit(1)
   }
 }
@@ -84,6 +87,10 @@ export const publishToEnlistment = async payload => {
   try {
     await channel.publish(atenaExchange, '', message, queueOpts)
   } catch (error) {
-    LogController.sendError(error)
+    sendError({
+      file: 'services/amqp/index.js - publishToEnlistment',
+      payload,
+      error
+    })
   }
 }
