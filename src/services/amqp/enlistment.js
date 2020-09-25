@@ -41,6 +41,7 @@ const handleUser = async data => {
     rocket_chat,
     linkedin,
     google,
+    github,
     photo_url
   } = data
 
@@ -54,6 +55,7 @@ const handleUser = async data => {
       username: rocket_chat.username
     },
     linkedin: { id: linkedin.uid },
+    github,
     google: { id: google.uid }
   }
 

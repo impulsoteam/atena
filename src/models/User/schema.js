@@ -107,6 +107,10 @@ export default new mongoose.Schema(
       id: String,
       username: String
     },
+    github: {
+      id: String,
+      username: String
+    },
     linkedin: {
       id: String
     },
