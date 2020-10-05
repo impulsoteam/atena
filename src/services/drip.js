@@ -6,7 +6,7 @@ const client = require('drip-nodejs')({
   accountId: DRIP_ACCOUNT_ID
 })
 
-export const sendBatchOfUsersToDrip = subscribers => {
+export const updateSubscribers = subscribers => {
   const batch = {
     batches: [{ subscribers }]
   }
