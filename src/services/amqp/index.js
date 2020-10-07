@@ -4,6 +4,7 @@ import { sendError } from 'log-on-slack'
 
 import { handle as handleEnlistmentPayload } from './enlistment'
 import { handle as handleImpulserAppPayload } from './impulserApp'
+import { handle as handleMinerPayload } from './miner'
 
 const { AMQP_URL: amqpUrl, ATENA_EXCHANGE: atenaExchange } = process.env
 
@@ -21,6 +22,8 @@ export const connect = async () => {
       chalk.green('✓'),
       atenaExchange
     )
+
+    await connectToMiner()
     await connectToEnlistment()
     await connectToImpulserApp()
 
@@ -79,6 +82,30 @@ const connectToImpulserApp = async () => {
     chalk.green('✓'),
     queueForImpulserApp
   )
+}
+
+const connectToMiner = async () => {
+  try {
+    const {
+      MINER_EXCHANGE: minerExchange,
+      QUEUE_FOR_MINER: queueForMiner
+    } = process.env
+
+    await channel.assertExchange(minerExchange, 'fanout', {
+      durable: false
+    })
+
+    await channel.assertQueue(queueForMiner, { durable: true })
+
+    await channel.bindQueue(queueForMiner, minerExchange)
+
+    channel.consume(queueForMiner, message =>
+      handleMinerPayload({ message, channel })
+    )
+    console.log('%s [*] Awaiting messages on', chalk.green('✓'), queueForMiner)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const publishToEnlistment = async payload => {

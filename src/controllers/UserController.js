@@ -3,7 +3,8 @@ import moment from 'moment'
 
 import { onboardingMessage } from '../assets/onboarding'
 import User from '../models/User'
-import { sendBatchOfUsersToDrip } from '../services/drip'
+import { updateSubscribers as updateDripSubscribers } from '../services/drip'
+import { updateContacts as updateMailJetContacts } from '../services/mailJet'
 import { sleep } from '../utils'
 import BotController from './BotController'
 import RankingController from './RankingController'
@@ -72,9 +73,21 @@ class UserController {
     }
   }
 
-  async sendUsersToDrip() {
+  async updateEmailServices() {
     try {
       const totalUsers = await User.countDocuments({})
+      let dripSubscribers = []
+      let mailJetContacts = []
+
+      const sendBatch = async () => {
+        await sleep(5000)
+        updateDripSubscribers(dripSubscribers)
+        updateMailJetContacts(mailJetContacts)
+
+        dripSubscribers = []
+        mailJetContacts = []
+      }
+
       const { ranking: monthly } = await RankingController.getMonthlyRanking({
         offset: 0,
         size: totalUsers
@@ -85,19 +98,12 @@ class UserController {
         size: totalUsers
       })
 
-      let subscribers = []
-      const sendBatch = async () => {
-        await sleep(5000)
-        sendBatchOfUsersToDrip(subscribers)
-        subscribers = []
-      }
-
       for (const [position, user] of Object.entries(monthly)) {
         const { email, score, level, achievements } = await User.findOne({
           uuid: user.uuid
         })
 
-        const customFields = {
+        const impulserProperties = {
           atena_level: level.value,
           score_to_next_level: level.scoreToNextLevel,
           number_of_achievements: achievements.length,
@@ -113,27 +119,32 @@ class UserController {
           const { name, medal, range } = achievements.sort(
             (a, b) => b.earnedIn - a.earnedIn
           )[0]
-          customFields.last_achievements = `${name} - ${medal} - ${range}`
+          impulserProperties.last_achievements = `${name} - ${medal} - ${range}`
         }
 
-        subscribers.push({
-          email: email,
-          custom_fields: customFields
+        dripSubscribers.push({
+          email,
+          custom_fields: impulserProperties
         })
 
-        if (subscribers.length === 999) await sendBatch()
+        mailJetContacts.push({
+          Email: email,
+          Properties: impulserProperties
+        })
+
+        if (dripSubscribers.length === 999) await sendBatch()
       }
 
       await sendBatch()
 
       sendNotify({
-        file: 'controllers/UserController.sendUsersToDrip',
+        file: 'controllers/UserController.updateEmailServices',
         resume: 'Job done!',
         details: { usersUpdated: monthly.length }
       })
     } catch (error) {
       sendError({
-        file: 'controllers/UserController.sendUsersToDrip',
+        file: 'controllers/UserController.updateEmailServices',
         error
       })
     }

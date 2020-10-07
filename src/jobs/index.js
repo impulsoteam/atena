@@ -19,13 +19,13 @@ const inviteUsersToChannel = () => {
   cron.schedule('0 0 * * *', () => inviteUserToNotJoinedChannels())
 }
 
-const sendUsersToDrip = () => {
-  cron.schedule('0 1 * * *', () => UserController.sendUsersToDrip())
+const updateEmailServices = () => {
+  cron.schedule('0 1 * * *', () => UserController.updateEmailServices())
 }
 
 export const exec = () => {
   chatInactivities()
   sendMonthlyRankingToChannel()
   inviteUsersToChannel()
-  sendUsersToDrip()
+  updateEmailServices()
 }
