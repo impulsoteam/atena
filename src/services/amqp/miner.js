@@ -11,7 +11,7 @@ export const handle = async ({ message, channel }) => {
     const types = {
       emailOpened: handleEmailOpenedInteraction
     }
-
+    console.log(data)
     const service = types[properties.type]
 
     if (service) await service(data)
