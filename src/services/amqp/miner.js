@@ -11,9 +11,8 @@ export const handle = async ({ message, channel }) => {
     const types = {
       emailOpened: handleEmailOpenedInteraction
     }
-    console.log({ data, properties })
-    const service = types[properties.type]
 
+    const service = types[properties.type]
     if (service) await service(data)
   } catch (error) {
     sendError({
@@ -70,8 +69,6 @@ const handleEmailOpenedInteraction = async payload => {
         occurredAt
       }
     }
-
-    console.log(interaction)
 
     sendInteractionToQueue.add(interaction, { removeOnComplete: true })
   } catch (error) {
