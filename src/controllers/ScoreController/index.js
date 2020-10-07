@@ -183,6 +183,7 @@ class ScoreController extends ScoreUtils {
   }
 
   async handleExternalInteraction(payload) {
+    console.log(payload)
     try {
       const { scoreType, achievementType, queries, details } = payload
 
@@ -225,6 +226,11 @@ class ScoreController extends ScoreUtils {
       })
 
       await AchievementController.handle({
+        user: updatedUser,
+        achievementType,
+        provider: details.provider
+      })
+      console.log({
         user: updatedUser,
         achievementType,
         provider: details.provider

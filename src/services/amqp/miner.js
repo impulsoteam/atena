@@ -71,6 +71,8 @@ const handleEmailOpenedInteraction = async payload => {
       }
     }
 
+    console.log(interaction)
+
     sendInteractionToQueue.add(interaction, { removeOnComplete: true })
   } catch (error) {
     sendError({
