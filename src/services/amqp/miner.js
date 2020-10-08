@@ -13,7 +13,6 @@ export const handle = async ({ message, channel }) => {
     }
 
     const service = types[properties.type]
-
     if (service) await service(data)
   } catch (error) {
     sendError({

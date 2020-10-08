@@ -29,7 +29,8 @@
     "log-on-slack": "^1.0.8",
     "moment": "^2.29.0",
     "mongoose": "^5.10.6",
-    "node-cron": "^2.0.3"
+    "node-cron": "^2.0.3",
+    "node-mailjet": "^3.3.1"
   },
   "devDependencies": {
     "@sucrase/jest-plugin": "^2.0.0",
