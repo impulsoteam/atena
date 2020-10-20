@@ -1,4 +1,4 @@
-import { clickOnProduct } from './clickOnProduct'
+import { clickOnProduct, products } from './clickOnProduct'
 import { messageSended } from './messageSended'
 import { newslettersRead } from './newslettersRead'
 import { reactionReceived } from './reactionReceived'
@@ -69,3 +69,41 @@ export default function getAchievementValues(type) {
 
   return formatAchievement(ranges)
 }
+
+export const getAllAchievements = userAchievements => {
+  const achievements = [
+    messageSended,
+    reactionSended,
+    reactionReceived,
+    newslettersRead
+  ]
+
+  const allAchievements = []
+
+  for (const achievement of achievements) {
+    allAchievements.push(getDefaultAchievement(achievement()))
+  }
+
+  for (const product of Object.values(products)) {
+    allAchievements.push(getDefaultAchievement(clickOnProduct(product)))
+  }
+
+  return allAchievements.map(achievement => {
+    const scoredAchievement = userAchievements.find(
+      ({ name }) => name === achievement.name
+    )
+    return scoredAchievement || achievement
+  })
+}
+
+const getDefaultAchievement = ({ displayAchievement, name, medals }) => ({
+  displayNames: {
+    achievement: displayAchievement,
+    medal: medals[0].displayMedal
+  },
+  name,
+  range: 'I',
+  currentValue: 0,
+  medal: medals[0].name,
+  nextTarget: medals[0].targets[0]
+})

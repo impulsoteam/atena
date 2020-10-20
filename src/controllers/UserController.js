@@ -2,6 +2,7 @@ import { sendError, sendNotify } from 'log-on-slack'
 import moment from 'moment'
 
 import { onboardingMessage } from '../assets/onboarding'
+import { getAllAchievements } from '../config/achievements'
 import User from '../models/User'
 import { updateSubscribers as updateDripSubscribers } from '../services/drip'
 import { updateContacts as updateMailJetContacts } from '../services/mailJet'
@@ -66,6 +67,7 @@ class UserController {
     if (!user) throw new Error(`Unable to find ${uuid}`)
     const general = await RankingController.getGeneralPositionByUser(uuid)
     const monthly = await RankingController.getMonthlyPositionByUser(uuid)
+    user.achievements = getAllAchievements(user.achievements)
 
     return {
       user,
