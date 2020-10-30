@@ -12,7 +12,6 @@ export const handle = async ({ message, channel }) => {
   try {
     const { content, properties } = message
     const data = JSON.parse(content.toString())
-
     const types = {
       Impulser: handleUser,
       'Ahoy::Event': handleEvent
