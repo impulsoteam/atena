@@ -12,6 +12,7 @@ export const handle = async ({ message, channel }) => {
   try {
     const { content, properties } = message
     const data = JSON.parse(content.toString())
+    console.log(data)
     const types = {
       Impulser: handleUser,
       'Ahoy::Event': handleEvent
@@ -66,7 +67,7 @@ const handleUser = async data => {
 const handleEvent = async data => {
   try {
     const { properties, impulser_uuid, time } = data
-
+    console.log(data)
     if (!properties.name || !Object.keys(products).includes(properties.name))
       return
 
@@ -86,7 +87,7 @@ const handleEvent = async data => {
         occurredAt: time
       }
     }
-
+    console.log(payload)
     const user = await User.findOne(payload.query)
 
     if (!user) {
