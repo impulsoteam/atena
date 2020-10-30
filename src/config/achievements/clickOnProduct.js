@@ -8,7 +8,7 @@ export const products = {
   Curadoria: 'curationAccess',
   'Clube de Benefícios': 'benefitsClubAccess',
   'Comunidades.tech': 'ctechAccess',
-  Communup: 'communupAccess',
+  'Impulso Comunidades': 'impulsoComunidadesAccess',
   Atena: 'atenaAccess',
   'E-mail @impulso.network': 'impulsoEmailAccess',
   Ajuda: 'helpAccess'
