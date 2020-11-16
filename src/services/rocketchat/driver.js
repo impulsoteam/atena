@@ -13,7 +13,7 @@ export const connect = async () => {
     driver.reactToMessages((error, message, messageOptions) => {
       if (error) throw new Error('Error in driver.reactToMessages')
 
-      if (message.u._id === botId || message.t) return
+      if ((message.u && message.u._id === botId) || message.t) return
 
       handlePayload({ message, messageOptions })
     })
