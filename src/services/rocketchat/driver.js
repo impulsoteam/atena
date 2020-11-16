@@ -10,10 +10,11 @@ export const connect = async () => {
     const botId = await driver.login()
 
     await driver.subscribeToMessages()
-    driver.reactToMessages((error, message, messageOptions) => {
+    driver.reactToMessages((error, messages, messageOptions) => {
       if (error) throw new Error('Error in driver.reactToMessages')
 
-      if (message.u._id === botId || message.t) return
+      const message = messages[0] || messages
+      if ((message.u && message.u._id === botId) || message.t) return
 
       handlePayload({ message, messageOptions })
     })
