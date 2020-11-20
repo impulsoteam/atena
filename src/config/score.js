@@ -37,14 +37,9 @@ export const levels = (() => {
     'levelTwo',
     'levelThree',
     'levelFour',
-    'levelFive',
-    'levelSix',
-    'levelSeven',
-    'levelEight',
-    'levelNine',
-    'levelTen'
+    'levelFive'
   ]
-  const scores = [50, 100, 150, 250, 400, 650, 1050, 1700, 2780]
+  const scores = [50, 250, 650, 1050]
 
   return badges.map((badge, index) => {
     const min = scores[index - 1] || 0
