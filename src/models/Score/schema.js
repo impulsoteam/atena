@@ -6,7 +6,6 @@ export const providers = {
 
 export const scoreTypes = {
   clickOnProduct: 'clickOnProduct',
-  inactivity: 'inactivity',
   manual: 'manual',
   messageSent: 'messageSent',
   newAchievement: 'newAchievement',
