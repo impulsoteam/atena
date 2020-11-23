@@ -1,12 +1,25 @@
+import moment from 'moment'
+
+import Ranking from '../../models/Ranking'
 import Score from '../../models/Score'
 import User from '../../models/User'
 import RankingUtils from './utils'
 
 class RankingController extends RankingUtils {
   async getMonthlyRanking({ year, month, offset, size }) {
-    const { date } = await this.getDate({ year, month })
-    const response = await Score.findAllByMonth({ date, offset, size })
-    return response
+    const { date } = this.getDate({ year, month })
+
+    if (moment().format('M') === moment(date).format('M')) {
+      const ranking = await Ranking.find({})
+        .sort({ position: 1 })
+        .skip(offset)
+        .limit(size)
+      const count = await Ranking.countDocuments({})
+      console.log('simple')
+      return { ranking, count }
+    } else {
+      return Score.findAllByMonth({ date, offset, size })
+    }
   }
 
   async getGeneralRanking({ offset, size }) {
@@ -42,18 +55,15 @@ class RankingController extends RankingUtils {
   }
 
   async getMonthlyPositionByUser(uuid) {
-    const { ranking } = await Score.findAllByMonth({ offset: 0, size: 99999 })
-    const index = ranking.findIndex(user => user.uuid === uuid)
+    const ranking = await Ranking.findOne({ uuid })
 
-    if (index === -1)
+    if (!ranking) {
       return {
         position: 0,
         score: 0
       }
-
-    return {
-      position: index + 1,
-      score: ranking[index].score
+    } else {
+      return ranking
     }
   }
 
@@ -79,6 +89,33 @@ class RankingController extends RankingUtils {
     return {
       position: index + 1,
       score: ranking[index].score.value
+    }
+  }
+
+  async createMonthlyRanking() {
+    const { ranking } = await Score.findAllByMonth({ offset: 0, size: 99999 })
+
+    for (const [index, user] of ranking.entries()) {
+      const { uuid, score, name, avatar, level, rocketchat } = user
+
+      await Ranking.findOneAndUpdate(
+        { uuid },
+        {
+          uuid,
+          score,
+          name,
+          avatar,
+          level,
+          rocketchat,
+          position: index + 1
+        },
+        {
+          runValidators: true,
+          upsert: true,
+          setDefaultsOnInsert: true,
+          new: true
+        }
+      )
     }
   }
 }
