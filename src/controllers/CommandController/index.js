@@ -56,13 +56,18 @@ class CommandController extends CommandUtils {
         year,
         month,
         offset: 0,
-        size: 99999
+        size: 5
       })
+
+      const userRanking = await RankingController.getMonthlyPositionByUser(
+        user.uuid
+      )
 
       const message = super.generateRankingMessage({
         user,
         ranking,
-        monthName
+        monthName,
+        userRanking
       })
       BotController.sendMessageToUser({
         provider: provider.name,
@@ -82,11 +87,16 @@ class CommandController extends CommandUtils {
     try {
       const { ranking } = await RankingController.getGeneralRanking({
         offset: 0,
-        size: 99999
+        size: 5
       })
+
+      const userRanking = await RankingController.getGeneralPositionByUser(
+        user.uuid
+      )
 
       const message = super.generateRankingMessage({
         user,
+        userRanking,
         ranking
       })
       BotController.sendMessageToUser({
