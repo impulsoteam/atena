@@ -1,15 +1,43 @@
+import moment from 'moment'
+
+import GeneralRanking from '../../models/GeneralRanking'
+import MonthlyRanking from '../../models/MonthlyRanking'
 import Score from '../../models/Score'
 import User from '../../models/User'
 import RankingUtils from './utils'
 
 class RankingController extends RankingUtils {
   async getMonthlyRanking({ year, month, offset, size }) {
-    const { date } = await this.getDate({ year, month })
-    const response = await Score.findAllByMonth({ date, offset, size })
-    return response
+    const { date } = this.getDate({ year, month })
+
+    if (moment().format('M') === moment(date).format('M')) {
+      return MonthlyRanking.getCurrentRanking({ offset, size })
+    } else {
+      return Score.findAllByMonth({ date, offset, size })
+    }
   }
 
-  async getGeneralRanking({ offset, size }) {
+  getGeneralRanking({ offset, size }) {
+    return GeneralRanking.getCurrentRanking({ offset, size })
+  }
+
+  getMonthlyPositionByUser(uuid) {
+    return MonthlyRanking.getUserPosition(uuid)
+  }
+
+  getGeneralPositionByUser(uuid) {
+    return GeneralRanking.getUserPosition(uuid)
+  }
+
+  async createMonthlyRanking() {
+    const { ranking } = await Score.findAllByMonth({ offset: 0, size: 99999 })
+
+    for (const [index, user] of ranking.entries()) {
+      await MonthlyRanking.updateUserRanking({ user, position: index + 1 })
+    }
+  }
+
+  async createGeneralRanking() {
     const ranking = await User.aggregate([
       {
         $match: {
@@ -28,57 +56,11 @@ class RankingController extends RankingUtils {
           level: '$level.value',
           uuid: 1
         }
-      },
-      { $skip: parseInt(offset) },
-      { $limit: parseInt(size) }
+      }
     ])
 
-    const total = await User.countDocuments({
-      isCoreTeam: false,
-      'score.value': { $gt: 0 }
-    })
-
-    return { total, ranking }
-  }
-
-  async getMonthlyPositionByUser(uuid) {
-    const { ranking } = await Score.findAllByMonth({ offset: 0, size: 99999 })
-    const index = ranking.findIndex(user => user.uuid === uuid)
-
-    if (index === -1)
-      return {
-        position: 0,
-        score: 0
-      }
-
-    return {
-      position: index + 1,
-      score: ranking[index].score
-    }
-  }
-
-  async getGeneralPositionByUser(uuid) {
-    const ranking = await User.aggregate([
-      {
-        $match: {
-          'score.value': { $gt: 0 },
-          isCoreTeam: false
-        }
-      },
-      { $project: { _id: 0, uuid: 1, score: 1 } },
-      { $sort: { score: -1 } }
-    ])
-    const index = ranking.findIndex(user => user.uuid === uuid)
-
-    if (index === -1)
-      return {
-        position: 0,
-        score: 0
-      }
-
-    return {
-      position: index + 1,
-      score: ranking[index].score.value
+    for (const [index, user] of ranking.entries()) {
+      await GeneralRanking.updateUserRanking({ user, position: index + 1 })
     }
   }
 }

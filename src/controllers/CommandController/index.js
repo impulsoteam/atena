@@ -1,6 +1,5 @@
 import { sendError } from 'log-on-slack'
 
-import Score from '../../models/Score'
 import User from '../../models/User'
 import BotController from '../BotController'
 import RankingController from '../RankingController'
@@ -51,18 +50,24 @@ class CommandController extends CommandUtils {
 
   async monthlyRanking({ user, provider, content }) {
     try {
-      const { date, monthName } = super.getDateFromMessage(content)
+      const { year, month, monthName } = super.getDateFromMessage(content)
 
-      const { ranking } = await Score.findAllByMonth({
-        date,
+      const { ranking } = await RankingController.getMonthlyRanking({
+        year,
+        month,
         offset: 0,
-        size: 99999
+        size: 5
       })
+
+      const userRanking = await RankingController.getMonthlyPositionByUser(
+        user.uuid
+      )
 
       const message = super.generateRankingMessage({
         user,
         ranking,
-        monthName
+        monthName,
+        userRanking
       })
       BotController.sendMessageToUser({
         provider: provider.name,
@@ -82,11 +87,16 @@ class CommandController extends CommandUtils {
     try {
       const { ranking } = await RankingController.getGeneralRanking({
         offset: 0,
-        size: 99999
+        size: 5
       })
+
+      const userRanking = await RankingController.getGeneralPositionByUser(
+        user.uuid
+      )
 
       const message = super.generateRankingMessage({
         user,
+        userRanking,
         ranking
       })
       BotController.sendMessageToUser({

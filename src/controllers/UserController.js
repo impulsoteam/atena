@@ -63,8 +63,8 @@ class UserController {
 
   async getProfile(uuid) {
     const user = await User.findOne({ uuid })
-
     if (!user) throw new Error(`Unable to find ${uuid}`)
+
     const general = await RankingController.getGeneralPositionByUser(uuid)
     const monthly = await RankingController.getMonthlyPositionByUser(uuid)
     user.achievements = getAllAchievements(user.achievements)

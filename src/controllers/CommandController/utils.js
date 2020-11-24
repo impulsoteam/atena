@@ -70,12 +70,13 @@ export default class CommandUtils {
     }
     const fullDate = moment(`${year}/${month}`, 'YYYY/MM').toDate()
     return {
-      date: fullDate,
+      year,
+      month,
       monthName: moment(fullDate).locale('pt').format('MMMM')
     }
   }
 
-  generateRankingMessage({ ranking, user, monthName }) {
+  generateRankingMessage({ ranking, user, userRanking, monthName }) {
     if (!ranking || ranking.length < 5)
       return 'Ops. Ainda não temos dados suficientes para gerar o ranking neste momento. :/'
 
@@ -98,9 +99,7 @@ export default class CommandUtils {
       })
     )
 
-    const userPosition = user.isCoreTeam
-      ? 'coreTeam'
-      : ranking.findIndex(({ uuid }) => user.uuid === uuid) + 1
+    const userPosition = user.isCoreTeam ? 'coreTeam' : userRanking.position
 
     let message = `Ah, e você está na posição ${userPosition} do ranking`
 
