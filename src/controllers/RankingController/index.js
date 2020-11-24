@@ -10,13 +10,7 @@ class RankingController extends RankingUtils {
     const { date } = this.getDate({ year, month })
 
     if (moment().format('M') === moment(date).format('M')) {
-      const ranking = await Ranking.find({})
-        .sort({ position: 1 })
-        .skip(offset)
-        .limit(size)
-      const count = await Ranking.countDocuments({})
-      console.log('simple')
-      return { ranking, count }
+      return Ranking.getCurrentRanking({ offset, size })
     } else {
       return Score.findAllByMonth({ date, offset, size })
     }
@@ -55,6 +49,7 @@ class RankingController extends RankingUtils {
   }
 
   async getMonthlyPositionByUser(uuid) {
+    console.log('getMonthlyPositionByUser')
     const ranking = await Ranking.findOne({ uuid })
 
     if (!ranking) {

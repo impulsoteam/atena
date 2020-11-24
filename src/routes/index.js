@@ -9,7 +9,7 @@ router.use('/api/v1', apiRoutes)
 
 router.get('/createRanking', async (request, response) => {
   const ranking = await RankingController.createMonthlyRanking()
-
+  console.log('FINISHED')
   return response.json({ ranking: ranking[0], total: ranking.length })
 })
 
