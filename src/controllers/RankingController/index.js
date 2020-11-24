@@ -33,26 +33,7 @@ class RankingController extends RankingUtils {
     const { ranking } = await Score.findAllByMonth({ offset: 0, size: 99999 })
 
     for (const [index, user] of ranking.entries()) {
-      const { uuid, score, name, avatar, level, rocketchat } = user
-
-      await MonthlyRanking.findOneAndUpdate(
-        { uuid },
-        {
-          uuid,
-          score,
-          name,
-          avatar,
-          level,
-          rocketchat,
-          position: index + 1
-        },
-        {
-          runValidators: true,
-          upsert: true,
-          setDefaultsOnInsert: true,
-          new: true
-        }
-      )
+      await MonthlyRanking.updateUserRanking({ user, position: index + 1 })
     }
   }
 
@@ -79,26 +60,7 @@ class RankingController extends RankingUtils {
     ])
 
     for (const [index, user] of ranking.entries()) {
-      const { uuid, score, name, avatar, level, rocketchat } = user
-
-      await GeneralRanking.findOneAndUpdate(
-        { uuid },
-        {
-          uuid,
-          score,
-          name,
-          avatar,
-          level,
-          rocketchat,
-          position: index + 1
-        },
-        {
-          runValidators: true,
-          upsert: true,
-          setDefaultsOnInsert: true,
-          new: true
-        }
-      )
+      await GeneralRanking.updateUserRanking({ user, position: index + 1 })
     }
   }
 }

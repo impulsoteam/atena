@@ -64,4 +64,30 @@ monthlyRankingSchema.statics.getUserPosition = async function (uuid) {
   }
 }
 
+monthlyRankingSchema.statics.updateUserRanking = async function ({
+  user,
+  position
+}) {
+  const { uuid, score, name, avatar, level, rocketchat } = user
+
+  await this.findOneAndUpdate(
+    { uuid },
+    {
+      uuid,
+      score,
+      name,
+      avatar,
+      level,
+      rocketchat,
+      position
+    },
+    {
+      runValidators: true,
+      upsert: true,
+      setDefaultsOnInsert: true,
+      new: true
+    }
+  )
+}
+
 export default mongoose.model('MonthlyRanking', monthlyRankingSchema)
