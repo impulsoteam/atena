@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const rankingSchema = new mongoose.Schema(
+const monthlyRankingSchema = new mongoose.Schema(
   {
     uuid: {
       type: String,
@@ -36,9 +36,9 @@ const rankingSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-rankingSchema.index({ uuid: 1 })
+monthlyRankingSchema.index({ uuid: 1 })
 
-rankingSchema.statics.getCurrentRanking = async function ({
+monthlyRankingSchema.statics.getCurrentRanking = async function ({
   offset = 0,
   size = 99999
 }) {
@@ -51,4 +51,17 @@ rankingSchema.statics.getCurrentRanking = async function ({
   return { ranking, count }
 }
 
-export default mongoose.model('Ranking', rankingSchema)
+monthlyRankingSchema.statics.getUserPosition = async function (uuid) {
+  const ranking = await this.findOne({ uuid })
+
+  if (!ranking) {
+    return {
+      position: 0,
+      score: 0
+    }
+  } else {
+    return ranking
+  }
+}
+
+export default mongoose.model('MonthlyRanking', monthlyRankingSchema)

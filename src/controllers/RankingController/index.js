@@ -1,6 +1,7 @@
 import moment from 'moment'
 
-import Ranking from '../../models/Ranking'
+import GeneralRanking from '../../models/GeneralRanking'
+import MonthlyRanking from '../../models/MonthlyRanking'
 import Score from '../../models/Score'
 import User from '../../models/User'
 import RankingUtils from './utils'
@@ -10,81 +11,22 @@ class RankingController extends RankingUtils {
     const { date } = this.getDate({ year, month })
 
     if (moment().format('M') === moment(date).format('M')) {
-      return Ranking.getCurrentRanking({ offset, size })
+      return MonthlyRanking.getCurrentRanking({ offset, size })
     } else {
       return Score.findAllByMonth({ date, offset, size })
     }
   }
 
-  async getGeneralRanking({ offset, size }) {
-    const ranking = await User.aggregate([
-      {
-        $match: {
-          isCoreTeam: false,
-          'score.value': { $gt: 0 }
-        }
-      },
-      { $sort: { 'score.value': -1 } },
-      {
-        $project: {
-          _id: 0,
-          rocketchat: 1,
-          name: 1,
-          avatar: 1,
-          score: '$score.value',
-          level: '$level.value',
-          uuid: 1
-        }
-      },
-      { $skip: parseInt(offset) },
-      { $limit: parseInt(size) }
-    ])
-
-    const total = await User.countDocuments({
-      isCoreTeam: false,
-      'score.value': { $gt: 0 }
-    })
-
-    return { total, ranking }
+  getGeneralRanking({ offset, size }) {
+    return GeneralRanking.getCurrentRanking({ offset, size })
   }
 
-  async getMonthlyPositionByUser(uuid) {
-    console.log('getMonthlyPositionByUser')
-    const ranking = await Ranking.findOne({ uuid })
-
-    if (!ranking) {
-      return {
-        position: 0,
-        score: 0
-      }
-    } else {
-      return ranking
-    }
+  getMonthlyPositionByUser(uuid) {
+    return MonthlyRanking.getUserPosition(uuid)
   }
 
-  async getGeneralPositionByUser(uuid) {
-    const ranking = await User.aggregate([
-      {
-        $match: {
-          'score.value': { $gt: 0 },
-          isCoreTeam: false
-        }
-      },
-      { $project: { _id: 0, uuid: 1, score: 1 } },
-      { $sort: { score: -1 } }
-    ])
-    const index = ranking.findIndex(user => user.uuid === uuid)
-
-    if (index === -1)
-      return {
-        position: 0,
-        score: 0
-      }
-
-    return {
-      position: index + 1,
-      score: ranking[index].score.value
-    }
+  getGeneralPositionByUser(uuid) {
+    return GeneralRanking.getUserPosition(uuid)
   }
 
   async createMonthlyRanking() {
@@ -93,7 +35,7 @@ class RankingController extends RankingUtils {
     for (const [index, user] of ranking.entries()) {
       const { uuid, score, name, avatar, level, rocketchat } = user
 
-      await Ranking.findOneAndUpdate(
+      await MonthlyRanking.findOneAndUpdate(
         { uuid },
         {
           uuid,
@@ -112,6 +54,54 @@ class RankingController extends RankingUtils {
         }
       )
     }
+    console.log('DONE createMonthlyRanking')
+  }
+
+  async createGeneralRanking() {
+    const ranking = await User.aggregate([
+      {
+        $match: {
+          isCoreTeam: false,
+          'score.value': { $gt: 0 }
+        }
+      },
+      { $sort: { 'score.value': -1 } },
+      {
+        $project: {
+          _id: 0,
+          rocketchat: 1,
+          name: 1,
+          avatar: 1,
+          score: '$score.value',
+          level: '$level.value',
+          uuid: 1
+        }
+      }
+    ])
+
+    for (const [index, user] of ranking.entries()) {
+      const { uuid, score, name, avatar, level, rocketchat } = user
+
+      await GeneralRanking.findOneAndUpdate(
+        { uuid },
+        {
+          uuid,
+          score,
+          name,
+          avatar,
+          level,
+          rocketchat,
+          position: index + 1
+        },
+        {
+          runValidators: true,
+          upsert: true,
+          setDefaultsOnInsert: true,
+          new: true
+        }
+      )
+    }
+    console.log('DONE createGeneralRanking')
   }
 }
 
