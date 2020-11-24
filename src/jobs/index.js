@@ -25,11 +25,15 @@ const updateEmailServices = () => {
 }
 
 const updateMonthlyRanking = () => {
-  cron.schedule('00,30 * * * *', () => RankingController.createMonthlyRanking())
+  cron.schedule('00,20,40 * * * *', () =>
+    RankingController.createMonthlyRanking()
+  )
 }
 
 const updateGeneralRanking = () => {
-  cron.schedule('10,40 * * * *', () => RankingController.createGeneralRanking())
+  cron.schedule('10,30,50 * * * *', () =>
+    RankingController.createGeneralRanking()
+  )
 }
 
 export const exec = () => {
