@@ -46,9 +46,9 @@ generalRankingSchema.statics.getCurrentRanking = async function ({
     .sort({ position: 1 })
     .skip(parseInt(offset))
     .limit(parseInt(size))
-  const count = await this.countDocuments({})
+  const total = await this.countDocuments({})
 
-  return { ranking, count }
+  return { ranking, total }
 }
 
 generalRankingSchema.statics.getUserPosition = async function (uuid) {
