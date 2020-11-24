@@ -54,7 +54,6 @@ class RankingController extends RankingUtils {
         }
       )
     }
-    console.log('DONE createMonthlyRanking')
   }
 
   async createGeneralRanking() {
@@ -101,7 +100,6 @@ class RankingController extends RankingUtils {
         }
       )
     }
-    console.log('DONE createGeneralRanking')
   }
 }
 
