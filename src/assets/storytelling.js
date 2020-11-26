@@ -49,7 +49,7 @@ export const generateStorytelling = ({ level, username }) => {
     Bem, como era esperado, agora vamos à sua nova :dart:*missão*!
     Acredito que esse é o momento de você mostrar o quanto evoluiu nos últimos tempos! Por isso, vá lá em app.impulso.network e atualize seus dados. Assim que terminar, você terá concluído a sua missão! E você também se torna um membro do :clapper:*Cineclube*! Com isso, você passa a ter *descontos em centenas de salas de cinema* espalhadas pelo Brasil! Meus parabéns, você realmente fez por merecer!
     E lembre-se de atingir os pontos de Reputação suficientes para alcançar o próximo nível! Espero você!:wave:
-    Uau, parabéns! :clap:Você acaba de alcançar o Nível Ouro;
+    Uau, parabéns! :clap:Você acaba de alcançar o *Nível Ouro*;
     Com isso, você ganhou: acesso ao Clube de Benefícios Ouro - Farmaclube e Cineclube, disponível no painel em app.impulso.network!`,
     levelFive: `*Olá* @${username}:scream: Você é inigualável!!
     Não tenho palavras para dizer como sua *jornada* foi incrível até aqui!
