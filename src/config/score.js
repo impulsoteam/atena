@@ -1,6 +1,4 @@
 export const scoreRules = {
-  daysOfInactivity: 14,
-  inactivityScore: -2,
   clickOnProduct: {
     limit: 24,
     score: 2
@@ -37,14 +35,9 @@ export const levels = (() => {
     'levelTwo',
     'levelThree',
     'levelFour',
-    'levelFive',
-    'levelSix',
-    'levelSeven',
-    'levelEight',
-    'levelNine',
-    'levelTen'
+    'levelFive'
   ]
-  const scores = [50, 100, 150, 250, 400, 650, 1050, 1700, 2780]
+  const scores = [50, 250, 650, 2750]
 
   return badges.map((badge, index) => {
     const min = scores[index - 1] || 0

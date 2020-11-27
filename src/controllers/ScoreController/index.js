@@ -251,34 +251,6 @@ class ScoreController extends ScoreUtils {
     }
   }
 
-  async scoreInactivities() {
-    try {
-      const daysOfInactivity = moment().subtract(
-        scoreRules.daysOfInactivity,
-        'days'
-      )
-      const score = scoreRules.inactivityScore
-      const inactives = await User.find({
-        lastInteraction: { $lt: daysOfInactivity },
-        'score.value': { $gt: 1 }
-      })
-
-      for (const user of inactives) {
-        await Score.create({
-          user: user.uuid,
-          score,
-          description: scoreTypes.inactivity
-        })
-        await this.updateUserScore({ user, scoreEarned: score })
-      }
-    } catch (error) {
-      sendError({
-        file: 'controllers/ScoreController.scoreInactivities',
-        error
-      })
-    }
-  }
-
   async removeScoreFromReaction({ reaction, payload }) {
     try {
       const { deletedCount } = await Score.deleteMany({
