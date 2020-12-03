@@ -10,7 +10,15 @@ export const updateContacts = async Contacts => {
     await mailJet
       .post('contact', { version: 'v3' })
       .action('managemanycontacts')
-      .request({ Contacts })
+      .request({
+        Contacts,
+        ContactsLists: [
+          {
+            Action: 'addnoforce',
+            ListID: process.env.MJ_ID_CONTACT_LIST
+          }
+        ]
+      })
   } catch (error) {
     sendError({
       file: 'services/mailJet.js - updateContacts',
