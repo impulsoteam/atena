@@ -5,16 +5,18 @@ import userSchema from './schema'
 
 userSchema.statics.createOrUpdate = async function (payload) {
   const alreadyExists = await this.findOne({ uuid: payload.uuid })
+  let user, isNew
 
   if (alreadyExists) {
-    return this.findOneAndUpdate({ uuid: payload.uuid }, payload, {
+    user = await this.findOneAndUpdate({ uuid: payload.uuid }, payload, {
       runValidators: true,
       new: true
     })
   } else {
-    const user = await this.create(payload)
-    return { newUser: true, user }
+    user = await this.create(payload)
+    isNew = true
   }
+  return { isNew, user }
 }
 
 userSchema.statics.updateAchievements = async function ({

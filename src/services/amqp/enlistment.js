@@ -42,7 +42,8 @@ const handleUser = async data => {
     linkedin,
     google,
     github,
-    photo_url
+    photo_url,
+    referrer
   } = data
 
   const user = {
@@ -56,10 +57,17 @@ const handleUser = async data => {
     },
     linkedin: { id: linkedin.uid },
     github,
-    google: { id: google.uid }
+    google: { id: google.uid },
+    referrer: referrer
+      ? {
+          type: referrer.type,
+          identification: referrer.uuid
+        }
+      : null
   }
 
   removeEmptyValues(user)
+
   return UserController.handle(user)
 }
 

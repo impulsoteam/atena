@@ -88,7 +88,7 @@ class AchievementController {
         range,
         displayNames,
         currentValue: 1,
-        nextTarget: achievementRanges[1].target,
+        nextTarget: achievementRanges[1] ? achievementRanges[1].target : null,
         earnedIn: moment().toDate()
       }
 

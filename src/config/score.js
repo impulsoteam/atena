@@ -29,6 +29,10 @@ export const scoreRules = {
   }
 }
 
+export const partnerLevels = {
+  locawebpro: 4
+}
+
 export const levels = (() => {
   const badges = [
     'levelOne',

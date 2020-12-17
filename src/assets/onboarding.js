@@ -1,5 +1,5 @@
 export const onboardingMessage = `
-Olá! Que bom que você chegou até aqui! Passei para te dar algumas informações e tirar dúvidas gerais. Eu e o @luiz somos os gestores da comunidade e estamos dispostos a te ajudar no que precisar para que você tenha a melhor experiência possível aqui.
+Olá! Que bom que você chegou até aqui! Passei para te dar algumas informações e tirar dúvidas gerais. Eu sou a gestora da comunidade e estou disposta a te ajudar no que precisar para que você tenha a melhor experiência possível aqui.
 
 *O que é a  Impulso Network???*
 É uma rede de profissionais de tecnologia. Aqui, você pode trocar ideias e experiências com outras pessoas da área de TI, participar de meetups, bootcamp, coworking e cursos online, projetos open source, além de conquistar muitos descontos - que vão desde cuidar da sua saúde até apoiar seus estudos em livros, conferências, tudo isso *DE GRAÇA*, através de uma gamificação ;)

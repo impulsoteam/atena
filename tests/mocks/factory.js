@@ -89,6 +89,27 @@ factory.define('User', User, () => ({
   }
 }))
 
+factory.define('enlistment:user', 'enlistment:user', () => ({
+  uuid: faker.random.uuid(),
+  fullname: faker.name.findName(),
+  email: faker.internet.email(),
+  photo_url: faker.image.avatar(),
+  rocket_chat: {
+    id: faker.internet.password(),
+    username: faker.internet.userName()
+  },
+  github: {
+    id: faker.internet.password(),
+    username: faker.internet.userName()
+  },
+  linkedin: {
+    uid: faker.internet.password()
+  },
+  google: {
+    uid: faker.internet.password()
+  }
+}))
+
 factory.define('messagePayload', 'messagePayload', () => ({
   content: faker.lorem.sentence(),
   threadCount: faker.random.arrayElement([0, 1, 0]),
