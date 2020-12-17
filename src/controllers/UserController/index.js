@@ -104,13 +104,22 @@ class UserController extends UserUtils {
         size: totalUsers
       })
 
+      const coreTeam = await User.find({ isCoreTeam: true })
+      monthly.push(...coreTeam)
+
       const { ranking: general } = await RankingController.getGeneralRanking({
         offset: 0,
         size: totalUsers
       })
 
       for (const [position, user] of Object.entries(monthly)) {
-        const { email, score, level, achievements } = await User.findOne({
+        const {
+          email,
+          score,
+          level,
+          achievements,
+          isCoreTeam
+        } = await User.findOne({
           uuid: user.uuid
         })
 
@@ -118,10 +127,11 @@ class UserController extends UserUtils {
           atena_level: level.value,
           score_to_next_level: level.scoreToNextLevel,
           number_of_achievements: achievements.length,
-          ranking_monthly_position: parseInt(position) + 1,
-          ranking_monthly_score: user.score,
-          ranking_general_position:
-            general.findIndex(({ uuid }) => uuid === user.uuid) + 1,
+          ranking_monthly_position: isCoreTeam ? 0 : parseInt(position) + 1,
+          ranking_monthly_score: isCoreTeam ? 0 : user.score,
+          ranking_general_position: isCoreTeam
+            ? 0
+            : general.findIndex(({ uuid }) => uuid === user.uuid) + 1,
           ranking_general_score: score.value,
           atena_updated_at: moment().toDate()
         }
