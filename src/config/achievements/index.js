@@ -93,11 +93,9 @@ export const getAllAchievements = userAchievements => {
     impulsoPartner
   ]
 
-  const allAchievements = [
-    ...userAchievements.filter(({ name }) =>
-      Object.keys(products).includes(name)
-    )
-  ]
+  const allAchievements = userAchievements.filter(({ name }) =>
+    Object.keys(partners).includes(name)
+  )
 
   for (const achievement of achievements) {
     allAchievements.push(getDefaultAchievement(achievement()))
