@@ -20,12 +20,12 @@ beforeAll(async () => {
   await User.deleteMany({})
   await LevelHistory.deleteMany({})
   await Score.deleteMany({})
-}, 10000)
+})
 
 afterAll(async () => {
   await connection.disconnect()
   await channel.close()
-}, 5000)
+})
 describe('handleUser - partner level flow', () => {
   it("should persist partner with no level benefit and don't update level", async () => {
     const invalidPartner = 'invalidPartner'
