@@ -89,13 +89,14 @@ export const getAllAchievements = userAchievements => {
     messageSended,
     reactionSended,
     reactionReceived,
-    newslettersRead,
-    impulsoPartner
+    newslettersRead
   ]
 
-  const allAchievements = userAchievements.filter(({ name }) =>
-    Object.keys(partners).includes(name)
-  )
+  const allAchievements = [
+    ...userAchievements.filter(({ name }) =>
+      Object.keys(partners).includes(name)
+    )
+  ]
 
   for (const achievement of achievements) {
     allAchievements.push(getDefaultAchievement(achievement()))
