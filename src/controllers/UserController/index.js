@@ -1,25 +1,34 @@
 import { sendError, sendNotify } from 'log-on-slack'
 import moment from 'moment'
 
-import { onboardingMessage } from '../assets/onboarding'
-import { getAllAchievements } from '../config/achievements'
-import User from '../models/User'
-import { updateSubscribers as updateDripSubscribers } from '../services/drip'
-import { updateContacts as updateMailJetContacts } from '../services/mailJet'
-import { sleep } from '../utils'
-import BotController from './BotController'
-import RankingController from './RankingController'
+import { onboardingMessage } from '../../assets/onboarding'
+import { getAllAchievements } from '../../config/achievements'
+import User from '../../models/User'
+import { updateSubscribers as updateDripSubscribers } from '../../services/drip'
+import { updateContacts as updateMailJetContacts } from '../../services/mailJet'
+import { sleep } from '../../utils'
+import BotController from '../BotController'
+import RankingController from '../RankingController'
+import UserUtils from './utils'
 
-class UserController {
+class UserController extends UserUtils {
   constructor() {
+    super()
     this.validProviders = ['rocketchat']
   }
 
   async handle(payload) {
     try {
-      const { newUser, user } = await User.createOrUpdate(payload)
+      const { isNew, user } = await User.createOrUpdate(payload)
 
-      if (newUser) {
+      if (
+        user.referrer &&
+        user.referrer.type === 'partner' &&
+        user.referrer.identification
+      )
+        this.handleUserPartner(user)
+
+      if (isNew) {
         for (const provider of this.validProviders) {
           if (user[provider])
             BotController.sendMessageToUser({
@@ -95,13 +104,22 @@ class UserController {
         size: totalUsers
       })
 
+      const coreTeam = await User.find({ isCoreTeam: true })
+      monthly.push(...coreTeam)
+
       const { ranking: general } = await RankingController.getGeneralRanking({
         offset: 0,
         size: totalUsers
       })
 
       for (const [position, user] of Object.entries(monthly)) {
-        const { email, score, level, achievements } = await User.findOne({
+        const {
+          email,
+          score,
+          level,
+          achievements,
+          isCoreTeam
+        } = await User.findOne({
           uuid: user.uuid
         })
 
@@ -109,10 +127,11 @@ class UserController {
           atena_level: level.value,
           score_to_next_level: level.scoreToNextLevel,
           number_of_achievements: achievements.length,
-          ranking_monthly_position: parseInt(position) + 1,
-          ranking_monthly_score: user.score,
-          ranking_general_position:
-            general.findIndex(({ uuid }) => uuid === user.uuid) + 1,
+          ranking_monthly_position: isCoreTeam ? 0 : parseInt(position) + 1,
+          ranking_monthly_score: isCoreTeam ? 0 : user.score,
+          ranking_general_position: isCoreTeam
+            ? 0
+            : general.findIndex(({ uuid }) => uuid === user.uuid) + 1,
           ranking_general_score: score.value,
           atena_updated_at: moment().toDate()
         }

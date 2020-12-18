@@ -1,4 +1,5 @@
 import { clickOnProduct, products } from './clickOnProduct'
+import { impulsoPartner, partners } from './impulsoPartner'
 import { messageSended } from './messageSended'
 import { newslettersRead } from './newslettersRead'
 import { reactionReceived } from './reactionReceived'
@@ -18,7 +19,10 @@ const formatAchievement = ({ name, displayAchievement, medals }) => {
         },
         medal: medal.name,
         target,
-        range: ranges[index],
+        range:
+          medal.targets.length === 1
+            ? ranges[ranges.length - 2]
+            : ranges[index],
         score: medal.score
       })
     }
@@ -56,13 +60,23 @@ export const achievementTypes = {
 }
 
 export default function getAchievementValues(type) {
-  const name = type.includes('Access') ? 'clickOnProduct' : type
+  let name
+
+  if (type.includes('Access')) {
+    name = 'clickOnProduct'
+  } else if (Object.keys(partners).includes(type)) {
+    name = 'impulsoPartner'
+  } else {
+    name = type
+  }
+
   const achievements = {
     messageSended,
     reactionSended,
     reactionReceived,
     clickOnProduct,
-    newslettersRead
+    newslettersRead,
+    impulsoPartner
   }
 
   const ranges = achievements[name](type)
@@ -78,7 +92,11 @@ export const getAllAchievements = userAchievements => {
     newslettersRead
   ]
 
-  const allAchievements = []
+  const allAchievements = [
+    ...userAchievements.filter(({ name }) =>
+      Object.keys(partners).includes(name)
+    )
+  ]
 
   for (const achievement of achievements) {
     allAchievements.push(getDefaultAchievement(achievement()))

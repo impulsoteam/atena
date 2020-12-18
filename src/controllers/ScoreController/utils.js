@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import { scoreRules, levels } from '../../config/score'
+import { scoreRules, levels, partnerLevels } from '../../config/score'
 import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
@@ -72,10 +72,25 @@ export default class ScoreUtils {
       lastUpdate: moment()
     }
 
-    const currentLevel = levels.find(({ currentRange }) => {
-      if (!currentRange.max) return true
-      return currentRange.min <= score.value && currentRange.max >= score.value
-    })
+    let currentLevel
+
+    if (Object.keys(partnerLevels).includes(user.referrer.identification)) {
+      const partnerLevel =
+        levels[partnerLevels[user.referrer.identification] - 1]
+
+      if (score.value <= partnerLevel.currentRange.max) {
+        currentLevel = partnerLevel
+      }
+    }
+
+    if (!currentLevel) {
+      currentLevel = levels.find(({ currentRange }) => {
+        if (!currentRange.max) return true
+        return (
+          currentRange.min <= score.value && currentRange.max >= score.value
+        )
+      })
+    }
 
     const level =
       currentLevel.level !== user.level.value

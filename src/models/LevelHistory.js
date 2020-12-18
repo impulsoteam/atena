@@ -15,6 +15,9 @@ const levelHistorySchema = new mongoose.Schema(
         type: Number,
         required: true
       }
+    },
+    details: {
+      partner: String
     }
   },
   {

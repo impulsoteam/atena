@@ -98,6 +98,10 @@ export default new mongoose.Schema(
       },
       lastUpdate: Date
     },
+    referrer: {
+      type: { type: String },
+      identification: String
+    },
     lastInteraction: Date,
     rocketchat: {
       id: String,
