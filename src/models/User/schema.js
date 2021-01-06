@@ -11,7 +11,7 @@ const achievement = {
   displayNames: {
     medal: {
       type: String,
-      enum: ['Bronze', 'Prata', 'Ouro', 'Platina', 'Diamante']
+      enum: ['Ferro', 'Bronze', 'Prata', 'Ouro', 'Diamante']
     },
     achievement: {
       type: String,
@@ -20,7 +20,7 @@ const achievement = {
   },
   medal: {
     type: String,
-    enum: ['bronze', 'silver', 'gold', 'platinum', 'diamond']
+    enum: ['iron', 'bronze', 'silver', 'gold', 'diamond']
   },
   range: {
     type: String,

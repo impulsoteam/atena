@@ -118,7 +118,7 @@ export default class ScoreUtils {
   }
 
   getProfileCompletenessMessage(progress) {
-    const medals = ['Bronze', 'Prata', 'Ouro', 'Platina', 'Diamante']
+    const medals = ['Ferro', 'Bronze', 'Prata', 'Ouro', 'Diamante']
 
     const ranges = [20, 40, 60, 80, 100]
 
