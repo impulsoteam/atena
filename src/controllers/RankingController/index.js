@@ -37,6 +37,10 @@ class RankingController extends RankingUtils {
     }
   }
 
+  async resetMonthlyRanking() {
+    await MonthlyRanking.deleteMany({})
+  }
+
   async createGeneralRanking() {
     const ranking = await User.aggregate([
       {

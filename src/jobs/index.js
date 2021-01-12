@@ -19,6 +19,10 @@ const updateEmailServices = () => {
   cron.schedule('0 1 * * *', () => UserController.updateEmailServices())
 }
 
+const resetMonthlyRanking = () => {
+  cron.schedule('0 0 1 * * *', () => RankingController.resetMonthlyRanking())
+}
+
 const updateMonthlyRanking = () => {
   cron.schedule('00,20,40 * * * *', () =>
     RankingController.createMonthlyRanking()
@@ -35,6 +39,7 @@ export const exec = () => {
   sendMonthlyRankingToChannel()
   inviteUsersToChannel()
   updateEmailServices()
+  resetMonthlyRanking()
   updateMonthlyRanking()
   updateGeneralRanking()
   inviteUsersToChannel()
