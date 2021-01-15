@@ -1,26 +1,26 @@
 export const newslettersRead = () => {
   const medals = [
     {
-      name: 'bronze',
-      displayMedal: 'Bronze',
+      name: 'iron',
+      displayMedal: 'Ferro',
       targets: [1, 2, 4, 6, 8],
       score: 5
     },
     {
-      name: 'silver',
-      displayMedal: 'Prata',
+      name: 'bronze',
+      displayMedal: 'Bronze',
       targets: [11, 18, 27, 38, 50],
       score: 10
     },
     {
-      name: 'gold',
-      displayMedal: 'Ouro',
+      name: 'silver',
+      displayMedal: 'Prata',
       targets: [72, 98, 128, 162, 200],
       score: 15
     },
     {
-      name: 'platinum',
-      displayMedal: 'Platina',
+      name: 'gold',
+      displayMedal: 'Ouro',
       targets: [257, 321, 392, 470, 556],
       score: 20
     },

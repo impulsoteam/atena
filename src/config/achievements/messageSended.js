@@ -1,26 +1,26 @@
 export const messageSended = () => {
   const medals = [
     {
-      name: 'bronze',
-      displayMedal: 'Bronze',
+      name: 'iron',
+      displayMedal: 'Ferro',
       targets: [1, 2, 3, 5, 8],
       score: 5
     },
     {
-      name: 'silver',
-      displayMedal: 'Prata',
+      name: 'bronze',
+      displayMedal: 'Bronze',
       targets: [16, 27, 40, 56, 75],
       score: 10
     },
     {
-      name: 'gold',
-      displayMedal: 'Ouro',
+      name: 'silver',
+      displayMedal: 'Prata',
       targets: [108, 147, 192, 243, 300],
       score: 15
     },
     {
-      name: 'platinum',
-      displayMedal: 'Platina',
+      name: 'gold',
+      displayMedal: 'Ouro',
       targets: [385, 481, 588, 705, 833],
       score: 20
     },

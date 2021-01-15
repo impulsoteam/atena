@@ -17,26 +17,26 @@ export const products = {
 export const clickOnProduct = name => {
   const medals = [
     {
-      name: 'bronze',
-      displayMedal: 'Bronze',
+      name: 'iron',
+      displayMedal: 'Ferro',
       targets: [1, 3, 6, 11, 17],
       score: 5
     },
     {
-      name: 'silver',
-      displayMedal: 'Prata',
+      name: 'bronze',
+      displayMedal: 'Bronze',
       targets: [33, 54, 81, 113, 150],
       score: 10
     },
     {
-      name: 'gold',
-      displayMedal: 'Ouro',
+      name: 'silver',
+      displayMedal: 'Prata',
       targets: [216, 294, 384, 486, 600],
       score: 15
     },
     {
-      name: 'platinum',
-      displayMedal: 'Platina',
+      name: 'gold',
+      displayMedal: 'Ouro',
       targets: [771, 963, 1176, 1411, 1667],
       score: 20
     },

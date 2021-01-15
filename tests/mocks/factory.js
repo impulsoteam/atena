@@ -52,10 +52,10 @@ factory.define('Score', Score, () => ({
     room: faker.internet.password(),
     achievement: faker.random.arrayElement(Object.values(scoreTypes)),
     medal: faker.random.arrayElement([
+      'iron',
       'bronze',
       'silver',
       'gold',
-      'platinum',
       'diamond'
     ]),
     range: faker.random.arrayElement(['I', 'II', 'III', 'IV', 'V'])
