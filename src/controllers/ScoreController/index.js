@@ -182,6 +182,21 @@ class ScoreController extends ScoreUtils {
     }
   }
 
+  async handleMeetupSubscription({ user, meetup }) {
+    const scoreEarned = scoreRules.subscribedToMeetup.score
+
+    await Score.create({
+      user: user.uuid,
+      score: scoreEarned,
+      description: scoreTypes.subscribedToMeetup,
+      details: {
+        meetup
+      }
+    })
+
+    return this.updateUserScore({ user, scoreEarned })
+  }
+
   async handleExternalInteraction(payload) {
     try {
       const { scoreType, achievementType, queries, details } = payload

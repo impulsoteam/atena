@@ -4,6 +4,7 @@ import { messageSended } from './messageSended'
 import { newslettersRead } from './newslettersRead'
 import { reactionReceived } from './reactionReceived'
 import { reactionSended } from './reactionSended'
+import { subscribedToMeetup } from './subscribedToMeetup'
 
 const ranges = ['I', 'II', 'III', 'IV', 'V', 'VI']
 
@@ -56,6 +57,7 @@ export const achievementTypes = {
   newslettersRead: 'newslettersRead',
   reactionReceived: 'reactionReceived',
   reactionSended: 'reactionSended',
+  subscribedToMeetup: 'subscribedToMeetup',
   opportunitiesAccess: 'opportunitiesAccess'
 }
 
@@ -73,6 +75,7 @@ export default function getAchievementValues(type) {
   const achievements = {
     messageSended,
     reactionSended,
+    subscribedToMeetup,
     reactionReceived,
     clickOnProduct,
     newslettersRead,
@@ -89,6 +92,7 @@ export const getAllAchievements = userAchievements => {
     messageSended,
     reactionSended,
     reactionReceived,
+    subscribedToMeetup,
     newslettersRead
   ]
 
