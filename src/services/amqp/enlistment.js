@@ -1,8 +1,12 @@
 import { sendError } from 'log-on-slack'
+import moment from 'moment'
 
+import { achievementTypes } from '../../config/achievements'
 import { products } from '../../config/achievements/clickOnProduct'
+import AchievementController from '../../controllers/AchievementController'
 import ScoreController from '../../controllers/ScoreController'
 import UserController from '../../controllers/UserController'
+import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
 import { sendInteractionToQueue } from '../../services/queue'
@@ -23,7 +27,10 @@ export const handle = async ({ message, channel }) => {
   } catch (error) {
     sendError({
       file: 'services/amqp/enlistment - handle',
-      payload: { message, channel },
+      payload: {
+        message: JSON.parse(message.content.toString()),
+        type: message.properties.type
+      },
       error
     })
   } finally {
@@ -72,6 +79,41 @@ const handleUser = async data => {
 }
 
 const handleEvent = async data => {
+  const options = {
+    product: handleClickOnProduct,
+    meetup_participation: handleMeetupParticipation
+  }
+
+  const handler = options[data.properties.track_type]
+  if (handler) await handler(data)
+}
+
+const handleMeetupParticipation = async ({ time, properties }) => {
+  const { email, meetupName: meetup } = properties
+
+  if (!moment(time).isSame(moment(), 'day')) return
+
+  const user = await User.findOne({ email })
+  if (!user) return
+
+  const alreadyScored = await Score.findOne({
+    user: user.uuid,
+    'details.meetup': meetup
+  })
+  if (alreadyScored) return
+
+  const updatedUser = await ScoreController.handleMeetupParticipation({
+    user,
+    meetup
+  })
+
+  await AchievementController.handle({
+    user: updatedUser,
+    achievementType: achievementTypes.participatedToMeetup
+  })
+}
+
+const handleClickOnProduct = async data => {
   try {
     const { properties, impulser_uuid, time } = data
 
