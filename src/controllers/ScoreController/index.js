@@ -198,7 +198,6 @@ class ScoreController extends ScoreUtils {
   }
 
   async handleMeetupParticipation({ user, meetup }) {
-    console.log({ user, meetup })
     const scoreEarned = scoreRules.meetup.participation
 
     await Score.create({
