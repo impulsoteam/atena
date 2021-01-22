@@ -88,10 +88,10 @@ const handleEvent = async data => {
   if (handler) await handler(data)
 }
 
-const handleMeetupParticipation = async ({ time, properties }) => {
-  const { email, meetupName: meetup } = properties
+const handleMeetupParticipation = async ({ properties }) => {
+  const { email, meetupName: meetup, date } = properties
 
-  if (!moment(time).isSame(moment(), 'day')) return
+  if (!moment(date).isSame(moment(), 'day')) return
 
   const user = await User.findOne({ email })
   if (!user) return
