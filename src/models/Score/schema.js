@@ -14,6 +14,8 @@ export const scoreTypes = {
   reactionReceived: 'reactionReceived',
   reactionRemoved: 'reactionRemoved',
   reactionSended: 'reactionSended',
+  subscribedToMeetup: 'subscribedToMeetup',
+  participatedToMeetup: 'participatedToMeetup',
   threadAnswered: 'threadAnswered'
 }
 
@@ -42,6 +44,7 @@ export default new mongoose.Schema(
       percentage: Number,
       achievement: String,
       medal: String,
+      meetup: String,
       range: String,
       product: String,
       occurredAt: Date

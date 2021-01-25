@@ -8,7 +8,7 @@ import BotController from './BotController'
 import ScoreController from './ScoreController'
 
 class AchievementController {
-  async handle({ user, achievementType, provider }) {
+  async handle({ user, achievementType, provider = 'Atena' }) {
     try {
       const achievementRanges = getAchievementValues(achievementType)
       const [currentAchievement] = user.achievements.filter(

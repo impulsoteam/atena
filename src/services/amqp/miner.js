@@ -1,7 +1,10 @@
 import { sendError } from 'log-on-slack'
 
 import { achievementTypes } from '../../config/achievements'
+import AchievementController from '../../controllers/AchievementController'
+import ScoreController from '../../controllers/ScoreController'
 import { scoreTypes } from '../../models/Score/schema'
+import User from '../../models/User'
 import { sendInteractionToQueue } from '../../services/queue'
 
 export const handle = async ({ message, channel }) => {
@@ -9,7 +12,8 @@ export const handle = async ({ message, channel }) => {
     const { content, properties } = message
     const data = JSON.parse(content.toString())
     const types = {
-      emailOpened: handleEmailOpenedInteraction
+      emailOpened: handleEmailOpenedInteraction,
+      subscribedToMeetup: handleMeetupSubscription
     }
 
     const service = types[properties.type]
@@ -23,6 +27,22 @@ export const handle = async ({ message, channel }) => {
   } finally {
     channel.ack(message)
   }
+}
+
+const handleMeetupSubscription = async ({ uuid, meetup }) => {
+  const user = await User.findOne({ uuid })
+
+  if (!user) return
+
+  const updatedUser = await ScoreController.handleMeetupSubscription({
+    user,
+    meetup
+  })
+
+  await AchievementController.handle({
+    user: updatedUser,
+    achievementType: achievementTypes.subscribedToMeetup
+  })
 }
 
 const handleEmailOpenedInteraction = async payload => {
