@@ -15,6 +15,7 @@ export const scoreTypes = {
   reactionRemoved: 'reactionRemoved',
   reactionSended: 'reactionSended',
   subscribedToMeetup: 'subscribedToMeetup',
+  participatedToMeetup: 'participatedToMeetup',
   threadAnswered: 'threadAnswered'
 }
 

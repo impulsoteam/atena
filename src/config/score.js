@@ -3,8 +3,9 @@ export const scoreRules = {
     limit: 24,
     score: 2
   },
-  subscribedToMeetup: {
-    score: 2
+  meetup: {
+    subscription: 2,
+    participation: 10
   },
   newsletterRead: {
     score: 2,

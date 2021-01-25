@@ -183,12 +183,27 @@ class ScoreController extends ScoreUtils {
   }
 
   async handleMeetupSubscription({ user, meetup }) {
-    const scoreEarned = scoreRules.subscribedToMeetup.score
+    const scoreEarned = scoreRules.meetup.subscription
 
     await Score.create({
       user: user.uuid,
       score: scoreEarned,
       description: scoreTypes.subscribedToMeetup,
+      details: {
+        meetup
+      }
+    })
+
+    return this.updateUserScore({ user, scoreEarned })
+  }
+
+  async handleMeetupParticipation({ user, meetup }) {
+    const scoreEarned = scoreRules.meetup.participation
+
+    await Score.create({
+      user: user.uuid,
+      score: scoreEarned,
+      description: scoreTypes.participatedToMeetup,
       details: {
         meetup
       }
