@@ -1607,6 +1607,14 @@ cron-parser@^2.13.0:
     is-nan "^1.3.0"
     moment-timezone "^0.5.31"
 
+cron-parser@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/cron-parser/-/cron-parser-3.1.0.tgz#665ef742315443a6c54ada278cd795f2d75869b5"
+  integrity sha512-4Spe1gRbiQza3BqklhB/8dMi8PZAWalhLK1p+k3iYJjcxIK6t4YYGL0lKdHT0e743jDTJEDBz1NEAzY88kyNWQ==
+  dependencies:
+    is-nan "^1.3.0"
+    luxon "^1.25.0"
+
 cross-spawn@^6.0.0:
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
@@ -4057,6 +4065,11 @@ log-on-slack@^1.1.1:
     query-string "^6.13.1"
     stacktracey "^2.0.14"
 
+long-timeout@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/long-timeout/-/long-timeout-0.1.1.tgz#9721d788b47e0bcb5a24c2e2bee1a0da55dab514"
+  integrity sha1-lyHXiLR+C8taJMLivuGg2lXatRQ=
+
 lowercase-keys@^1.0.0, lowercase-keys@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-1.0.1.tgz#6f9e30b47084d971a7c820ff15a6c5167b74c26f"
@@ -4074,6 +4087,11 @@ lru-cache@^4.1.1, lru-cache@^4.1.2:
   dependencies:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
+
+luxon@^1.25.0:
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.25.0.tgz#d86219e90bc0102c0eb299d65b2f5e95efe1fe72"
+  integrity sha512-hEgLurSH8kQRjY6i4YLey+mcKVAWXbDNlZRmM6AgWDJ1cY3atl8Ztf5wEY7VBReFbmGnwQPz7KYJblL8B2k0jQ==
 
 make-dir@^3.0.0:
   version "3.1.0"
@@ -4352,14 +4370,6 @@ nice-try@^1.0.4:
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
 
-node-cron@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/node-cron/-/node-cron-2.0.3.tgz#b9649784d0d6c00758410eef22fa54a10e3f602d"
-  integrity sha512-eJI+QitXlwcgiZwNNSRbqsjeZMp5shyajMR81RZCqeW0ZDEj4zU9tpd4nTh/1JsBiKbF8d08FCewiipDmVIYjg==
-  dependencies:
-    opencollective-postinstall "^2.0.0"
-    tz-offset "0.0.1"
-
 node-fetch@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
@@ -4406,6 +4416,15 @@ node-rest-client@^3.1.0:
     debug "~2.2.0"
     follow-redirects ">=1.2.0"
     xml2js ">=0.2.4"
+
+node-schedule@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/node-schedule/-/node-schedule-2.0.0.tgz#73ab4957d056c63708409cc1fab676e0e149c191"
+  integrity sha512-cHc9KEcfiuXxYDU+HjsBVo2FkWL1jRAUoczFoMIzRBpOA4p/NRHuuLs85AWOLgKsHtSPjN8csvwIxc2SqMv+CQ==
+  dependencies:
+    cron-parser "^3.1.0"
+    long-timeout "0.1.1"
+    sorted-array-functions "^1.3.0"
 
 nodemon@^2.0.7:
   version "2.0.7"
@@ -4575,7 +4594,7 @@ onetime@^5.1.0:
   dependencies:
     mimic-fn "^2.1.0"
 
-opencollective-postinstall@^2.0.0, opencollective-postinstall@^2.0.2:
+opencollective-postinstall@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/opencollective-postinstall/-/opencollective-postinstall-2.0.3.tgz#7a0fff978f6dbfa4d006238fbac98ed4198c3259"
   integrity sha512-8AV/sCtuzUeTo8gQK5qDZzARrulB3egtLzFgteqB2tcT4Mw7B8Kt7JcDHmltjz6FOAHsvTevk70gZEbhM4ZS9Q==
@@ -5638,6 +5657,11 @@ socks@^1.1.10:
     ip "^1.1.4"
     smart-buffer "^1.0.13"
 
+sorted-array-functions@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/sorted-array-functions/-/sorted-array-functions-1.3.0.tgz#8605695563294dffb2c9796d602bd8459f7a0dd5"
+  integrity sha512-2sqgzeFlid6N4Z2fUQ1cvFmTOLRi/sEDzSQ0OKYchqgoPmQBVyM3959qYx3fpS6Esef80KjmpgPeEr028dP3OA==
+
 source-map-resolve@^0.5.0:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/source-map-resolve/-/source-map-resolve-0.5.3.tgz#190866bece7553e1f8f267a2ee82c606b5509a1a"
@@ -6238,11 +6262,6 @@ typedarray-to-buffer@^3.1.5:
   integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
   dependencies:
     is-typedarray "^1.0.0"
-
-tz-offset@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/tz-offset/-/tz-offset-0.0.1.tgz#fef920257024d3583ed9072a767721a18bdb8a76"
-  integrity sha512-kMBmblijHJXyOpKzgDhKx9INYU4u4E1RPMB0HqmKSgWG8vEcf3exEfLh4FFfzd3xdQOw9EuIy/cP0akY6rHopQ==
 
 undefsafe@^2.0.3:
   version "2.0.3"
