@@ -69,7 +69,7 @@ class RankingController extends RankingUtils {
             uuid: 1
           }
         },
-        { $sort: { 'score.value': -1 } }
+        { $sort: { score: -1 } }
       ])
 
       for (const [index, user] of ranking.entries()) {
