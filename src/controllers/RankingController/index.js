@@ -51,26 +51,21 @@ class RankingController extends RankingUtils {
 
   async createGeneralRanking() {
     try {
-      const ranking = await User.aggregate([
+      const ranking = await User.find(
         {
-          $match: {
-            isCoreTeam: false,
-            'score.value': { $gt: 0 }
-          }
+          isCoreTeam: false,
+          'score.value': { $gt: 0 }
         },
         {
-          $project: {
-            _id: 0,
-            rocketchat: 1,
-            name: 1,
-            avatar: 1,
-            score: '$score.value',
-            level: '$level.value',
-            uuid: 1
-          }
-        },
-        { $sort: { score: -1 } }
-      ])
+          _id: 0,
+          rocketchat: 1,
+          name: 1,
+          avatar: 1,
+          score: '$score.value',
+          level: '$level.value',
+          uuid: 1
+        }
+      ).sort({ 'score.value': -1 })
 
       for (const [index, user] of ranking.entries()) {
         await GeneralRanking.updateUserRanking({ user, position: index + 1 })
