@@ -53,7 +53,7 @@ class RankingController extends RankingUtils {
     try {
       const limit = 10000
       let skip = 0
-      let position = 0
+      let position = 1
 
       while (true) {
         const ranking = await User.find(
