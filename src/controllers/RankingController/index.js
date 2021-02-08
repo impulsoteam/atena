@@ -1,3 +1,4 @@
+import { sendError } from 'log-on-slack'
 import moment from 'moment'
 
 import GeneralRanking from '../../models/GeneralRanking'
@@ -30,10 +31,17 @@ class RankingController extends RankingUtils {
   }
 
   async createMonthlyRanking() {
-    const { ranking } = await Score.findAllByMonth({ offset: 0, size: 99999 })
+    try {
+      const { ranking } = await Score.findAllByMonth({ offset: 0, size: 99999 })
 
-    for (const [index, user] of ranking.entries()) {
-      await MonthlyRanking.updateUserRanking({ user, position: index + 1 })
+      for (const [index, user] of ranking.entries()) {
+        await MonthlyRanking.updateUserRanking({ user, position: index + 1 })
+      }
+    } catch (error) {
+      sendError({
+        file: 'RankingController.createMonthlyRanking',
+        error
+      })
     }
   }
 
@@ -42,29 +50,46 @@ class RankingController extends RankingUtils {
   }
 
   async createGeneralRanking() {
-    const ranking = await User.aggregate([
-      {
-        $match: {
-          isCoreTeam: false,
-          'score.value': { $gt: 0 }
-        }
-      },
-      { $sort: { 'score.value': -1 } },
-      {
-        $project: {
-          _id: 0,
-          rocketchat: 1,
-          name: 1,
-          avatar: 1,
-          score: '$score.value',
-          level: '$level.value',
-          uuid: 1
-        }
-      }
-    ])
+    try {
+      const limit = 10000
+      let skip = 0
+      let position = 1
 
-    for (const [index, user] of ranking.entries()) {
-      await GeneralRanking.updateUserRanking({ user, position: index + 1 })
+      while (true) {
+        const ranking = await User.find(
+          {
+            isCoreTeam: false,
+            'score.value': { $gt: 0 }
+          },
+          {
+            _id: 0,
+            rocketchat: 1,
+            name: 1,
+            avatar: 1,
+            score: '$score.value',
+            level: '$level.value',
+            uuid: 1
+          }
+        )
+          .sort({
+            'score.value': -1
+          })
+          .limit(limit)
+          .skip(skip)
+
+        if (!ranking.length) break
+
+        for (const user of ranking) {
+          await GeneralRanking.updateUserRanking({ user, position })
+          position++
+        }
+        skip += limit
+      }
+    } catch (error) {
+      sendError({
+        file: 'RankingController.createGeneralRanking',
+        error
+      })
     }
   }
 }
