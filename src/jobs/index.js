@@ -10,6 +10,10 @@ export const scheduleJobs = () => {
   scheduleJob('0 1 * * *', UserController.updateEmailServices)
   scheduleJob('0 0 1 * *', RankingController.resetMonthlyRanking)
   scheduleJob('30 13 * * mon', BotController.sendMonthlyRankingToChannel)
-  scheduleJob('00/20 * * * *', RankingController.createMonthlyRanking)
-  scheduleJob('10/20 * * * *', RankingController.createGeneralRanking)
+  scheduleJob('00/20 * * * *', async () => {
+    await RankingController.createMonthlyRanking()
+  })
+  scheduleJob('10/20 * * * *', async () => {
+    await RankingController.createGeneralRanking()
+  })
 }
