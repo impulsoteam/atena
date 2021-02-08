@@ -10,10 +10,22 @@ export const scheduleJobs = () => {
   scheduleJob('0 1 * * *', UserController.updateEmailServices)
   scheduleJob('0 0 1 * *', RankingController.resetMonthlyRanking)
   scheduleJob('30 13 * * mon', BotController.sendMonthlyRankingToChannel)
-  scheduleJob('00/20 * * * *', async () => {
+  scheduleJob('01,21,41 * * * *', async () => {
+    console.log(
+      '-=-=-=-Starting RankingController.createGeneralRanking() =--=-=-='
+    )
     await RankingController.createMonthlyRanking()
+    console.log(
+      '-=-=-=-Ending RankingController.createGeneralRanking() =--=-=-='
+    )
   })
-  scheduleJob('10/20 * * * *', async () => {
+  scheduleJob('11,31,51 * * * *', async () => {
+    console.log(
+      '-=-=-=-Starting RankingController.createGeneralRanking() =--=-=-='
+    )
     await RankingController.createGeneralRanking()
+    console.log(
+      '-=-=-=-Ending RankingController.createGeneralRanking() =--=-=-='
+    )
   })
 }
