@@ -39,7 +39,7 @@ class RankingController extends RankingUtils {
       }
     } catch (error) {
       sendError({
-        file: 'controllers/RankingController.createMonthlyRanking',
+        file: 'RankingController.createMonthlyRanking',
         error
       })
     }
@@ -51,28 +51,43 @@ class RankingController extends RankingUtils {
 
   async createGeneralRanking() {
     try {
-      const ranking = await User.find(
-        {
-          isCoreTeam: false,
-          'score.value': { $gt: 0 }
-        },
-        {
-          _id: 0,
-          rocketchat: 1,
-          name: 1,
-          avatar: 1,
-          score: '$score.value',
-          level: '$level.value',
-          uuid: 1
-        }
-      ).sort({ 'score.value': -1 })
+      const limit = 10000
+      let skip = 0
+      let position = 0
 
-      for (const [index, user] of ranking.entries()) {
-        await GeneralRanking.updateUserRanking({ user, position: index + 1 })
+      while (true) {
+        const ranking = await User.find(
+          {
+            isCoreTeam: false,
+            'score.value': { $gt: 0 }
+          },
+          {
+            _id: 0,
+            rocketchat: 1,
+            name: 1,
+            avatar: 1,
+            score: '$score.value',
+            level: '$level.value',
+            uuid: 1
+          }
+        )
+          .sort({
+            'score.value': -1
+          })
+          .limit(limit)
+          .skip(skip)
+
+        if (!ranking.length) break
+
+        for (const user of ranking) {
+          await GeneralRanking.updateUserRanking({ user, position })
+          position++
+        }
+        skip += limit
       }
     } catch (error) {
       sendError({
-        file: 'controllers/RankingController.createGeneralRanking',
+        file: 'RankingController.createGeneralRanking',
         error
       })
     }
