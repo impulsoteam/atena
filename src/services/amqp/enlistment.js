@@ -4,6 +4,9 @@ import moment from 'moment'
 import { achievementTypes } from '../../config/achievements'
 import { products } from '../../config/achievements/clickOnProduct'
 import AchievementController from '../../controllers/AchievementController'
+import MessageController from '../../controllers/MessageController'
+import RankingController from '../../controllers/RankingController'
+import ReactionController from '../../controllers/ReactionController'
 import ScoreController from '../../controllers/ScoreController'
 import UserController from '../../controllers/UserController'
 import Score from '../../models/Score'
@@ -50,7 +53,8 @@ const handleUser = async data => {
     google,
     github,
     photo_url,
-    referrer
+    referrer,
+    anonimized_at
   } = data
 
   const user = {
@@ -65,6 +69,7 @@ const handleUser = async data => {
     linkedin: { id: linkedin.uid },
     github,
     google: { id: google.uid },
+    anonimizedAt: anonimized_at,
     referrer: referrer
       ? {
           type: referrer.type,
@@ -75,7 +80,16 @@ const handleUser = async data => {
 
   removeEmptyValues(user)
 
-  return UserController.handle(user)
+  if (user.anonimizedAt) {
+    const [name] = user.email.split('@')
+    user.name = name
+    await UserController.anonymize(user)
+    await MessageController.anonymize(user)
+    await RankingController.removeUserFromRankings(user.uuid)
+    await ReactionController.anonymize(user)
+  } else {
+    UserController.handle(user)
+  }
 }
 
 const handleEvent = async data => {

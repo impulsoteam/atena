@@ -70,6 +70,18 @@ class UserController extends UserUtils {
     }
   }
 
+  async anonymize(payload) {
+    try {
+      await User.createOrUpdate(payload)
+    } catch (error) {
+      sendError({
+        file: 'UserController.anonymize',
+        payload,
+        error
+      })
+    }
+  }
+
   async getProfile(uuid) {
     const user = await User.findOne({ uuid })
     if (!user) throw new Error(`Unable to find ${uuid}`)
