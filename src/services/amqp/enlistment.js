@@ -54,7 +54,7 @@ const handleUser = async data => {
     github,
     photo_url,
     referrer,
-    anonimized_at
+    anonymized_at
   } = data
 
   const user = {
@@ -69,7 +69,7 @@ const handleUser = async data => {
     linkedin: { id: linkedin.uid },
     github,
     google: { id: google.uid },
-    anonimizedAt: anonimized_at,
+    anonymizedAt: anonymized_at,
     referrer: referrer
       ? {
           type: referrer.type,
@@ -80,7 +80,7 @@ const handleUser = async data => {
 
   removeEmptyValues(user)
 
-  if (user.anonimizedAt) {
+  if (user.anonymizedAt) {
     const [name] = user.email.split('@')
     user.name = name
     await UserController.anonymize(user)

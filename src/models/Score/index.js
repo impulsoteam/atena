@@ -81,7 +81,7 @@ scoreSchema.statics.findAllByMonth = async function ({ date, offset, size }) {
     {
       $match: {
         'user.isCoreTeam': false,
-        'user.anonimizedAt': null
+        'user.anonymizedAt': null
       }
     },
     {

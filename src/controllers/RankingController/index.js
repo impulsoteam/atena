@@ -73,7 +73,7 @@ class RankingController extends RankingUtils {
           {
             isCoreTeam: false,
             'score.value': { $gt: 0 },
-            anonimizedAt: null
+            anonymizedAt: null
           },
           {
             _id: 0,

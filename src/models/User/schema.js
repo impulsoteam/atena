@@ -118,7 +118,7 @@ export default new mongoose.Schema(
     google: {
       id: String
     },
-    anonimizedAt: Date
+    anonymizedAt: Date
   },
   {
     timestamps: true
