@@ -44,10 +44,7 @@ export default new mongoose.Schema(
       required: true,
       unique: true
     },
-    name: {
-      type: String,
-      required: true
-    },
+    name: String,
     email: {
       type: String,
       required: true,

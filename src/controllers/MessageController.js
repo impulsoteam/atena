@@ -62,19 +62,18 @@ class MessageController {
     }
   }
 
-  async anonymize(user) {
+  async anonymize(uuid) {
     try {
-      const { uuid, name } = user
       const messages = await Message.find({ user: uuid })
 
       for (const message of messages) {
-        message.provider.user.username = name
+        message.provider.user.username = null
         await message.save()
       }
     } catch (error) {
       sendError({
         file: 'MessageController.anonymize',
-        payload: user,
+        payload: uuid,
         error
       })
     }

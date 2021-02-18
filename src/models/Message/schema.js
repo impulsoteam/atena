@@ -29,10 +29,7 @@ const provider = {
       type: String,
       required: true
     },
-    username: {
-      type: String,
-      required: true
-    }
+    username: String
   }
 }
 export default new mongoose.Schema({

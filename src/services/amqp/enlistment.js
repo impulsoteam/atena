@@ -4,16 +4,13 @@ import moment from 'moment'
 import { achievementTypes } from '../../config/achievements'
 import { products } from '../../config/achievements/clickOnProduct'
 import AchievementController from '../../controllers/AchievementController'
-import MessageController from '../../controllers/MessageController'
-import RankingController from '../../controllers/RankingController'
-import ReactionController from '../../controllers/ReactionController'
 import ScoreController from '../../controllers/ScoreController'
 import UserController from '../../controllers/UserController'
 import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
 import { sendInteractionToQueue } from '../../services/queue'
-import { removeEmptyValues } from '../../utils'
+import { formatUser } from '../../utils'
 
 export const handle = async ({ message, channel }) => {
   try {
@@ -42,53 +39,12 @@ export const handle = async ({ message, channel }) => {
 }
 
 const handleUser = async data => {
-  if (data.status === 'archived') return UserController.delete(data)
-
-  const {
-    uuid,
-    fullname,
-    email,
-    rocket_chat,
-    linkedin,
-    google,
-    github,
-    photo_url,
-    referrer,
-    anonymized_at
-  } = data
-
-  const user = {
-    uuid,
-    name: fullname,
-    email,
-    avatar: photo_url,
-    rocketchat: {
-      id: rocket_chat.id,
-      username: rocket_chat.username
-    },
-    linkedin: { id: linkedin.uid },
-    github,
-    google: { id: google.uid },
-    anonymizedAt: anonymized_at,
-    referrer: referrer
-      ? {
-          type: referrer.type,
-          identification: referrer.uuid
-        }
-      : null
-  }
-
-  removeEmptyValues(user)
+  const user = formatUser(data)
 
   if (user.anonymizedAt) {
-    const [name] = user.email.split('@')
-    user.name = name
     await UserController.anonymize(user)
-    await MessageController.anonymize(user)
-    await RankingController.removeUserFromRankings(user.uuid)
-    await ReactionController.anonymize(user)
-  } else {
-    UserController.handle(user)
+  } else if (user.status === 'active') {
+    await UserController.handle(user)
   }
 }
 

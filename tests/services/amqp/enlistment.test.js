@@ -239,20 +239,6 @@ describe('handleUser - partner achievement flow', () => {
 })
 
 describe('handleUser - anonymize user', () => {
-  it('should save new user already anonymized', async () => {
-    const user = await factory.attrs('enlistment:user', {
-      email: getAnonymizedEmail(),
-      anonymized_at: moment().toDate()
-    })
-
-    await sendMessage('enlistment.out', 'Impulser', user)
-
-    const persisted = await User.findOne({ uuid: user.uuid })
-
-    expect(persisted.email).toBe(user.email)
-    expect(persisted.name).toBe(user.email.split('@')[0])
-  })
-
   it('should anonymized user model and others personal data', async () => {
     const user = await factory.attrs('enlistment:user')
     const userInteractions = 5
@@ -314,8 +300,8 @@ describe('handleUser - anonymize user', () => {
       uuid: user.uuid,
       fullname: null,
       email: anonymizedEmail,
-      photo_url: faker.image.avatar(),
-      anonymized_at: moment().toDate(),
+      photo_url: null,
+      anonymized_at: moment().toISOString(),
       rocket_chat: {
         id: faker.internet.password(),
         username: null
@@ -333,14 +319,24 @@ describe('handleUser - anonymize user', () => {
     })
 
     const persisted = await User.findOne({ uuid: user.uuid })
+    expect(persisted.email).toBe(anonymizedEmail)
+    expect(persisted.name).toBeFalsy()
+    expect(persisted.avatar).toBeFalsy()
+    expect(persisted.rocketchat.username).toBeFalsy()
+    expect(persisted.github.id).toBeFalsy()
+    expect(persisted.github.username).toBeFalsy()
+    expect(persisted.linkedin.id).toBeFalsy()
+    expect(persisted.google.id).toBeFalsy()
 
     const messages = await Message.find({
-      'provider.user.username': persisted.name
+      user: user.uuid,
+      'provider.user.username': null
     })
     expect(messages.length).toBe(userInteractions)
 
     const reactions = await Reaction.find({
-      'provider.username': persisted.name
+      user: user.uuid,
+      'provider.username': null
     })
 
     expect(reactions.length).toBe(userInteractions)

@@ -8,7 +8,9 @@ import { updateSubscribers as updateDripSubscribers } from '../../services/drip'
 import { updateContacts as updateMailJetContacts } from '../../services/mailJet'
 import { sleep } from '../../utils'
 import BotController from '../BotController'
+import MessageController from '../MessageController'
 import RankingController from '../RankingController'
+import ReactionController from '../ReactionController'
 import UserUtils from './utils'
 
 class UserController extends UserUtils {
@@ -47,36 +49,16 @@ class UserController extends UserUtils {
     }
   }
 
-  async delete(payload) {
+  async anonymize(user) {
     try {
-      const result = await User.deleteUserData(payload.uuid)
-
-      if (result.notFound) return
-      sendNotify({
-        file: 'controllers/UserController.delete',
-        resume: 'User data removed',
-        details: {
-          uuid: payload.uuid,
-          email: payload.email,
-          result
-        }
-      })
-    } catch (error) {
-      sendError({
-        file: 'controllers/UserController.delete',
-        payload,
-        error
-      })
-    }
-  }
-
-  async anonymize(payload) {
-    try {
-      await User.createOrUpdate(payload)
+      await User.createOrUpdate(user)
+      await MessageController.anonymize(user.uuid)
+      await RankingController.removeUserFromRankings(user.uuid)
+      await ReactionController.anonymize(user.uuid)
     } catch (error) {
       sendError({
         file: 'UserController.anonymize',
-        payload,
+        payload: user,
         error
       })
     }

@@ -88,19 +88,18 @@ class ReactionController {
     }
   }
 
-  async anonymize(user) {
+  async anonymize(uuid) {
     try {
-      const { uuid, name } = user
       const reactions = await Reaction.find({ user: uuid })
 
       for (const reaction of reactions) {
-        reaction.provider.username = name
+        reaction.provider.username = null
         await reaction.save()
       }
     } catch (error) {
       sendError({
         file: 'Reaction.anonymize',
-        payload: user,
+        payload: uuid,
         error
       })
     }
