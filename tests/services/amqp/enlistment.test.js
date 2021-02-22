@@ -298,9 +298,7 @@ describe('handleUser - anonymize user', () => {
     const anonymizedEmail = getAnonymizedEmail()
     await sendMessage('enlistment.out', 'Impulser', {
       uuid: user.uuid,
-      fullname: null,
       email: anonymizedEmail,
-      photo_url: null,
       anonymized_at: moment().toISOString(),
       rocket_chat: {
         id: faker.internet.password(),
