@@ -51,6 +51,9 @@ class UserController extends UserUtils {
 
   async anonymize(user) {
     try {
+      user.name = null
+      user.avatar = null
+
       await User.createOrUpdate(user)
       await MessageController.anonymize(user.uuid)
       await RankingController.removeUserFromRankings(user.uuid)
