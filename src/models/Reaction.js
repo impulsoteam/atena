@@ -23,10 +23,7 @@ const provider = {
       required: true
     }
   },
-  username: {
-    type: String,
-    required: true
-  }
+  username: String
 }
 
 const reactionSchema = new mongoose.Schema(

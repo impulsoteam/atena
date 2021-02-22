@@ -1,17 +1,26 @@
+import faker from 'faker'
+import moment from 'moment'
+
 import {
   impulsoPartner,
   partners
 } from '../../../src/config/achievements/impulsoPartner'
 import { partnerLevels, levels } from '../../../src/config/score'
+import RankingController from '../../../src/controllers/RankingController'
 import ScoreController from '../../../src/controllers/ScoreController'
 import { connect as connectDB } from '../../../src/databases/atena'
 import LevelHistory from '../../../src/models/LevelHistory'
+import Message from '../../../src/models/Message'
+import { providers } from '../../../src/models/Message/schema'
+import Reaction from '../../../src/models/Reaction'
 import Score from '../../../src/models/Score'
 import { scoreTypes } from '../../../src/models/Score/schema'
 import User from '../../../src/models/User'
 import { connect } from '../../../src/services/amqp'
 import factory from '../../mocks/factory'
+import { getArray, getAnonymizedEmail } from '../../tools'
 import { sendMessage } from '../../tools/amqp'
+
 let connection, channel
 
 beforeAll(async () => {
@@ -226,5 +235,118 @@ describe('handleUser - partner achievement flow', () => {
       'details.achievement': partner
     })
     expect(achievementScore.length).toBe(1)
+  })
+})
+
+describe('handleUser - anonymize user', () => {
+  it('should anonymized user model and others personal data', async () => {
+    const user = await factory.attrs('enlistment:user')
+    const userInteractions = 5
+
+    await sendMessage('enlistment.out', 'Impulser', user)
+
+    await User.updateOne({ uuid: user.uuid }, { score: { value: 50 } })
+    await RankingController.createGeneralRanking()
+
+    await Promise.all(
+      getArray(userInteractions).map(() =>
+        factory.create('Score', {
+          user: user.uuid
+        })
+      )
+    )
+    await RankingController.createMonthlyRanking()
+
+    await Promise.all(
+      getArray(userInteractions).map(() =>
+        factory.create('Message', {
+          user: user.uuid,
+          provider: {
+            name: faker.random.arrayElement(Object.values(providers)),
+            messageId: faker.internet.password(),
+            parentId: faker.internet.password(),
+            room: {
+              id: faker.internet.password(),
+              name: faker.lorem.word()
+            },
+            user: {
+              id: faker.internet.password(),
+              username: user.rocket_chat.username
+            }
+          }
+        })
+      )
+    )
+
+    await Promise.all(
+      getArray(userInteractions).map(() =>
+        factory.create('Reaction', {
+          user: user.uuid,
+          provider: {
+            name: faker.random.arrayElement(Object.values(providers)),
+            messageId: faker.internet.password(),
+            username: user.rocket_chat.username,
+            room: {
+              id: faker.internet.password(),
+              name: faker.lorem.word()
+            }
+          }
+        })
+      )
+    )
+
+    const anonymizedEmail = getAnonymizedEmail()
+    await sendMessage('enlistment.out', 'Impulser', {
+      uuid: user.uuid,
+      email: anonymizedEmail,
+      anonymized_at: moment().toISOString(),
+      rocket_chat: {
+        id: faker.internet.password(),
+        username: null
+      },
+      github: {
+        id: null,
+        username: null
+      },
+      linkedin: {
+        uid: null
+      },
+      google: {
+        uid: null
+      }
+    })
+
+    const persisted = await User.findOne({ uuid: user.uuid })
+    expect(persisted.email).toBe(anonymizedEmail)
+    expect(persisted.name).toBeFalsy()
+    expect(persisted.avatar).toBeFalsy()
+    expect(persisted.rocketchat.username).toBeFalsy()
+    expect(persisted.github.id).toBeFalsy()
+    expect(persisted.github.username).toBeFalsy()
+    expect(persisted.linkedin.id).toBeFalsy()
+    expect(persisted.google.id).toBeFalsy()
+
+    const messages = await Message.find({
+      user: user.uuid,
+      'provider.user.username': null
+    })
+    expect(messages.length).toBe(userInteractions)
+
+    const reactions = await Reaction.find({
+      user: user.uuid,
+      'provider.username': null
+    })
+
+    expect(reactions.length).toBe(userInteractions)
+
+    const monthlyRanking = await RankingController.getMonthlyPositionByUser(
+      persisted.uuid
+    )
+    expect(monthlyRanking.position).toBeFalsy()
+
+    const generalRanking = await RankingController.getGeneralPositionByUser(
+      persisted.uuid
+    )
+    expect(generalRanking.position).toBeFalsy()
   })
 })

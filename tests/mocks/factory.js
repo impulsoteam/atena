@@ -2,9 +2,11 @@ import { factory } from 'factory-girl'
 import faker from 'faker'
 import moment from 'moment'
 
-import Message, { providers } from '../../src/models/Message'
+import Message from '../../src/models/Message'
+import { providers } from '../../src/models/Message/schema'
 import Reaction from '../../src/models/Reaction'
-import Score, { scoreTypes } from '../../src/models/Score'
+import Score from '../../src/models/Score'
+import { scoreTypes } from '../../src/models/Score/schema'
 import User from '../../src/models/User'
 
 factory.define('Message', Message, () => ({
@@ -22,8 +24,7 @@ factory.define('Message', Message, () => ({
     },
     user: {
       id: faker.internet.password(),
-      username: faker.internet.userName(),
-      name: faker.name.findName()
+      username: faker.internet.userName()
     }
   },
   createdAt: faker.date.past(2),

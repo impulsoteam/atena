@@ -44,19 +44,13 @@ export default new mongoose.Schema(
       required: true,
       unique: true
     },
-    name: {
-      type: String,
-      required: true
-    },
+    name: String,
     email: {
       type: String,
       required: true,
       unique: true
     },
-    avatar: {
-      type: String,
-      required: true
-    },
+    avatar: String,
     isCoreTeam: {
       type: Boolean,
       default: false
@@ -120,7 +114,8 @@ export default new mongoose.Schema(
     },
     google: {
       id: String
-    }
+    },
+    anonymizedAt: Date
   },
   {
     timestamps: true

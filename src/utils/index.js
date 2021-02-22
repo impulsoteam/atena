@@ -12,4 +12,46 @@ export const removeEmptyValues = obj => {
   })
 }
 
+export const formatUser = data => {
+  const {
+    uuid,
+    status,
+    fullname,
+    email,
+    rocket_chat,
+    linkedin,
+    google,
+    github,
+    photo_url,
+    referrer,
+    anonymized_at
+  } = data
+
+  const user = {
+    uuid,
+    status,
+    name: fullname,
+    email,
+    avatar: photo_url,
+    rocketchat: {
+      id: rocket_chat.id,
+      username: rocket_chat.username
+    },
+    linkedin: { id: linkedin.uid },
+    github,
+    google: { id: google.uid },
+    anonymizedAt: anonymized_at,
+    referrer: referrer
+      ? {
+          type: referrer.type,
+          identification: referrer.uuid
+        }
+      : null
+  }
+
+  removeEmptyValues(user)
+
+  return user
+}
+
 export const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))

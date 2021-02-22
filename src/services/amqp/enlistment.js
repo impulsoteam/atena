@@ -10,7 +10,7 @@ import Score from '../../models/Score'
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
 import { sendInteractionToQueue } from '../../services/queue'
-import { removeEmptyValues } from '../../utils'
+import { formatUser } from '../../utils'
 
 export const handle = async ({ message, channel }) => {
   try {
@@ -39,43 +39,13 @@ export const handle = async ({ message, channel }) => {
 }
 
 const handleUser = async data => {
-  if (data.status === 'archived') return UserController.delete(data)
+  const user = formatUser(data)
 
-  const {
-    uuid,
-    fullname,
-    email,
-    rocket_chat,
-    linkedin,
-    google,
-    github,
-    photo_url,
-    referrer
-  } = data
-
-  const user = {
-    uuid,
-    name: fullname,
-    email,
-    avatar: photo_url,
-    rocketchat: {
-      id: rocket_chat.id,
-      username: rocket_chat.username
-    },
-    linkedin: { id: linkedin.uid },
-    github,
-    google: { id: google.uid },
-    referrer: referrer
-      ? {
-          type: referrer.type,
-          identification: referrer.uuid
-        }
-      : null
+  if (user.anonymizedAt) {
+    await UserController.anonymize(user)
+  } else if (user.status === 'active') {
+    await UserController.handle(user)
   }
-
-  removeEmptyValues(user)
-
-  return UserController.handle(user)
 }
 
 const handleEvent = async data => {

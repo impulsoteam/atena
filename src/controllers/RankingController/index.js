@@ -26,6 +26,19 @@ class RankingController extends RankingUtils {
     return MonthlyRanking.getUserPosition(uuid)
   }
 
+  async removeUserFromRankings(uuid) {
+    try {
+      await MonthlyRanking.deleteOne({ uuid })
+      await GeneralRanking.deleteOne({ uuid })
+    } catch (error) {
+      sendError({
+        file: 'RankingController.removeUserFromRankings',
+        payload: uuid,
+        error
+      })
+    }
+  }
+
   getGeneralPositionByUser(uuid) {
     return GeneralRanking.getUserPosition(uuid)
   }
@@ -59,7 +72,8 @@ class RankingController extends RankingUtils {
         const ranking = await User.find(
           {
             isCoreTeam: false,
-            'score.value': { $gt: 0 }
+            'score.value': { $gt: 0 },
+            anonymizedAt: null
           },
           {
             _id: 0,

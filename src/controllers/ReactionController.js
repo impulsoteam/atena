@@ -87,6 +87,23 @@ class ReactionController {
       })
     }
   }
+
+  async anonymize(uuid) {
+    try {
+      const reactions = await Reaction.find({ user: uuid })
+
+      for (const reaction of reactions) {
+        reaction.provider.username = null
+        await reaction.save()
+      }
+    } catch (error) {
+      sendError({
+        file: 'Reaction.anonymize',
+        payload: uuid,
+        error
+      })
+    }
+  }
 }
 
 export default new ReactionController()

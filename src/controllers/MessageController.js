@@ -61,6 +61,23 @@ class MessageController {
       })
     }
   }
+
+  async anonymize(uuid) {
+    try {
+      const messages = await Message.find({ user: uuid })
+
+      for (const message of messages) {
+        message.provider.user.username = null
+        await message.save()
+      }
+    } catch (error) {
+      sendError({
+        file: 'MessageController.anonymize',
+        payload: uuid,
+        error
+      })
+    }
+  }
 }
 
 export default new MessageController()
