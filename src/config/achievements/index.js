@@ -1,10 +1,7 @@
 import { clickOnProduct, products } from './clickOnProduct'
 import { impulsoPartner, partners } from './impulsoPartner'
-import { messageSended } from './messageSended'
 import { newslettersRead } from './newslettersRead'
 import { participatedToMeetup } from './participatedToMeetup'
-import { reactionReceived } from './reactionReceived'
-import { reactionSended } from './reactionSended'
 import { subscribedToMeetup } from './subscribedToMeetup'
 
 const ranges = ['I', 'II', 'III', 'IV', 'V', 'VI']
@@ -33,20 +30,10 @@ const formatAchievement = ({ name, displayAchievement, medals }) => {
   return achievement
 }
 
-export const messageProviders = provider => {
-  const defaultProvider = 'rocketchat'
-  const providers = {
-    rocketchat: 'rocketchat'
-  }
-
-  return providers[provider] || defaultProvider
-}
-
 export const achievementTypes = {
   atenaAccess: 'atenaAccess',
   benefitsClubAccess: 'benefitsClubAccess',
   blogAccess: 'blogAccess',
-  chatAccess: 'chatAccess',
   clickOnProduct: 'clickOnProduct',
   curationAccess: 'curationAccess',
   ctechAccess: 'ctechAccess',
@@ -54,10 +41,7 @@ export const achievementTypes = {
   externalEventsAccess: 'externalEventsAccess',
   impulsoTVAccess: 'impulsoTVAccess',
   internalMeetupsAccess: 'internalMeetupsAccess',
-  messageSended: 'messageSended',
   newslettersRead: 'newslettersRead',
-  reactionReceived: 'reactionReceived',
-  reactionSended: 'reactionSended',
   subscribedToMeetup: 'subscribedToMeetup',
   participatedToMeetup: 'participatedToMeetup',
   opportunitiesAccess: 'opportunitiesAccess'
@@ -75,11 +59,8 @@ export default function getAchievementValues(type) {
   }
 
   const achievements = {
-    messageSended,
-    reactionSended,
     subscribedToMeetup,
     participatedToMeetup,
-    reactionReceived,
     clickOnProduct,
     newslettersRead,
     impulsoPartner
@@ -92,9 +73,6 @@ export default function getAchievementValues(type) {
 
 export const getAllAchievements = userAchievements => {
   const achievements = [
-    messageSended,
-    reactionSended,
-    reactionReceived,
     subscribedToMeetup,
     participatedToMeetup,
     newslettersRead
