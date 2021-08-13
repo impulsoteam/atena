@@ -95,8 +95,7 @@ scoreSchema.statics.findAllByMonth = async function ({ date, offset, size }) {
         name: '$user.name',
         avatar: '$user.avatar',
         level: '$user.level.value',
-        uuid: '$user.uuid',
-        rocketchat: '$user.rocketchat'
+        uuid: '$user.uuid'
       }
     },
     {

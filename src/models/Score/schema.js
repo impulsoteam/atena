@@ -1,19 +1,11 @@
 import mongoose from 'mongoose'
 
-export const providers = {
-  rocketchat: 'rocketchat'
-}
-
 export const scoreTypes = {
   clickOnProduct: 'clickOnProduct',
   manual: 'manual',
-  messageSent: 'messageSent',
   newAchievement: 'newAchievement',
   newsletterRead: 'newsletterRead',
   profileCompleteness: 'profileCompleteness',
-  reactionReceived: 'reactionReceived',
-  reactionRemoved: 'reactionRemoved',
-  reactionSended: 'reactionSended',
   subscribedToMeetup: 'subscribedToMeetup',
   participatedToMeetup: 'participatedToMeetup',
   threadAnswered: 'threadAnswered'
@@ -36,7 +28,6 @@ export default new mongoose.Schema(
     details: {
       email: Object,
       provider: String,
-      messageId: String,
       content: String,
       sender: String,
       reason: String,
