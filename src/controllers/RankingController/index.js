@@ -77,7 +77,6 @@ class RankingController extends RankingUtils {
           },
           {
             _id: 0,
-            rocketchat: 1,
             name: 1,
             avatar: 1,
             score: '$score.value',

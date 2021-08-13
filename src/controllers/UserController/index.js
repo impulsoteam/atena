@@ -1,27 +1,21 @@
 import { sendError, sendNotify } from 'log-on-slack'
 import moment from 'moment'
 
-import { onboardingMessage } from '../../assets/onboarding'
 import { getAllAchievements } from '../../config/achievements'
 import User from '../../models/User'
 import { updateSubscribers as updateDripSubscribers } from '../../services/drip'
 import { updateContacts as updateMailJetContacts } from '../../services/mailJet'
 import { sleep } from '../../utils'
-import BotController from '../BotController'
-import MessageController from '../MessageController'
-import RankingController from '../RankingController'
-import ReactionController from '../ReactionController'
 import UserUtils from './utils'
 
 class UserController extends UserUtils {
   constructor() {
     super()
-    this.validProviders = ['rocketchat']
   }
 
   async handle(payload) {
     try {
-      const { isNew, user } = await User.createOrUpdate(payload)
+      const { user } = await User.createOrUpdate(payload)
 
       if (
         user.referrer &&
@@ -29,17 +23,6 @@ class UserController extends UserUtils {
         user.referrer.identification
       )
         this.handleUserPartner(user)
-
-      if (isNew) {
-        for (const provider of this.validProviders) {
-          if (user[provider])
-            BotController.sendMessageToUser({
-              provider,
-              message: onboardingMessage,
-              username: user[provider].username
-            })
-        }
-      }
     } catch (error) {
       sendError({
         file: 'controllers/UserController.handle',
@@ -55,9 +38,6 @@ class UserController extends UserUtils {
       user.avatar = null
 
       await User.createOrUpdate(user)
-      await MessageController.anonymize(user.uuid)
-      await RankingController.removeUserFromRankings(user.uuid)
-      await ReactionController.anonymize(user.uuid)
     } catch (error) {
       sendError({
         file: 'UserController.anonymize',
