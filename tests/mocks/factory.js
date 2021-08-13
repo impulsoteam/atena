@@ -1,48 +1,10 @@
 import { factory } from 'factory-girl'
 import faker from 'faker'
-import moment from 'moment'
 
-import Message from '../../src/models/Message'
-import { providers } from '../../src/models/Message/schema'
-import Reaction from '../../src/models/Reaction'
 import Score from '../../src/models/Score'
 import { scoreTypes } from '../../src/models/Score/schema'
 import User from '../../src/models/User'
 
-factory.define('Message', Message, () => ({
-  user: faker.random.uuid(),
-  content: faker.lorem.sentence(),
-  threadCount: faker.random.arrayElement([0, 1, 0]),
-  reactionCount: faker.random.arrayElement([0, 1, 0]),
-  provider: {
-    name: faker.random.arrayElement(Object.values(providers)),
-    messageId: faker.internet.password(),
-    parentId: faker.internet.password(),
-    room: {
-      id: faker.internet.password(),
-      name: faker.lorem.word()
-    },
-    user: {
-      id: faker.internet.password(),
-      username: faker.internet.userName()
-    }
-  },
-  createdAt: faker.date.past(2),
-  updatedAt: moment().toDate()
-}))
-factory.define('Reaction', Reaction, () => ({
-  user: faker.random.uuid(),
-  content: faker.lorem.sentence(),
-  provider: {
-    name: faker.random.arrayElement(Object.values(providers)),
-    messageId: faker.internet.password(),
-    username: faker.internet.userName(),
-    room: {
-      id: faker.internet.password(),
-      name: faker.lorem.word()
-    }
-  }
-}))
 factory.define('Score', Score, () => ({
   user: faker.random.uuid(),
   score: faker.random.arrayElement([3, 5, 7]),
@@ -78,10 +40,6 @@ factory.define('User', User, () => ({
     professional: 0,
     total: 0
   },
-  rocketchat: {
-    id: faker.internet.password(),
-    username: faker.internet.userName()
-  },
   linkedin: {
     id: faker.internet.password()
   },
@@ -95,10 +53,6 @@ factory.define('enlistment:user', 'enlistment:user', () => ({
   fullname: faker.name.findName(),
   email: faker.internet.email(),
   photo_url: faker.image.avatar(),
-  rocket_chat: {
-    id: faker.internet.password(),
-    username: faker.internet.userName()
-  },
   github: {
     id: faker.internet.password(),
     username: faker.internet.userName()
@@ -111,44 +65,5 @@ factory.define('enlistment:user', 'enlistment:user', () => ({
   }
 }))
 
-factory.define('messagePayload', 'messagePayload', () => ({
-  content: faker.lorem.sentence(),
-  threadCount: faker.random.arrayElement([0, 1, 0]),
-  reactionCount: faker.random.arrayElement([0, 1, 0]),
-  reactions: [],
-  createdAt: faker.date.past(2),
-  updatedAt: moment().toDate(),
-  previousMessage: {
-    user: faker.internet.password(),
-    createdAt: faker.date.past(2)
-  },
-  provider: {
-    name: faker.random.arrayElement(Object.values(providers)),
-    messageId: faker.internet.password(),
-    parentId: faker.internet.password(),
-    room: {
-      id: faker.internet.password(),
-      name: faker.lorem.word()
-    },
-    user: {
-      id: faker.internet.password(),
-      username: faker.internet.userName(),
-      name: faker.name.findName()
-    }
-  }
-}))
-
-factory.define('reactionPayload', 'reactionPayload', () => ({
-  content: faker.lorem.word(),
-  provider: {
-    name: faker.random.arrayElement(Object.values(providers)),
-    messageId: faker.internet.password(),
-    room: {
-      id: faker.internet.password(),
-      name: faker.lorem.word()
-    },
-    username: faker.internet.userName()
-  }
-}))
 
 export default factory
