@@ -15,7 +15,6 @@ Atena is an initiative of the impulse in collaboration with several Impulsers, w
 
 Atena has integrations with:
 
-- [Rocket.Chat](https://rocket.chat/)
 - [Github](https://github.com)
 - [Wordpress](https://br.wordpress.org/)
 
@@ -58,9 +57,6 @@ Here is a walkthrough of the minimum configuration you need to get Atena running
 
 - Create a `.env` file at the root of the project by copying and renaming the `.env.example` file and subsequently changing some values ​​cited below:
 
-### Configuring Rocket.Chat Integration
-
-To use Rocket.Chat integration, follow the documentation steps by clicking [here](docs/ROCKET.CHAT.md).
 
 ### Configuring Github Integration
 
@@ -110,7 +106,7 @@ Read our [contribution guide](docs/CONTRIBUTING.md) to learn about our developme
 
 ## Community
 
-All comments and suggestions are welcome and can be made via Issues on Github or on [RocketChat](https://chat.impulso.network/)!
+All comments and suggestions are welcome and can be made via Issues on Github
 
 💬 Join the community in [Impulso Network](https://impulso.network)
 

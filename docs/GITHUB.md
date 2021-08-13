@@ -43,7 +43,3 @@ GITHUB_CLIENT_ID={oauthapp-client-id}
 GITHUB_CLIENT_SECRET={oauthapp-client-secret}
 GITHUB_REPOSITORIES={repo-id}
 ```
-
-## Add app permission
-
-To participate and receive reputarion, send a message on any channel on [Rocket.Chat](staging.chat.impulso.network) with the command `!opensource` and follow the instructions.
