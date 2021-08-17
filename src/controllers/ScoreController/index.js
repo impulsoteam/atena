@@ -432,8 +432,8 @@ class ScoreController extends ScoreUtils {
 
           const message = this.getProfileCompletenessMessage(percentage)
 
-          if (!provider) {
-            const providerOrDefault = messageProviders(provider)
+          const providerOrDefault = messageProviders(provider)
+          if (providerOrDefault) {
             BotController.sendMessageToUser({
               provider: providerOrDefault,
               message,

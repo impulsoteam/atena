@@ -271,7 +271,7 @@ export default class CommandUtils {
         continue
       }
 
-      if (!provider) {
+      if (provider) {
         BotController.sendMessageToUser({
           provider: provider.name,
           message: {
@@ -285,7 +285,7 @@ export default class CommandUtils {
       })
     }
 
-    if (!provider) {
+    if (provider) {
       BotController.sendMessageToUser({
         provider: provider.name,
         message: response,

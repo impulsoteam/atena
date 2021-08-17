@@ -24,7 +24,7 @@ class LevelController {
         level: user.level.value
       })
 
-      if (user.level.value > previousLevel && providers.length > 0) {
+      if (user.level.value > previousLevel) {
         for (const { provider } of providers) {
           const username = user[provider] && user[provider].username
 
