@@ -1,9 +1,49 @@
 import { factory } from 'factory-girl'
 import faker from 'faker'
+import moment from 'moment'
 
+import Message from '../../src/models/Message'
+import { providers } from '../../src/models/Message/schema'
+import Reaction from '../../src/models/Reaction'
 import Score from '../../src/models/Score'
 import { scoreTypes } from '../../src/models/Score/schema'
 import User from '../../src/models/User'
+
+factory.define('Message', Message, () => ({
+  user: faker.random.uuid(),
+  content: faker.lorem.sentence(),
+  threadCount: faker.random.arrayElement([0, 1, 0]),
+  reactionCount: faker.random.arrayElement([0, 1, 0]),
+  provider: {
+    name: faker.random.arrayElement(Object.values(providers)),
+    messageId: faker.internet.password(),
+    parentId: faker.internet.password(),
+    room: {
+      id: faker.internet.password(),
+      name: faker.lorem.word()
+    },
+    user: {
+      id: faker.internet.password(),
+      username: faker.internet.userName()
+    }
+  },
+  createdAt: faker.date.past(2),
+  updatedAt: moment().toDate()
+}))
+
+factory.define('Reaction', Reaction, () => ({
+  user: faker.random.uuid(),
+  content: faker.lorem.sentence(),
+  provider: {
+    name: faker.random.arrayElement(Object.values(providers)),
+    messageId: faker.internet.password(),
+    username: faker.internet.userName(),
+    room: {
+      id: faker.internet.password(),
+      name: faker.lorem.word()
+    }
+  }
+}))
 
 factory.define('Score', Score, () => ({
   user: faker.random.uuid(),
@@ -64,6 +104,5 @@ factory.define('enlistment:user', 'enlistment:user', () => ({
     uid: faker.internet.password()
   }
 }))
-
 
 export default factory
