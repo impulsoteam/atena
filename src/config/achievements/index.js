@@ -33,12 +33,11 @@ const formatAchievement = ({ name, displayAchievement, medals }) => {
   return achievement
 }
 
-/* export const messageProviders = provider => {
-  const defaultProvider = ''
-  const providers = {
-  }
+export const messageProviders = provider => {
+  const defaultProvider = null
+  const providers = {}
   return providers[provider] || defaultProvider
-} */
+}
 
 export const achievementTypes = {
   atenaAccess: 'atenaAccess',

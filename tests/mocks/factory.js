@@ -105,4 +105,44 @@ factory.define('enlistment:user', 'enlistment:user', () => ({
   }
 }))
 
+factory.define('messagePayload', 'messagePayload', () => ({
+  content: faker.lorem.sentence(),
+  threadCount: faker.random.arrayElement([0, 1, 0]),
+  reactionCount: faker.random.arrayElement([0, 1, 0]),
+  reactions: [],
+  createdAt: faker.date.past(2),
+  updatedAt: moment().toDate(),
+  previousMessage: {
+    user: faker.internet.password(),
+    createdAt: faker.date.past(2)
+  },
+  provider: {
+    name: faker.random.arrayElement(Object.values(providers)),
+    messageId: faker.internet.password(),
+    parentId: faker.internet.password(),
+    room: {
+      id: faker.internet.password(),
+      name: faker.lorem.word()
+    },
+    user: {
+      id: faker.internet.password(),
+      username: faker.internet.userName(),
+      name: faker.name.findName()
+    }
+  }
+}))
+
+factory.define('reactionPayload', 'reactionPayload', () => ({
+  content: faker.lorem.word(),
+  provider: {
+    name: faker.random.arrayElement(Object.values(providers)),
+    messageId: faker.internet.password(),
+    room: {
+      id: faker.internet.password(),
+      name: faker.lorem.word()
+    },
+    username: faker.internet.userName()
+  }
+}))
+
 export default factory

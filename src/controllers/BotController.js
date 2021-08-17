@@ -1,12 +1,9 @@
 import { sendError } from 'log-on-slack'
 import moment from 'moment'
 
-// import { sendMessage as sendRocketchatMessage } from '../services/rocketchat/driver'
 import RankingController from './RankingController'
 
-const providers = {
-  // rocketchat: payload => sendRocketchatMessage(payload)
-}
+const providers = {}
 
 class BotController {
   getService(provider) {
