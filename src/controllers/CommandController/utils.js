@@ -2,7 +2,7 @@ import moment from 'moment'
 
 import { scoreTypes } from '../../models/Score/schema'
 import User from '../../models/User'
-// import BotController from '../BotController'
+import BotController from '../BotController'
 import RankingController from '../RankingController'
 import ScoreController from '../ScoreController'
 
@@ -271,22 +271,26 @@ export default class CommandUtils {
         continue
       }
 
-      /* BotController.sendMessageToUser({
-        provider: provider.name,
-        message: {
-          msg: `Você acabou de receber *${points} pontos* de reputação por *${reason}*.`
-        },
-        username: gifted[provider.name].username
-      }) */
-
+      if (!provider) {
+        BotController.sendMessageToUser({
+          provider: provider.name,
+          message: {
+            msg: `Você acabou de receber *${points} pontos* de reputação por *${reason}*.`
+          },
+          username: gifted[provider.name].username
+        })
+      }
       response.attachments.push({
         text: `Sucesso! Você enviou *${points} pontos* de reputação para *${gifted.name}*!`
       })
     }
-    /* BotController.sendMessageToUser({
-      provider: provider.name,
-      message: response,
-      username: provider.user.username
-    }) */
+
+    if (!provider) {
+      BotController.sendMessageToUser({
+        provider: provider.name,
+        message: response,
+        username: provider.user.username
+      })
+    }
   }
 }
