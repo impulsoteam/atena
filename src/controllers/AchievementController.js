@@ -2,8 +2,10 @@ import { sendError } from 'log-on-slack'
 import moment from 'moment'
 
 import getAchievementValues from '../config/achievements'
+// import { messageProviders } from '../config/achievements'
 import User from '../models/User'
 import { publishToEnlistment } from '../services/amqp'
+// import BotController from './BotController'
 import ScoreController from './ScoreController'
 
 class AchievementController {
@@ -150,6 +152,15 @@ class AchievementController {
         achievements: [...othersAchievements, newAchievement]
       })
 
+      /* const message = this.generateMessage(newAchievement)
+
+      const providerOrDefault = messageProviders(provider)
+      BotController.sendMessageToUser({
+        provider: providerOrDefault,
+        message,
+        username: user[providerOrDefault].username
+      }) */
+
       ScoreController.handleAchievement({
         achievement: newAchievement,
         user: updatedUser,
@@ -174,6 +185,10 @@ class AchievementController {
         error
       })
     }
+  }
+
+  generateMessage({ displayNames, range }) {
+    return `🏅 Você obteve a conquista [${displayNames.medal} ${range} | ${displayNames.achievement}]!`
   }
 }
 
