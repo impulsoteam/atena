@@ -43,7 +43,3 @@ GITHUB_CLIENT_ID={oauthapp-client-id}
 GITHUB_CLIENT_SECRET={oauthapp-client-secret}
 GITHUB_REPOSITORIES={repositorio-id}
 ```
-
-## Adicionar permissão para o app
-
-Para participar e receber pontuação, envie uma mensagem em qualquer canal no [Rocket.Chat](staging.chat.impulso.network) da Impulso com o comando *`!opensource`* e siga as instruções.

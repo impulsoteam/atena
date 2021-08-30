@@ -270,8 +270,7 @@ describe('handleUser - anonymize user', () => {
               name: faker.lorem.word()
             },
             user: {
-              id: faker.internet.password(),
-              username: user.rocket_chat.username
+              id: faker.internet.password()
             }
           }
         })
@@ -285,7 +284,6 @@ describe('handleUser - anonymize user', () => {
           provider: {
             name: faker.random.arrayElement(Object.values(providers)),
             messageId: faker.internet.password(),
-            username: user.rocket_chat.username,
             room: {
               id: faker.internet.password(),
               name: faker.lorem.word()
@@ -300,10 +298,6 @@ describe('handleUser - anonymize user', () => {
       uuid: user.uuid,
       email: anonymizedEmail,
       anonymized_at: moment().toISOString(),
-      rocket_chat: {
-        id: faker.internet.password(),
-        username: null
-      },
       github: {
         id: null,
         username: null

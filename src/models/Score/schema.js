@@ -1,8 +1,6 @@
 import mongoose from 'mongoose'
 
-export const providers = {
-  rocketchat: 'rocketchat'
-}
+export const providers = {}
 
 export const scoreTypes = {
   clickOnProduct: 'clickOnProduct',

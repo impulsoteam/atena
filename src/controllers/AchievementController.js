@@ -154,11 +154,13 @@ class AchievementController {
       const message = this.generateMessage(newAchievement)
 
       const providerOrDefault = messageProviders(provider)
-      BotController.sendMessageToUser({
-        provider: providerOrDefault,
-        message,
-        username: user[providerOrDefault].username
-      })
+      if (providerOrDefault) {
+        BotController.sendMessageToUser({
+          provider: providerOrDefault,
+          message,
+          username: user[providerOrDefault].username
+        })
+      }
 
       ScoreController.handleAchievement({
         achievement: newAchievement,

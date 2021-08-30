@@ -3,12 +3,9 @@ import { sendError } from 'log-on-slack'
 import { generateStorytelling } from '../assets/storytelling'
 import LevelHistory from '../models/LevelHistory'
 import { publishToEnlistment } from '../services/amqp'
-import { updateBadge as updateRocketchatBadge } from '../services/rocketchat/api'
 import BotController from './BotController'
 
-const providers = [
-  { provider: 'rocketchat', service: payload => updateRocketchatBadge(payload) }
-]
+const providers = []
 
 class LevelController {
   async handle({ user, previousLevel }) {

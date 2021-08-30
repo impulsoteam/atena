@@ -34,11 +34,8 @@ const formatAchievement = ({ name, displayAchievement, medals }) => {
 }
 
 export const messageProviders = provider => {
-  const defaultProvider = 'rocketchat'
-  const providers = {
-    rocketchat: 'rocketchat'
-  }
-
+  const defaultProvider = null
+  const providers = {}
   return providers[provider] || defaultProvider
 }
 

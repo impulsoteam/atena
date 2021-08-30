@@ -16,14 +16,6 @@ const generalRankingSchema = new mongoose.Schema(
       type: Number,
       required: true
     },
-    rocketchat: {
-      id: {
-        type: String
-      },
-      username: {
-        type: String
-      }
-    },
     score: {
       type: Number,
       required: true
@@ -68,7 +60,7 @@ generalRankingSchema.statics.updateUserRanking = async function ({
   user,
   position
 }) {
-  const { uuid, score, name, avatar, level, rocketchat } = user
+  const { uuid, score, name, avatar, level } = user
 
   await this.findOneAndUpdate(
     { uuid },
@@ -78,7 +70,6 @@ generalRankingSchema.statics.updateUserRanking = async function ({
       name,
       avatar,
       level,
-      rocketchat,
       position
     },
     {

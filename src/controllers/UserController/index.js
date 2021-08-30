@@ -16,7 +16,7 @@ import UserUtils from './utils'
 class UserController extends UserUtils {
   constructor() {
     super()
-    this.validProviders = ['rocketchat']
+    this.validProviders = ['']
   }
 
   async handle(payload) {

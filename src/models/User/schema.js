@@ -97,10 +97,6 @@ export default new mongoose.Schema(
       identification: String
     },
     lastInteraction: Date,
-    rocketchat: {
-      id: String,
-      username: String
-    },
     slack: {
       id: String,
       username: String

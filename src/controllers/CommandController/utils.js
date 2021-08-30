@@ -271,22 +271,26 @@ export default class CommandUtils {
         continue
       }
 
-      BotController.sendMessageToUser({
-        provider: provider.name,
-        message: {
-          msg: `Você acabou de receber *${points} pontos* de reputação por *${reason}*.`
-        },
-        username: gifted[provider.name].username
-      })
-
+      if (provider) {
+        BotController.sendMessageToUser({
+          provider: provider.name,
+          message: {
+            msg: `Você acabou de receber *${points} pontos* de reputação por *${reason}*.`
+          },
+          username: gifted[provider.name].username
+        })
+      }
       response.attachments.push({
         text: `Sucesso! Você enviou *${points} pontos* de reputação para *${gifted.name}*!`
       })
     }
-    BotController.sendMessageToUser({
-      provider: provider.name,
-      message: response,
-      username: provider.user.username
-    })
+
+    if (provider) {
+      BotController.sendMessageToUser({
+        provider: provider.name,
+        message: response,
+        username: provider.user.username
+      })
+    }
   }
 }

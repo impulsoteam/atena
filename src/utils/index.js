@@ -18,7 +18,6 @@ export const formatUser = data => {
     status,
     fullname,
     email,
-    rocket_chat,
     linkedin,
     google,
     github,
@@ -33,10 +32,6 @@ export const formatUser = data => {
     name: fullname,
     email,
     avatar: photo_url,
-    rocketchat: {
-      id: rocket_chat.id,
-      username: rocket_chat.username
-    },
     linkedin: { id: linkedin.uid },
     github,
     google: { id: google.uid },

@@ -30,6 +30,7 @@ factory.define('Message', Message, () => ({
   createdAt: faker.date.past(2),
   updatedAt: moment().toDate()
 }))
+
 factory.define('Reaction', Reaction, () => ({
   user: faker.random.uuid(),
   content: faker.lorem.sentence(),
@@ -43,6 +44,7 @@ factory.define('Reaction', Reaction, () => ({
     }
   }
 }))
+
 factory.define('Score', Score, () => ({
   user: faker.random.uuid(),
   score: faker.random.arrayElement([3, 5, 7]),
@@ -78,10 +80,6 @@ factory.define('User', User, () => ({
     professional: 0,
     total: 0
   },
-  rocketchat: {
-    id: faker.internet.password(),
-    username: faker.internet.userName()
-  },
   linkedin: {
     id: faker.internet.password()
   },
@@ -95,10 +93,6 @@ factory.define('enlistment:user', 'enlistment:user', () => ({
   fullname: faker.name.findName(),
   email: faker.internet.email(),
   photo_url: faker.image.avatar(),
-  rocket_chat: {
-    id: faker.internet.password(),
-    username: faker.internet.userName()
-  },
   github: {
     id: faker.internet.password(),
     username: faker.internet.userName()
