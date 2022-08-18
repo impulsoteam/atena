@@ -9,7 +9,7 @@
 
 [Documentação em Português](docs/README_PT_BR.md)
 
-Atena is an initiative of the impulse in collaboration with several Impulsers, with the objective to promote the engagement and to reward the activities and efforts of each person in the Impulse. In it you will be able to acquire Reputation Points through the execution of several activities and based on these two factors, the Impulsers will receive levels and achievements recognizing the effort expended in the activities.
+Atena is an initiative of the Impulso in collaboration with several Impulsers, with the objective to promote the engagement and to reward the activities and efforts of each person in the Impulso. In it you will be able to acquire Reputation Points through the execution of several activities and based on these two factors, the Impulsers will receive levels and achievements recognizing the effort expended in the activities.
 
 ## Integrations
 
